@@ -1,0 +1,108 @@
+# Project Status and Context
+
+## Project Overview
+This is a full-stack application with Express.js backend, React frontend, and MongoDB database. The application is a user management system that allows creating, viewing, updating, and deleting users. It includes JWT authentication with role-based access control (RBAC) for admin and user roles.
+
+## Project Structure
+```
+.
+├── backend/           # Express.js server
+├── frontend/          # React application
+└── mongodb-data/      # MongoDB data directory
+```
+
+## Backend Implementation
+The backend is built with Express.js and includes:
+
+1. **Models**:
+   - User model with fields: username, email, password, role, and createdAt
+   - Password hashing with bcrypt
+
+2. **Controllers**:
+   - userController.js with CRUD operations (getUsers, getUser, createUser, updateUser, deleteUser)
+   - authController.js with authentication operations (register, login, getMe)
+
+3. **Routes**:
+   - userRoutes.js with RESTful endpoints for user operations (admin only)
+   - authRoutes.js with authentication endpoints (register, login, getMe)
+
+4. **Middleware**:
+   - errorHandler.js for centralized error handling
+   - auth.js for JWT verification and role-based access control
+
+5. **Utils**:
+   - jwt.js for token generation and verification
+
+6. **Server Configuration**:
+   - MongoDB connection setup
+   - Express middleware (cors, json parsing)
+   - Route mounting
+   - Error handling middleware
+
+## Frontend Implementation
+The frontend is built with React and includes:
+
+1. **State Management**:
+   - Redux Toolkit for global state
+   - userSlice.js with async thunks for API calls
+   - authSlice.js with authentication state and operations
+
+2. **Components**:
+   - UserList.js: Displays users in a table (admin only)
+   - CreateUser.js: Form for creating new users (admin only)
+   - Login.js: Form for user login
+   - Register.js: Form for user registration
+   - PrivateRoute.js: Component for protected routes with role-based access
+
+3. **Routing**:
+   - React Router for navigation
+   - Public routes: login, register
+   - Protected routes: user list, create user (admin only)
+
+4. **UI**:
+   - Material-UI for styling
+   - Responsive design
+   - Role-based navigation
+
+## Authentication and Authorization
+- JWT-based authentication
+- Role-based access control (RBAC) with two roles: admin and user
+- Token storage in localStorage
+- Protected routes on both frontend and backend
+- Password hashing with bcrypt
+
+## API Integration
+- Frontend communicates with backend via axios
+- API endpoints:
+  - GET /api/users: Fetch all users (admin only)
+  - GET /api/users/:id: Fetch a single user (admin only)
+  - POST /api/users: Create a new user (admin only)
+  - PUT /api/users/:id: Update a user (admin only)
+  - DELETE /api/users/:id: Delete a user (admin only)
+  - POST /api/auth/register: Register a new user
+  - POST /api/auth/login: Login user
+  - GET /api/auth/me: Get current user
+
+## Current Status
+- Basic user management functionality is implemented
+- MongoDB is set up and configured
+- Error handling is in place
+- Frontend and backend are connected
+- JWT authentication with role-based access control is implemented
+
+## Next Steps
+- Enhance the UI/UX
+- Add form validation on the frontend
+- Implement user profile management
+- Add search and filtering capabilities
+- Implement password reset functionality
+- Add email verification
+
+## Technical Details
+- Backend runs on port 5000
+- Frontend runs on port 3000
+- MongoDB runs on default port 27017
+- Environment variables are used for configuration
+- JWT tokens expire after 30 days
+
+This project serves as a foundation for a user management system with role-based access control and can be extended with additional features as needed. 
