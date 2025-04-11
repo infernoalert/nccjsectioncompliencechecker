@@ -7,6 +7,8 @@ const { generateToken } = require('../utils/jwt');
 exports.register = async (req, res, next) => {
     try {
         const { username, email, password, role } = req.body;
+        
+        console.log('Registration request:', { username, email, role });
 
         // Check if user already exists
         const userExists = await User.findOne({ $or: [{ email }, { username }] });
@@ -39,6 +41,7 @@ exports.register = async (req, res, next) => {
             }
         });
     } catch (error) {
+        console.error('Registration error:', error);
         next(error);
     }
 };
