@@ -1,13 +1,24 @@
 # Project Status and Context
 
 ## Project Overview
-This is a full-stack application with Express.js backend, React frontend, and MongoDB database. The application is a user management system that allows creating, viewing, updating, and deleting users. It includes JWT authentication with role-based access control (RBAC) for admin and user roles.
+This is a full-stack application with Express.js backend, React frontend, and MongoDB database. The application is a NCC Section J Compliance Checker that allows users to check building compliance with the National Construction Code (NCC) Section J requirements. It includes JWT authentication with role-based access control (RBAC) for admin and user roles. The application also includes functionality for managing building classes, climate zones, compliance pathways, and projects for NCC Section J compliance checking.
 
 ## Project Structure
 ```
 .
 ├── backend/           # Express.js server
+│   ├── controllers/  # API controllers
+│   ├── middleware/   # Express middleware
+│   ├── models/       # Mongoose models
+│   ├── routes/       # API routes
+│   ├── utils/        # Utility functions
+│   └── server.js     # Express server entry point
 ├── frontend/          # React application
+│   ├── public/       # Static files
+│   └── src/          # React source code
+│       ├── components/ # React components
+│       ├── store/     # Redux store and slices
+│       └── App.js     # React application entry point
 └── mongodb-data/      # MongoDB data directory
 ```
 
@@ -16,15 +27,30 @@ The backend is built with Express.js and includes:
 
 1. **Models**:
    - User model with fields: username, email, password, role, and createdAt
+   - BuildingClass model for NCC building classifications
+   - ClimateZone model for climate zone requirements
+   - CompliancePathway model for compliance pathways
+   - SectionJPart model for Section J parts
+   - SpecialRequirement model for special requirements
+   - ExemptionAndConcession model for exemptions and concessions
+   - Project model for user projects
    - Password hashing with bcrypt
 
 2. **Controllers**:
    - userController.js with CRUD operations (getUsers, getUser, createUser, updateUser, deleteUser)
    - authController.js with authentication operations (register, login, getMe)
+   - buildingClassController.js with operations for building classes
+   - climateZoneController.js with operations for climate zones
+   - compliancePathwayController.js with operations for compliance pathways
+   - projectController.js with operations for projects
 
 3. **Routes**:
    - userRoutes.js with RESTful endpoints for user operations (admin only)
    - authRoutes.js with authentication endpoints (register, login, getMe)
+   - buildingClassRoutes.js with endpoints for building classes
+   - climateZoneRoutes.js with endpoints for climate zones
+   - compliancePathwayRoutes.js with endpoints for compliance pathways
+   - projectRoutes.js with endpoints for projects
 
 4. **Middleware**:
    - errorHandler.js for centralized error handling
@@ -39,6 +65,9 @@ The backend is built with Express.js and includes:
    - Route mounting
    - Error handling middleware
 
+7. **Data Seeding**:
+   - seeder.js script to populate the database with building classifications, climate zones, and compliance pathways from Decision-Tree.json
+
 ## Frontend Implementation
 The frontend is built with React and includes:
 
@@ -48,21 +77,22 @@ The frontend is built with React and includes:
    - authSlice.js with authentication state and operations
 
 2. **Components**:
+   - SignIn.js: Form for user login with email and password
+   - SignUp.js: Form for user registration with email validation and password confirmation
    - UserList.js: Displays users in a table (admin only)
    - CreateUser.js: Form for creating new users (admin only)
-   - Login.js: Form for user login
-   - Register.js: Form for user registration
    - PrivateRoute.js: Component for protected routes with role-based access
 
 3. **Routing**:
    - React Router for navigation
-   - Public routes: login, register
-   - Protected routes: user list, create user (admin only)
+   - Public routes: signin, signup
+   - Protected routes: dashboard, user list, create user (admin only)
 
 4. **UI**:
    - Material-UI for styling
    - Responsive design
    - Role-based navigation
+   - Form validation for email and password
 
 ## Authentication and Authorization
 - JWT-based authentication
@@ -70,6 +100,8 @@ The frontend is built with React and includes:
 - Token storage in localStorage
 - Protected routes on both frontend and backend
 - Password hashing with bcrypt
+- Email validation on the frontend
+- Password confirmation and minimum length validation
 
 ## API Integration
 - Frontend communicates with backend via axios
@@ -82,6 +114,27 @@ The frontend is built with React and includes:
   - POST /api/auth/register: Register a new user
   - POST /api/auth/login: Login user
   - GET /api/auth/me: Get current user
+  - GET /api/building-classes: Fetch all building classes
+  - GET /api/building-classes/:id: Fetch a single building class
+  - POST /api/building-classes: Create a new building class (admin only)
+  - PUT /api/building-classes/:id: Update a building class (admin only)
+  - DELETE /api/building-classes/:id: Delete a building class (admin only)
+  - GET /api/climate-zones: Fetch all climate zones
+  - GET /api/climate-zones/:id: Fetch a single climate zone
+  - POST /api/climate-zones: Create a new climate zone (admin only)
+  - PUT /api/climate-zones/:id: Update a climate zone (admin only)
+  - DELETE /api/climate-zones/:id: Delete a climate zone (admin only)
+  - GET /api/compliance-pathways: Fetch all compliance pathways
+  - GET /api/compliance-pathways/:id: Fetch a single compliance pathway
+  - POST /api/compliance-pathways: Create a new compliance pathway (admin only)
+  - PUT /api/compliance-pathways/:id: Update a compliance pathway (admin only)
+  - DELETE /api/compliance-pathways/:id: Delete a compliance pathway (admin only)
+  - GET /api/projects: Fetch all projects for a user
+  - GET /api/projects/:id: Fetch a single project
+  - POST /api/projects: Create a new project
+  - PUT /api/projects/:id: Update a project
+  - DELETE /api/projects/:id: Delete a project
+  - POST /api/projects/:id/check-compliance: Check compliance for a project
 
 ## Current Status
 - Basic user management functionality is implemented
@@ -89,14 +142,34 @@ The frontend is built with React and includes:
 - Error handling is in place
 - Frontend and backend are connected
 - JWT authentication with role-based access control is implemented
+- Database models for building classes, climate zones, compliance pathways, and projects are created
+- API routes and controllers for building classes, climate zones, compliance pathways, and projects are implemented
+- Server.js is updated to include the new routes
+- Seeder script is implemented to populate the database with building classifications, climate zones, and compliance pathways
+- SignIn and SignUp components are implemented with form validation
+- Auth slice is implemented for Redux state management
+- Protected routes are set up in the frontend
+
+## Recent Changes
+- Modified the SignUp component to use email as both username and email
+- Removed role selection from the SignUp form (roles can only be changed via API)
+- Added email validation to the SignUp component
+- Added password validation to the SignUp component
+- Added error handling for email and password validation
+- Added debugging to the auth controller to log registration requests and errors
+- Fixed error handling in the auth slice to correctly extract error messages
 
 ## Next Steps
+- Create Redux slices for building classes, climate zones, compliance pathways, and projects
+- Create frontend components for building class selection, climate zone selection, project creation, and compliance results display
+- Implement the compliance checking logic in more detail
+- Create a dashboard component for users to manage their projects
 - Enhance the UI/UX
-- Add form validation on the frontend
 - Implement user profile management
 - Add search and filtering capabilities
 - Implement password reset functionality
 - Add email verification
+- Add documentation for changing user roles via API
 
 ## Technical Details
 - Backend runs on port 5000
@@ -105,4 +178,15 @@ The frontend is built with React and includes:
 - Environment variables are used for configuration
 - JWT tokens expire after 30 days
 
-This project serves as a foundation for a user management system with role-based access control and can be extended with additional features as needed. 
+## How to Change User Role to Admin
+To change a user's role to admin, you need to use the API directly. You can use a tool like Postman or curl to make a PUT request to the `/api/users/:id` endpoint with the following JSON body:
+
+```json
+{
+  "role": "admin"
+}
+```
+
+You need to include the JWT token in the Authorization header as a Bearer token. The token can be obtained by logging in as an admin user.
+
+This project serves as a foundation for a NCC Section J Compliance Checker application with role-based access control and can be extended with additional features as needed. The application now includes functionality for managing building classes, climate zones, compliance pathways, and projects for NCC Section J compliance checking. 

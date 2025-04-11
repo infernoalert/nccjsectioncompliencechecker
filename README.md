@@ -1,14 +1,25 @@
-# Full Stack Application
+# NCC Section J Compliance Checker
 
-A modern full-stack application built with Express.js, React, and MongoDB.
+A full-stack application for checking NCC Section J compliance, built with Express.js, React, and MongoDB.
 
 ## Project Structure
 
 ```
 .
 ├── backend/           # Express.js server
-├── frontend/          # React application
-└── mongodb-data/      # MongoDB data directory
+│   ├── controllers/  # API controllers
+│   ├── middleware/   # Express middleware
+│   ├── models/       # Mongoose models
+│   ├── routes/       # API routes
+│   ├── utils/        # Utility functions
+│   └── server.js     # Express server entry point
+├── frontend/         # React application
+│   ├── public/       # Static files
+│   └── src/          # React source code
+│       ├── components/ # React components
+│       ├── store/     # Redux store and slices
+│       └── App.js     # React application entry point
+└── mongodb-data/     # MongoDB data directory
 ```
 
 ## Prerequisites
@@ -19,7 +30,21 @@ A modern full-stack application built with Express.js, React, and MongoDB.
 
 ## Getting Started
 
-### Backend Setup
+Follow these steps in order to start the application:
+
+### 1. Start MongoDB
+
+First, ensure MongoDB is running on your system:
+
+```bash
+# Start MongoDB service (Windows)
+net start MongoDB
+
+# Check MongoDB service status
+sc query MongoDB
+```
+
+### 2. Start the Backend Server
 
 1. Navigate to the backend directory:
    ```bash
@@ -34,8 +59,10 @@ A modern full-stack application built with Express.js, React, and MongoDB.
 3. Create a .env file in the backend directory with the following variables:
    ```
    PORT=5000
-   MONGODB_URI=mongodb://localhost:27017/your-database-name
+   MONGODB_URI=mongodb://localhost:27017/ncc-compliance
    NODE_ENV=development
+   JWT_SECRET=your_jwt_secret_key_here
+   JWT_EXPIRE=30d
    ```
 
 4. Start the development server:
@@ -43,9 +70,11 @@ A modern full-stack application built with Express.js, React, and MongoDB.
    npm run dev
    ```
 
-### Frontend Setup
+The backend server will start on http://localhost:5000
 
-1. Navigate to the frontend directory:
+### 3. Start the Frontend Application
+
+1. Open a new terminal and navigate to the frontend directory:
    ```bash
    cd frontend
    ```
@@ -60,21 +89,7 @@ A modern full-stack application built with Express.js, React, and MongoDB.
    npm start
    ```
 
-### MongoDB Setup
-
-1. Make sure MongoDB is installed on your system
-2. Start MongoDB service (run in Administrator PowerShell or Command Prompt):
-   ```bash
-   # Start MongoDB service
-   net start MongoDB
-
-   # Stop MongoDB service
-   net stop MongoDB
-
-   # Check MongoDB service status
-   sc query MongoDB
-   ```
-3. The application will automatically create the database in the mongodb-data directory
+The frontend application will start on http://localhost:3000
 
 ## Available Scripts
 
@@ -90,12 +105,74 @@ A modern full-stack application built with Express.js, React, and MongoDB.
 
 ## API Documentation
 
-The backend API will be available at `http://localhost:5000`
+The backend API is available at `http://localhost:5000`
 
-### Endpoints
+### Authentication Endpoints
+- `POST /api/auth/register`: Register a new user
+- `POST /api/auth/login`: Login user
+- `GET /api/auth/me`: Get current user
 
-- `GET /`: Welcome message
-- More endpoints will be added as the application develops
+### User Management Endpoints (Admin Only)
+- `GET /api/users`: Get all users
+- `POST /api/users`: Create a new user
+- `PUT /api/users/:id`: Update a user
+- `DELETE /api/users/:id`: Delete a user
+
+### Project Endpoints
+- `GET /api/projects`: Get all projects
+- `POST /api/projects`: Create a new project
+- `PUT /api/projects/:id`: Update a project
+- `DELETE /api/projects/:id`: Delete a project
+
+## User Roles and Permissions
+
+### Default User Role
+When a user signs up, they are automatically assigned the 'user' role. This role has access to:
+- View and check building compliance
+- Create and manage their own projects
+- View compliance reports
+
+### Admin Role
+The admin role has additional permissions:
+- Manage user roles
+- Override compliance rules
+- Manage special requirements
+- Access admin dashboard
+
+### Changing User Role to Admin
+To change a user's role to admin, you need to make an API request with admin credentials:
+
+1. First, obtain an admin token by logging in with an admin account
+2. Make a PUT request to update the user's role:
+
+```bash
+curl -X PUT http://localhost:5000/api/users/:userId/role \
+  -H "Authorization: Bearer YOUR_ADMIN_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"role": "admin"}'
+```
+
+Replace:
+- `:userId` with the ID of the user you want to make admin
+- `YOUR_ADMIN_TOKEN` with a valid JWT token from an admin account
+
+Note: Only existing admin users can promote other users to admin role. This is a security measure to prevent unauthorized role changes.
+
+## Troubleshooting
+
+1. If MongoDB fails to start:
+   - Check if the MongoDB service is installed
+   - Try running MongoDB manually: `mongod --dbpath ./mongodb-data`
+
+2. If the backend fails to start:
+   - Check if MongoDB is running
+   - Verify the .env file exists with correct values
+   - Check if port 5000 is available
+
+3. If the frontend fails to start:
+   - Check if port 3000 is available
+   - Verify all dependencies are installed
+   - Clear npm cache: `npm cache clean --force`
 
 ## Contributing
 

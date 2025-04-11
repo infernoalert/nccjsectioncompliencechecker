@@ -1,89 +1,55 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, Navigate } from 'react-router-dom';
-import { Provider } from 'react-redux';
-import { store } from './store';
-import { AppBar, Toolbar, Typography, Button, Container, Box } from '@mui/material';
-import UserList from './components/UserList';
-import CreateUser from './components/CreateUser';
-import Login from './components/Login';
-import Register from './components/Register';
-import PrivateRoute from './components/PrivateRoute';
-import { useSelector, useDispatch } from 'react-redux';
-import { logout } from './store/slices/authSlice';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { ThemeProvider, createTheme } from '@mui/material';
+import CssBaseline from '@mui/material/CssBaseline';
+import SignIn from './components/auth/SignIn';
+import SignUp from './components/auth/SignUp';
+import { useSelector } from 'react-redux';
 
-// Navbar component
-const Navbar = () => {
-    const dispatch = useDispatch();
-    const { isAuthenticated, user } = useSelector((state) => state.auth);
+// Create a theme instance
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#1976d2',
+    },
+    secondary: {
+      main: '#dc004e',
+    },
+  },
+});
 
-    const handleLogout = () => {
-        dispatch(logout());
-    };
-
-    return (
-        <AppBar position="static">
-            <Toolbar>
-                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                    User Management
-                </Typography>
-                {isAuthenticated ? (
-                    <>
-                        <Typography variant="body1" sx={{ mr: 2 }}>
-                            {user?.username} ({user?.role})
-                        </Typography>
-                        {user?.role === 'admin' && (
-                            <>
-                                <Button color="inherit" component={Link} to="/">
-                                    Users
-                                </Button>
-                                <Button color="inherit" component={Link} to="/create">
-                                    Create User
-                                </Button>
-                            </>
-                        )}
-                        <Button color="inherit" onClick={handleLogout}>
-                            Logout
-                        </Button>
-                    </>
-                ) : (
-                    <>
-                        <Button color="inherit" component={Link} to="/login">
-                            Login
-                        </Button>
-                        <Button color="inherit" component={Link} to="/register">
-                            Register
-                        </Button>
-                    </>
-                )}
-            </Toolbar>
-        </AppBar>
-    );
+// Protected Route component
+const ProtectedRoute = ({ children }) => {
+  const { isAuthenticated } = useSelector((state) => state.auth);
+  return isAuthenticated ? children : <Navigate to="/signin" />;
 };
 
 function App() {
-    return (
-        <Provider store={store}>
-            <Router>
-                <Navbar />
-                <Container sx={{ mt: 4 }}>
-                    <Routes>
-                        {/* Public routes */}
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/register" element={<Register />} />
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Router>
+        <Routes>
+          {/* Public routes */}
+          <Route path="/signin" element={<SignIn />} />
+          <Route path="/signup" element={<SignUp />} />
 
-                        {/* Protected routes */}
-                        <Route element={<PrivateRoute roles={['admin']} />}>
-                            <Route path="/" element={<UserList />} />
-                            <Route path="/create" element={<CreateUser />} />
-                        </Route>
+          {/* Protected routes */}
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <div>Dashboard (Coming Soon)</div>
+              </ProtectedRoute>
+            }
+          />
 
-                        {/* Redirect to home if no route matches */}
-                        <Route path="*" element={<Navigate to="/" />} />
-                    </Routes>
-                </Container>
-            </Router>
-        </Provider>
-    );
+          {/* Redirect root to signin */}
+          <Route path="/" element={<Navigate to="/signin" />} />
+        </Routes>
+      </Router>
+    </ThemeProvider>
+  );
 }
 
 export default App;
