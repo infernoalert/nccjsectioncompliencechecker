@@ -35,7 +35,7 @@ const SignIn = () => {
     e.preventDefault();
     try {
       await dispatch(login(formData)).unwrap();
-      navigate('/dashboard');
+      navigate('/');
     } catch (err) {
       // Error is handled by the reducer
     }
