@@ -75,7 +75,7 @@ const SignUp = () => {
         password: formData.password
       };
       await dispatch(register(userData)).unwrap();
-      navigate('/dashboard');
+      navigate('/');
     } catch (err) {
       // Error is handled by the reducer
     }

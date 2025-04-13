@@ -4,6 +4,8 @@ import { ThemeProvider, createTheme } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
 import SignIn from './components/auth/SignIn';
 import SignUp from './components/auth/SignUp';
+import UserProject from './components/UserProject';
+import NewProject from './components/NewProject';
 import { useSelector } from 'react-redux';
 
 // Create a theme instance
@@ -36,6 +38,22 @@ function App() {
 
           {/* Protected routes */}
           <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <UserProject />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/projects/new"
+            element={
+              <ProtectedRoute>
+                <NewProject />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/dashboard"
             element={
               <ProtectedRoute>
@@ -43,9 +61,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-
-          {/* Redirect root to signin */}
-          <Route path="/" element={<Navigate to="/signin" />} />
         </Routes>
       </Router>
     </ThemeProvider>
