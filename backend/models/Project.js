@@ -21,6 +21,11 @@ const projectSchema = new mongoose.Schema({
     ref: 'ClimateZone',
     required: true
   },
+  location: {
+    type: String,
+    required: [true, 'Please add a location'],
+    trim: true
+  },
   buildingFabric: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'BuildingFabric',
@@ -72,6 +77,7 @@ const projectSchema = new mongoose.Schema({
 projectSchema.index({ userId: 1 });
 projectSchema.index({ buildingClass: 1 });
 projectSchema.index({ climateZone: 1 });
+projectSchema.index({ location: 1 });
 projectSchema.index({ status: 1 });
 projectSchema.index({ userId: 1, buildingClass: 1, climateZone: 1 });
 

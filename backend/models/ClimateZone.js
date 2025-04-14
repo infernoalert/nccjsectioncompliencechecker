@@ -1,13 +1,17 @@
 const mongoose = require('mongoose');
 
 const ClimateZoneSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, 'Please add a name'],
+  zone: {
+    type: Number,
+    required: [true, 'Please add a zone number'],
     unique: true,
-    trim: true,
-    maxlength: [50, 'Name cannot be more than 50 characters']
+    min: 1,
+    max: 8
   },
+  locations: [{
+    type: String,
+    required: [true, 'Please add at least one location']
+  }],
   description: {
     type: String,
     required: [true, 'Please add a description'],
@@ -53,6 +57,7 @@ ClimateZoneSchema.pre('save', function(next) {
 });
 
 // Create indexes
-ClimateZoneSchema.index({ _id: 1 });
+ClimateZoneSchema.index({ zone: 1 });
+ClimateZoneSchema.index({ locations: 1 });
 
 module.exports = mongoose.model('ClimateZone', ClimateZoneSchema); 

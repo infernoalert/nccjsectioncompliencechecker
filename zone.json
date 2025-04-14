@@ -1,0 +1,71 @@
+{
+    "climateZones": [
+      {
+        "zone": 1,
+        "locations": [
+          "NT-Darwin", "NT-Katherine", "QLD-Cairns", "QLD-Cooktown", 
+          "QLD-Normanton", "QLD-Townsville", "QLD-Weipa"
+        ]
+      },
+      {
+        "zone": 2,
+        "locations": [
+          "NSW-Byron Bay", "NSW-Bellingen Shire- Valley & seaboard", 
+          "NSW-Coffs Harbour", "NSW-Lismore", "NSW-Newcastle", 
+          "NSW-Port Macquarie", "NSW-Sydney East", "NSW-Sydney West", 
+          "NSW-Wollongong", "QLD-Brisbane", "QLD-Bundaberg", 
+          "QLD-Gladstone", "QLD-Hervey Bay", "QLD-Mackay", 
+          "QLD-Rockhampton", "QLD-Southport", "QLD-Toowoomba", 
+          "QLD-Warwick"
+        ]
+      },
+      {
+        "zone": 3,
+        "locations": [
+          "NT-Alice Springs", "NT-Elliot", "NT-Renner Springs", 
+          "NT-Tennant Creek", "QLD-Birdsville", "QLD-Charleville", 
+          "QLD-Cunnamulla", "QLD-Hughenden", "QLD-Longreach", 
+          "QLD-Mount Isa", "QLD-Roma", "SA-Tarcoola", "SA-Whyalla", 
+          "VIC-Echuca", "VIC-Mildura", "VIC-Shepparton", "VIC-Swan Hill"
+        ]
+      },
+      {
+        "zone": 4,
+        "locations": [
+          "NSW-Albury", "NSW-Bourke", "NSW-Broken Hill", "NSW-Cobar", 
+          "NSW-Dubbo", "NSW-Griffith", "NSW-Ivanhoe", "NSW-Moree", 
+          "NSW-Narrandera", "NSW-Tamworth", "NSW-Wagga Wagga", 
+          "VIC-Benalla", "VIC-Bendigo", "VIC-Horsham", "VIC-Wangaratta", 
+          "VIC-Wodonga"
+        ]
+      },
+      {
+        "zone": 5,
+        "locations": [
+          "NSW-Williamtown", "NSW-Sydney East", "NSW-Sydney West", 
+          "SA-Adelaide", "VIC-Melbourne", "VIC-Mildura", "VIC-Shepparton"
+        ]
+      },
+      {
+        "zone": 6,
+        "locations": [
+          "NSW-Batemans Bay", "NSW-Bega", "NSW-Goulburn", "NSW-Nowra", 
+          "VIC-Ararat", "VIC-Ballarat", "VIC-Hamilton", "VIC-Warrnambool"
+        ]
+      },
+      {
+        "zone": 7,
+        "locations": [
+          "ACT-Canberra", "NSW-Armidale", "NSW-Bathurst", "NSW-Orange", 
+          "NSW-Perisher-Smiggins", "NSW-Thredbo", "SA-Mount Lofty", 
+          "TAS-Hobart", "VIC-Bright", "VIC-Mount Buller", "VIC-Mount Hotham"
+        ]
+      },
+      {
+        "zone": 8,
+        "locations": [
+          "NSW-Perisher-Smiggins", "NSW-Thredbo", "VIC-Falls Creek"
+        ]
+      }
+    ]
+  }

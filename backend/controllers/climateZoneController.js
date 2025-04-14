@@ -2,15 +2,15 @@ const ClimateZone = require('../models/ClimateZone');
 const asyncHandler = require('express-async-handler');
 
 // @desc    Get all climate zones
-// @route   GET /api/climate-zones
+// @route   GET /api/climatezones
 // @access  Public
 const getClimateZones = asyncHandler(async (req, res) => {
-  const climateZones = await ClimateZone.find({});
-  res.status(200).json(climateZones);
+  const climateZones = await ClimateZone.find();
+  res.json(climateZones);
 });
 
-// @desc    Get a single climate zone
-// @route   GET /api/climate-zones/:id
+// @desc    Get single climate zone
+// @route   GET /api/climatezones/:id
 // @access  Public
 const getClimateZone = asyncHandler(async (req, res) => {
   const climateZone = await ClimateZone.findById(req.params.id);
@@ -19,8 +19,8 @@ const getClimateZone = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error('Climate zone not found');
   }
-  
-  res.status(200).json(climateZone);
+
+  res.json(climateZone);
 });
 
 // @desc    Create a climate zone
