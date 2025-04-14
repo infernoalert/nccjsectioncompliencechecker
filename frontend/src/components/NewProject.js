@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useTheme } from '@mui/material/styles';
 import {
   Container,
   Box,
@@ -6,16 +8,13 @@ import {
   TextField,
   Button,
   Paper,
-  Alert,
-  CircularProgress,
-  Grid,
   FormControl,
   InputLabel,
   Select,
   MenuItem,
-  useTheme
+  Alert,
+  CircularProgress
 } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const buildingTypes = [
@@ -36,11 +35,31 @@ const NewProject = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [locations, setLocations] = useState([]);
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    buildingType: ''
+    buildingType: '',
+    location: ''
   });
+
+  useEffect(() => {
+    const fetchLocations = async () => {
+      try {
+        const response = await axios.get('/api/climate-zones');
+        // Flatten all locations from all climate zones
+        const allLocations = response.data.reduce((acc, zone) => {
+          return [...acc, ...zone.locations];
+        }, []);
+        setLocations(allLocations.sort());
+      } catch (error) {
+        console.error('Error fetching locations:', error);
+        setError('Failed to fetch locations');
+      }
+    };
+
+    fetchLocations();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -56,21 +75,10 @@ const NewProject = () => {
     setError('');
 
     try {
-      const token = localStorage.getItem('token');
-      await axios.post(
-        'http://localhost:5000/api/projects',
-        formData,
-        {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${token}`
-          }
-        }
-      );
-
-      navigate('/projects');
-    } catch (err) {
-      setError(err.response?.data?.message || 'Failed to create project. Please try again.');
+      const response = await axios.post('/api/projects', formData);
+      navigate(`/projects/${response.data._id}`);
+    } catch (error) {
+      setError(error.response?.data?.message || 'Error creating project');
     } finally {
       setLoading(false);
     }
@@ -78,177 +86,143 @@ const NewProject = () => {
 
   return (
     <Container maxWidth="md">
-      <Box 
-        sx={{ 
-          mt: 4, 
-          mb: 4,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center'
-        }}
-      >
-        <Typography 
-          variant="h4" 
-          component="h1" 
-          gutterBottom
-          sx={{
-            color: theme.palette.primary.main,
-            fontWeight: 600,
-            mb: 4,
-            textAlign: 'center'
-          }}
-        >
-          Create New Project
-        </Typography>
-        <Paper 
-          elevation={3}
-          sx={{ 
-            p: 4,
-            width: '100%',
-            borderRadius: 2,
-            backgroundColor: '#ffffff',
-            boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
-          }}
-        >
+      <Box sx={{ mt: 4, mb: 4 }}>
+        <Paper elevation={3} sx={{ p: 4 }}>
+          <Typography variant="h4" component="h1" gutterBottom>
+            Create New Project
+          </Typography>
           {error && (
-            <Alert 
-              severity="error" 
-              sx={{ 
-                mb: 3,
-                borderRadius: 1
-              }}
-            >
+            <Alert severity="error" sx={{ mb: 2 }}>
               {error}
             </Alert>
           )}
           <form onSubmit={handleSubmit}>
-            <Grid container spacing={3}>
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  label="Project Name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  disabled={loading}
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      '&:hover fieldset': {
-                        borderColor: theme.palette.primary.main,
-                      },
-                    },
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Description"
-                  name="description"
-                  value={formData.description}
-                  onChange={handleChange}
-                  multiline
-                  rows={4}
-                  disabled={loading}
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      '&:hover fieldset': {
-                        borderColor: theme.palette.primary.main,
-                      },
-                    },
-                  }}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <FormControl 
-                  fullWidth 
-                  required
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      '&:hover fieldset': {
-                        borderColor: theme.palette.primary.main,
-                      },
-                    },
-                    '& .MuiInputLabel-root': {
-                      backgroundColor: '#ffffff',
-                      px: 0.5,
-                    },
-                    '& .MuiInputLabel-shrink': {
-                      transform: 'translate(14px, -9px) scale(0.75)',
-                    },
-                  }}
-                >
-                  <InputLabel id="building-type-label">Building Type</InputLabel>
-                  <Select
-                    labelId="building-type-label"
-                    name="buildingType"
-                    value={formData.buildingType}
-                    onChange={handleChange}
-                    disabled={loading}
-                    displayEmpty
-                  >
-                    <MenuItem value="" disabled>
-                      <em>Please Select Building Type</em>
-                    </MenuItem>
-                    {buildingTypes.map((type) => (
-                      <MenuItem 
-                        key={type.id} 
-                        value={type.id}
-                        sx={{
-                          py: 1.5,
-                          '&:hover': {
-                            backgroundColor: theme.palette.primary.light,
-                            color: theme.palette.primary.contrastText,
-                          },
-                        }}
-                      >
-                        {type.label}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid 
-                item 
-                xs={12}
+            <Box display="flex" flexDirection="column" gap={3}>
+              <TextField
+                fullWidth
+                label="Project Name"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+                disabled={loading}
+              />
+              <TextField
+                fullWidth
+                label="Description"
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                multiline
+                rows={4}
+                disabled={loading}
+              />
+              <FormControl 
+                fullWidth 
+                required
                 sx={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  mt: 2
+                  '& .MuiOutlinedInput-root': {
+                    '&:hover fieldset': {
+                      borderColor: theme.palette.primary.main,
+                    },
+                  },
+                  '& .MuiInputLabel-root': {
+                    backgroundColor: '#ffffff',
+                    px: 0.5,
+                  },
+                  '& .MuiInputLabel-shrink': {
+                    transform: 'translate(14px, -9px) scale(0.75)',
+                  },
                 }}
               >
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  disabled={loading || !formData.name || !formData.buildingType}
-                  sx={{
-                    mt: 2,
-                    px: 4,
-                    py: 1.5,
-                    borderRadius: 2,
-                    fontSize: '1.1rem',
-                    textTransform: 'none',
-                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-                    '&:hover': {
-                      boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
-                    },
-                  }}
+                <InputLabel id="building-type-label">Building Type</InputLabel>
+                <Select
+                  labelId="building-type-label"
+                  name="buildingType"
+                  value={formData.buildingType}
+                  onChange={handleChange}
+                  disabled={loading}
+                  displayEmpty
                 >
-                  {loading ? (
-                    <CircularProgress 
-                      size={24} 
-                      sx={{ 
-                        color: theme.palette.primary.contrastText 
+                  <MenuItem value="" disabled>
+                    <em>Please Select Building Type</em>
+                  </MenuItem>
+                  {buildingTypes.map((type) => (
+                    <MenuItem 
+                      key={type.id} 
+                      value={type.id}
+                      sx={{
+                        py: 1.5,
+                        '&:hover': {
+                          backgroundColor: theme.palette.primary.light,
+                          color: theme.palette.primary.contrastText,
+                        },
                       }}
-                    />
-                  ) : (
-                    'Create Project'
-                  )}
-                </Button>
-              </Grid>
-            </Grid>
+                    >
+                      {type.label}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
+              <FormControl 
+                fullWidth 
+                required
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    '&:hover fieldset': {
+                      borderColor: theme.palette.primary.main,
+                    },
+                  },
+                  '& .MuiInputLabel-root': {
+                    backgroundColor: '#ffffff',
+                    px: 0.5,
+                  },
+                  '& .MuiInputLabel-shrink': {
+                    transform: 'translate(14px, -9px) scale(0.75)',
+                  },
+                }}
+              >
+                <InputLabel id="location-label">Location</InputLabel>
+                <Select
+                  labelId="location-label"
+                  name="location"
+                  value={formData.location}
+                  onChange={handleChange}
+                  disabled={loading}
+                  displayEmpty
+                >
+                  <MenuItem value="" disabled>
+                    <em>Please Select Location</em>
+                  </MenuItem>
+                  {locations.map((location) => (
+                    <MenuItem 
+                      key={location} 
+                      value={location}
+                      sx={{
+                        py: 1.5,
+                        '&:hover': {
+                          backgroundColor: theme.palette.primary.light,
+                          color: theme.palette.primary.contrastText,
+                        },
+                      }}
+                    >
+                      {location}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                disabled={loading}
+                sx={{ mt: 2 }}
+              >
+                {loading ? <CircularProgress size={24} /> : 'Create Project'}
+              </Button>
+            </Box>
           </form>
         </Paper>
       </Box>

@@ -1,48 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Container, 
-  Typography, 
-  Box, 
-  Paper, 
-  Button, 
-  Grid, 
-  Card, 
-  CardContent, 
-  CardActions,
-  CircularProgress,
-  Divider,
-  Alert
-} from '@mui/material';
-import { useSelector, useDispatch } from 'react-redux';
-import AddIcon from '@mui/icons-material/Add';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import {
+  Container,
+  Box,
+  Typography,
+  Button,
+  Paper,
+  CircularProgress,
+  Grid
+} from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 import axios from 'axios';
 
 const UserProject = () => {
-  const { user, token } = useSelector((state) => state.auth);
   const navigate = useNavigate();
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState('');
+  const token = useSelector((state) => state.auth.token);
 
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        setLoading(true);
-        setError(null);
-        
-        // Make API call to fetch projects
-        const response = await axios.get('http://localhost:5000/api/projects', {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
+        const response = await axios.get('/api/projects', {
+          headers: { Authorization: `Bearer ${token}` }
         });
-        
         setProjects(response.data);
         setLoading(false);
       } catch (error) {
-        console.error('Error fetching projects:', error);
-        setError(error.response?.data?.message || 'Failed to fetch projects');
+        setError(error.response?.data?.message || 'Error fetching projects');
         setLoading(false);
       }
     };
@@ -76,12 +63,10 @@ const UserProject = () => {
             </Button>
           </Box>
           
-          <Divider sx={{ mb: 3 }} />
-          
           {error && (
-            <Alert severity="error" sx={{ mb: 3 }}>
+            <Typography variant="body1" color="error" sx={{ mb: 3 }}>
               {error}
-            </Alert>
+            </Typography>
           )}
           
           {loading ? (
@@ -92,8 +77,8 @@ const UserProject = () => {
             <Grid container spacing={3}>
               {projects.map((project) => (
                 <Grid xs={12} md={6} lg={4} key={project._id}>
-                  <Card elevation={2}>
-                    <CardContent>
+                  <Paper elevation={2}>
+                    <Box sx={{ p: 2 }}>
                       <Typography variant="h6" gutterBottom>
                         {project.name}
                       </Typography>
@@ -106,13 +91,13 @@ const UserProject = () => {
                       <Typography variant="body2" color="text.secondary">
                         Last Updated: {new Date(project.updatedAt).toLocaleDateString()}
                       </Typography>
-                    </CardContent>
-                    <CardActions>
+                    </Box>
+                    <Box sx={{ display: 'flex', justifyContent: 'flex-end', p: 1 }}>
                       <Button size="small" onClick={() => handleViewProject(project._id)}>
                         View Details
                       </Button>
-                    </CardActions>
-                  </Card>
+                    </Box>
+                  </Paper>
                 </Grid>
               ))}
             </Grid>
