@@ -33,7 +33,7 @@ The backend is built with Express.js and includes:
    - SectionJPart model for Section J parts
    - SpecialRequirement model for special requirements
    - ExemptionAndConcession model for exemptions and concessions
-   - Project model for user projects
+   - Project model for user projects with fields: name, description, buildingType, location, owner, and complianceResults
    - Password hashing with bcrypt
 
 2. **Controllers**:
@@ -42,7 +42,7 @@ The backend is built with Express.js and includes:
    - buildingClassController.js with operations for building classes
    - climateZoneController.js with operations for climate zones
    - compliancePathwayController.js with operations for compliance pathways
-   - projectController.js with operations for projects
+   - projectController.js with operations for projects (createProject, getProjects, getProject, updateProject, deleteProject, checkCompliance)
 
 3. **Routes**:
    - userRoutes.js with RESTful endpoints for user operations (admin only)
@@ -75,6 +75,7 @@ The frontend is built with React and includes:
    - Redux Toolkit for global state
    - userSlice.js with async thunks for API calls
    - authSlice.js with authentication state and operations
+   - projectSlice.js with async thunks for project operations
 
 2. **Components**:
    - SignIn.js: Form for user login with email and password
@@ -82,29 +83,35 @@ The frontend is built with React and includes:
    - UserList.js: Displays users in a table (admin only)
    - CreateUser.js: Form for creating new users (admin only)
    - PrivateRoute.js: Component for protected routes with role-based access
+   - NewProject.js: Form for creating new projects with building type and location selection
+   - UserProject.js: Displays user's projects with Redux integration
+   - ProjectDetails.js: Displays detailed information about a specific project
 
 3. **Routing**:
    - React Router for navigation
    - Public routes: signin, signup
-   - Protected routes: dashboard, user list, create user (admin only)
+   - Protected routes: dashboard, user list, create user (admin only), projects, new project
 
 4. **UI**:
    - Material-UI for styling
    - Responsive design
    - Role-based navigation
    - Form validation for email and password
+   - Building type selection with user-friendly descriptions
 
 ## Authentication and Authorization
 - JWT-based authentication
 - Role-based access control (RBAC) with two roles: admin and user
-- Token storage in localStorage
+- Token storage in Redux state and localStorage
 - Protected routes on both frontend and backend
 - Password hashing with bcrypt
 - Email validation on the frontend
 - Password confirmation and minimum length validation
+- Authentication token included in all API requests via axios interceptors
 
 ## API Integration
 - Frontend communicates with backend via axios
+- API base URL: http://localhost:5000/api
 - API endpoints:
   - GET /api/users: Fetch all users (admin only)
   - GET /api/users/:id: Fetch a single user (admin only)
@@ -149,54 +156,13 @@ The frontend is built with React and includes:
 - SignIn and SignUp components are implemented with form validation
 - Auth slice is implemented for Redux state management
 - Protected routes are set up in the frontend
-- NewProject component has been simplified and stabilized with basic project creation functionality
-- Building type selection has been implemented with user-friendly descriptions
+- NewProject component has been implemented with Redux integration for project creation
+- Building type selection has been implemented with NCC building classifications
 - Form validation and error handling have been improved
-- Project creation workflow has been streamlined
-
-## Recent Changes
-- Modified the SignUp component to use email as both username and email
-- Removed role selection from the SignUp form (roles can only be changed via API)
-- Added email validation to the SignUp component
-- Added password validation to the SignUp component
-- Added error handling for email and password validation
-- Added debugging to the auth controller to log registration requests and errors
-- Fixed error handling in the auth slice to correctly extract error messages
-- Simplified the NewProject component by removing problematic dropdown fields temporarily
-- Updated NewProject component to include a simplified building type dropdown without class numbers
-- Added user-friendly building descriptions in the dropdown:
-  - Apartment buildings
-  - Hotels, motels, boarding houses and guest houses
-  - Office buildings and professional suites
-  - Shops, restaurants, and showrooms
-  - Carparks and parking facilities
-  - Warehouses and storage facilities
-  - Factories, workshops and laboratories
-  - Hospitals and healthcare facilities
-  - Schools, universities, theatres and public halls
-  - Aged care facilities and nursing homes
-- Fixed form validation in NewProject component to require both project name and building type
-- Added proper error handling for project creation
-- Improved the project creation form layout using Material-UI Grid system
-- Fixed API endpoint mismatches between frontend and backend for building classifications
-
-## Next Steps
-- Create Redux slices for building classes, climate zones, compliance pathways, and projects
-- Create frontend components for building class selection, climate zone selection, project creation, and compliance results display
-- Implement the compliance checking logic in more detail
-- Create a dashboard component for users to manage their projects
-- Enhance the UI/UX
-- Implement user profile management
-- Add search and filtering capabilities
-- Implement password reset functionality
-- Add email verification
-- Add documentation for changing user roles via API
-- Re-implement the advanced dropdowns for climate zones and compliance pathways once the basic functionality is stable
-- Add validation for project-specific requirements based on building type
-- Implement the relationship between building types and their specific requirements
-- Create a project details view to show compliance requirements based on building type
-- Add climate zone selection based on building location
-- Implement building fabric requirements specific to each building type and climate zone
+- Project creation workflow has been streamlined with proper redirection
+- UserProject component has been updated to use Redux for fetching projects
+- ProjectDetails component has been implemented for viewing project details
+- test-api.ps1 script has been developed for testing API endpoints, including authentication and climate zone operations
 
 ## Technical Details
 - Backend runs on port 5000
@@ -204,6 +170,7 @@ The frontend is built with React and includes:
 - MongoDB runs on default port 27017
 - Environment variables are used for configuration
 - JWT tokens expire after 30 days
+- API responses follow a consistent format with success flag and data/error fields
 
 ## How to Change User Role to Admin
 To change a user's role to admin, you need to use the API directly. You can use a tool like Postman or curl to make a PUT request to the `/api/users/:id` endpoint with the following JSON body:
@@ -215,5 +182,20 @@ To change a user's role to admin, you need to use the API directly. You can use 
 ```
 
 You need to include the JWT token in the Authorization header as a Bearer token. The token can be obtained by logging in as an admin user.
+
+## How to Run the Application
+1. Start the backend server:
+   ```
+   cd backend
+   npm run dev
+   ```
+
+2. Start the frontend application:
+   ```
+   cd frontend
+   npm start
+   ```
+
+3. Access the application at http://localhost:3000
 
 This project serves as a foundation for a NCC Section J Compliance Checker application with role-based access control and can be extended with additional features as needed. The application now includes functionality for managing building classes, climate zones, compliance pathways, and projects for NCC Section J compliance checking. 

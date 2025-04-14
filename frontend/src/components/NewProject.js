@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTheme } from '@mui/material/styles';
+import { useDispatch, useSelector } from 'react-redux';
+import axios from 'axios';
 import {
   Container,
   Box,
@@ -8,14 +9,17 @@ import {
   TextField,
   Button,
   Paper,
+  Alert,
+  CircularProgress,
   FormControl,
   InputLabel,
   Select,
   MenuItem,
-  Alert,
-  CircularProgress
+  useTheme
 } from '@mui/material';
-import axios from 'axios';
+import { createProject } from '../store/slices/projectSlice';
+
+const API_URL = 'http://localhost:5000/api';
 
 const buildingTypes = [
   { id: 'apartment', label: 'Apartment buildings' },
@@ -33,8 +37,9 @@ const buildingTypes = [
 const NewProject = () => {
   const theme = useTheme();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const dispatch = useDispatch();
+  const { loading, error } = useSelector((state) => state.project);
+  const { token } = useSelector((state) => state.auth);
   const [locations, setLocations] = useState([]);
   const [formData, setFormData] = useState({
     name: '',
@@ -46,20 +51,23 @@ const NewProject = () => {
   useEffect(() => {
     const fetchLocations = async () => {
       try {
-        const response = await axios.get('/api/climate-zones');
+        const response = await axios.get(`${API_URL}/climate-zones`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
         // Flatten all locations from all climate zones
-        const allLocations = response.data.reduce((acc, zone) => {
+        const allLocations = response.data.data.reduce((acc, zone) => {
           return [...acc, ...zone.locations];
         }, []);
         setLocations(allLocations.sort());
       } catch (error) {
         console.error('Error fetching locations:', error);
-        setError('Failed to fetch locations');
       }
     };
 
-    fetchLocations();
-  }, []);
+    if (token) {
+      fetchLocations();
+    }
+  }, [token]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -71,16 +79,11 @@ const NewProject = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError('');
-
     try {
-      const response = await axios.post('/api/projects', formData);
-      navigate(`/projects/${response.data._id}`);
+      await dispatch(createProject(formData)).unwrap();
+      navigate('/');
     } catch (error) {
-      setError(error.response?.data?.message || 'Error creating project');
-    } finally {
-      setLoading(false);
+      console.error('Error creating project:', error);
     }
   };
 
@@ -135,9 +138,9 @@ const NewProject = () => {
                   },
                 }}
               >
-                <InputLabel id="building-type-label">Building Type</InputLabel>
+                <InputLabel id="buildingType-label">Building Type</InputLabel>
                 <Select
-                  labelId="building-type-label"
+                  labelId="buildingType-label"
                   name="buildingType"
                   value={formData.buildingType}
                   onChange={handleChange}

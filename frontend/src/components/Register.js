@@ -9,11 +9,7 @@ import {
     Typography,
     Alert,
     CircularProgress,
-    Box,
-    FormControl,
-    InputLabel,
-    Select,
-    MenuItem
+    Box
 } from '@mui/material';
 
 const Register = () => {
@@ -21,10 +17,9 @@ const Register = () => {
     const navigate = useNavigate();
     const { loading, error, isAuthenticated } = useSelector((state) => state.auth);
     const [formData, setFormData] = useState({
-        username: '',
         email: '',
         password: '',
-        role: 'user'
+        confirmPassword: ''
     });
 
     useEffect(() => {
@@ -42,7 +37,12 @@ const Register = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        dispatch(register(formData));
+        if (formData.password !== formData.confirmPassword) {
+            dispatch(clearError());
+            return;
+        }
+        const { confirmPassword, ...registerData } = formData;
+        dispatch(register(registerData));
     };
 
     const handleClearError = () => {
@@ -63,15 +63,6 @@ const Register = () => {
                 <form onSubmit={handleSubmit}>
                     <TextField
                         fullWidth
-                        label="Username"
-                        name="username"
-                        value={formData.username}
-                        onChange={handleChange}
-                        margin="normal"
-                        required
-                    />
-                    <TextField
-                        fullWidth
                         label="Email"
                         name="email"
                         type="email"
@@ -90,26 +81,25 @@ const Register = () => {
                         margin="normal"
                         required
                     />
-                    <FormControl fullWidth margin="normal">
-                        <InputLabel id="role-label">Role</InputLabel>
-                        <Select
-                            labelId="role-label"
-                            name="role"
-                            value={formData.role}
-                            onChange={handleChange}
-                            label="Role"
-                        >
-                            <MenuItem value="user">User</MenuItem>
-                            <MenuItem value="admin">Admin</MenuItem>
-                        </Select>
-                    </FormControl>
+                    <TextField
+                        fullWidth
+                        label="Confirm Password"
+                        name="confirmPassword"
+                        type="password"
+                        value={formData.confirmPassword}
+                        onChange={handleChange}
+                        margin="normal"
+                        required
+                        error={formData.password !== formData.confirmPassword && formData.confirmPassword !== ''}
+                        helperText={formData.password !== formData.confirmPassword && formData.confirmPassword !== '' ? "Passwords don't match" : ""}
+                    />
                     <Button
                         type="submit"
                         variant="contained"
                         color="primary"
                         fullWidth
                         sx={{ mt: 3 }}
-                        disabled={loading}
+                        disabled={loading || formData.password !== formData.confirmPassword}
                     >
                         {loading ? <CircularProgress size={24} /> : 'Register'}
                     </Button>

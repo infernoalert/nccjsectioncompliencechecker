@@ -11,25 +11,25 @@ const projectSchema = new mongoose.Schema({
     ref: 'User',
     required: true
   },
-  buildingClassification: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'BuildingClassification',
-    required: true
-  },
-  climateZone: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'ClimateZone',
+  buildingType: {
+    type: String,
     required: true
   },
   location: {
     type: String,
-    required: [true, 'Please add a location'],
-    trim: true
+    required: true
+  },
+  buildingClassification: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'BuildingClassification'
+  },
+  climateZone: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'ClimateZone'
   },
   buildingFabric: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'BuildingFabric',
-    required: true
+    ref: 'BuildingFabric'
   },
   specialRequirements: [{
     type: mongoose.Schema.Types.ObjectId,
@@ -37,8 +37,7 @@ const projectSchema = new mongoose.Schema({
   }],
   compliancePathway: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'CompliancePathway',
-    required: true
+    ref: 'CompliancePathway'
   },
   complianceResults: {
     status: {
@@ -74,11 +73,6 @@ const projectSchema = new mongoose.Schema({
 });
 
 // Create indexes
-projectSchema.index({ userId: 1 });
-projectSchema.index({ buildingClass: 1 });
-projectSchema.index({ climateZone: 1 });
-projectSchema.index({ location: 1 });
-projectSchema.index({ status: 1 });
-projectSchema.index({ userId: 1, buildingClass: 1, climateZone: 1 });
+projectSchema.index({ owner: 1 });
 
 module.exports = mongoose.model('Project', projectSchema); 

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   Container,
   Box,
@@ -11,31 +11,28 @@ import {
   Grid
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import axios from 'axios';
+import { fetchProjects } from '../store/slices/projectSlice';
 
 const UserProject = () => {
   const navigate = useNavigate();
-  const [projects, setProjects] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const token = useSelector((state) => state.auth.token);
+  const dispatch = useDispatch();
+  const { projects, loading, error } = useSelector((state) => state.project);
+  const { token, isAuthenticated } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        const response = await axios.get('/api/projects', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        setProjects(response.data);
-        setLoading(false);
-      } catch (error) {
-        setError(error.response?.data?.message || 'Error fetching projects');
-        setLoading(false);
-      }
-    };
-
-    fetchProjects();
-  }, [token]);
+    console.log('Auth State:', { token, isAuthenticated });
+    if (!isAuthenticated) {
+      console.log('Not authenticated, redirecting to login');
+      navigate('/login');
+      return;
+    }
+    if (token) {
+      console.log('Fetching projects with token:', token);
+      dispatch(fetchProjects());
+    } else {
+      console.log('No token available');
+    }
+  }, [dispatch, token, isAuthenticated, navigate]);
 
   const handleCreateProject = () => {
     navigate('/projects/new');
@@ -44,6 +41,10 @@ const UserProject = () => {
   const handleViewProject = (projectId) => {
     navigate(`/projects/${projectId}`);
   };
+
+  if (!isAuthenticated) {
+    return null;
+  }
 
   return (
     <Container maxWidth="lg">
@@ -73,10 +74,10 @@ const UserProject = () => {
             <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
               <CircularProgress />
             </Box>
-          ) : projects.length > 0 ? (
+          ) : projects && projects.length > 0 ? (
             <Grid container spacing={3}>
               {projects.map((project) => (
-                <Grid xs={12} md={6} lg={4} key={project._id}>
+                <Grid item xs={12} md={6} lg={4} key={project._id}>
                   <Paper elevation={2}>
                     <Box sx={{ p: 2 }}>
                       <Typography variant="h6" gutterBottom>
