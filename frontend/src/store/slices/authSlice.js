@@ -22,7 +22,12 @@ export const register = createAsyncThunk(
     'auth/register',
     async (userData, { rejectWithValue }) => {
         try {
-            const response = await axios.post(`${API_URL}/auth/register`, userData);
+            // Use email as both username and email
+            const registerData = {
+                ...userData,
+                username: userData.email
+            };
+            const response = await axios.post(`${API_URL}/auth/register`, registerData);
             localStorage.setItem('token', response.data.token);
             return response.data;
         } catch (error) {

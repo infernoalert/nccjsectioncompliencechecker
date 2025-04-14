@@ -2,10 +2,11 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
-import SignIn from './components/auth/SignIn';
-import SignUp from './components/auth/SignUp';
+import Login from './components/Login';
+import Register from './components/Register';
 import UserProject from './components/UserProject';
 import NewProject from './components/NewProject';
+import Navbar from './components/Navbar';
 import { useSelector } from 'react-redux';
 
 // Create a theme instance
@@ -23,18 +24,21 @@ const theme = createTheme({
 // Protected Route component
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useSelector((state) => state.auth);
-  return isAuthenticated ? children : <Navigate to="/signin" />;
+  return isAuthenticated ? children : <Navigate to="/login" />;
 };
 
 function App() {
+  const { isAuthenticated } = useSelector((state) => state.auth);
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
+        {isAuthenticated && <Navbar />}
         <Routes>
           {/* Public routes */}
-          <Route path="/signin" element={<SignIn />} />
-          <Route path="/signup" element={<SignUp />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
 
           {/* Protected routes */}
           <Route

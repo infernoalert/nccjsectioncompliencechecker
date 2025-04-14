@@ -1,10 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-const API_URL = '/api/projects';
+const API_URL = 'http://localhost:5000/api';
 
 // Create axios instance with auth token
 const axiosWithAuth = (token) => {
+  if (!token) {
+    throw new Error('No authentication token available');
+  }
   return axios.create({
     baseURL: API_URL,
     headers: {
@@ -16,91 +19,153 @@ const axiosWithAuth = (token) => {
 // Async thunks
 export const fetchProjects = createAsyncThunk(
   'project/fetchProjects',
-  async (_, { getState }) => {
-    const { auth } = getState();
-    const response = await axiosWithAuth(auth.token).get('/');
-    return response.data;
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const { auth } = getState();
+      if (!auth.token) {
+        return rejectWithValue('No authentication token available');
+      }
+      console.log('Making API request with token:', auth.token);
+      const response = await axiosWithAuth(auth.token).get('/projects');
+      return response.data.data;
+    } catch (error) {
+      console.error('Error fetching projects:', error.response?.data || error.message);
+      return rejectWithValue(error.response?.data?.error || error.message);
+    }
   }
 );
 
 export const fetchProject = createAsyncThunk(
   'project/fetchProject',
-  async (id, { getState }) => {
-    const { auth } = getState();
-    const response = await axiosWithAuth(auth.token).get(`/${id}`);
-    return response.data;
+  async (id, { getState, rejectWithValue }) => {
+    try {
+      const { auth } = getState();
+      if (!auth.token) {
+        return rejectWithValue('No authentication token available');
+      }
+      const response = await axiosWithAuth(auth.token).get(`/projects/${id}`);
+      return response.data.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.error || error.message);
+    }
   }
 );
 
 export const createProject = createAsyncThunk(
   'project/createProject',
-  async (projectData, { getState }) => {
-    const { auth } = getState();
-    const response = await axiosWithAuth(auth.token).post('/', projectData);
-    return response.data;
+  async (projectData, { getState, rejectWithValue }) => {
+    try {
+      const { auth } = getState();
+      if (!auth.token) {
+        return rejectWithValue('No authentication token available');
+      }
+      const response = await axiosWithAuth(auth.token).post('/projects', projectData);
+      return response.data.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.error || error.message);
+    }
   }
 );
 
 export const updateProject = createAsyncThunk(
   'project/updateProject',
-  async ({ id, data }, { getState }) => {
-    const { auth } = getState();
-    const response = await axiosWithAuth(auth.token).put(`/${id}`, data);
-    return response.data;
+  async ({ id, data }, { getState, rejectWithValue }) => {
+    try {
+      const { auth } = getState();
+      if (!auth.token) {
+        return rejectWithValue('No authentication token available');
+      }
+      const response = await axiosWithAuth(auth.token).put(`/projects/${id}`, data);
+      return response.data.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.error || error.message);
+    }
   }
 );
 
 export const deleteProject = createAsyncThunk(
   'project/deleteProject',
-  async (id, { getState }) => {
-    const { auth } = getState();
-    await axiosWithAuth(auth.token).delete(`/${id}`);
-    return id;
+  async (id, { getState, rejectWithValue }) => {
+    try {
+      const { auth } = getState();
+      if (!auth.token) {
+        return rejectWithValue('No authentication token available');
+      }
+      await axiosWithAuth(auth.token).delete(`/projects/${id}`);
+      return id;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.error || error.message);
+    }
   }
 );
 
 export const checkCompliance = createAsyncThunk(
   'project/checkCompliance',
-  async (id, { getState }) => {
-    const { auth } = getState();
-    const response = await axiosWithAuth(auth.token).post(`/${id}/check-compliance`);
-    return response.data;
+  async (id, { getState, rejectWithValue }) => {
+    try {
+      const { auth } = getState();
+      if (!auth.token) {
+        return rejectWithValue('No authentication token available');
+      }
+      const response = await axiosWithAuth(auth.token).post(`/projects/${id}/check-compliance`);
+      return response.data.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.error || error.message);
+    }
   }
 );
 
 export const fetchBuildingClassifications = createAsyncThunk(
   'project/fetchBuildingClassifications',
-  async (_, { getState }) => {
-    const { auth } = getState();
-    const response = await axiosWithAuth(auth.token).get('/building-classifications');
-    return response.data;
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const { auth } = getState();
+      if (!auth.token) {
+        return rejectWithValue('No authentication token available');
+      }
+      const response = await axiosWithAuth(auth.token).get('/building-classifications');
+      return response.data.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.error || error.message);
+    }
   }
 );
 
 export const fetchClimateZones = createAsyncThunk(
   'project/fetchClimateZones',
-  async (_, { getState }) => {
-    const { auth } = getState();
-    const response = await axiosWithAuth(auth.token).get('/climate-zones');
-    return response.data;
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const { auth } = getState();
+      if (!auth.token) {
+        return rejectWithValue('No authentication token available');
+      }
+      const response = await axiosWithAuth(auth.token).get('/climate-zones');
+      return response.data.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.error || error.message);
+    }
   }
 );
 
 export const fetchCompliancePathways = createAsyncThunk(
   'project/fetchCompliancePathways',
-  async (_, { getState }) => {
-    const { auth } = getState();
-    const response = await axiosWithAuth(auth.token).get('/compliance-pathways');
-    return response.data;
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const { auth } = getState();
+      if (!auth.token) {
+        return rejectWithValue('No authentication token available');
+      }
+      const response = await axiosWithAuth(auth.token).get('/compliance-pathways');
+      return response.data.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.error || error.message);
+    }
   }
 );
 
 const initialState = {
   projects: [],
-  project: null,
-  buildingClassifications: [],
-  climateZones: [],
-  compliancePathways: [],
+  currentProject: null,
   loading: false,
   error: null
 };
@@ -126,7 +191,7 @@ const projectSlice = createSlice({
       })
       .addCase(fetchProjects.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = action.payload;
       })
       // Fetch Single Project
       .addCase(fetchProject.pending, (state) => {
@@ -135,11 +200,11 @@ const projectSlice = createSlice({
       })
       .addCase(fetchProject.fulfilled, (state, action) => {
         state.loading = false;
-        state.project = action.payload;
+        state.currentProject = action.payload;
       })
       .addCase(fetchProject.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = action.payload;
       })
       // Create Project
       .addCase(createProject.pending, (state) => {
@@ -152,7 +217,7 @@ const projectSlice = createSlice({
       })
       .addCase(createProject.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = action.payload;
       })
       // Update Project
       .addCase(updateProject.pending, (state) => {
@@ -161,14 +226,17 @@ const projectSlice = createSlice({
       })
       .addCase(updateProject.fulfilled, (state, action) => {
         state.loading = false;
-        state.projects = state.projects.map((project) =>
-          project._id === action.payload._id ? action.payload : project
-        );
-        state.project = action.payload;
+        const index = state.projects.findIndex(project => project._id === action.payload._id);
+        if (index !== -1) {
+          state.projects[index] = action.payload;
+        }
+        if (state.currentProject?._id === action.payload._id) {
+          state.currentProject = action.payload;
+        }
       })
       .addCase(updateProject.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = action.payload;
       })
       // Delete Project
       .addCase(deleteProject.pending, (state) => {
@@ -177,12 +245,14 @@ const projectSlice = createSlice({
       })
       .addCase(deleteProject.fulfilled, (state, action) => {
         state.loading = false;
-        state.projects = state.projects.filter((project) => project._id !== action.payload);
-        state.project = null;
+        state.projects = state.projects.filter(project => project._id !== action.payload);
+        if (state.currentProject?._id === action.payload) {
+          state.currentProject = null;
+        }
       })
       .addCase(deleteProject.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = action.payload;
       })
       // Check Compliance
       .addCase(checkCompliance.pending, (state) => {
@@ -191,13 +261,17 @@ const projectSlice = createSlice({
       })
       .addCase(checkCompliance.fulfilled, (state, action) => {
         state.loading = false;
-        if (state.project) {
-          state.project.complianceResults = action.payload;
+        const index = state.projects.findIndex(project => project._id === action.payload._id);
+        if (index !== -1) {
+          state.projects[index] = action.payload;
+        }
+        if (state.currentProject?._id === action.payload._id) {
+          state.currentProject = action.payload;
         }
       })
       .addCase(checkCompliance.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = action.payload;
       })
       // Fetch Building Classifications
       .addCase(fetchBuildingClassifications.pending, (state) => {
@@ -210,7 +284,7 @@ const projectSlice = createSlice({
       })
       .addCase(fetchBuildingClassifications.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = action.payload;
       })
       // Fetch Climate Zones
       .addCase(fetchClimateZones.pending, (state) => {
@@ -223,7 +297,7 @@ const projectSlice = createSlice({
       })
       .addCase(fetchClimateZones.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = action.payload;
       })
       // Fetch Compliance Pathways
       .addCase(fetchCompliancePathways.pending, (state) => {
@@ -236,7 +310,7 @@ const projectSlice = createSlice({
       })
       .addCase(fetchCompliancePathways.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message;
+        state.error = action.payload;
       });
   }
 });

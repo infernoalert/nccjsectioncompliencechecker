@@ -16,18 +16,46 @@ const { protect, authorize } = require('../middleware/auth');
  *     ClimateZone:
  *       type: object
  *       required:
- *         - name
+ *         - zone
+ *         - locations
  *         - description
+ *         - insulation
+ *         - wallRValue
+ *         - roofRValue
  *       properties:
  *         _id:
  *           type: string
  *           description: Auto-generated ID
- *         name:
- *           type: string
- *           description: Climate zone name
+ *         zone:
+ *           type: number
+ *           minimum: 1
+ *           maximum: 8
+ *           description: Climate zone number (1-8)
+ *         locations:
+ *           type: array
+ *           items:
+ *             type: string
+ *           description: List of locations in this climate zone
  *         description:
  *           type: string
+ *           maxLength: 500
  *           description: Climate zone description
+ *         insulation:
+ *           type: string
+ *           enum: [standard, enhanced]
+ *           description: Insulation type required
+ *         wallRValue:
+ *           type: string
+ *           description: Required wall R-value
+ *         roofRValue:
+ *           type: string
+ *           description: Required roof R-value
+ *         glazing:
+ *           type: object
+ *           description: Glazing requirements
+ *         hvac:
+ *           type: object
+ *           description: HVAC requirements
  *         createdAt:
  *           type: string
  *           format: date-time
@@ -44,21 +72,24 @@ const { protect, authorize } = require('../middleware/auth');
  *   get:
  *     summary: Get all climate zones
  *     tags: [Climate Zones]
- *     security:
- *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: List of climate zones
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/ClimateZone'
- *       401:
- *         description: Not authorized
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 count:
+ *                   type: number
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/ClimateZone'
  */
-router.get('/', protect, getClimateZones);
+router.get('/', getClimateZones);
 
 /**
  * @swagger
@@ -66,8 +97,6 @@ router.get('/', protect, getClimateZones);
  *   get:
  *     summary: Get a climate zone by ID
  *     tags: [Climate Zones]
- *     security:
- *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -81,13 +110,16 @@ router.get('/', protect, getClimateZones);
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/ClimateZone'
- *       401:
- *         description: Not authorized
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   $ref: '#/components/schemas/ClimateZone'
  *       404:
  *         description: Climate zone not found
  */
-router.get('/:id', protect, getClimateZone);
+router.get('/:id', getClimateZone);
 
 /**
  * @swagger
@@ -102,26 +134,23 @@ router.get('/:id', protect, getClimateZone);
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             required:
- *               - name
- *               - description
- *             properties:
- *               name:
- *                 type: string
- *                 description: Climate zone name
- *               description:
- *                 type: string
- *                 description: Climate zone description
+ *             $ref: '#/components/schemas/ClimateZone'
  *     responses:
  *       201:
  *         description: Climate zone created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   $ref: '#/components/schemas/ClimateZone'
  *       400:
- *         description: Invalid input
+ *         description: Invalid input data
  *       401:
  *         description: Not authorized
- *       403:
- *         description: Not authorized to create climate zone
  */
 router.post('/', protect, authorize('admin'), createClimateZone);
 
@@ -145,23 +174,23 @@ router.post('/', protect, authorize('admin'), createClimateZone);
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *                 description: Climate zone name
- *               description:
- *                 type: string
- *                 description: Climate zone description
+ *             $ref: '#/components/schemas/ClimateZone'
  *     responses:
  *       200:
  *         description: Climate zone updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   $ref: '#/components/schemas/ClimateZone'
  *       400:
- *         description: Invalid input
+ *         description: Invalid input data
  *       401:
  *         description: Not authorized
- *       403:
- *         description: Not authorized to update climate zone
  *       404:
  *         description: Climate zone not found
  */
@@ -185,10 +214,17 @@ router.put('/:id', protect, authorize('admin'), updateClimateZone);
  *     responses:
  *       200:
  *         description: Climate zone deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: object
  *       401:
  *         description: Not authorized
- *       403:
- *         description: Not authorized to delete climate zone
  *       404:
  *         description: Climate zone not found
  */

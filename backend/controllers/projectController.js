@@ -14,9 +14,16 @@ const getProjects = asyncHandler(async (req, res) => {
       .populate('climateZone')
       .populate('compliancePathway')
       .sort('-createdAt');
-    res.json(projects);
+    
+    res.status(200).json({
+      success: true,
+      data: projects
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ 
+      success: false,
+      error: error.message 
+    });
   }
 });
 
@@ -33,17 +40,29 @@ const getProject = asyncHandler(async (req, res) => {
       .populate('specialRequirements');
 
     if (!project) {
-      return res.status(404).json({ message: 'Project not found' });
+      return res.status(404).json({ 
+        success: false,
+        error: 'Project not found' 
+      });
     }
 
     // Check if user is the owner
     if (project.owner.toString() !== req.user.id) {
-      return res.status(403).json({ message: 'Not authorized' });
+      return res.status(403).json({ 
+        success: false,
+        error: 'Not authorized' 
+      });
     }
 
-    res.json(project);
+    res.status(200).json({
+      success: true,
+      data: project
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ 
+      success: false,
+      error: error.message 
+    });
   }
 });
 
@@ -52,15 +71,26 @@ const getProject = asyncHandler(async (req, res) => {
 // @access  Private
 const createProject = asyncHandler(async (req, res) => {
   try {
+    console.log('Creating project with data:', req.body);
+    console.log('User ID:', req.user.id);
+    
     const project = new Project({
       ...req.body,
       owner: req.user.id
     });
 
     const savedProject = await project.save();
-    res.status(201).json(savedProject);
+    
+    res.status(201).json({
+      success: true,
+      data: savedProject
+    });
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    console.error('Error creating project:', error);
+    res.status(400).json({ 
+      success: false,
+      error: error.message 
+    });
   }
 });
 
@@ -72,12 +102,18 @@ const updateProject = asyncHandler(async (req, res) => {
     const project = await Project.findById(req.params.id);
 
     if (!project) {
-      return res.status(404).json({ message: 'Project not found' });
+      return res.status(404).json({ 
+        success: false,
+        error: 'Project not found' 
+      });
     }
 
     // Check if user is the owner
     if (project.owner.toString() !== req.user.id) {
-      return res.status(403).json({ message: 'Not authorized' });
+      return res.status(403).json({ 
+        success: false,
+        error: 'Not authorized' 
+      });
     }
 
     const updatedProject = await Project.findByIdAndUpdate(
@@ -86,9 +122,15 @@ const updateProject = asyncHandler(async (req, res) => {
       { new: true }
     );
 
-    res.json(updatedProject);
+    res.status(200).json({
+      success: true,
+      data: updatedProject
+    });
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    res.status(400).json({ 
+      success: false,
+      error: error.message 
+    });
   }
 });
 
@@ -100,18 +142,30 @@ const deleteProject = asyncHandler(async (req, res) => {
     const project = await Project.findById(req.params.id);
 
     if (!project) {
-      return res.status(404).json({ message: 'Project not found' });
+      return res.status(404).json({ 
+        success: false,
+        error: 'Project not found' 
+      });
     }
 
     // Check if user is the owner
     if (project.owner.toString() !== req.user.id) {
-      return res.status(403).json({ message: 'Not authorized' });
+      return res.status(403).json({ 
+        success: false,
+        error: 'Not authorized' 
+      });
     }
 
     await project.remove();
-    res.json({ message: 'Project deleted' });
+    res.status(200).json({ 
+      success: true,
+      data: {} 
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ 
+      success: false,
+      error: error.message 
+    });
   }
 });
 
@@ -123,18 +177,30 @@ const checkCompliance = asyncHandler(async (req, res) => {
     const project = await Project.findById(req.params.id);
 
     if (!project) {
-      return res.status(404).json({ message: 'Project not found' });
+      return res.status(404).json({ 
+        success: false,
+        error: 'Project not found' 
+      });
     }
 
     // Check if user is the owner
     if (project.owner.toString() !== req.user.id) {
-      return res.status(403).json({ message: 'Not authorized' });
+      return res.status(403).json({ 
+        success: false,
+        error: 'Not authorized' 
+      });
     }
 
     const complianceResults = await complianceService.checkCompliance(req.params.id);
-    res.json(complianceResults);
+    res.status(200).json({
+      success: true,
+      data: complianceResults
+    });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ 
+      success: false,
+      error: error.message 
+    });
   }
 });
 
