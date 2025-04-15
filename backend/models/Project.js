@@ -19,6 +19,22 @@ const projectSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  size: {
+    type: String,
+    enum: ['small', 'medium', 'large'],
+    required: true,
+    default: 'medium'
+  },
+  floorArea: {
+    type: Number,
+    required: true,
+    validate: {
+      validator: function(value) {
+        return value > 0;
+      },
+      message: 'Floor area must be greater than 0'
+    }
+  },
   buildingClassification: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'BuildingClassification'
@@ -74,5 +90,19 @@ const projectSchema = new mongoose.Schema({
 
 // Create indexes
 projectSchema.index({ owner: 1 });
+
+// Pre-save middleware to automatically set size based on floor area
+projectSchema.pre('save', function(next) {
+  if (this.floorArea) {
+    if (this.floorArea < 500) {
+      this.size = 'small';
+    } else if (this.floorArea >= 500 && this.floorArea <= 2500) {
+      this.size = 'medium';
+    } else {
+      this.size = 'large';
+    }
+  }
+  next();
+});
 
 module.exports = mongoose.model('Project', projectSchema); 

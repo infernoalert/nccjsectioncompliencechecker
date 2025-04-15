@@ -324,9 +324,23 @@ Building Types Implementation Pattern:
       - Creates project with proper climate zone reference
       - Climate zone is used for compliance checking and requirements
 
-   c. Data Flow:
-      - Frontend sends buildingType and location
-      - Backend validates both fields
+   c. Project Size:
+      - When creating a project, floorArea is sent from frontend
+      - Size is automatically determined based on floor area:
+        * Small: Less than 500 m²
+        * Medium: Between 500 m² and 2500 m²
+        * Large: More than 2500 m²
+      - Size is used for compliance checking and requirements
+      - Size-based provisions are applied based on this classification
+      - The Project model includes a pre-save middleware that automatically sets the size based on floorArea
+      - The size field is an enum with values ['small', 'medium', 'large']
+      - The floorArea field is required and must be greater than 0
+      - The size field is not directly editable by users; it's determined by the system
+
+   d. Data Flow:
+      - Frontend sends buildingType, location, and floorArea
+      - Backend validates all fields
       - Backend looks up corresponding classifications
-      - Project is created with both references
+      - Backend determines project size based on floor area
+      - Project is created with all references
       - Response includes populated classification data 
