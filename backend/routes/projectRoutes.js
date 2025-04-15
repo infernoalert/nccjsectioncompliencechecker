@@ -7,7 +7,9 @@ const {
   createProject,
   updateProject,
   deleteProject,
-  checkCompliance
+  checkCompliance,
+  getBuildingTypes,
+  getLocations
 } = require('../controllers/projectController');
 const { getAllBuildingTypes } = require('../utils/mappingUtils');
 
@@ -113,20 +115,8 @@ const { getAllBuildingTypes } = require('../utils/mappingUtils');
  */
 
 // Building types route - MUST be defined BEFORE the /:id routes
-router.get('/building-types', protect, (req, res) => {
-  try {
-    const buildingTypes = getAllBuildingTypes();
-    res.status(200).json({
-      success: true,
-      data: buildingTypes
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message
-    });
-  }
-});
+router.get('/building-types', protect, getBuildingTypes);
+router.get('/locations', protect, getLocations);
 
 // Project routes
 router.route('/')

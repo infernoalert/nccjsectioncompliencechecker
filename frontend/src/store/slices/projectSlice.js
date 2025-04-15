@@ -186,6 +186,22 @@ export const fetchBuildingTypes = createAsyncThunk(
   }
 );
 
+export const fetchLocations = createAsyncThunk(
+  'project/fetchLocations',
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const { auth } = getState();
+      if (!auth.token) {
+        return rejectWithValue('No authentication token available');
+      }
+      const response = await axiosWithAuth(auth.token).get('/projects/locations');
+      return response.data.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.error || error.message);
+    }
+  }
+);
+
 const initialState = {
   projects: [],
   currentProject: null,
@@ -193,6 +209,7 @@ const initialState = {
   buildingClassifications: [],
   climateZones: [],
   compliancePathways: [],
+  locations: [],
   loading: false,
   error: null
 };
@@ -349,6 +366,19 @@ const projectSlice = createSlice({
         state.buildingTypes = action.payload;
       })
       .addCase(fetchBuildingTypes.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // Fetch Locations
+      .addCase(fetchLocations.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchLocations.fulfilled, (state, action) => {
+        state.loading = false;
+        state.locations = action.payload;
+      })
+      .addCase(fetchLocations.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

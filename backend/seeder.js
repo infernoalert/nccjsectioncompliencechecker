@@ -14,9 +14,17 @@ const SpecialRequirement = require('./models/SpecialRequirement');
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log('MongoDB Connected'))
+  .then(() => {
+    console.log('MongoDB Connected');
+    console.log('Connection URI:', process.env.MONGODB_URI);
+  })
   .catch(err => {
     console.error('MongoDB connection error:', err);
+    console.error('Error details:', {
+      name: err.name,
+      message: err.message,
+      code: err.code
+    });
     process.exit(1);
   });
 

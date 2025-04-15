@@ -272,4 +272,61 @@ You need to include the JWT token in the Authorization header as a Bearer token.
 2. Restart the backend server with `npm run dev` in the backend directory
 3. Refresh the frontend application
 
-This project serves as a foundation for a NCC Section J Compliance Checker application with role-based access control and can be extended with additional features as needed. The application now includes functionality for managing building classes, climate zones, compliance pathways, and projects for NCC Section J compliance checking. 
+This project serves as a foundation for a NCC Section J Compliance Checker application with role-based access control and can be extended with additional features as needed. The application now includes functionality for managing building classes, climate zones, compliance pathways, and projects for NCC Section J compliance checking.
+
+Building Types Implementation Pattern:
+
+1. Data Source:
+   - Located in: backend/data/mappings/buildingTypeToClassification.json
+   - Structure: JSON file containing an array of building types with properties:
+     - id: Unique identifier (e.g., "office_single")
+     - name: Display name (e.g., "Single Tenant Office")
+     - description: Detailed description
+     - nccClassification: NCC class number (e.g., "5")
+     - typicalUse: Common usage examples
+     - commonFeatures: Array of typical features
+     - notes: Additional information (optional)
+
+2. Backend Implementation:
+   a. Route:
+      - Endpoint: GET /api/projects/building-types
+      - Protected route (requires authentication)
+      - Defined in projectRoutes.js
+
+   b. Controller:
+      - Function: getBuildingTypes in projectController.js
+      - Simply returns the building types array from the JSON file
+      - Returns { success: true, data: buildingTypes }
+
+   c. Project Creation:
+      - When creating a project, buildingType is sent from frontend
+      - Controller finds matching building type from mapping
+      - Automatically assigns correct building classification based on nccClassification
+      - Creates project with proper building classification reference
+
+3. This pattern can be replicated for locations by:
+   a. Using similar JSON structure in locationToClimateZone.json
+   b. Creating GET /api/projects/locations endpoint
+   c. Implementing getLocations controller to return locations array
+   d. Using location data to automatically set climate zone during project creation
+
+4. Project Creation Flow:
+   a. Building Classification:
+      - When creating a project, buildingType is sent from frontend
+      - Controller finds matching building type from mapping
+      - Automatically assigns correct building classification based on nccClassification
+      - Creates project with proper building classification reference
+
+   b. Climate Zone:
+      - When creating a project, location is sent from frontend
+      - Controller uses locationToClimateZone mapping to find climate zone
+      - Automatically assigns correct climate zone based on location
+      - Creates project with proper climate zone reference
+      - Climate zone is used for compliance checking and requirements
+
+   c. Data Flow:
+      - Frontend sends buildingType and location
+      - Backend validates both fields
+      - Backend looks up corresponding classifications
+      - Project is created with both references
+      - Response includes populated classification data 
