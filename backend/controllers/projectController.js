@@ -4,6 +4,7 @@ const ClimateZone = require('../models/ClimateZone');
 const asyncHandler = require('express-async-handler');
 const complianceService = require('../services/complianceService');
 const buildingTypeMapping = require('../data/mappings/buildingTypeToClassification.json');
+const { getAllLocations, getClimateZoneForLocation } = require('../utils/locationUtils');
 
 // @desc    Get all projects for a user
 // @route   GET /api/projects
@@ -94,10 +95,37 @@ const createProject = asyncHandler(async (req, res) => {
       });
     }
 
-    // Create project with automatically assigned classification
+    // Get climate zone based on location
+    const location = req.body.location;
+    if (!location) {
+      return res.status(400).json({
+        success: false,
+        error: 'Location is required to determine climate zone'
+      });
+    }
+
+    const climateZoneData = getClimateZoneForLocation(location);
+    if (!climateZoneData) {
+      return res.status(400).json({
+        success: false,
+        error: 'Climate zone not found for the specified location'
+      });
+    }
+
+    // Find the climate zone in the database
+    const climateZone = await ClimateZone.findOne({ code: `CZ${climateZoneData.id}` });
+    if (!climateZone) {
+      return res.status(400).json({
+        success: false,
+        error: `Climate zone not found for location ${location}`
+      });
+    }
+
+    // Create project with automatically assigned classification and climate zone
     const project = new Project({
       ...req.body,
       buildingClassification: buildingClass._id,
+      climateZone: climateZone._id,
       owner: req.user.id
     });
 
@@ -233,11 +261,43 @@ const checkCompliance = asyncHandler(async (req, res) => {
   }
 });
 
+const getBuildingTypes = async (req, res) => {
+  try {
+    const buildingTypes = buildingTypeMapping.buildingTypes;
+    res.status(200).json({
+      success: true,
+      data: buildingTypes
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+};
+
+const getLocations = async (req, res) => {
+  try {
+    const locations = getAllLocations();
+    res.status(200).json({
+      success: true,
+      data: locations
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+};
+
 module.exports = {
   getProjects,
   getProject,
   createProject,
   updateProject,
   deleteProject,
-  checkCompliance
+  checkCompliance,
+  getBuildingTypes,
+  getLocations
 }; 

@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const locationToClimateZone = require('../data/mappings/locationToClimateZone.json');
 
 let locationData = null;
 
@@ -39,10 +40,13 @@ const getClimateZoneForLocation = (locationId) => {
 };
 
 const getAllLocations = () => {
-  const data = loadLocationData();
-  if (!data) return [];
-  
-  return data.locations;
+  return locationToClimateZone.locations.map(location => ({
+    id: location.id,
+    name: location.name,
+    state: location.state,
+    description: location.description,
+    climateZone: location.climateZone
+  }));
 };
 
 const getAllClimateZones = () => {
@@ -52,112 +56,18 @@ const getAllClimateZones = () => {
   return data.climateZones;
 };
 
-const locations = [
-  {
-    id: '1',
-    name: 'Sydney',
-    state: 'NSW',
-    climateZoneId: '1'
-  },
-  {
-    id: '2',
-    name: 'Melbourne',
-    state: 'VIC',
-    climateZoneId: '2'
-  },
-  {
-    id: '3',
-    name: 'Brisbane',
-    state: 'QLD',
-    climateZoneId: '3'
-  },
-  {
-    id: '4',
-    name: 'Perth',
-    state: 'WA',
-    climateZoneId: '4'
-  },
-  {
-    id: '5',
-    name: 'Adelaide',
-    state: 'SA',
-    climateZoneId: '5'
-  },
-  {
-    id: '6',
-    name: 'Hobart',
-    state: 'TAS',
-    climateZoneId: '6'
-  },
-  {
-    id: '7',
-    name: 'Darwin',
-    state: 'NT',
-    climateZoneId: '7'
-  },
-  {
-    id: '8',
-    name: 'Canberra',
-    state: 'ACT',
-    climateZoneId: '8'
-  }
-];
-
-const climateZones = [
-  {
-    id: '1',
-    name: 'Climate Zone 1',
-    description: 'High humidity summer, warm winter'
-  },
-  {
-    id: '2',
-    name: 'Climate Zone 2',
-    description: 'Warm humid summer, mild winter'
-  },
-  {
-    id: '3',
-    name: 'Climate Zone 3',
-    description: 'Hot humid summer, mild winter'
-  },
-  {
-    id: '4',
-    name: 'Climate Zone 4',
-    description: 'Hot dry summer, cool winter'
-  },
-  {
-    id: '5',
-    name: 'Climate Zone 5',
-    description: 'Warm temperate'
-  },
-  {
-    id: '6',
-    name: 'Climate Zone 6',
-    description: 'Mild temperate'
-  },
-  {
-    id: '7',
-    name: 'Climate Zone 7',
-    description: 'Cool temperate'
-  },
-  {
-    id: '8',
-    name: 'Climate Zone 8',
-    description: 'Alpine'
-  }
-];
-
 const getLocationById = (id) => {
-  return locations.find(location => location.id === id);
+  const data = loadLocationData();
+  if (!data) return null;
+  
+  return data.locations.find(location => location.id === id);
 };
 
 const getClimateZoneById = (id) => {
-  return climateZones.find(zone => zone.id === id);
-};
-
-const getClimateZoneForLocation = (locationId) => {
-  const location = getLocationById(locationId);
-  if (!location) return null;
-  return getClimateZoneById(location.climateZoneId);
+  const data = loadLocationData();
+  if (!data) return null;
+  
+  return data.climateZones.find(zone => zone.id === id);
 };
 
 module.exports = {

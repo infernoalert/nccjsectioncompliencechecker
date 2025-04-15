@@ -17,25 +17,13 @@ import {
   useTheme,
   Chip
 } from '@mui/material';
-import { createProject, fetchBuildingTypes } from '../store/slices/projectSlice';
-
-// Static list of locations
-const LOCATIONS = [
-  { id: '1', name: 'Sydney', state: 'NSW' },
-  { id: '2', name: 'Melbourne', state: 'VIC' },
-  { id: '3', name: 'Brisbane', state: 'QLD' },
-  { id: '4', name: 'Perth', state: 'WA' },
-  { id: '5', name: 'Adelaide', state: 'SA' },
-  { id: '6', name: 'Hobart', state: 'TAS' },
-  { id: '7', name: 'Darwin', state: 'NT' },
-  { id: '8', name: 'Canberra', state: 'ACT' }
-];
+import { createProject, fetchBuildingTypes, fetchLocations } from '../store/slices/projectSlice';
 
 const NewProject = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { loading, error, buildingTypes } = useSelector((state) => state.project);
+  const { loading, error, buildingTypes, locations } = useSelector((state) => state.project);
   const [selectedBuildingType, setSelectedBuildingType] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
@@ -48,6 +36,7 @@ const NewProject = () => {
     const fetchData = async () => {
       try {
         await dispatch(fetchBuildingTypes()).unwrap();
+        await dispatch(fetchLocations()).unwrap();
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -226,7 +215,7 @@ const NewProject = () => {
                   <MenuItem value="" disabled>
                     <em>Please Select Location</em>
                   </MenuItem>
-                  {LOCATIONS.map((location) => (
+                  {locations.map((location) => (
                     <MenuItem 
                       key={location.id} 
                       value={location.id}
