@@ -123,7 +123,7 @@ export const fetchBuildingClassifications = createAsyncThunk(
       if (!auth.token) {
         return rejectWithValue('No authentication token available');
       }
-      const response = await axiosWithAuth(auth.token).get('/building-classifications');
+      const response = await axiosWithAuth(auth.token).get('/building-classes');
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.error || error.message);
@@ -163,9 +163,36 @@ export const fetchCompliancePathways = createAsyncThunk(
   }
 );
 
+// Fetch building types
+export const fetchBuildingTypes = createAsyncThunk(
+  'project/fetchBuildingTypes',
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const { auth } = getState();
+      if (!auth.token) {
+        return rejectWithValue('No authentication token available');
+      }
+      const response = await axiosWithAuth(auth.token).get('/projects/building-types');
+      
+      // Ensure we have valid data before returning
+      if (response.data && response.data.success && Array.isArray(response.data.data)) {
+        return response.data.data;
+      } else {
+        return rejectWithValue('Invalid response format from server');
+      }
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.error || 'Failed to fetch building types');
+    }
+  }
+);
+
 const initialState = {
   projects: [],
   currentProject: null,
+  buildingTypes: [],
+  buildingClassifications: [],
+  climateZones: [],
+  compliancePathways: [],
   loading: false,
   error: null
 };
@@ -309,6 +336,19 @@ const projectSlice = createSlice({
         state.compliancePathways = action.payload;
       })
       .addCase(fetchCompliancePathways.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // Fetch Building Types
+      .addCase(fetchBuildingTypes.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchBuildingTypes.fulfilled, (state, action) => {
+        state.loading = false;
+        state.buildingTypes = action.payload;
+      })
+      .addCase(fetchBuildingTypes.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

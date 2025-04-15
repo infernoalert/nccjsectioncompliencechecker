@@ -1,63 +1,59 @@
 const mongoose = require('mongoose');
 
-const ClimateZoneSchema = new mongoose.Schema({
-  zone: {
-    type: Number,
-    required: [true, 'Please add a zone number'],
-    unique: true,
-    min: 1,
-    max: 8
-  },
-  locations: [{
+const climateZoneSchema = new mongoose.Schema({
+  name: {
     type: String,
-    required: [true, 'Please add at least one location']
-  }],
+    required: [true, 'Climate zone name is required'],
+    trim: true,
+    unique: true
+  },
+  code: {
+    type: String,
+    required: [true, 'Climate zone code is required'],
+    trim: true,
+    unique: true
+  },
   description: {
     type: String,
-    required: [true, 'Please add a description'],
-    maxlength: [500, 'Description cannot be more than 500 characters']
+    required: [true, 'Description is required']
   },
-  insulation: {
-    type: String,
-    enum: ['standard', 'enhanced'],
-    required: true
+  temperatureRange: {
+    min: {
+      type: Number,
+      required: [true, 'Minimum temperature is required']
+    },
+    max: {
+      type: Number,
+      required: [true, 'Maximum temperature is required']
+    }
   },
-  wallRValue: {
-    type: String,
-    required: true
+  humidityRange: {
+    min: {
+      type: Number,
+      required: [true, 'Minimum humidity is required']
+    },
+    max: {
+      type: Number,
+      required: [true, 'Maximum humidity is required']
+    }
   },
-  roofRValue: {
-    type: String,
-    required: true
+  solarRadiation: {
+    type: Number,
+    required: [true, 'Solar radiation value is required']
   },
-  glazing: {
-    type: Map,
-    of: mongoose.Schema.Types.Mixed,
-    default: {}
+  windSpeed: {
+    type: Number,
+    required: [true, 'Wind speed value is required']
   },
-  hvac: {
-    type: Map,
-    of: mongoose.Schema.Types.Mixed,
-    default: {}
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now
+  isActive: {
+    type: Boolean,
+    default: true
   }
+}, {
+  timestamps: true
 });
 
-// Update the updatedAt timestamp before saving
-ClimateZoneSchema.pre('save', function(next) {
-  this.updatedAt = Date.now();
-  next();
-});
+// Create index for code lookups
+climateZoneSchema.index({ code: 1 });
 
-// Create indexes
-ClimateZoneSchema.index({ zone: 1 });
-ClimateZoneSchema.index({ locations: 1 });
-
-module.exports = mongoose.model('ClimateZone', ClimateZoneSchema); 
+module.exports = mongoose.model('ClimateZone', climateZoneSchema); 

@@ -66,7 +66,7 @@ const UserProject = () => {
           
           {error && (
             <Typography variant="body1" color="error" sx={{ mb: 3 }}>
-              {error}
+              {typeof error === 'object' ? error.message : error}
             </Typography>
           )}
           

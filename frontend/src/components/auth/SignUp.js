@@ -106,7 +106,7 @@ const SignUp = () => {
           </Typography>
           {error && (
             <Alert severity="error" sx={{ mt: 2, width: '100%' }}>
-              {error}
+              {typeof error === 'object' ? error.message : error}
             </Alert>
           )}
           <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1, width: '100%' }}>

@@ -1,0 +1,167 @@
+{
+  "buildingTypes": [
+    {
+      "id": "office_single",
+      "name": "Single Tenant Office",
+      "description": "Office space occupied by a single tenant for professional or commercial purposes.",
+      "nccClassification": "5",
+      "typicalUse": "Corporate offices, legal firms, accounting services, government agencies",
+      "commonFeatures": [
+        "Open plan workspaces",
+        "Meeting rooms",
+        "Reception areas",
+        "Kitchen facilities"
+      ],
+      "notes": "General medical practitioner offices are typically Class 5 unless medical treatment leaves patients non-ambulatory, in which case classified as Class 9a."
+    },
+    {
+      "id": "office_multi",
+      "name": "Multi Tenant Office",
+      "description": "Office building with multiple tenants sharing common spaces.",
+      "nccClassification": "5",
+      "typicalUse": "Commercial office buildings, business centers, co-working spaces",
+      "commonFeatures": [
+        "Multiple tenant spaces",
+        "Shared facilities (e.g., lobbies, elevators)",
+        "Building management services"
+      ]
+    },
+    {
+      "id": "retail_small",
+      "name": "Small Retail",
+      "description": "Retail spaces under 500m² for direct sale of goods/services to the public.",
+      "nccClassification": "6",
+      "typicalUse": "Shops, cafés, hairdressers, kiosks, funeral parlours",
+      "commonFeatures": [
+        "Shop front",
+        "Customer service area",
+        "Storage space"
+      ],
+      "notes": "Service stations are Class 6, but auto repair workshops are Class 8."
+    },
+    {
+      "id": "retail_large",
+      "name": "Large Retail",
+      "description": "Retail spaces over 500m² or shopping centers with multiple tenants.",
+      "nccClassification": "6",
+      "typicalUse": "Supermarkets, department stores, shopping malls",
+      "commonFeatures": [
+        "Large floor area",
+        "Loading docks",
+        "Centralized customer service"
+      ]
+    },
+    {
+      "id": "residential_single",
+      "name": "Single Dwelling",
+      "description": "Standalone or attached dwellings for domestic use.",
+      "nccClassification": "1a (detached) or 1b (small-scale boarding houses <300m²)",
+      "typicalUse": "Houses, duplexes, townhouses, holiday homes",
+      "commonFeatures": [
+        "Private living areas",
+        "Kitchen and bathrooms",
+        "Separate entrance"
+      ],
+      "notes": "Class 1b includes hostels <300m² with <12 residents; larger facilities are Class 3."
+    },
+    {
+      "id": "residential_multi",
+      "name": "Multi Unit Residential",
+      "description": "Multi-unit buildings with sole-occupancy units (SOUs).",
+      "nccClassification": "2",
+      "typicalUse": "Apartments, flats, units above a shared basement/carpark",
+      "commonFeatures": [
+        "SOUs with exclusive use",
+        "Common corridors/elevators",
+        "Shared amenities (e.g., laundry)"
+      ]
+    },
+    {
+      "id": "hospitality",
+      "name": "Hospitality",
+      "description": "Buildings for transient or long-term accommodation of unrelated persons.",
+      "nccClassification": "3 (or 1b if <300m²)",
+      "typicalUse": "Hotels, hostels, backpackers, workers' quarters, aged care (non-Class 9c)",
+      "commonFeatures": [
+        "Guest rooms",
+        "Shared kitchens/dining",
+        "Reception areas"
+      ],
+      "notes": "Class 3 excludes owner-occupied residences (Class 1/2) and Class 9c care facilities."
+    },
+    {
+      "id": "healthcare",
+      "name": "Healthcare",
+      "description": "Buildings for medical treatment where patients may require evacuation assistance.",
+      "nccClassification": "9a",
+      "typicalUse": "Hospitals, clinics with day surgery, health labs",
+      "commonFeatures": [
+        "Treatment rooms",
+        "Patient wards",
+        "Emergency exits with assisted access"
+      ]
+    },
+    {
+      "id": "education",
+      "name": "Education",
+      "description": "Assembly buildings for social, educational, or civil purposes.",
+      "nccClassification": "9b",
+      "typicalUse": "Schools, universities, childcare centers, sports stadiums",
+      "commonFeatures": [
+        "Classrooms/lecture halls",
+        "Assembly areas",
+        "Administrative offices"
+      ]
+    },
+    {
+      "id": "residential_care",
+      "name": "Residential Care",
+      "description": "Buildings providing long-term care with physical assistance needs.",
+      "nccClassification": "9c",
+      "typicalUse": "Aged care facilities, disability care homes",
+      "commonFeatures": [
+        "Resident bedrooms with care support",
+        "Common dining/recreation areas",
+        "Staff facilities",
+        "Emergency evacuation plans for non-ambulatory residents"
+      ],
+      "notes": "Class 9c requires ≥10% of residents to need physical assistance for daily activities/evacuation."
+    },
+    {
+      "id": "industrial",
+      "name": "Industrial",
+      "description": "Buildings for production, storage, or wholesale display.",
+      "nccClassification": "7a (carparks) or 7b (warehouses), 8 (factories)",
+      "typicalUse": "Factories, warehouses, workshops, abattoirs",
+      "commonFeatures": [
+        "High ceilings",
+        "Loading bays",
+        "Industrial machinery"
+      ],
+      "notes": "Farm buildings vary by use (e.g., Class 10a for small sheds, Class 7/8 for large-scale operations)."
+    },
+    {
+      "id": "mixed_use",
+      "name": "Mixed Use Building",
+      "description": "Buildings with multiple classifications (e.g., retail + residential).",
+      "nccClassification": "Varies (e.g., 2/5/6/7)",
+      "typicalUse": "Apartment over retail, office with basement carpark",
+      "commonFeatures": [
+        "Separately classified areas",
+        "Shared infrastructure (e.g., fire exits)"
+      ],
+      "notes": "Ancillary spaces ≤10% of floor area may adopt the primary classification."
+    },
+    {
+      "id": "non_habitable",
+      "name": "Non-Habitable Structures",
+      "description": "Structures not intended for human occupation.",
+      "nccClassification": "10a (sheds), 10b (pools/fences), 10c (bushfire shelters)",
+      "typicalUse": "Garages, swimming pools, retaining walls",
+      "commonFeatures": [
+        "No living facilities",
+        "Utility or safety purpose"
+      ]
+    }
+  ]
+}

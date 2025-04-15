@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import axios from 'axios';
 import {
   Container,
   Box,
@@ -15,32 +14,29 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  useTheme
+  useTheme,
+  Chip
 } from '@mui/material';
-import { createProject } from '../store/slices/projectSlice';
+import { createProject, fetchBuildingTypes } from '../store/slices/projectSlice';
 
-const API_URL = 'http://localhost:5000/api';
-
-const buildingTypes = [
-  { id: 'apartment', label: 'Apartment buildings' },
-  { id: 'hotel', label: 'Hotels, motels, boarding houses and guest houses' },
-  { id: 'office', label: 'Office buildings and professional suites' },
-  { id: 'retail', label: 'Shops, restaurants, and showrooms' },
-  { id: 'carpark', label: 'Carparks and parking facilities' },
-  { id: 'warehouse', label: 'Warehouses and storage facilities' },
-  { id: 'factory', label: 'Factories, workshops and laboratories' },
-  { id: 'healthcare', label: 'Hospitals and healthcare facilities' },
-  { id: 'assembly', label: 'Schools, universities, theatres and public halls' },
-  { id: 'agedcare', label: 'Aged care facilities and nursing homes' }
+// Static list of locations
+const LOCATIONS = [
+  { id: '1', name: 'Sydney', state: 'NSW' },
+  { id: '2', name: 'Melbourne', state: 'VIC' },
+  { id: '3', name: 'Brisbane', state: 'QLD' },
+  { id: '4', name: 'Perth', state: 'WA' },
+  { id: '5', name: 'Adelaide', state: 'SA' },
+  { id: '6', name: 'Hobart', state: 'TAS' },
+  { id: '7', name: 'Darwin', state: 'NT' },
+  { id: '8', name: 'Canberra', state: 'ACT' }
 ];
 
 const NewProject = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { loading, error } = useSelector((state) => state.project);
-  const { token } = useSelector((state) => state.auth);
-  const [locations, setLocations] = useState([]);
+  const { loading, error, buildingTypes } = useSelector((state) => state.project);
+  const [selectedBuildingType, setSelectedBuildingType] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -49,25 +45,33 @@ const NewProject = () => {
   });
 
   useEffect(() => {
-    const fetchLocations = async () => {
+    const fetchData = async () => {
       try {
-        const response = await axios.get(`${API_URL}/climate-zones`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        // Flatten all locations from all climate zones
-        const allLocations = response.data.data.reduce((acc, zone) => {
-          return [...acc, ...zone.locations];
-        }, []);
-        setLocations(allLocations.sort());
+        await dispatch(fetchBuildingTypes()).unwrap();
       } catch (error) {
-        console.error('Error fetching locations:', error);
+        console.error('Error fetching data:', error);
       }
     };
+    
+    fetchData();
+  }, [dispatch]);
 
-    if (token) {
-      fetchLocations();
-    }
-  }, [token]);
+  const handleBuildingTypeChange = (e) => {
+    const buildingTypeId = e.target.value;
+    
+    // Find the selected building type for display purposes
+    const selectedType = buildingTypes.find(type => type.id === buildingTypeId);
+    console.log('Selected building type:', selectedType);
+    
+    // Set the selected building type state
+    setSelectedBuildingType(selectedType);
+    
+    // Update form data with just the building type
+    setFormData(prev => ({
+      ...prev,
+      buildingType: buildingTypeId
+    }));
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -80,8 +84,9 @@ const NewProject = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      console.log('Submitting form data:', formData);
       await dispatch(createProject(formData)).unwrap();
-      navigate('/');
+      navigate('/projects');
     } catch (error) {
       console.error('Error creating project:', error);
     }
@@ -96,7 +101,7 @@ const NewProject = () => {
           </Typography>
           {error && (
             <Alert severity="error" sx={{ mb: 2 }}>
-              {error}
+              {typeof error === 'object' ? error.message : error}
             </Alert>
           )}
           <form onSubmit={handleSubmit}>
@@ -143,7 +148,7 @@ const NewProject = () => {
                   labelId="buildingType-label"
                   name="buildingType"
                   value={formData.buildingType}
-                  onChange={handleChange}
+                  onChange={handleBuildingTypeChange}
                   disabled={loading}
                   displayEmpty
                 >
@@ -162,11 +167,34 @@ const NewProject = () => {
                         },
                       }}
                     >
-                      {type.label}
+                      <Box>
+                        <Typography variant="body1">{type.name}</Typography>
+                        <Typography variant="caption" color="text.secondary">
+                          {type.description}
+                        </Typography>
+                      </Box>
                     </MenuItem>
                   ))}
                 </Select>
               </FormControl>
+
+              {selectedBuildingType && (
+                <Box sx={{ mt: 1 }}>
+                  <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                    NCC Classification: Class {selectedBuildingType.nccClassification}
+                  </Typography>
+                  <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                    {selectedBuildingType.commonFeatures && selectedBuildingType.commonFeatures.map((feature, index) => (
+                      <Chip
+                        key={index}
+                        label={feature}
+                        size="small"
+                        variant="outlined"
+                      />
+                    ))}
+                  </Box>
+                </Box>
+              )}
 
               <FormControl 
                 fullWidth 
@@ -198,10 +226,10 @@ const NewProject = () => {
                   <MenuItem value="" disabled>
                     <em>Please Select Location</em>
                   </MenuItem>
-                  {locations.map((location) => (
+                  {LOCATIONS.map((location) => (
                     <MenuItem 
-                      key={location} 
-                      value={location}
+                      key={location.id} 
+                      value={location.id}
                       sx={{
                         py: 1.5,
                         '&:hover': {
@@ -210,7 +238,7 @@ const NewProject = () => {
                         },
                       }}
                     >
-                      {location}
+                      {location.name}, {location.state}
                     </MenuItem>
                   ))}
                 </Select>
