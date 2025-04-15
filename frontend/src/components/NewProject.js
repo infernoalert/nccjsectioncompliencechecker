@@ -15,7 +15,8 @@ import {
   Select,
   MenuItem,
   useTheme,
-  Chip
+  Chip,
+  Grid
 } from '@mui/material';
 import { createProject, fetchBuildingTypes, fetchLocations } from '../store/slices/projectSlice';
 
@@ -29,7 +30,9 @@ const NewProject = () => {
     name: '',
     description: '',
     buildingType: '',
-    location: ''
+    location: '',
+    floorArea: '',
+    size: 'medium' // Default size
   });
 
   useEffect(() => {
@@ -64,10 +67,31 @@ const NewProject = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    
+    // Special handling for floor area to automatically set size
+    if (name === 'floorArea') {
+      const area = parseFloat(value);
+      let size = 'medium'; // Default
+      
+      if (area < 500) {
+        size = 'small';
+      } else if (area >= 500 && area <= 2500) {
+        size = 'medium';
+      } else if (area > 2500) {
+        size = 'large';
+      }
+      
+      setFormData(prev => ({
+        ...prev,
+        [name]: value,
+        size: size
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -232,6 +256,62 @@ const NewProject = () => {
                   ))}
                 </Select>
               </FormControl>
+
+              <Grid container spacing={2}>
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    fullWidth
+                    label="Floor Area (m²)"
+                    name="floorArea"
+                    type="number"
+                    value={formData.floorArea}
+                    onChange={handleChange}
+                    required
+                    disabled={loading}
+                    inputProps={{ min: 1 }}
+                    helperText="Enter the total floor area in square meters"
+                  />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <FormControl 
+                    fullWidth 
+                    required
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        '&:hover fieldset': {
+                          borderColor: theme.palette.primary.main,
+                        },
+                      },
+                      '& .MuiInputLabel-root': {
+                        backgroundColor: '#ffffff',
+                        px: 0.5,
+                      },
+                      '& .MuiInputLabel-shrink': {
+                        transform: 'translate(14px, -9px) scale(0.75)',
+                      },
+                    }}
+                  >
+                    <InputLabel id="size-label">Project Size</InputLabel>
+                    <Select
+                      labelId="size-label"
+                      name="size"
+                      value={formData.size}
+                      onChange={handleChange}
+                      disabled={loading || !!formData.floorArea}
+                      displayEmpty
+                    >
+                      <MenuItem value="small">Small (Less than 500 m²)</MenuItem>
+                      <MenuItem value="medium">Medium (500-2500 m²)</MenuItem>
+                      <MenuItem value="large">Large (More than 2500 m²)</MenuItem>
+                    </Select>
+                    {formData.floorArea && (
+                      <Typography variant="caption" color="text.secondary" sx={{ mt: 1, display: 'block' }}>
+                        Size automatically determined based on floor area
+                      </Typography>
+                    )}
+                  </FormControl>
+                </Grid>
+              </Grid>
 
               <Button
                 type="submit"

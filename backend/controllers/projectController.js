@@ -76,6 +76,14 @@ const createProject = asyncHandler(async (req, res) => {
     console.log('Creating project with data:', req.body);
     console.log('User ID:', req.user.id);
     
+    // Validate floor area
+    if (!req.body.floorArea || req.body.floorArea <= 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'Floor area must be greater than 0'
+      });
+    }
+    
     // Find building type mapping from the buildingTypes array
     const buildingType = buildingTypeMapping.buildingTypes.find(type => type.id === req.body.buildingType);
     if (!buildingType) {

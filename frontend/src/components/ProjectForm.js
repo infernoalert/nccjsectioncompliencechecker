@@ -42,7 +42,7 @@ const ProjectForm = () => {
     description: '',
     buildingType: '',
     location: '',
-    owner: '',
+    floorArea: '',
     buildingClassification: '',
     climateZone: '',
     compliancePathway: '',
@@ -68,7 +68,7 @@ const ProjectForm = () => {
         description: currentProject.description || '',
         buildingType: currentProject.buildingType || '',
         location: currentProject.location || '',
-        owner: currentProject.owner || '',
+        floorArea: currentProject.floorArea || '',
         buildingClassification: currentProject.buildingClassification?._id || '',
         climateZone: currentProject.climateZone?._id || '',
         compliancePathway: currentProject.compliancePathway?._id || '',
@@ -85,6 +85,7 @@ const ProjectForm = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    
     if (name.startsWith('buildingFabric.')) {
       const fabricField = name.split('.')[1];
       setFormData((prev) => ({
@@ -191,47 +192,15 @@ const ProjectForm = () => {
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
-                label="Owner"
-                name="owner"
-                value={formData.owner}
+                label="Floor Area (m²)"
+                name="floorArea"
+                type="number"
+                value={formData.floorArea}
                 onChange={handleChange}
                 required
+                inputProps={{ min: 1 }}
+                helperText="Enter the total floor area in square meters"
               />
-            </Grid>
-
-            <Grid item xs={12}>
-              <Divider sx={{ my: 3 }} />
-            </Grid>
-
-            {/* Building Classification and Climate Zone */}
-            <Grid item xs={12}>
-              <Typography variant="h6" gutterBottom>
-                Building Classification & Climate Zone
-              </Typography>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <Box sx={{ p: 2, border: '1px solid #e0e0e0', borderRadius: 1 }}>
-                <Typography variant="subtitle2" color="text.secondary">
-                  Building Classification
-                </Typography>
-                <Typography variant="body1">
-                  {currentProject?.buildingClassification?.classType?.replace('Class_', '') || 'Not specified'}
-                </Typography>
-              </Box>
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <FormControl fullWidth>
-                <InputLabel>Climate Zone</InputLabel>
-                <Select
-                  name="climateZone"
-                  value={formData.climateZone}
-                  onChange={handleChange}
-                  required
-                >
-                  <MenuItem value="">Select Climate Zone</MenuItem>
-                  {/* Add climate zone options here */}
-                </Select>
-              </FormControl>
             </Grid>
 
             <Grid item xs={12}>

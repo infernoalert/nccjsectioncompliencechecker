@@ -112,15 +112,23 @@ const ProjectDetails = () => {
                   <strong>Location:</strong> {currentProject.location}
                 </Typography>
                 <Typography variant="body1" paragraph>
-                  <strong>Owner:</strong> {currentProject.owner}
-                </Typography>
-                <Typography variant="body1" paragraph>
                   <strong>Building Classification:</strong>{' '}
                   {currentProject.buildingClassification?.classType?.replace('Class_', '') || 'Not specified'}
                 </Typography>
                 <Typography variant="body1" paragraph>
                   <strong>Climate Zone:</strong>{' '}
                   {currentProject.climateZone?.name || 'Not specified'}
+                </Typography>
+                <Typography variant="body1" paragraph>
+                  <strong>Size:</strong>{' '}
+                  {currentProject.size === 'small' ? 'Small (Less than 500 m²)' : 
+                   currentProject.size === 'medium' ? 'Medium (500-2500 m²)' : 
+                   currentProject.size === 'large' ? 'Large (More than 2500 m²)' : 
+                   'Not specified'}
+                </Typography>
+                <Typography variant="body1" paragraph>
+                  <strong>Floor Area:</strong>{' '}
+                  {currentProject.floorArea ? `${currentProject.floorArea} m²` : 'Not specified'}
                 </Typography>
               </CardContent>
             </Card>
