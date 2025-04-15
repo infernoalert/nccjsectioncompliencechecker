@@ -57,7 +57,7 @@ const Register = () => {
                 </Typography>
                 {error && (
                     <Alert severity="error" onClose={handleClearError} sx={{ mb: 2 }}>
-                        {error}
+                        {typeof error === 'object' ? error.message : error}
                     </Alert>
                 )}
                 <form onSubmit={handleSubmit}>

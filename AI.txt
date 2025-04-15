@@ -11,12 +11,18 @@ This is a full-stack application with Express.js backend, React frontend, and Mo
 │   ├── middleware/   # Express middleware
 │   ├── models/       # Mongoose models
 │   ├── routes/       # API routes
+│   ├── services/     # Business logic services
 │   ├── utils/        # Utility functions
+│   ├── config/       # Configuration files
+│   ├── scripts/      # Utility scripts
+│   ├── seeder.js     # Database seeding script
 │   └── server.js     # Express server entry point
 ├── frontend/          # React application
 │   ├── public/       # Static files
 │   └── src/          # React source code
 │       ├── components/ # React components
+│       │   ├── auth/   # Authentication components
+│       │   └── projects/ # Project-related components
 │       ├── store/     # Redux store and slices
 │       └── App.js     # React application entry point
 └── mongodb-data/      # MongoDB data directory
@@ -27,14 +33,14 @@ The backend is built with Express.js and includes:
 
 1. **Models**:
    - User model with fields: username, email, password, role, and createdAt
-   - BuildingClass model for NCC building classifications
+   - BuildingClassification model for NCC building classifications (not BuildingClass)
    - ClimateZone model for climate zone requirements
    - CompliancePathway model for compliance pathways
    - SectionJPart model for Section J parts
    - SpecialRequirement model for special requirements
    - ExemptionAndConcession model for exemptions and concessions
-   - Project model for user projects with fields: name, description, buildingType, location, owner, and complianceResults
-   - Password hashing with bcrypt
+   - BuildingFabric model for building fabric details
+   - Project model for user projects with fields: name, description, buildingType, location, owner, buildingClassification, climateZone, buildingFabric, specialRequirements, compliancePathway, complianceResults, documentation, status, and metadata
 
 2. **Controllers**:
    - userController.js with CRUD operations (getUsers, getUser, createUser, updateUser, deleteUser)
@@ -56,17 +62,22 @@ The backend is built with Express.js and includes:
    - errorHandler.js for centralized error handling
    - auth.js for JWT verification and role-based access control
 
-5. **Utils**:
+5. **Services**:
+   - complianceService.js for handling compliance checking logic
+
+6. **Utils**:
    - jwt.js for token generation and verification
 
-6. **Server Configuration**:
+7. **Server Configuration**:
    - MongoDB connection setup
    - Express middleware (cors, json parsing)
    - Route mounting
    - Error handling middleware
 
-7. **Data Seeding**:
+8. **Data Seeding**:
    - seeder.js script to populate the database with building classifications, climate zones, and compliance pathways from Decision-Tree.json
+   - The seeder uses the BuildingClassification model (not BuildingClass)
+   - Building classifications are created with classType field (e.g., "Class_5") that matches the format expected by the project controller
 
 ## Frontend Implementation
 The frontend is built with React and includes:
@@ -83,9 +94,11 @@ The frontend is built with React and includes:
    - UserList.js: Displays users in a table (admin only)
    - CreateUser.js: Form for creating new users (admin only)
    - PrivateRoute.js: Component for protected routes with role-based access
-   - NewProject.js: Form for creating new projects with building type and location selection
+   - NewProject.js: Multi-step form for creating new projects with building type and location selection
    - UserProject.js: Displays user's projects with Redux integration
    - ProjectDetails.js: Displays detailed information about a specific project
+   - ProjectForm.js: Form for editing project details
+   - ProjectList.js: Displays a list of projects with filtering options
 
 3. **Routing**:
    - React Router for navigation
@@ -98,6 +111,7 @@ The frontend is built with React and includes:
    - Role-based navigation
    - Form validation for email and password
    - Building type selection with user-friendly descriptions
+   - Multi-step forms for complex data entry
 
 ## Authentication and Authorization
 - JWT-based authentication
@@ -143,6 +157,57 @@ The frontend is built with React and includes:
   - DELETE /api/projects/:id: Delete a project
   - POST /api/projects/:id/check-compliance: Check compliance for a project
 
+## Data Mapping and Frontend-Backend Synchronization
+The application uses several mapping mechanisms to ensure proper data flow between frontend and backend:
+
+1. **Building Type to Classification Mapping**:
+   - Located in `backend/data/mappings/buildingTypeToClassification.json`
+   - Maps building types (e.g., "office_single") to NCC classifications (e.g., "5")
+   - Used by the backend project controller to determine the correct building classification when a project is created
+   - The project controller constructs the classType string (e.g., "Class_5") and looks up the corresponding BuildingClassification document
+   - When updating this mapping, you must restart the backend server for changes to take effect
+   - The frontend doesn't directly read this file; it gets building types through API calls
+
+2. **Building Classification Data**:
+   - Defined in `Decision-Tree.json` and seeded into the database using `seeder.js`
+   - Each building classification must have a `classType` field (e.g., "Class_5") that matches the format used by the project controller
+   - The seeder script maps the keys from Decision-Tree.json to the `classType` field in the database
+   - If a building classification is missing from Decision-Tree.json, projects using that classification will fail to create
+
+3. **ObjectId Handling**:
+   - MongoDB uses ObjectId for document references
+   - Frontend components must handle ObjectId conversion properly
+   - When sending data to the backend, ensure IDs are in the correct format
+   - When receiving data from the backend, ensure proper handling of ObjectId references
+
+4. **Response Format Consistency**:
+   - All backend API responses follow the format: `{ success: true, data: [...] }`
+   - Frontend Redux thunks expect this format and extract data using `response.data.data`
+   - When adding new endpoints, maintain this response format
+
+5. **Enum Handling**:
+   - Building classifications use specific enum values (e.g., "Class_5", "Class_9a")
+   - Frontend must match these exact values when creating or updating records
+   - When adding new classification types, update both the model schema and frontend validation
+
+6. **Frontend Considerations After Backend Changes**:
+   - When modifying backend models, update corresponding frontend interfaces
+   - When changing API response formats, update all Redux thunks that consume those endpoints
+   - When adding new fields to models, update form components to handle the new fields
+   - When changing validation rules, update frontend validation logic
+   - When modifying enum values, update any frontend code that references those values
+
+7. **Error Handling**:
+   - Backend errors are returned in the format: `{ success: false, error: "Error message" }`
+   - Frontend Redux thunks handle errors by checking `error.response?.data?.error`
+   - When adding new error types, ensure consistent error handling on both ends
+
+8. **Data Transformation**:
+   - Some data requires transformation between frontend and backend formats
+   - For example, building classifications use "Class_X" format in the database but "X" in the mapping file
+   - The project controller handles this transformation by constructing the classType string
+   - When modifying data formats, update all transformation logic in both frontend and backend
+
 ## Current Status
 - Basic user management functionality is implemented
 - MongoDB is set up and configured
@@ -156,13 +221,17 @@ The frontend is built with React and includes:
 - SignIn and SignUp components are implemented with form validation
 - Auth slice is implemented for Redux state management
 - Protected routes are set up in the frontend
-- NewProject component has been implemented with Redux integration for project creation
+- NewProject component has been implemented with multi-step form and Redux integration for project creation
 - Building type selection has been implemented with NCC building classifications
 - Form validation and error handling have been improved
 - Project creation workflow has been streamlined with proper redirection
 - UserProject component has been updated to use Redux for fetching projects
 - ProjectDetails component has been implemented for viewing project details
-- test-api.ps1 script has been developed for testing API endpoints, including authentication and climate zone operations
+- Project model has been enhanced with better validation and metadata tracking
+- Project controller has been improved with better error handling and validation
+- Fixed issues with building classification mapping and seeding
+- Added missing Class_5 building classification to Decision-Tree.json
+- Updated seeder.js to use the correct BuildingClassification model
 
 ## Technical Details
 - Backend runs on port 5000
@@ -197,5 +266,10 @@ You need to include the JWT token in the Authorization header as a Bearer token.
    ```
 
 3. Access the application at http://localhost:3000
+
+## How to Update Building Types
+1. Edit the `backend/data/mappings/buildingTypeToClassification.json` file
+2. Restart the backend server with `npm run dev` in the backend directory
+3. Refresh the frontend application
 
 This project serves as a foundation for a NCC Section J Compliance Checker application with role-based access control and can be extended with additional features as needed. The application now includes functionality for managing building classes, climate zones, compliance pathways, and projects for NCC Section J compliance checking. 

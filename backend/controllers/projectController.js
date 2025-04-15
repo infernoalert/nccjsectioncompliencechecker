@@ -1,8 +1,9 @@
 const Project = require('../models/Project');
-const BuildingClass = require('../models/BuildingClass');
+const BuildingClassification = require('../models/BuildingClassification');
 const ClimateZone = require('../models/ClimateZone');
 const asyncHandler = require('express-async-handler');
 const complianceService = require('../services/complianceService');
+const buildingTypeMapping = require('../data/mappings/buildingTypeToClassification.json');
 
 // @desc    Get all projects for a user
 // @route   GET /api/projects
@@ -74,16 +75,43 @@ const createProject = asyncHandler(async (req, res) => {
     console.log('Creating project with data:', req.body);
     console.log('User ID:', req.user.id);
     
+    // Find building type mapping from the buildingTypes array
+    const buildingType = buildingTypeMapping.buildingTypes.find(type => type.id === req.body.buildingType);
+    if (!buildingType) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid building type'
+      });
+    }
+
+    // Find corresponding building classification
+    const nccClass = `Class_${buildingType.nccClassification}`;
+    const buildingClass = await BuildingClassification.findOne({ classType: nccClass });
+    if (!buildingClass) {
+      return res.status(400).json({
+        success: false,
+        error: `Building classification not found for type ${nccClass}`
+      });
+    }
+
+    // Create project with automatically assigned classification
     const project = new Project({
       ...req.body,
+      buildingClassification: buildingClass._id,
       owner: req.user.id
     });
 
     const savedProject = await project.save();
     
+    // Populate the saved project with related data
+    const populatedProject = await Project.findById(savedProject._id)
+      .populate('buildingClassification')
+      .populate('climateZone')
+      .populate('compliancePathway');
+    
     res.status(201).json({
       success: true,
-      data: savedProject
+      data: populatedProject
     });
   } catch (error) {
     console.error('Error creating project:', error);
@@ -156,7 +184,8 @@ const deleteProject = asyncHandler(async (req, res) => {
       });
     }
 
-    await project.remove();
+    await Project.findByIdAndDelete(req.params.id);
+    
     res.status(200).json({ 
       success: true,
       data: {} 

@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {
@@ -12,11 +13,28 @@ import {
   Button,
   Typography,
   Box,
-  Chip
+  Chip,
+  Container,
+  CircularProgress,
+  Alert
 } from '@mui/material';
 import { fetchProjects } from '../store/slices/projectSlice';
 
+/**
+ * ProjectList Component
+ * 
+ * This component displays a list of all projects. It handles:
+ * - Fetching projects from the backend
+ * - Displaying projects in a grid layout
+ * - Loading states
+ * - Error handling
+ * - Navigation to project details
+ * 
+ * The component integrates with Redux for state management and uses Material-UI
+ * for the user interface.
+ */
 const ProjectList = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { projects, loading, error } = useSelector((state) => state.project);
 
@@ -38,11 +56,19 @@ const ProjectList = () => {
   };
 
   if (loading) {
-    return <Typography>Loading...</Typography>;
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="80vh">
+        <CircularProgress />
+      </Box>
+    );
   }
 
   if (error) {
-    return <Typography color="error">{error}</Typography>;
+    return (
+      <Container maxWidth="lg" sx={{ mt: 4 }}>
+        <Alert severity="error">{typeof error === 'object' ? error.message : error}</Alert>
+      </Container>
+    );
   }
 
   return (
@@ -76,9 +102,9 @@ const ProjectList = () => {
             {projects.map((project) => (
               <TableRow key={project._id}>
                 <TableCell>{project.name}</TableCell>
-                <TableCell>{project.buildingClassification.classType}</TableCell>
-                <TableCell>{project.climateZone.zoneRange}</TableCell>
-                <TableCell>{project.compliancePathway.name}</TableCell>
+                <TableCell>{project.buildingClassification?.classType?.replace('Class_', '') || 'Not specified'}</TableCell>
+                <TableCell>{project.climateZone?.zoneRange || 'Not specified'}</TableCell>
+                <TableCell>{project.compliancePathway?.name || 'Not specified'}</TableCell>
                 <TableCell>
                   <Chip
                     label={project.complianceResults.status}

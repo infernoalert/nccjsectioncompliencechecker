@@ -7,7 +7,7 @@ const path = require('path');
 dotenv.config();
 
 // Import models
-const BuildingClass = require('./models/BuildingClass');
+const BuildingClassification = require('./models/BuildingClassification');
 const ClimateZone = require('./models/ClimateZone');
 const CompliancePathway = require('./models/CompliancePathway');
 const SpecialRequirement = require('./models/SpecialRequirement');
@@ -26,7 +26,7 @@ const zoneData = JSON.parse(fs.readFileSync(path.join(__dirname, '../zone.json')
 
 // Building Classifications data
 const buildingClassifications = Object.entries(decisionTreeData.decision_tree.building_classification).map(([name, data]) => ({
-  name,
+  classType: name,
   description: data.description,
   subtypes: data.subtypes || {},
   climateZones: data.climate_zones || {},
@@ -51,19 +51,29 @@ const importData = async () => {
   try {
     // Drop existing collections
     await mongoose.connection.collection('climatezones').drop().catch(err => console.log('No climatezones collection to drop'));
-    await mongoose.connection.collection('buildingclasses').drop().catch(err => console.log('No buildingclasses collection to drop'));
+    await mongoose.connection.collection('buildingclassifications').drop().catch(err => console.log('No buildingclassifications collection to drop'));
     await mongoose.connection.collection('compliancepathways').drop().catch(err => console.log('No compliancepathways collection to drop'));
     await mongoose.connection.collection('specialrequirements').drop().catch(err => console.log('No specialrequirements collection to drop'));
 
     // Seed Building Classes
-    await BuildingClass.insertMany(buildingClassifications);
+    await BuildingClassification.insertMany(buildingClassifications);
     console.log('Building Classes seeded');
 
     // Seed Climate Zones
     const climateZones = zoneData.climateZones.map(zone => ({
-      zone: zone.zone,
-      locations: zone.locations,
+      name: `Climate Zone ${zone.zone}`,
+      code: `CZ${zone.zone}`,
       description: climateZoneDescriptions[zone.zone],
+      temperatureRange: {
+        min: zone.zone <= 3 ? 25 : zone.zone <= 6 ? 15 : 5,
+        max: zone.zone <= 3 ? 35 : zone.zone <= 6 ? 25 : 15
+      },
+      humidityRange: {
+        min: zone.zone <= 3 ? 60 : zone.zone <= 6 ? 40 : 20,
+        max: zone.zone <= 3 ? 90 : zone.zone <= 6 ? 70 : 50
+      },
+      solarRadiation: zone.zone <= 3 ? 6.5 : zone.zone <= 6 ? 5.0 : 3.5,
+      windSpeed: zone.zone <= 3 ? 3.0 : zone.zone <= 6 ? 4.0 : 5.0,
       insulation: zone.zone <= 6 ? 'standard' : 'enhanced',
       wallRValue: zone.zone <= 3 ? 'R1.4' : zone.zone <= 6 ? 'R2.0' : 'R2.8',
       roofRValue: zone.zone <= 3 ? 'R2.7' : zone.zone <= 6 ? 'R3.2' : 'R3.7',
@@ -111,7 +121,7 @@ const importData = async () => {
 // Delete data
 const deleteData = async () => {
   try {
-    await BuildingClass.deleteMany();
+    await BuildingClassification.deleteMany();
     await ClimateZone.deleteMany();
     await CompliancePathway.deleteMany();
     await SpecialRequirement.deleteMany();

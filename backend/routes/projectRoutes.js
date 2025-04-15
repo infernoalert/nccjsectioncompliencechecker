@@ -9,6 +9,7 @@ const {
   deleteProject,
   checkCompliance
 } = require('../controllers/projectController');
+const { getAllBuildingTypes } = require('../utils/mappingUtils');
 
 /**
  * @swagger
@@ -111,6 +112,22 @@ const {
  *         description: Not authorized
  */
 
+// Building types route - MUST be defined BEFORE the /:id routes
+router.get('/building-types', protect, (req, res) => {
+  try {
+    const buildingTypes = getAllBuildingTypes();
+    res.status(200).json({
+      success: true,
+      data: buildingTypes
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
 // Project routes
 router.route('/')
   .get(protect, getProjects)
@@ -121,6 +138,7 @@ router.route('/:id')
   .put(protect, updateProject)
   .delete(protect, deleteProject);
 
-router.post('/:id/check-compliance', protect, checkCompliance);
+router.route('/:id/check-compliance')
+  .post(protect, checkCompliance);
 
 module.exports = router; 

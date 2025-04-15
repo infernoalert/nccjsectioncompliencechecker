@@ -27,7 +27,7 @@ const UserList = () => {
     }
 
     if (error) {
-        return <Alert severity="error">{error}</Alert>;
+        return <Alert severity="error">{typeof error === 'object' ? error.message : error}</Alert>;
     }
 
     return (

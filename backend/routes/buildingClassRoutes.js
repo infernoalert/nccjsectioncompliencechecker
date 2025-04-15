@@ -9,6 +9,7 @@ const {
   getClimateZoneRequirements
 } = require('../controllers/buildingClassController');
 const { protect, authorize } = require('../middleware/auth');
+const BuildingClassification = require('../models/BuildingClassification');
 
 /**
  * @swagger
@@ -194,5 +195,45 @@ router.put('/:id', protect, authorize('admin'), updateBuildingClass);
  *         description: Building class not found
  */
 router.delete('/:id', protect, authorize('admin'), deleteBuildingClass);
+
+/**
+ * @swagger
+ * /api/building-classes/classifications:
+ *   get:
+ *     summary: Get all building classifications
+ *     tags: [Building Classes]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of building classifications
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/BuildingClassification'
+ *       401:
+ *         description: Not authorized
+ */
+router.get('/classifications', protect, async (req, res) => {
+  try {
+    const classifications = await BuildingClassification.find({});
+    res.status(200).json({
+      success: true,
+      data: classifications
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
 
 module.exports = router; 

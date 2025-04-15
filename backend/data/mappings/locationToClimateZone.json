@@ -1,0 +1,418 @@
+{
+  "locations": [
+    {
+      "id": "ACT-Canberra",
+      "name": "Canberra",
+      "state": "ACT",
+      "climateZone": "7",
+      "description": "Canberra, ACT",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": "NSW-Albury",
+      "name": "Albury",
+      "state": "NSW",
+      "climateZone": "4",
+      "description": "Albury, NSW",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": "NSW-Armidale",
+      "name": "Armidale",
+      "state": "NSW",
+      "climateZone": "7",
+      "description": "Armidale, NSW",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": "NSW-Batemans-Bay",
+      "name": "Batemans Bay",
+      "state": "NSW",
+      "climateZone": "6",
+      "description": "Batemans Bay, NSW",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": "NSW-Bathurst",
+      "name": "Bathurst",
+      "state": "NSW",
+      "climateZone": "7",
+      "description": "Bathurst, NSW",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": "NSW-Bega",
+      "name": "Bega",
+      "state": "NSW",
+      "climateZone": "6",
+      "description": "Bega, NSW",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": "NSW-Bellingen-Shire---Dorrigo-Plateau",
+      "name": "Bellingen Shire - Dorrigo Plateau",
+      "state": "NSW",
+      "climateZone": "7",
+      "description": "Bellingen Shire - Dorrigo Plateau, NSW",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": "NSW-Bellingen-Shire---Valley-&-seaboard",
+      "name": "Bellingen Shire - Valley & seaboard",
+      "state": "NSW",
+      "climateZone": "2",
+      "description": "Bellingen Shire - Valley & seaboard, NSW",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": "NSW-Bourke",
+      "name": "Bourke",
+      "state": "NSW",
+      "climateZone": "4",
+      "description": "Bourke, NSW",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": "NSW-Broken-Hill",
+      "name": "Broken Hill",
+      "state": "NSW",
+      "climateZone": "4",
+      "description": "Broken Hill, NSW",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": "NSW-Byron-Bay",
+      "name": "Byron Bay",
+      "state": "NSW",
+      "climateZone": "2",
+      "description": "Byron Bay, NSW",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": "NSW-Cobar",
+      "name": "Cobar",
+      "state": "NSW",
+      "climateZone": "4",
+      "description": "Cobar, NSW",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": "NSW-Coffs-Harbour",
+      "name": "Coffs Harbour",
+      "state": "NSW",
+      "climateZone": "2",
+      "description": "Coffs Harbour, NSW",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": "NSW-Dubbo",
+      "name": "Dubbo",
+      "state": "NSW",
+      "climateZone": "4",
+      "description": "Dubbo, NSW",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": "NSW-Goulburn",
+      "name": "Goulburn",
+      "state": "NSW",
+      "climateZone": "7",
+      "description": "Goulburn, NSW",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": "NSW-Grafton",
+      "name": "Grafton",
+      "state": "NSW",
+      "climateZone": "2",
+      "description": "Grafton, NSW",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": "NSW-Griffith",
+      "name": "Griffith",
+      "state": "NSW",
+      "climateZone": "4",
+      "description": "Griffith, NSW",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": "NSW-Ivanhoe",
+      "name": "Ivanhoe",
+      "state": "NSW",
+      "climateZone": "4",
+      "description": "Ivanhoe, NSW",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": "NSW-Lismore",
+      "name": "Lismore",
+      "state": "NSW",
+      "climateZone": "2",
+      "description": "Lismore, NSW",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": "NSW-Lord-Howe-Island",
+      "name": "Lord Howe Island",
+      "state": "NSW",
+      "climateZone": "2",
+      "description": "Lord Howe Island, NSW",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": "NSW-Moree",
+      "name": "Moree",
+      "state": "NSW",
+      "climateZone": "4",
+      "description": "Moree, NSW",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": "NSW-Newcastle",
+      "name": "Newcastle",
+      "state": "NSW",
+      "climateZone": "5",
+      "description": "Newcastle, NSW",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": "NSW-Nowra",
+      "name": "Nowra",
+      "state": "NSW",
+      "climateZone": "6",
+      "description": "Nowra, NSW",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": "NSW-Orange",
+      "name": "Orange",
+      "state": "NSW",
+      "climateZone": "7",
+      "description": "Orange, NSW",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": "NSW-Perisher---Smiggins",
+      "name": "Perisher - Smiggins",
+      "state": "NSW",
+      "climateZone": "8",
+      "description": "Perisher - Smiggins, NSW",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": "NSW-Port-Macquarie",
+      "name": "Port Macquarie",
+      "state": "NSW",
+      "climateZone": "5",
+      "description": "Port Macquarie, NSW",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": "NSW-Sydney-East",
+      "name": "Sydney East",
+      "state": "NSW",
+      "climateZone": "5",
+      "description": "Sydney East, NSW",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": "NSW-Sydney-West",
+      "name": "Sydney West",
+      "state": "NSW",
+      "climateZone": "6",
+      "description": "Sydney West, NSW",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": "NSW-Tamworth",
+      "name": "Tamworth",
+      "state": "NSW",
+      "climateZone": "4",
+      "description": "Tamworth, NSW",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": "NSW-Thredbo",
+      "name": "Thredbo",
+      "state": "NSW",
+      "climateZone": "8",
+      "description": "Thredbo, NSW",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": "NSW-Wagga-Wagga",
+      "name": "Wagga Wagga",
+      "state": "NSW",
+      "climateZone": "4",
+      "description": "Wagga Wagga, NSW",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": "NSW-Williamtown",
+      "name": "Williamtown",
+      "state": "NSW",
+      "climateZone": "5",
+      "description": "Williamtown, NSW",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": "NSW-Wollongong",
+      "name": "Wollongong",
+      "state": "NSW",
+      "climateZone": "5",
+      "description": "Wollongong, NSW",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": "NSW-Yass",
+      "name": "Yass",
+      "state": "NSW",
+      "climateZone": "6",
+      "description": "Yass, NSW",
+      "latitude": null,
+      "longitude": null
+    }
+  ],
+  "climateZones": [
+    {
+      "id": "7",
+      "name": "Cold",
+      "description": "Cold climate zone with low temperatures",
+      "typicalLocations": [
+        "Canberra",
+        "Armidale",
+        "Bathurst",
+        "Bellingen Shire - Dorrigo Plateau",
+        "Goulburn",
+        "Orange"
+      ],
+      "requirements": {
+        "insulation": "Very High",
+        "ventilation": "Low",
+        "heating": "Essential"
+      }
+    },
+    {
+      "id": "4",
+      "name": "Mixed",
+      "description": "Mixed climate zone with moderate temperatures",
+      "typicalLocations": [
+        "Albury",
+        "Bourke",
+        "Broken Hill",
+        "Cobar",
+        "Dubbo",
+        "Griffith",
+        "Ivanhoe",
+        "Moree",
+        "Tamworth",
+        "Wagga Wagga"
+      ],
+      "requirements": {
+        "insulation": "Moderate",
+        "ventilation": "Moderate",
+        "shading": "Recommended"
+      }
+    },
+    {
+      "id": "6",
+      "name": "Cool Temperate",
+      "description": "Cool climate zone with distinct seasonal temperature variations",
+      "typicalLocations": [
+        "Batemans Bay",
+        "Bega",
+        "Nowra",
+        "Sydney West",
+        "Yass"
+      ],
+      "requirements": {
+        "insulation": "High",
+        "ventilation": "Low",
+        "heating": "Recommended"
+      }
+    },
+    {
+      "id": "2",
+      "name": "Subtropical",
+      "description": "Warm and humid climate zone with mild winters",
+      "typicalLocations": [
+        "Bellingen Shire - Valley & seaboard",
+        "Byron Bay",
+        "Coffs Harbour",
+        "Grafton",
+        "Lismore",
+        "Lord Howe Island"
+      ],
+      "requirements": {
+        "insulation": "Moderate",
+        "ventilation": "High",
+        "shading": "Recommended"
+      }
+    },
+    {
+      "id": "5",
+      "name": "Temperate",
+      "description": "Temperate climate zone with mild temperatures",
+      "typicalLocations": [
+        "Newcastle",
+        "Port Macquarie",
+        "Sydney East",
+        "Williamtown",
+        "Wollongong"
+      ],
+      "requirements": {
+        "insulation": "Moderate",
+        "ventilation": "Moderate",
+        "shading": "Optional"
+      }
+    },
+    {
+      "id": "8",
+      "name": "Alpine",
+      "description": "Very cold alpine climate zone with snow",
+      "typicalLocations": [
+        "Perisher - Smiggins",
+        "Thredbo"
+      ],
+      "requirements": {
+        "insulation": "Extremely High",
+        "ventilation": "Very Low",
+        "heating": "Critical"
+      }
+    }
+  ]
+}

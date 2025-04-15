@@ -2,19 +2,40 @@ import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  Box,
   Container,
-  Paper,
   Typography,
+  Paper,
   Grid,
   Button,
-  Box,
-  Chip,
   CircularProgress,
   Alert,
-  Divider
+  Chip,
+  Card,
+  CardContent,
+  CardActions,
+  Divider,
 } from '@mui/material';
-import { fetchProject, checkCompliance } from '../store/slices/projectSlice';
+import {
+  Edit as EditIcon,
+  Assessment as AssessmentIcon,
+  Delete as DeleteIcon,
+} from '@mui/icons-material';
+import { fetchProject, deleteProject } from '../store/slices/projectSlice';
 
+/**
+ * ProjectDetails Component
+ * 
+ * This component displays detailed information about a specific project and provides
+ * access to related functionality such as:
+ * - Viewing project details
+ * - Editing project information
+ * - Generating compliance reports
+ * - Deleting projects
+ * 
+ * The component integrates with Redux for state management and uses Material-UI
+ * for the user interface.
+ */
 const ProjectDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -25,17 +46,20 @@ const ProjectDetails = () => {
     dispatch(fetchProject(id));
   }, [dispatch, id]);
 
-  const handleCheckCompliance = async () => {
-    try {
-      await dispatch(checkCompliance(id)).unwrap();
-    } catch (err) {
-      console.error('Failed to check compliance:', err);
+  const handleDelete = async () => {
+    if (window.confirm('Are you sure you want to delete this project?')) {
+      try {
+        await dispatch(deleteProject(id)).unwrap();
+        navigate('/projects');
+      } catch (err) {
+        console.error('Failed to delete project:', err);
+      }
     }
   };
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="60vh">
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="80vh">
         <CircularProgress />
       </Box>
     );
@@ -44,7 +68,7 @@ const ProjectDetails = () => {
   if (error) {
     return (
       <Container maxWidth="lg" sx={{ mt: 4 }}>
-        <Alert severity="error">{error}</Alert>
+        <Alert severity="error">{typeof error === 'object' ? error.message : error}</Alert>
       </Container>
     );
   }
@@ -52,102 +76,108 @@ const ProjectDetails = () => {
   if (!currentProject) {
     return (
       <Container maxWidth="lg" sx={{ mt: 4 }}>
-        <Alert severity="info">Project not found</Alert>
+        <Alert severity="warning">Project not found</Alert>
       </Container>
     );
   }
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'compliant':
-        return 'success';
-      case 'non_compliant':
-        return 'error';
-      case 'pending':
-        return 'warning';
-      default:
-        return 'default';
-    }
-  };
-
   return (
-    <Container maxWidth="lg" sx={{ mt: 4 }}>
+    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Paper sx={{ p: 3 }}>
-        <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-          <Typography variant="h4" component="h1">
+        {/* Header */}
+        <Box sx={{ mb: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Typography variant="h4" gutterBottom>
             {currentProject.name}
           </Typography>
-          <Box>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => navigate(`/projects/${id}/edit`)}
-              sx={{ mr: 2 }}
-            >
-              Edit Project
-            </Button>
-            <Button
-              variant="contained"
-              color="secondary"
-              onClick={handleCheckCompliance}
-              disabled={loading}
-            >
-              Check Compliance
-            </Button>
-          </Box>
+          <Chip
+            label={currentProject.status || 'In Progress'}
+            color={currentProject.status === 'Completed' ? 'success' : 'warning'}
+          />
         </Box>
 
+        <Divider sx={{ my: 3 }} />
+
+        {/* Project Information */}
         <Grid container spacing={3}>
           <Grid item xs={12} md={6}>
-            <Typography variant="h6" gutterBottom>
-              Project Details
-            </Typography>
-            <Typography><strong>Description:</strong> {currentProject.description}</Typography>
-            <Typography><strong>Building Class:</strong> {currentProject.buildingClassification?.name}</Typography>
-            <Typography><strong>Climate Zone:</strong> {currentProject.climateZone?.name}</Typography>
-            <Typography><strong>Compliance Pathway:</strong> {currentProject.compliancePathway?.name}</Typography>
+            <Card>
+              <CardContent>
+                <Typography variant="h6" gutterBottom>
+                  Project Details
+                </Typography>
+                <Typography variant="body1" paragraph>
+                  <strong>Building Type:</strong> {currentProject.buildingType}
+                </Typography>
+                <Typography variant="body1" paragraph>
+                  <strong>Location:</strong> {currentProject.location}
+                </Typography>
+                <Typography variant="body1" paragraph>
+                  <strong>Owner:</strong> {currentProject.owner}
+                </Typography>
+                <Typography variant="body1" paragraph>
+                  <strong>Building Classification:</strong>{' '}
+                  {currentProject.buildingClassification?.classType?.replace('Class_', '') || 'Not specified'}
+                </Typography>
+                <Typography variant="body1" paragraph>
+                  <strong>Climate Zone:</strong>{' '}
+                  {currentProject.climateZone?.name || 'Not specified'}
+                </Typography>
+              </CardContent>
+            </Card>
           </Grid>
 
           <Grid item xs={12} md={6}>
-            <Typography variant="h6" gutterBottom>
-              Building Fabric
-            </Typography>
-            <Typography><strong>Roof:</strong> {currentProject.buildingFabric.roof}</Typography>
-            <Typography><strong>External Walls:</strong> {currentProject.buildingFabric.externalWalls}</Typography>
-            <Typography><strong>Floor:</strong> {currentProject.buildingFabric.floor}</Typography>
-            <Typography><strong>Windows:</strong> {currentProject.buildingFabric.windows}</Typography>
+            <Card>
+              <CardContent>
+                <Typography variant="h6" gutterBottom>
+                  Compliance Information
+                </Typography>
+                <Typography variant="body1" paragraph>
+                  <strong>Compliance Pathway:</strong>{' '}
+                  {currentProject.compliancePathway?.name || 'Not specified'}
+                </Typography>
+                <Typography variant="body1" paragraph>
+                  <strong>Last Updated:</strong>{' '}
+                  {new Date(currentProject.updatedAt).toLocaleDateString()}
+                </Typography>
+                <Typography variant="body1" paragraph>
+                  <strong>Created:</strong>{' '}
+                  {new Date(currentProject.createdAt).toLocaleDateString()}
+                </Typography>
+              </CardContent>
+            </Card>
           </Grid>
-
-          {currentProject.complianceResults && (
-            <Grid item xs={12}>
-              <Divider sx={{ my: 3 }} />
-              <Typography variant="h6" gutterBottom>
-                Compliance Results
-              </Typography>
-              <Grid container spacing={2}>
-                {Object.entries(currentProject.complianceResults).map(([key, value]) => (
-                  <Grid item xs={12} sm={6} md={4} key={key}>
-                    <Paper sx={{ p: 2 }}>
-                      <Typography variant="subtitle1" gutterBottom>
-                        {key.replace(/([A-Z])/g, ' $1').trim()}
-                      </Typography>
-                      <Chip
-                        label={value.status}
-                        color={getStatusColor(value.status)}
-                        sx={{ mt: 1 }}
-                      />
-                      {value.message && (
-                        <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                          {value.message}
-                        </Typography>
-                      )}
-                    </Paper>
-                  </Grid>
-                ))}
-              </Grid>
-            </Grid>
-          )}
         </Grid>
+
+        <Divider sx={{ my: 3 }} />
+
+        {/* Action Buttons */}
+        <Box sx={{ mt: 4, display: 'flex', gap: 2 }}>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<EditIcon />}
+            onClick={() => navigate(`/projects/${id}/edit`)}
+          >
+            Edit Project
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            startIcon={<AssessmentIcon />}
+            onClick={() => navigate(`/projects/${id}/report`)}
+          >
+            Generate Report
+          </Button>
+          <Button
+            variant="outlined"
+            color="error"
+            startIcon={<DeleteIcon />}
+            onClick={handleDelete}
+          >
+            Delete Project
+          </Button>
+        </Box>
       </Paper>
     </Container>
   );

@@ -51,6 +51,42 @@
         },
         "compliance_pathways": ["DTS", "JV3", "NABERS"]
       },
+      "Class_5": {
+        "description": "Office buildings",
+        "subtypes": {
+          "single_tenant": {
+            "requirements": ["J1P2", "J3", "J4", "J5", "J6", "J7", "J8", "J9"],
+            "thermal_performance": true,
+            "energy_usage": true
+          },
+          "multi_tenant": {
+            "requirements": ["J1P2", "J3", "J4", "J5", "J6", "J7", "J8", "J9"],
+            "thermal_performance": true,
+            "energy_usage": true
+          }
+        },
+        "climate_zones": {
+          "Zones_1_3": {
+            "insulation": "standard",
+            "wall_r_value": "R1.4",
+            "roof_r_value": "R2.7",
+            "glazing": {"shgc": 0.4, "u_value": 5.4}
+          },
+          "Zones_4_6": {
+            "insulation": "standard",
+            "wall_r_value": "R2.0",
+            "roof_r_value": "R3.2",
+            "glazing": {"shgc": 0.5, "u_value": 5.0}
+          },
+          "Zones_7_8": {
+            "insulation": "enhanced",
+            "wall_r_value": "R2.8",
+            "roof_r_value": "R3.7",
+            "glazing": {"shgc": 0.6, "u_value": 4.5}
+          }
+        },
+        "compliance_pathways": ["DTS", "JV3", "NABERS"]
+      },
       "Class_9b": {
         "description": "Assembly buildings",
         "subtypes": {

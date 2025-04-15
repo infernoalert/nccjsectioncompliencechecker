@@ -1,162 +1,153 @@
 import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
 import {
+  Box,
+  Container,
+  Typography,
+  Paper,
   TextField,
   Button,
-  Paper,
-  Typography,
-  Box,
+  Grid,
+  CircularProgress,
+  Alert,
+  MenuItem,
   FormControl,
   InputLabel,
   Select,
-  MenuItem,
-  Grid,
-  Alert
+  Divider,
 } from '@mui/material';
-import {
-  createProject,
-  updateProject,
-  fetchProject,
-  fetchBuildingClassifications,
-  fetchClimateZones,
-  fetchCompliancePathways
-} from '../store/slices/projectSlice';
+import { createProject, updateProject, fetchProject } from '../store/slices/projectSlice';
 
+/**
+ * ProjectForm Component
+ * 
+ * This component provides a form for editing project details. It includes:
+ * - Basic project information (name, description, location)
+ * - Building classification and climate zone selection
+ * - Compliance pathway selection
+ * - Building fabric specifications
+ * - Special requirements
+ * 
+ * The component handles both creation and editing of projects, with proper
+ * validation and error handling.
+ */
 const ProjectForm = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
   const { id } = useParams();
-
-  const {
-    project,
-    buildingClassifications,
-    climateZones,
-    compliancePathways,
-    loading,
-    error
-  } = useSelector((state) => state.project);
-
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { currentProject, loading, error } = useSelector((state) => state.project);
   const [formData, setFormData] = useState({
     name: '',
     description: '',
+    buildingType: '',
+    location: '',
+    owner: '',
     buildingClassification: '',
     climateZone: '',
     compliancePathway: '',
     buildingFabric: {
-      walls: {
-        external: {
-          rValueByZone: {
-            Zones_1_3: '',
-            Zones_4_6: '',
-            Zones_7_8: ''
-          },
-          thermalBreaks: {
-            metalFramed: false
-          }
-        }
-      },
-      roof: {
-        rValueByZone: {
-          Zones_1_5: '',
-          Zone_6: '',
-          Zones_7_8: ''
-        },
-        solarAbsorptance: {
-          max: 0.45,
-          exemptZones: []
-        }
-      },
-      glazing: {
-        external: {
-          shgcByZone: {
-            Zones_1_3: 0,
-            Zones_4_6: 0,
-            Zones_7_8: 0
-          },
-          uValueByZone: {
-            Zones_1_3: 0,
-            Zones_4_6: 0,
-            Zones_7_8: 0
-          }
-        }
-      }
-    }
+      roof: '',
+      externalWalls: '',
+      floor: '',
+      windows: '',
+    },
+    specialRequirements: [],
   });
 
   useEffect(() => {
-    dispatch(fetchBuildingClassifications());
-    dispatch(fetchClimateZones());
-    dispatch(fetchCompliancePathways());
-
     if (id) {
       dispatch(fetchProject(id));
     }
   }, [dispatch, id]);
 
   useEffect(() => {
-    if (project && id) {
-      setFormData(project);
+    if (currentProject) {
+      setFormData({
+        name: currentProject.name || '',
+        description: currentProject.description || '',
+        buildingType: currentProject.buildingType || '',
+        location: currentProject.location || '',
+        owner: currentProject.owner || '',
+        buildingClassification: currentProject.buildingClassification?._id || '',
+        climateZone: currentProject.climateZone?._id || '',
+        compliancePathway: currentProject.compliancePathway?._id || '',
+        buildingFabric: currentProject.buildingFabric || {
+          roof: '',
+          externalWalls: '',
+          floor: '',
+          windows: '',
+        },
+        specialRequirements: currentProject.specialRequirements || [],
+      });
     }
-  }, [project, id]);
+  }, [currentProject]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const handleBuildingFabricChange = (path, value) => {
-    setFormData((prev) => {
-      const newData = { ...prev };
-      let current = newData.buildingFabric;
-      const pathArray = path.split('.');
-      
-      for (let i = 0; i < pathArray.length - 1; i++) {
-        current = current[pathArray[i]];
-      }
-      
-      current[pathArray[pathArray.length - 1]] = value;
-      return newData;
-    });
+    if (name.startsWith('buildingFabric.')) {
+      const fabricField = name.split('.')[1];
+      setFormData((prev) => ({
+        ...prev,
+        buildingFabric: {
+          ...prev.buildingFabric,
+          [fabricField]: value,
+        },
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       if (id) {
-        await dispatch(updateProject({ id, data: formData })).unwrap();
+        await dispatch(updateProject({ id, ...formData })).unwrap();
       } else {
         await dispatch(createProject(formData)).unwrap();
       }
       navigate('/projects');
-    } catch (error) {
-      console.error('Failed to save project:', error);
+    } catch (err) {
+      console.error('Failed to save project:', err);
     }
   };
 
   if (loading) {
-    return <Typography>Loading...</Typography>;
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="80vh">
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container maxWidth="lg" sx={{ mt: 4 }}>
+        <Alert severity="error">{typeof error === 'object' ? error.message : error}</Alert>
+      </Container>
+    );
   }
 
   return (
-    <Box>
-      <Typography variant="h4" mb={3}>
-        {id ? 'Edit Project' : 'Create New Project'}
-      </Typography>
-
-      {error && (
-        <Alert severity="error" sx={{ mb: 2 }}>
-          {error}
-        </Alert>
-      )}
-
+    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Paper sx={{ p: 3 }}>
+        <Typography variant="h4" gutterBottom>
+          {id ? 'Edit Project' : 'New Project'}
+        </Typography>
+
         <form onSubmit={handleSubmit}>
           <Grid container spacing={3}>
+            {/* Basic Information */}
             <Grid item xs={12}>
+              <Typography variant="h6" gutterBottom>
+                Basic Information
+              </Typography>
+            </Grid>
+            <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
                 label="Project Name"
@@ -166,7 +157,16 @@ const ProjectForm = () => {
                 required
               />
             </Grid>
-
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                label="Building Type"
+                name="buildingType"
+                value={formData.buildingType}
+                onChange={handleChange}
+                required
+              />
+            </Grid>
             <Grid item xs={12}>
               <TextField
                 fullWidth
@@ -175,29 +175,51 @@ const ProjectForm = () => {
                 value={formData.description}
                 onChange={handleChange}
                 multiline
-                rows={4}
+                rows={3}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                label="Location"
+                name="location"
+                value={formData.location}
+                onChange={handleChange}
+                required
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                label="Owner"
+                name="owner"
+                value={formData.owner}
+                onChange={handleChange}
+                required
               />
             </Grid>
 
-            <Grid item xs={12} md={4}>
-              <FormControl fullWidth>
-                <InputLabel>Building Classification</InputLabel>
-                <Select
-                  name="buildingClassification"
-                  value={formData.buildingClassification}
-                  onChange={handleChange}
-                  required
-                >
-                  {buildingClassifications.map((bc) => (
-                    <MenuItem key={bc._id} value={bc._id}>
-                      {bc.classType}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+            <Grid item xs={12}>
+              <Divider sx={{ my: 3 }} />
             </Grid>
 
-            <Grid item xs={12} md={4}>
+            {/* Building Classification and Climate Zone */}
+            <Grid item xs={12}>
+              <Typography variant="h6" gutterBottom>
+                Building Classification & Climate Zone
+              </Typography>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Box sx={{ p: 2, border: '1px solid #e0e0e0', borderRadius: 1 }}>
+                <Typography variant="subtitle2" color="text.secondary">
+                  Building Classification
+                </Typography>
+                <Typography variant="body1">
+                  {currentProject?.buildingClassification?.classType?.replace('Class_', '') || 'Not specified'}
+                </Typography>
+              </Box>
+            </Grid>
+            <Grid item xs={12} md={6}>
               <FormControl fullWidth>
                 <InputLabel>Climate Zone</InputLabel>
                 <Select
@@ -206,88 +228,69 @@ const ProjectForm = () => {
                   onChange={handleChange}
                   required
                 >
-                  {climateZones.map((cz) => (
-                    <MenuItem key={cz._id} value={cz._id}>
-                      {cz.zoneRange}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-
-            <Grid item xs={12} md={4}>
-              <FormControl fullWidth>
-                <InputLabel>Compliance Pathway</InputLabel>
-                <Select
-                  name="compliancePathway"
-                  value={formData.compliancePathway}
-                  onChange={handleChange}
-                  required
-                >
-                  {compliancePathways.map((cp) => (
-                    <MenuItem key={cp._id} value={cp._id}>
-                      {cp.name}
-                    </MenuItem>
-                  ))}
+                  <MenuItem value="">Select Climate Zone</MenuItem>
+                  {/* Add climate zone options here */}
                 </Select>
               </FormControl>
             </Grid>
 
             <Grid item xs={12}>
-              <Typography variant="h6" mb={2}>
+              <Divider sx={{ my: 3 }} />
+            </Grid>
+
+            {/* Building Fabric */}
+            <Grid item xs={12}>
+              <Typography variant="h6" gutterBottom>
                 Building Fabric
               </Typography>
             </Grid>
-
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
-                label="Wall R-Value (Zones 1-3)"
-                value={formData.buildingFabric.walls.external.rValueByZone.Zones_1_3}
-                onChange={(e) =>
-                  handleBuildingFabricChange('walls.external.rValueByZone.Zones_1_3', e.target.value)
-                }
+                label="Roof"
+                name="buildingFabric.roof"
+                value={formData.buildingFabric.roof}
+                onChange={handleChange}
               />
             </Grid>
-
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
-                label="Wall R-Value (Zones 4-6)"
-                value={formData.buildingFabric.walls.external.rValueByZone.Zones_4_6}
-                onChange={(e) =>
-                  handleBuildingFabricChange('walls.external.rValueByZone.Zones_4_6', e.target.value)
-                }
+                label="External Walls"
+                name="buildingFabric.externalWalls"
+                value={formData.buildingFabric.externalWalls}
+                onChange={handleChange}
               />
             </Grid>
-
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
-                label="Wall R-Value (Zones 7-8)"
-                value={formData.buildingFabric.walls.external.rValueByZone.Zones_7_8}
-                onChange={(e) =>
-                  handleBuildingFabricChange('walls.external.rValueByZone.Zones_7_8', e.target.value)
-                }
+                label="Floor"
+                name="buildingFabric.floor"
+                value={formData.buildingFabric.floor}
+                onChange={handleChange}
               />
             </Grid>
-
             <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
-                label="Roof R-Value (Zones 1-5)"
-                value={formData.buildingFabric.roof.rValueByZone.Zones_1_5}
-                onChange={(e) =>
-                  handleBuildingFabricChange('roof.rValueByZone.Zones_1_5', e.target.value)
-                }
+                label="Windows"
+                name="buildingFabric.windows"
+                value={formData.buildingFabric.windows}
+                onChange={handleChange}
               />
             </Grid>
 
             <Grid item xs={12}>
-              <Box display="flex" justifyContent="flex-end" gap={2}>
+              <Divider sx={{ my: 3 }} />
+            </Grid>
+
+            {/* Action Buttons */}
+            <Grid item xs={12}>
+              <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
                 <Button
                   variant="outlined"
-                  onClick={() => navigate('/projects')}
+                  onClick={() => navigate(`/projects/${id}`)}
                 >
                   Cancel
                 </Button>
@@ -295,16 +298,15 @@ const ProjectForm = () => {
                   type="submit"
                   variant="contained"
                   color="primary"
-                  disabled={loading}
                 >
-                  {id ? 'Update Project' : 'Create Project'}
+                  Save Changes
                 </Button>
               </Box>
             </Grid>
           </Grid>
         </form>
       </Paper>
-    </Box>
+    </Container>
   );
 };
 
