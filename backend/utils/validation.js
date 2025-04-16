@@ -3,11 +3,7 @@ const Joi = require('joi');
 const projectSchema = Joi.object({
   name: Joi.string().required().min(3).max(100),
   description: Joi.string().max(500),
-  buildingType: Joi.string().required().valid(
-    'retail_small', 'retail_medium', 'retail_large',
-    'office_small', 'office_medium', 'office_large',
-    'industrial_small', 'industrial_medium', 'industrial_large'
-  ),
+  buildingType: Joi.string().required(),
   location: Joi.string().required(),
   floorArea: Joi.number().required().min(0),
   climateZone: Joi.string().hex().length(24),

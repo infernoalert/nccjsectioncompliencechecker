@@ -4,7 +4,6 @@ const path = require('path');
 require('dotenv').config();
 
 // Import models
-const BuildingClass = require('../models/BuildingClass');
 const ClimateZone = require('../models/ClimateZone');
 const CompliancePathway = require('../models/CompliancePathway');
 const SectionJPart = require('../models/SectionJPart');
@@ -26,56 +25,9 @@ mongoose.connect(process.env.MONGODB_URI, {
 const nccMappingPath = path.join(__dirname, '../../ncc_section_j_mapping.json');
 const nccMapping = JSON.parse(fs.readFileSync(nccMappingPath, 'utf8'));
 
-// Seed building classes
+// Remove seedBuildingClasses function and replace with a message
 const seedBuildingClasses = async () => {
-  try {
-    // Clear existing data
-    await BuildingClass.deleteMany({});
-    
-    // Prepare data for insertion
-    const buildingClasses = Object.entries(nccMapping.buildingClassifications).map(([id, data]) => ({
-      _id: id,
-      description: data.description,
-      sectionJApplicability: data.sectionJApplicability,
-      primaryRequirements: data.primaryRequirements,
-      specialConsiderations: data.specialConsiderations,
-      compliancePathways: data.compliancePathways,
-      climateZoneRequirements: Object.entries(data.climateZoneRequirements || {}).map(([zone, reqs]) => ({
-        zone,
-        description: reqs.description,
-        wallRValue: reqs.wallRValue,
-        roofRValue: reqs.roofRValue,
-        floorRValue: reqs.floorRValue,
-        glazing: reqs.glazing
-      })),
-      buildingSizeRequirements: data.buildingSizeRequirements ? Object.entries(data.buildingSizeRequirements).map(([size, reqs]) => ({
-        size,
-        floorArea: reqs.floorArea,
-        provisions: reqs.provisions
-      })) : [],
-      specialTypes: data.specialTypes ? Object.entries(data.specialTypes).map(([type, reqs]) => ({
-        type,
-        applicability: reqs.applicability,
-        concessions: reqs.concessions,
-        requirements: reqs.requirements
-      })) : [],
-      subTypes: data.subTypes ? Object.entries(data.subTypes).map(([type, reqs]) => ({
-        type,
-        description: reqs.description,
-        specialRequirements: reqs.specialRequirements,
-        applicableClauses: reqs.applicableClauses,
-        exemptions: reqs.exemptions,
-        decisionLogic: reqs.decisionLogic
-      })) : [],
-      specialRequirements: data.specialRequirements || {}
-    }));
-    
-    // Insert data
-    await BuildingClass.insertMany(buildingClasses);
-    console.log('Building classes seeded successfully');
-  } catch (error) {
-    console.error('Error seeding building classes:', error);
-  }
+  console.log('Building classes are now accessed directly from Decision-Tree.json');
 };
 
 // Seed climate zones

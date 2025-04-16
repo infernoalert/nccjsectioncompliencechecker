@@ -1,5 +1,4 @@
 const Project = require('../models/Project');
-const BuildingClassification = require('../models/BuildingClassification');
 const ClimateZone = require('../models/ClimateZone');
 const CompliancePathway = require('../models/CompliancePathway');
 const BuildingFabric = require('../models/BuildingFabric');
@@ -7,11 +6,11 @@ const SpecialRequirement = require('../models/SpecialRequirement');
 const SectionJPart = require('../models/SectionJPart');
 const ExemptionAndConcession = require('../models/ExemptionAndConcession');
 const {
-  getBuildingClassification,
   getClimateZoneByLocation,
   getCompliancePathway,
   getSpecialRequirements
 } = require('../utils/decisionTreeUtils');
+const buildingTypeMapping = require('../data/mappings/buildingTypeToClassification.json');
 
 // Update the path to point to the root directory
 const decisionTree = require('../../Decision-Tree.json');
@@ -61,11 +60,28 @@ class ReportService {
    * @returns {Object} - Building classification information
    */
   generateBuildingClassificationInfo() {
-    const classification = getBuildingClassification(this.project.buildingType);
-    return {
-      classification,
-      description: `This building is classified as ${classification} according to the NCC.`
-    };
+    try {
+      const buildingType = this.project.buildingType;
+      const buildingTypeInfo = buildingTypeMapping.buildingTypes.find(type => type.id === buildingType);
+      
+      if (!buildingTypeInfo) {
+        return {
+          error: `Building type not found: ${buildingType}`
+        };
+      }
+
+      return {
+        classType: buildingTypeInfo.nccClassification,
+        description: buildingTypeInfo.description,
+        typicalUse: buildingTypeInfo.typicalUse,
+        commonFeatures: buildingTypeInfo.commonFeatures,
+        notes: buildingTypeInfo.notes
+      };
+    } catch (error) {
+      return {
+        error: `Error getting building classification: ${error.message}`
+      };
+    }
   }
 
   /**

@@ -15,7 +15,6 @@ connectDB();
 // Import routes
 const userRoutes = require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
-const buildingClassRoutes = require('./routes/buildingClassRoutes');
 const climateZoneRoutes = require('./routes/climateZoneRoutes');
 const compliancePathwayRoutes = require('./routes/compliancePathwayRoutes');
 const projectRoutes = require('./routes/projectRoutes');
@@ -35,7 +34,6 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 // Mount routes
 app.use('/api/users', userRoutes);
 app.use('/api/auth', authRoutes);
-app.use('/api/building-classes', buildingClassRoutes);
 app.use('/api/climate-zones', climateZoneRoutes);
 app.use('/api/compliance-pathways', compliancePathwayRoutes);
 app.use('/api/projects', projectRoutes);

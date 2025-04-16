@@ -1,15 +1,14 @@
-const BuildingClassification = require('../models/BuildingClassification');
 const ClimateZone = require('../models/ClimateZone');
 const BuildingFabric = require('../models/BuildingFabric');
 const CompliancePathway = require('../models/CompliancePathway');
 const SpecialRequirement = require('../models/SpecialRequirement');
 const Project = require('../models/Project');
+const { getBuildingClassification } = require('../utils/decisionTreeUtils');
 
 class ComplianceService {
   async checkCompliance(projectId) {
     try {
       const project = await Project.findById(projectId)
-        .populate('buildingClassification')
         .populate('climateZone')
         .populate('buildingFabric')
         .populate('compliancePathway')
@@ -60,30 +59,51 @@ class ComplianceService {
 
   async checkBuildingClassification(project) {
     const checks = [];
-    const buildingClass = project.buildingClassification;
+    
+    try {
+      // Get building classification from decision tree
+      const buildingClass = getBuildingClassification(project.buildingType);
+      
+      if (!buildingClass) {
+        checks.push({
+          requirement: 'Building Classification',
+          status: 'failed',
+          details: `Building classification not found for type: ${project.buildingType}`
+        });
+        return checks;
+      }
+      
+      // Check applicable clauses
+      if (buildingClass.applicableClauses && buildingClass.applicableClauses.length > 0) {
+        for (const clause of buildingClass.applicableClauses) {
+          checks.push({
+            requirement: `Clause ${clause}`,
+            status: 'pending',
+            details: 'To be verified by compliance pathway'
+          });
+        }
+      }
 
-    // Check applicable clauses
-    for (const clause of buildingClass.applicableClauses) {
-      checks.push({
-        requirement: `Clause ${clause}`,
-        status: 'pending',
-        details: 'To be verified by compliance pathway'
-      });
-    }
-
-    // Check subtypes if applicable
-    if (buildingClass.subtypes && buildingClass.subtypes.length > 0) {
-      for (const subtype of buildingClass.subtypes) {
-        if (subtype.requirements) {
-          for (const requirement of subtype.requirements) {
-            checks.push({
-              requirement: `Subtype requirement: ${requirement}`,
-              status: 'pending',
-              details: 'To be verified by compliance pathway'
-            });
+      // Check subtypes if applicable
+      if (buildingClass.subtypes && buildingClass.subtypes.length > 0) {
+        for (const subtype of buildingClass.subtypes) {
+          if (subtype.requirements) {
+            for (const requirement of subtype.requirements) {
+              checks.push({
+                requirement: `Subtype requirement: ${requirement}`,
+                status: 'pending',
+                details: 'To be verified by compliance pathway'
+              });
+            }
           }
         }
       }
+    } catch (error) {
+      checks.push({
+        requirement: 'Building Classification',
+        status: 'error',
+        details: `Error checking building classification: ${error.message}`
+      });
     }
 
     return checks;
