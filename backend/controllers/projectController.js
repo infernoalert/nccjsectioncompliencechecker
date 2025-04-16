@@ -3,6 +3,7 @@ const BuildingClassification = require('../models/BuildingClassification');
 const ClimateZone = require('../models/ClimateZone');
 const asyncHandler = require('express-async-handler');
 const complianceService = require('../services/complianceService');
+const reportService = require('../services/reportService');
 const buildingTypeMapping = require('../data/mappings/buildingTypeToClassification.json');
 const { getAllLocations, getClimateZoneForLocation } = require('../utils/locationUtils');
 
@@ -269,6 +270,43 @@ const checkCompliance = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Generate a compliance report for a project
+// @route   GET /api/projects/:id/report
+// @access  Private
+const generateReport = asyncHandler(async (req, res) => {
+  try {
+    const project = await Project.findById(req.params.id);
+
+    if (!project) {
+      return res.status(404).json({ 
+        success: false,
+        error: 'Project not found' 
+      });
+    }
+
+    // Check if user is the owner
+    if (project.owner.toString() !== req.user.id) {
+      return res.status(403).json({ 
+        success: false,
+        error: 'Not authorized' 
+      });
+    }
+
+    // Generate the report
+    const report = await reportService.generateReport(req.params.id);
+    
+    res.status(200).json({
+      success: true,
+      data: report
+    });
+  } catch (error) {
+    res.status(500).json({ 
+      success: false,
+      error: error.message 
+    });
+  }
+});
+
 const getBuildingTypes = async (req, res) => {
   try {
     const buildingTypes = buildingTypeMapping.buildingTypes;
@@ -307,5 +345,6 @@ module.exports = {
   deleteProject,
   checkCompliance,
   getBuildingTypes,
-  getLocations
+  getLocations,
+  generateReport
 }; 

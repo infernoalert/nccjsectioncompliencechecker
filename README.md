@@ -1,3 +1,6 @@
+**************************************
+**COPY .ENV FOR BOTH FRONT AND BACK **
+**************************************
 # NCC Section J Compliance Checker
 
 A full-stack application for checking NCC Section J compliance, built with Express.js, React, and MongoDB.

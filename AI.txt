@@ -1,7 +1,7 @@
 # Project Status and Context
 
 ## Project Overview
-This is a full-stack application with Express.js backend, React frontend, and MongoDB database. The application is a NCC Section J Compliance Checker that allows users to check building compliance with the National Construction Code (NCC) Section J requirements. It includes JWT authentication with role-based access control (RBAC) for admin and user roles. The application also includes functionality for managing building classes, climate zones, compliance pathways, and projects for NCC Section J compliance checking.
+This is a full-stack application with Express.js backend, React frontend, and MongoDB database. The application is a NCC Section J Compliance Checker that allows users to check building compliance with the National Construction Code (NCC) Section J requirements. It includes JWT authentication with role-based access control (RBAC) for admin and user roles. The application also includes functionality for managing building classes, climate zones, compliance pathways, and projects for NCC Section J compliance checking. Users can generate comprehensive compliance reports for their projects.
 
 ## Project Structure
 ```
@@ -48,7 +48,7 @@ The backend is built with Express.js and includes:
    - buildingClassController.js with operations for building classes
    - climateZoneController.js with operations for climate zones
    - compliancePathwayController.js with operations for compliance pathways
-   - projectController.js with operations for projects (createProject, getProjects, getProject, updateProject, deleteProject, checkCompliance)
+   - projectController.js with operations for projects (createProject, getProjects, getProject, updateProject, deleteProject, checkCompliance, generateReport)
 
 3. **Routes**:
    - userRoutes.js with RESTful endpoints for user operations (admin only)
@@ -64,9 +64,11 @@ The backend is built with Express.js and includes:
 
 5. **Services**:
    - complianceService.js for handling compliance checking logic
+   - reportService.js for generating comprehensive compliance reports
 
 6. **Utils**:
    - jwt.js for token generation and verification
+   - decisionTreeUtils.js for accessing data from Decision-Tree.json
 
 7. **Server Configuration**:
    - MongoDB connection setup
@@ -86,7 +88,7 @@ The frontend is built with React and includes:
    - Redux Toolkit for global state
    - userSlice.js with async thunks for API calls
    - authSlice.js with authentication state and operations
-   - projectSlice.js with async thunks for project operations
+   - projectSlice.js with async thunks for project operations, including report generation
 
 2. **Components**:
    - SignIn.js: Form for user login with email and password
@@ -99,11 +101,12 @@ The frontend is built with React and includes:
    - ProjectDetails.js: Displays detailed information about a specific project
    - ProjectForm.js: Form for editing project details
    - ProjectList.js: Displays a list of projects with filtering options
+   - ProjectReport.js: Displays a comprehensive compliance report for a project
 
 3. **Routing**:
    - React Router for navigation
    - Public routes: signin, signup
-   - Protected routes: dashboard, user list, create user (admin only), projects, new project
+   - Protected routes: dashboard, user list, create user (admin only), projects, new project, project report
 
 4. **UI**:
    - Material-UI for styling
@@ -112,6 +115,7 @@ The frontend is built with React and includes:
    - Form validation for email and password
    - Building type selection with user-friendly descriptions
    - Multi-step forms for complex data entry
+   - Comprehensive report display with sections for project info, building classification, climate zone, compliance pathway, building fabric, special requirements, compliance results, and documentation
 
 ## Authentication and Authorization
 - JWT-based authentication
@@ -156,6 +160,7 @@ The frontend is built with React and includes:
   - PUT /api/projects/:id: Update a project
   - DELETE /api/projects/:id: Delete a project
   - POST /api/projects/:id/check-compliance: Check compliance for a project
+  - GET /api/projects/:id/report: Generate a comprehensive compliance report for a project
 
 ## Data Mapping and Frontend-Backend Synchronization
 The application uses several mapping mechanisms to ensure proper data flow between frontend and backend:
@@ -208,6 +213,35 @@ The application uses several mapping mechanisms to ensure proper data flow betwe
    - The project controller handles this transformation by constructing the classType string
    - When modifying data formats, update all transformation logic in both frontend and backend
 
+## Report Generation
+The application includes a comprehensive report generation feature:
+
+1. **Backend Implementation**:
+   - `reportService.js` provides methods for generating different sections of the report:
+     - Project information
+     - Building classification details
+     - Climate zone requirements
+     - Compliance pathway information
+     - Building fabric specifications
+     - Special requirements and exemptions
+     - Compliance results
+     - Documentation requirements
+   - The service uses data from both the database and the Decision-Tree.json file
+   - The project controller includes a `generateReport` method that uses the report service
+   - The project routes include a new endpoint for report generation: GET /api/projects/:id/report
+
+2. **Frontend Implementation**:
+   - The project slice includes a `generateReport` thunk for making the API call
+   - The ProjectReport component displays the report data in a structured format
+   - The report includes sections for all aspects of compliance
+   - The UI provides a "Generate Report" button to trigger report generation
+   - The report displays compliance status with color-coded indicators (green for compliant, red for non-compliant)
+
+3. **Report Data Structure**:
+   - The report is structured as a JSON object with sections for different aspects of compliance
+   - Each section contains relevant data from the project and the decision tree
+   - The report includes metadata such as generation date and version
+
 ## Current Status
 - Basic user management functionality is implemented
 - MongoDB is set up and configured
@@ -232,6 +266,12 @@ The application uses several mapping mechanisms to ensure proper data flow betwe
 - Fixed issues with building classification mapping and seeding
 - Added missing Class_5 building classification to Decision-Tree.json
 - Updated seeder.js to use the correct BuildingClassification model
+- Implemented report generation functionality in the backend
+- Created a comprehensive report service for generating compliance reports
+- Added a report generation endpoint to the project routes
+- Implemented the ProjectReport component in the frontend
+- Added report generation functionality to the project slice
+- Updated the UI to display the report data in a structured format
 
 ## Technical Details
 - Backend runs on port 5000

@@ -1,0 +1,170 @@
+{
+  "version": "1.0",
+  "last_updated": "2024-04-15",
+  "decision_tree": {
+    "building_classification": {
+      "Class_2": {
+        "description": "Apartment buildings",
+        "subtypes": {
+          "SOU": {
+            "requirements": ["J1P2", "J1P3", "J3"],
+            "thermal_performance": true,
+            "energy_usage": true
+          },
+          "common_areas": {
+            "requirements": ["J4", "J5", "J6", "J7", "J8", "J9"],
+            "compliance_pathways": ["DTS", "JV3"]
+          }
+        },
+        "climate_zones": {
+          "Zones_1_6": {
+            "insulation": "standard",
+            "wall_r_value": "R1.4-R2.8",
+            "roof_r_value": "R2.7-R3.7"
+          },
+          "Zones_7_8": {
+            "insulation": "enhanced",
+            "wall_r_value": "R2.0-R3.8",
+            "roof_r_value": "R3.2-R4.2"
+          }
+        }
+      },
+      "Class_3": {
+        "description": "Hotels, motels, etc.",
+        "size_based_provisions": {
+          "small": {"max_area": 500, "provisions": "simplified"},
+          "medium_large": {"min_area": 500, "provisions": "full"}
+        },
+        "climate_zones": {
+          "Zones_1_3": {
+            "type": "tropical/subtropical",
+            "glazing": {"shgc": 0.43, "u_value": 5.7}
+          },
+          "Zones_4_6": {
+            "type": "temperate",
+            "glazing": {"shgc": 0.43, "u_value": 5.7}
+          },
+          "Zones_7_8": {
+            "type": "cold",
+            "glazing": {"shgc": 0.43, "u_value": 3.3}
+          }
+        },
+        "compliance_pathways": ["DTS", "JV3", "NABERS"]
+      },
+      "Class_5": {
+        "description": "Office buildings",
+        "subtypes": {
+          "single_tenant": {
+            "requirements": ["J1P2", "J3", "J4", "J5", "J6", "J7", "J8", "J9"],
+            "thermal_performance": true,
+            "energy_usage": true
+          },
+          "multi_tenant": {
+            "requirements": ["J1P2", "J3", "J4", "J5", "J6", "J7", "J8", "J9"],
+            "thermal_performance": true,
+            "energy_usage": true
+          }
+        },
+        "climate_zones": {
+          "Zones_1_3": {
+            "insulation": "standard",
+            "wall_r_value": "R1.4",
+            "roof_r_value": "R2.7",
+            "glazing": {"shgc": 0.4, "u_value": 5.4}
+          },
+          "Zones_4_6": {
+            "insulation": "standard",
+            "wall_r_value": "R2.0",
+            "roof_r_value": "R3.2",
+            "glazing": {"shgc": 0.5, "u_value": 5.0}
+          },
+          "Zones_7_8": {
+            "insulation": "enhanced",
+            "wall_r_value": "R2.8",
+            "roof_r_value": "R3.7",
+            "glazing": {"shgc": 0.6, "u_value": 4.5}
+          }
+        },
+        "compliance_pathways": ["DTS", "JV3", "NABERS"]
+      },
+      "Class_9b": {
+        "description": "Assembly buildings",
+        "subtypes": {
+          "early_childhood_centre": {
+            "special_requirements": {
+              "fire_safety": true,
+              "minor_use_rule": false,
+              "glazing": "specific",
+              "hvac": "specific",
+              "lighting": "specific"
+            },
+            "applicable_clauses": ["D2D3", "D2D4", "J3", "J6", "J7", "J8", "J9"]
+          },
+          "school": {
+            "requirements": "standard"
+          }
+        }
+      }
+    },
+    "building_fabric": {
+      "walls": {
+        "external": {
+          "r_value_by_zone": {
+            "Zones_1_3": "R1.0-R2.8",
+            "Zones_4_6": "R1.4-R2.8",
+            "Zones_7_8": "R2.0-R3.8"
+          },
+          "thermal_breaks": {
+            "metal_framed": true
+          }
+        }
+      },
+      "roof": {
+        "r_value_by_zone": {
+          "Zones_1_5": "R3.7",
+          "Zone_6": "R3.2",
+          "Zones_7_8": "R4.8"
+        },
+        "solar_absorptance": {
+          "max": 0.45,
+          "exempt_zones": ["Zone_8"]
+        }
+      }
+    },
+    "special_requirements": {
+      "renewable_energy": {
+        "trigger": "roof_area > 55m²",
+        "requirements": {
+          "roof_allocation": "20% clear area",
+          "electrical": "switchboard provisions"
+        }
+      },
+      "ev_charging": {
+        "trigger": "carpark >= 10 spaces/storey",
+        "requirements": "dedicated distribution boards"
+      }
+    },
+    "compliance_pathways": {
+      "DTS": {
+        "description": "Deemed-to-Satisfy",
+        "applicability": "All Classes 2-9",
+        "verification": "prescriptive_checklist"
+      },
+      "JV3": {
+        "description": "Performance Solution",
+        "applicability": "All Classes 2-9",
+        "verification": "energy_modeling"
+      }
+    }
+  },
+  "exemptions": {
+    "minor_use_rule": {
+      "threshold": "10% of floor area",
+      "excluded_classes": ["Class_9b_early_childhood_centre", "laboratories"]
+    },
+    "heritage_buildings": {
+      "conditions": "listed status",
+      "limitations": "heritage-sensitive elements only"
+    }
+  }
+} 
