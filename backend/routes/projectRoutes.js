@@ -9,7 +9,8 @@ const {
   deleteProject,
   checkCompliance,
   getBuildingTypes,
-  getLocations
+  getLocations,
+  generateReport
 } = require('../controllers/projectController');
 const { getAllBuildingTypes } = require('../utils/mappingUtils');
 
@@ -52,39 +53,185 @@ const { getAllBuildingTypes } = require('../utils/mappingUtils');
  *     ComplianceReport:
  *       type: object
  *       properties:
- *         projectId:
- *           type: string
- *           description: ID of the project
- *         isCompliant:
- *           type: boolean
- *           description: Overall compliance status
- *         sections:
+ *         projectInfo:
+ *           type: object
+ *           properties:
+ *             name:
+ *               type: string
+ *               description: Project name
+ *             description:
+ *               type: string
+ *               description: Project description
+ *             buildingType:
+ *               type: string
+ *               description: Type of building
+ *             location:
+ *               type: string
+ *               description: Project location
+ *             owner:
+ *               type: string
+ *               description: Project owner ID
+ *             floorArea:
+ *               type: number
+ *               description: Total floor area in square meters
+ *             size:
+ *               type: string
+ *               description: Building size category
+ *             status:
+ *               type: string
+ *               description: Project status
+ *         buildingClassification:
+ *           type: object
+ *           properties:
+ *             classType:
+ *               type: string
+ *               description: NCC building class type
+ *             description:
+ *               type: string
+ *               description: Class description
+ *             subtypes:
+ *               type: array
+ *               items:
+ *                 type: string
+ *               description: Building subtypes
+ *             decisionTreeInfo:
+ *               type: object
+ *               description: Additional classification information from decision tree
+ *         climateZone:
+ *           type: object
+ *           properties:
+ *             name:
+ *               type: string
+ *               description: Climate zone name
+ *             code:
+ *               type: string
+ *               description: Climate zone code
+ *             description:
+ *               type: string
+ *               description: Zone description
+ *             requirements:
+ *               type: object
+ *               description: Climate zone specific requirements
+ *         compliancePathway:
+ *           type: object
+ *           properties:
+ *             name:
+ *               type: string
+ *               description: Pathway name
+ *             description:
+ *               type: string
+ *               description: Pathway description
+ *             applicability:
+ *               type: string
+ *               description: Applicability conditions
+ *             verification:
+ *               type: string
+ *               description: Verification method
+ *             requirements:
+ *               type: array
+ *               items:
+ *                 type: string
+ *               description: Pathway requirements
+ *         buildingFabric:
+ *           type: object
+ *           properties:
+ *             walls:
+ *               type: object
+ *               description: Wall specifications and requirements
+ *             roof:
+ *               type: object
+ *               description: Roof specifications and requirements
+ *             floor:
+ *               type: object
+ *               description: Floor specifications and requirements
+ *             glazing:
+ *               type: object
+ *               description: Glazing specifications and requirements
+ *         specialRequirements:
  *           type: array
  *           items:
  *             type: object
  *             properties:
- *               section:
+ *               name:
  *                 type: string
- *                 description: NCC section reference
- *               status:
+ *                 description: Requirement name
+ *               trigger:
  *                 type: string
- *                 enum: [compliant, non-compliant, not-applicable]
- *                 description: Section compliance status
+ *                 description: What triggers this requirement
  *               requirements:
- *                 type: array
- *                 items:
- *                   type: object
- *                   properties:
- *                     requirement:
- *                       type: string
- *                       description: Requirement description
- *                     status:
- *                       type: string
- *                       enum: [compliant, non-compliant, not-applicable]
- *                       description: Requirement compliance status
- *                     details:
- *                       type: string
- *                       description: Additional details or calculations
+ *                 type: object
+ *                 description: Detailed requirements
+ *         complianceResults:
+ *           type: object
+ *           properties:
+ *             status:
+ *               type: string
+ *               enum: [compliant, non-compliant, pending]
+ *               description: Overall compliance status
+ *             checks:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   section:
+ *                     type: string
+ *                     description: Section reference
+ *                   status:
+ *                     type: string
+ *                     enum: [pass, fail, not-applicable]
+ *                   details:
+ *                     type: string
+ *             lastChecked:
+ *               type: string
+ *               format: date-time
+ *             nextReviewDate:
+ *               type: string
+ *               format: date-time
+ *         metadata:
+ *           type: object
+ *           properties:
+ *             generatedAt:
+ *               type: string
+ *               format: date-time
+ *               description: Report generation timestamp
+ *             reportVersion:
+ *               type: string
+ *               description: Version of the report format
+ *
+ * /api/projects/{id}/report:
+ *   get:
+ *     summary: Generate a comprehensive compliance report for a project
+ *     tags: [Projects]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Project ID
+ *     responses:
+ *       200:
+ *         description: Report generated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Operation success status
+ *                 data:
+ *                   $ref: '#/components/schemas/ComplianceReport'
+ *       401:
+ *         description: Not authorized
+ *       403:
+ *         description: Forbidden - User does not have access to this project
+ *       404:
+ *         description: Project not found
+ *       500:
+ *         description: Server error during report generation
  */
 
 /**
@@ -128,7 +275,8 @@ router.route('/:id')
   .put(protect, updateProject)
   .delete(protect, deleteProject);
 
-router.route('/:id/check-compliance')
-  .post(protect, checkCompliance);
+// Additional project routes
+router.get('/:id/check-compliance', protect, checkCompliance);
+router.get('/:id/report', protect, generateReport);
 
 module.exports = router; 

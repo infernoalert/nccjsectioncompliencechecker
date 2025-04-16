@@ -202,6 +202,22 @@ export const fetchLocations = createAsyncThunk(
   }
 );
 
+export const generateReport = createAsyncThunk(
+  'project/generateReport',
+  async (id, { getState, rejectWithValue }) => {
+    try {
+      const { auth } = getState();
+      if (!auth.token) {
+        return rejectWithValue('No authentication token available');
+      }
+      const response = await axiosWithAuth(auth.token).get(`/projects/${id}/report`);
+      return response.data.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.error || error.message);
+    }
+  }
+);
+
 const initialState = {
   projects: [],
   currentProject: null,
@@ -211,7 +227,8 @@ const initialState = {
   compliancePathways: [],
   locations: [],
   loading: false,
-  error: null
+  error: null,
+  report: null
 };
 
 const projectSlice = createSlice({
@@ -379,6 +396,19 @@ const projectSlice = createSlice({
         state.locations = action.payload;
       })
       .addCase(fetchLocations.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // Generate Report
+      .addCase(generateReport.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(generateReport.fulfilled, (state, action) => {
+        state.loading = false;
+        state.report = action.payload;
+      })
+      .addCase(generateReport.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
