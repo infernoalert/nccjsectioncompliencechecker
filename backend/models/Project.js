@@ -13,7 +13,8 @@ const projectSchema = new mongoose.Schema({
   },
   buildingType: {
     type: String,
-    required: true
+    required: true,
+    enum: ['retail_small', 'retail_medium', 'retail_large', 'office_small', 'office_medium', 'office_large', 'industrial_small', 'industrial_medium', 'industrial_large']
   },
   location: {
     type: String,
@@ -34,10 +35,6 @@ const projectSchema = new mongoose.Schema({
       },
       message: 'Floor area must be greater than 0'
     }
-  },
-  buildingClassification: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'BuildingClassification'
   },
   climateZone: {
     type: mongoose.Schema.Types.ObjectId,

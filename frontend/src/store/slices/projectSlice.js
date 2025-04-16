@@ -25,11 +25,9 @@ export const fetchProjects = createAsyncThunk(
       if (!auth.token) {
         return rejectWithValue('No authentication token available');
       }
-      console.log('Making API request with token:', auth.token);
       const response = await axiosWithAuth(auth.token).get('/projects');
       return response.data.data;
     } catch (error) {
-      console.error('Error fetching projects:', error.response?.data || error.message);
       return rejectWithValue(error.response?.data?.error || error.message);
     }
   }
@@ -115,55 +113,7 @@ export const checkCompliance = createAsyncThunk(
   }
 );
 
-export const fetchBuildingClassifications = createAsyncThunk(
-  'project/fetchBuildingClassifications',
-  async (_, { getState, rejectWithValue }) => {
-    try {
-      const { auth } = getState();
-      if (!auth.token) {
-        return rejectWithValue('No authentication token available');
-      }
-      const response = await axiosWithAuth(auth.token).get('/building-classes');
-      return response.data.data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data?.error || error.message);
-    }
-  }
-);
-
-export const fetchClimateZones = createAsyncThunk(
-  'project/fetchClimateZones',
-  async (_, { getState, rejectWithValue }) => {
-    try {
-      const { auth } = getState();
-      if (!auth.token) {
-        return rejectWithValue('No authentication token available');
-      }
-      const response = await axiosWithAuth(auth.token).get('/climate-zones');
-      return response.data.data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data?.error || error.message);
-    }
-  }
-);
-
-export const fetchCompliancePathways = createAsyncThunk(
-  'project/fetchCompliancePathways',
-  async (_, { getState, rejectWithValue }) => {
-    try {
-      const { auth } = getState();
-      if (!auth.token) {
-        return rejectWithValue('No authentication token available');
-      }
-      const response = await axiosWithAuth(auth.token).get('/compliance-pathways');
-      return response.data.data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data?.error || error.message);
-    }
-  }
-);
-
-// Fetch building types
+// Fetch building types from decision tree
 export const fetchBuildingTypes = createAsyncThunk(
   'project/fetchBuildingTypes',
   async (_, { getState, rejectWithValue }) => {
@@ -173,19 +123,14 @@ export const fetchBuildingTypes = createAsyncThunk(
         return rejectWithValue('No authentication token available');
       }
       const response = await axiosWithAuth(auth.token).get('/projects/building-types');
-      
-      // Ensure we have valid data before returning
-      if (response.data && response.data.success && Array.isArray(response.data.data)) {
-        return response.data.data;
-      } else {
-        return rejectWithValue('Invalid response format from server');
-      }
+      return response.data.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.error || 'Failed to fetch building types');
+      return rejectWithValue(error.response?.data?.error || error.message);
     }
   }
 );
 
+// Fetch locations from decision tree
 export const fetchLocations = createAsyncThunk(
   'project/fetchLocations',
   async (_, { getState, rejectWithValue }) => {
@@ -222,9 +167,6 @@ const initialState = {
   projects: [],
   currentProject: null,
   buildingTypes: [],
-  buildingClassifications: [],
-  climateZones: [],
-  compliancePathways: [],
   locations: [],
   loading: false,
   error: null,
@@ -254,7 +196,7 @@ const projectSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-      // Fetch Single Project
+      // Fetch Project
       .addCase(fetchProject.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -287,13 +229,11 @@ const projectSlice = createSlice({
       })
       .addCase(updateProject.fulfilled, (state, action) => {
         state.loading = false;
-        const index = state.projects.findIndex(project => project._id === action.payload._id);
+        const index = state.projects.findIndex(p => p._id === action.payload._id);
         if (index !== -1) {
           state.projects[index] = action.payload;
         }
-        if (state.currentProject?._id === action.payload._id) {
-          state.currentProject = action.payload;
-        }
+        state.currentProject = action.payload;
       })
       .addCase(updateProject.rejected, (state, action) => {
         state.loading = false;
@@ -306,7 +246,7 @@ const projectSlice = createSlice({
       })
       .addCase(deleteProject.fulfilled, (state, action) => {
         state.loading = false;
-        state.projects = state.projects.filter(project => project._id !== action.payload);
+        state.projects = state.projects.filter(p => p._id !== action.payload);
         if (state.currentProject?._id === action.payload) {
           state.currentProject = null;
         }
@@ -322,54 +262,11 @@ const projectSlice = createSlice({
       })
       .addCase(checkCompliance.fulfilled, (state, action) => {
         state.loading = false;
-        const index = state.projects.findIndex(project => project._id === action.payload._id);
-        if (index !== -1) {
-          state.projects[index] = action.payload;
-        }
-        if (state.currentProject?._id === action.payload._id) {
-          state.currentProject = action.payload;
+        if (state.currentProject) {
+          state.currentProject.complianceResults = action.payload;
         }
       })
       .addCase(checkCompliance.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
-      // Fetch Building Classifications
-      .addCase(fetchBuildingClassifications.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(fetchBuildingClassifications.fulfilled, (state, action) => {
-        state.loading = false;
-        state.buildingClassifications = action.payload;
-      })
-      .addCase(fetchBuildingClassifications.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
-      // Fetch Climate Zones
-      .addCase(fetchClimateZones.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(fetchClimateZones.fulfilled, (state, action) => {
-        state.loading = false;
-        state.climateZones = action.payload;
-      })
-      .addCase(fetchClimateZones.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
-      // Fetch Compliance Pathways
-      .addCase(fetchCompliancePathways.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(fetchCompliancePathways.fulfilled, (state, action) => {
-        state.loading = false;
-        state.compliancePathways = action.payload;
-      })
-      .addCase(fetchCompliancePathways.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })

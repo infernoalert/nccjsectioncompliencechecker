@@ -17,7 +17,13 @@ import {
   Select,
   Divider,
 } from '@mui/material';
-import { createProject, updateProject, fetchProject } from '../store/slices/projectSlice';
+import { 
+  createProject, 
+  updateProject, 
+  fetchProject,
+  fetchBuildingTypes,
+  fetchLocations
+} from '../store/slices/projectSlice';
 
 /**
  * ProjectForm Component
@@ -36,16 +42,20 @@ const ProjectForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { currentProject, loading, error } = useSelector((state) => state.project);
+  const { 
+    currentProject, 
+    loading, 
+    error,
+    buildingTypes,
+    locations
+  } = useSelector((state) => state.project);
+
   const [formData, setFormData] = useState({
     name: '',
     description: '',
     buildingType: '',
     location: '',
     floorArea: '',
-    buildingClassification: '',
-    climateZone: '',
-    compliancePathway: '',
     buildingFabric: {
       roof: '',
       externalWalls: '',
@@ -56,6 +66,10 @@ const ProjectForm = () => {
   });
 
   useEffect(() => {
+    // Fetch building types and locations when component mounts
+    dispatch(fetchBuildingTypes());
+    dispatch(fetchLocations());
+    
     if (id) {
       dispatch(fetchProject(id));
     }
@@ -69,9 +83,6 @@ const ProjectForm = () => {
         buildingType: currentProject.buildingType || '',
         location: currentProject.location || '',
         floorArea: currentProject.floorArea || '',
-        buildingClassification: currentProject.buildingClassification?._id || '',
-        climateZone: currentProject.climateZone?._id || '',
-        compliancePathway: currentProject.compliancePathway?._id || '',
         buildingFabric: currentProject.buildingFabric || {
           roof: '',
           externalWalls: '',
@@ -107,7 +118,7 @@ const ProjectForm = () => {
     e.preventDefault();
     try {
       if (id) {
-        await dispatch(updateProject({ id, ...formData })).unwrap();
+        await dispatch(updateProject({ id, data: formData })).unwrap();
       } else {
         await dispatch(createProject(formData)).unwrap();
       }
@@ -159,14 +170,21 @@ const ProjectForm = () => {
               />
             </Grid>
             <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                label="Building Type"
-                name="buildingType"
-                value={formData.buildingType}
-                onChange={handleChange}
-                required
-              />
+              <FormControl fullWidth required>
+                <InputLabel>Building Type</InputLabel>
+                <Select
+                  name="buildingType"
+                  value={formData.buildingType}
+                  onChange={handleChange}
+                  label="Building Type"
+                >
+                  {buildingTypes.map((type) => (
+                    <MenuItem key={type} value={type}>
+                      {type}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </Grid>
             <Grid item xs={12}>
               <TextField
@@ -180,14 +198,21 @@ const ProjectForm = () => {
               />
             </Grid>
             <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                label="Location"
-                name="location"
-                value={formData.location}
-                onChange={handleChange}
-                required
-              />
+              <FormControl fullWidth required>
+                <InputLabel>Location</InputLabel>
+                <Select
+                  name="location"
+                  value={formData.location}
+                  onChange={handleChange}
+                  label="Location"
+                >
+                  {locations.map((location) => (
+                    <MenuItem key={location} value={location}>
+                      {location}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
             </Grid>
             <Grid item xs={12} md={6}>
               <TextField
@@ -251,15 +276,10 @@ const ProjectForm = () => {
             </Grid>
 
             <Grid item xs={12}>
-              <Divider sx={{ my: 3 }} />
-            </Grid>
-
-            {/* Action Buttons */}
-            <Grid item xs={12}>
-              <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
+              <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
                 <Button
                   variant="outlined"
-                  onClick={() => navigate(`/projects/${id}`)}
+                  onClick={() => navigate('/projects')}
                 >
                   Cancel
                 </Button>
@@ -267,8 +287,9 @@ const ProjectForm = () => {
                   type="submit"
                   variant="contained"
                   color="primary"
+                  disabled={loading}
                 >
-                  Save Changes
+                  {loading ? <CircularProgress size={24} /> : 'Save Project'}
                 </Button>
               </Box>
             </Grid>
