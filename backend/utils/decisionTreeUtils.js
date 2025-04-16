@@ -1,5 +1,6 @@
 const ClimateZone = require('../models/ClimateZone');
 const decisionTree = require('../../Decision-Tree.json');
+const locationToClimateZone = require('../data/mappings/locationToClimateZone.json');
 
 /**
  * Get building classification based on building type
@@ -17,32 +18,19 @@ const getBuildingClassification = (buildingType) => {
 /**
  * Get climate zone based on location
  * @param {string} location - The location of the building
- * @returns {Promise<Object>} The climate zone data
+ * @returns {string} The climate zone
  */
-const getClimateZoneByLocation = async (location) => {
+const getClimateZoneByLocation = (location) => {
   try {
-    // First try to get from decision tree
-    const climateZone = decisionTree.climateZones[location];
-    if (climateZone) {
-      return climateZone;
+    // Find the location in the mapping file
+    const locationData = locationToClimateZone.locations.find(loc => loc.id === location);
+    
+    if (!locationData) {
+      throw new Error(`Location not found: ${location}`);
     }
-
-    // If not in decision tree, try database
-    const [state, region] = location.split('-');
-    if (!state || !region) {
-      throw new Error('Invalid location format. Expected format: "STATE-REGION"');
-    }
-
-    const dbClimateZone = await ClimateZone.findOne({
-      state: state.toUpperCase(),
-      region: region
-    });
-
-    if (!dbClimateZone) {
-      throw new Error(`Climate zone not found for location: ${location}`);
-    }
-
-    return dbClimateZone;
+    
+    // Return the climate zone
+    return locationData.climateZone;
   } catch (error) {
     throw new Error(`Error getting climate zone: ${error.message}`);
   }
@@ -106,35 +94,24 @@ const getCompliancePathways = (classType) => {
 
 /**
  * Get exemptions from the decision tree
- * @param {Object} project - The project object
- * @returns {Array} - The applicable exemptions
+ * @param {string} classType - The building class type (e.g., 'Class_5')
+ * @returns {Array|null} - The exemptions or null if not found
  */
-const getExemptions = (project) => {
-  const exemptions = [];
+const getExemptions = (classType) => {
+  const buildingClass = getBuildingClassification(classType);
+  if (!buildingClass) {
+    return null;
+  }
   
-  // Check minor use rule
-  exemptions.push({
-    name: 'Minor Use Rule',
-    description: decisionTree.exemptions.minor_use_rule.threshold,
-    excludedClasses: decisionTree.exemptions.minor_use_rule.excluded_classes
-  });
-  
-  // Check heritage buildings
-  exemptions.push({
-    name: 'Heritage Buildings',
-    conditions: decisionTree.exemptions.heritage_buildings.conditions,
-    limitations: decisionTree.exemptions.heritage_buildings.limitations
-  });
-  
-  return exemptions;
+  return buildingClass.exemptions || null;
 };
 
 module.exports = {
   getBuildingClassification,
+  getClimateZoneByLocation,
+  getCompliancePathway,
+  getSpecialRequirements,
   getClimateZoneRequirements,
   getCompliancePathways,
-  getSpecialRequirements,
-  getExemptions,
-  getClimateZoneByLocation,
-  getCompliancePathway
+  getExemptions
 }; 

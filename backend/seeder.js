@@ -7,7 +7,6 @@ const path = require('path');
 dotenv.config();
 
 // Import models
-const BuildingClassification = require('./models/BuildingClassification');
 const ClimateZone = require('./models/ClimateZone');
 const CompliancePathway = require('./models/CompliancePathway');
 const SpecialRequirement = require('./models/SpecialRequirement');
@@ -32,7 +31,7 @@ mongoose.connect(process.env.MONGODB_URI)
 const decisionTreeData = JSON.parse(fs.readFileSync(path.join(__dirname, '../Decision-Tree.json'), 'utf8'));
 const zoneData = JSON.parse(fs.readFileSync(path.join(__dirname, '../zone.json'), 'utf8'));
 
-// Building Classifications data
+// Building Classifications data - Keep for reference but don't seed
 const buildingClassifications = Object.entries(decisionTreeData.decision_tree.building_classification).map(([name, data]) => ({
   classType: name,
   description: data.description,
@@ -59,13 +58,11 @@ const importData = async () => {
   try {
     // Drop existing collections
     await mongoose.connection.collection('climatezones').drop().catch(err => console.log('No climatezones collection to drop'));
-    await mongoose.connection.collection('buildingclassifications').drop().catch(err => console.log('No buildingclassifications collection to drop'));
     await mongoose.connection.collection('compliancepathways').drop().catch(err => console.log('No compliancepathways collection to drop'));
     await mongoose.connection.collection('specialrequirements').drop().catch(err => console.log('No specialrequirements collection to drop'));
 
-    // Seed Building Classes
-    await BuildingClassification.insertMany(buildingClassifications);
-    console.log('Building Classes seeded');
+    // Remove Building Classes seeding
+    console.log('Building Classes are now accessed directly from Decision-Tree.json');
 
     // Seed Climate Zones
     const climateZones = zoneData.climateZones.map(zone => ({
@@ -129,7 +126,6 @@ const importData = async () => {
 // Delete data
 const deleteData = async () => {
   try {
-    await BuildingClassification.deleteMany();
     await ClimateZone.deleteMany();
     await CompliancePathway.deleteMany();
     await SpecialRequirement.deleteMany();

@@ -3,9 +3,13 @@ const mongoose = require('mongoose');
 const projectSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: true
+    required: [true, 'Project name is required'],
+    trim: true
   },
-  description: String,
+  description: {
+    type: String,
+    trim: true
+  },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
@@ -13,73 +17,99 @@ const projectSchema = new mongoose.Schema({
   },
   buildingType: {
     type: String,
-    required: true,
-    enum: ['retail_small', 'retail_medium', 'retail_large', 'office_small', 'office_medium', 'office_large', 'industrial_small', 'industrial_medium', 'industrial_large']
+    required: [true, 'Building type is required']
   },
   location: {
     type: String,
-    required: true
+    required: [true, 'Location is required']
   },
-  size: {
+  climateZone: {
     type: String,
-    enum: ['small', 'medium', 'large'],
-    required: true,
-    default: 'medium'
+    required: [true, 'Climate zone is required']
   },
   floorArea: {
     type: Number,
-    required: true,
-    validate: {
-      validator: function(value) {
-        return value > 0;
-      },
-      message: 'Floor area must be greater than 0'
-    }
-  },
-  climateZone: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'ClimateZone'
+    required: [true, 'Floor area is required'],
+    min: [0, 'Floor area must be greater than 0']
   },
   buildingFabric: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'BuildingFabric'
+    type: {
+      walls: {
+        type: {
+          material: String,
+          thickness: Number,
+          rValue: Number
+        }
+      },
+      roof: {
+        type: {
+          material: String,
+          thickness: Number,
+          rValue: Number
+        }
+      },
+      floor: {
+        type: {
+          material: String,
+          thickness: Number,
+          rValue: Number
+        }
+      },
+      windows: {
+        type: {
+          material: String,
+          thickness: Number,
+          uValue: Number
+        }
+      }
+    }
   },
-  specialRequirements: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'SpecialRequirement'
-  }],
-  compliancePathway: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'CompliancePathway'
-  },
-  complianceResults: {
-    status: {
-      type: String,
-      enum: ['compliant', 'non_compliant', 'pending'],
-      default: 'pending'
-    },
-    checks: [{
-      requirement: String,
+  specialRequirements: {
+    type: [{
+      type: {
+        type: String,
+        enum: ['fire', 'accessibility', 'acoustic', 'energy', 'other']
+      },
+      description: String,
       status: {
         type: String,
-        enum: ['compliant', 'non_compliant', 'pending']
-      },
-      details: String,
-      documentation: [String]
-    }],
-    lastChecked: Date,
-    nextReviewDate: Date
+        enum: ['pending', 'compliant', 'non_compliant'],
+        default: 'pending'
+      }
+    }]
   },
-  documentation: [{
-    name: String,
+  compliancePathway: {
+    type: {
+      type: String,
+      enum: ['performance', 'prescriptive', 'deemed_to_satisfy']
+    },
+    description: String,
+    status: {
+      type: String,
+      enum: ['pending', 'compliant', 'non_compliant'],
+      default: 'pending'
+    }
+  },
+  complianceStatus: {
     type: String,
-    url: String,
-    uploadDate: Date
-  }],
-  status: {
-    type: String,
-    enum: ['draft', 'in_review', 'approved', 'rejected'],
-    default: 'draft'
+    enum: ['pending', 'compliant', 'non_compliant'],
+    default: 'pending'
+  },
+  lastAssessmentDate: {
+    type: Date
+  },
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now
   }
 }, {
   timestamps: true
@@ -99,6 +129,7 @@ projectSchema.pre('save', function(next) {
       this.size = 'large';
     }
   }
+  this.updatedAt = Date.now();
   next();
 });
 
