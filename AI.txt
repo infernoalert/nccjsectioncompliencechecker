@@ -1,386 +1,200 @@
-# Project Status and Context
+# NCC Section J Compliance Checker - Full Stack Application
 
 ## Project Overview
-This is a full-stack application with Express.js backend, React frontend, and MongoDB database. The application is a NCC Section J Compliance Checker that allows users to check building compliance with the National Construction Code (NCC) Section J requirements. It includes JWT authentication with role-based access control (RBAC) for admin and user roles. The application also includes functionality for managing building classes, climate zones, compliance pathways, and projects for NCC Section J compliance checking. Users can generate comprehensive compliance reports for their projects.
+A comprehensive web application for checking building compliance with the NCC Section J requirements. The application features a modern tech stack with Express.js backend, React frontend, and MongoDB database, implementing JWT authentication for secure access.
 
-## Project Structure
+## Tech Stack
+- **Backend**: Node.js with Express.js
+- **Frontend**: React with Redux for state management
+- **Database**: MongoDB with Mongoose ODM
+- **Authentication**: JWT (JSON Web Tokens)
+- **API Documentation**: Swagger/OpenAPI
+- **Testing**: Jest for backend, React Testing Library for frontend
+
+## Architecture
+
+### Backend Structure
 ```
-.
-├── backend/           # Express.js server
-│   ├── controllers/  # API controllers
-│   ├── middleware/   # Express middleware
-│   ├── models/       # Mongoose models
-│   ├── routes/       # API routes
-│   ├── services/     # Business logic services
-│   ├── utils/        # Utility functions
-│   ├── config/       # Configuration files
-│   ├── scripts/      # Utility scripts
-│   ├── seeder.js     # Database seeding script
-│   └── server.js     # Express server entry point
-├── frontend/          # React application
-│   ├── public/       # Static files
-│   └── src/          # React source code
-│       ├── components/ # React components
-│       │   ├── auth/   # Authentication components
-│       │   └── projects/ # Project-related components
-│       ├── store/     # Redux store and slices
-│       └── App.js     # React application entry point
-└── mongodb-data/      # MongoDB data directory
+backend/
+├── config/                 # Configuration files
+│   ├── db.js              # Database connection
+│   └── config.js          # App configuration
+├── controllers/           # Request handlers
+│   ├── authController.js  # Authentication logic
+│   ├── projectController.js # Project management
+│   └── userController.js  # User management
+├── middleware/            # Custom middleware
+│   ├── auth.js           # JWT authentication
+│   └── errorHandler.js   # Global error handling
+├── models/               # Mongoose models
+│   ├── Project.js       # Project schema
+│   └── User.js          # User schema
+├── routes/              # API routes
+│   ├── authRoutes.js   # Authentication routes
+│   └── projectRoutes.js # Project management routes
+├── services/           # Business logic
+│   ├── complianceService.js # Compliance checking logic
+│   └── reportService.js    # Report generation
+├── utils/             # Utility functions
+│   ├── decisionTreeUtils.js # Decision tree operations
+│   └── mappingUtils.js     # Data mapping utilities
+└── data/             # Static data
+    └── Decision-Tree.json # Compliance decision tree
 ```
 
-## Backend Implementation
-The backend is built with Express.js and includes:
+### Frontend Structure
+```
+frontend/
+├── public/           # Static assets
+├── src/
+│   ├── components/   # React components
+│   │   ├── Auth/    # Authentication components
+│   │   ├── Layout/  # Layout components
+│   │   └── Project/ # Project management components
+│   ├── redux/       # Redux state management
+│   │   ├── slices/  # Redux slices
+│   │   └── store.js # Redux store configuration
+│   ├── services/    # API services
+│   └── utils/       # Utility functions
+└── package.json     # Frontend dependencies
+```
 
-1. **Models**:
-   - User model with fields: username, email, password, role, and createdAt
-   - BuildingClassification model for NCC building classifications (not BuildingClass)
-   - ClimateZone model for climate zone requirements
-   - CompliancePathway model for compliance pathways
-   - SectionJPart model for Section J parts
-   - SpecialRequirement model for special requirements
-   - ExemptionAndConcession model for exemptions and concessions
-   - BuildingFabric model for building fabric details
-   - Project model for user projects with fields: name, description, buildingType, location, owner, buildingClassification, climateZone, buildingFabric, specialRequirements, compliancePathway, complianceResults, documentation, status, and metadata
+## Key Features
 
-2. **Controllers**:
-   - userController.js with CRUD operations (getUsers, getUser, createUser, updateUser, deleteUser)
-   - authController.js with authentication operations (register, login, getMe)
-   - buildingClassController.js with operations for building classes
-   - climateZoneController.js with operations for climate zones
-   - compliancePathwayController.js with operations for compliance pathways
-   - projectController.js with operations for projects (createProject, getProjects, getProject, updateProject, deleteProject, checkCompliance, generateReport)
-
-3. **Routes**:
-   - userRoutes.js with RESTful endpoints for user operations (admin only)
-   - authRoutes.js with authentication endpoints (register, login, getMe)
-   - buildingClassRoutes.js with endpoints for building classes
-   - climateZoneRoutes.js with endpoints for climate zones
-   - compliancePathwayRoutes.js with endpoints for compliance pathways
-   - projectRoutes.js with endpoints for projects
-
-4. **Middleware**:
-   - errorHandler.js for centralized error handling
-   - auth.js for JWT verification and role-based access control
-
-5. **Services**:
-   - complianceService.js for handling compliance checking logic
-   - reportService.js for generating comprehensive compliance reports
-
-6. **Utils**:
-   - jwt.js for token generation and verification
-   - decisionTreeUtils.js for accessing data from Decision-Tree.json
-
-7. **Server Configuration**:
-   - MongoDB connection setup
-   - Express middleware (cors, json parsing)
-   - Route mounting
-   - Error handling middleware
-
-8. **Data Seeding**:
-   - seeder.js script to populate the database with building classifications, climate zones, and compliance pathways from Decision-Tree.json
-   - The seeder uses the BuildingClassification model (not BuildingClass)
-   - Building classifications are created with classType field (e.g., "Class_5") that matches the format expected by the project controller
-
-## Frontend Implementation
-The frontend is built with React and includes:
-
-1. **State Management**:
-   - Redux Toolkit for global state
-   - userSlice.js with async thunks for API calls
-   - authSlice.js with authentication state and operations
-   - projectSlice.js with async thunks for project operations, including report generation
-
-2. **Components**:
-   - SignIn.js: Form for user login with email and password
-   - SignUp.js: Form for user registration with email validation and password confirmation
-   - UserList.js: Displays users in a table (admin only)
-   - CreateUser.js: Form for creating new users (admin only)
-   - PrivateRoute.js: Component for protected routes with role-based access
-   - NewProject.js: Multi-step form for creating new projects with building type and location selection
-   - UserProject.js: Displays user's projects with Redux integration
-   - ProjectDetails.js: Displays detailed information about a specific project
-   - ProjectForm.js: Form for editing project details
-   - ProjectList.js: Displays a list of projects with filtering options
-   - ProjectReport.js: Displays a comprehensive compliance report for a project
-
-3. **Routing**:
-   - React Router for navigation
-   - Public routes: signin, signup
-   - Protected routes: dashboard, user list, create user (admin only), projects, new project, project report
-
-4. **UI**:
-   - Material-UI for styling
-   - Responsive design
-   - Role-based navigation
-   - Form validation for email and password
-   - Building type selection with user-friendly descriptions
-   - Multi-step forms for complex data entry
-   - Comprehensive report display with sections for project info, building classification, climate zone, compliance pathway, building fabric, special requirements, compliance results, and documentation
-
-## Authentication and Authorization
+### 1. Authentication System
 - JWT-based authentication
-- Role-based access control (RBAC) with two roles: admin and user
-- Token storage in Redux state and localStorage
-- Protected routes on both frontend and backend
+- User registration and login
 - Password hashing with bcrypt
-- Email validation on the frontend
-- Password confirmation and minimum length validation
-- Authentication token included in all API requests via axios interceptors
+- Protected routes and API endpoints
 
-## API Integration
-- Frontend communicates with backend via axios
-- API base URL: http://localhost:5000/api
-- API endpoints:
-  - GET /api/users: Fetch all users (admin only)
-  - GET /api/users/:id: Fetch a single user (admin only)
-  - POST /api/users: Create a new user (admin only)
-  - PUT /api/users/:id: Update a user (admin only)
-  - DELETE /api/users/:id: Delete a user (admin only)
-  - POST /api/auth/register: Register a new user
-  - POST /api/auth/login: Login user
-  - GET /api/auth/me: Get current user
-  - GET /api/building-classes: Fetch all building classes
-  - GET /api/building-classes/:id: Fetch a single building class
-  - POST /api/building-classes: Create a new building class (admin only)
-  - PUT /api/building-classes/:id: Update a building class (admin only)
-  - DELETE /api/building-classes/:id: Delete a building class (admin only)
-  - GET /api/climate-zones: Fetch all climate zones
-  - GET /api/climate-zones/:id: Fetch a single climate zone
-  - POST /api/climate-zones: Create a new climate zone (admin only)
-  - PUT /api/climate-zones/:id: Update a climate zone (admin only)
-  - DELETE /api/climate-zones/:id: Delete a climate zone (admin only)
-  - GET /api/compliance-pathways: Fetch all compliance pathways
-  - GET /api/compliance-pathways/:id: Fetch a single compliance pathway
-  - POST /api/compliance-pathways: Create a new compliance pathway (admin only)
-  - PUT /api/compliance-pathways/:id: Update a compliance pathway (admin only)
-  - DELETE /api/compliance-pathways/:id: Delete a compliance pathway (admin only)
-  - GET /api/projects: Fetch all projects for a user
-  - GET /api/projects/:id: Fetch a single project
-  - POST /api/projects: Create a new project
-  - PUT /api/projects/:id: Update a project
-  - DELETE /api/projects/:id: Delete a project
-  - POST /api/projects/:id/check-compliance: Check compliance for a project
-  - GET /api/projects/:id/report: Generate a comprehensive compliance report for a project
+### 2. Project Management
+- Create, read, update, and delete projects
+- Project details and compliance status
+- Document upload and management
+- Project history tracking
 
-## Data Mapping and Frontend-Backend Synchronization
-The application uses several mapping mechanisms to ensure proper data flow between frontend and backend:
+### 3. Compliance Checking
+- Automated compliance verification against NCC Section J
+- Decision tree-based compliance pathway determination
+- Direct climate zone and building classification validation from Decision-Tree.json
+- Special requirements identification
+- On-demand data access without code changes
 
-1. **Building Type to Classification Mapping**:
-   - Located in `backend/data/mappings/buildingTypeToClassification.json`
-   - Maps building types (e.g., "office_single") to NCC classifications (e.g., "5")
-   - Used by the backend project controller to determine the correct building classification when a project is created
-   - The project controller constructs the classType string (e.g., "Class_5") and looks up the corresponding BuildingClassification document
-   - When updating this mapping, you must restart the backend server for changes to take effect
-   - The frontend doesn't directly read this file; it gets building types through API calls
+### 4. Report Generation
+- Comprehensive compliance reports
+- PDF export functionality
+- Customizable report sections
+- Historical report tracking
+- Dynamic report generation based on decision tree data
 
-2. **Building Classification Data**:
-   - Defined in `Decision-Tree.json` and seeded into the database using `seeder.js`
-   - Each building classification must have a `classType` field (e.g., "Class_5") that matches the format used by the project controller
-   - The seeder script maps the keys from Decision-Tree.json to the `classType` field in the database
-   - If a building classification is missing from Decision-Tree.json, projects using that classification will fail to create
+### 5. Data Management
+- Centralized decision tree for compliance rules
+- Direct access to building classifications and climate zones
+- Dynamic data updates
+- Data validation and error handling
+- Efficient data caching
 
-3. **ObjectId Handling**:
-   - MongoDB uses ObjectId for document references
-   - Frontend components must handle ObjectId conversion properly
-   - When sending data to the backend, ensure IDs are in the correct format
-   - When receiving data from the backend, ensure proper handling of ObjectId references
+## API Endpoints
 
-4. **Response Format Consistency**:
-   - All backend API responses follow the format: `{ success: true, data: [...] }`
-   - Frontend Redux thunks expect this format and extract data using `response.data.data`
-   - When adding new endpoints, maintain this response format
+### Authentication
+- POST /api/auth/register - User registration
+- POST /api/auth/login - User login
+- GET /api/auth/me - Get current user
 
-5. **Enum Handling**:
-   - Building classifications use specific enum values (e.g., "Class_5", "Class_9a")
-   - Frontend must match these exact values when creating or updating records
-   - When adding new classification types, update both the model schema and frontend validation
+### Projects
+- GET /api/projects - List all projects
+- POST /api/projects - Create new project
+- GET /api/projects/:id - Get project details
+- PUT /api/projects/:id - Update project
+- DELETE /api/projects/:id - Delete project
+- GET /api/projects/:id/report - Generate compliance report
 
-6. **Frontend Considerations After Backend Changes**:
-   - When modifying backend models, update corresponding frontend interfaces
-   - When changing API response formats, update all Redux thunks that consume those endpoints
-   - When adding new fields to models, update form components to handle the new fields
-   - When changing validation rules, update frontend validation logic
-   - When modifying enum values, update any frontend code that references those values
+## Data Models
 
-7. **Error Handling**:
-   - Backend errors are returned in the format: `{ success: false, error: "Error message" }`
-   - Frontend Redux thunks handle errors by checking `error.response?.data?.error`
-   - When adding new error types, ensure consistent error handling on both ends
-
-8. **Data Transformation**:
-   - Some data requires transformation between frontend and backend formats
-   - For example, building classifications use "Class_X" format in the database but "X" in the mapping file
-   - The project controller handles this transformation by constructing the classType string
-   - When modifying data formats, update all transformation logic in both frontend and backend
-
-## Report Generation
-The application includes a comprehensive report generation feature:
-
-1. **Backend Implementation**:
-   - `reportService.js` provides methods for generating different sections of the report:
-     - Project information
-     - Building classification details
-     - Climate zone requirements
-     - Compliance pathway information
-     - Building fabric specifications
-     - Special requirements and exemptions
-     - Compliance results
-     - Documentation requirements
-   - The service uses data from both the database and the Decision-Tree.json file
-   - The project controller includes a `generateReport` method that uses the report service
-   - The project routes include a new endpoint for report generation: GET /api/projects/:id/report
-
-2. **Frontend Implementation**:
-   - The project slice includes a `generateReport` thunk for making the API call
-   - The ProjectReport component displays the report data in a structured format
-   - The report includes sections for all aspects of compliance
-   - The UI provides a "Generate Report" button to trigger report generation
-   - The report displays compliance status with color-coded indicators (green for compliant, red for non-compliant)
-
-3. **Report Data Structure**:
-   - The report is structured as a JSON object with sections for different aspects of compliance
-   - Each section contains relevant data from the project and the decision tree
-   - The report includes metadata such as generation date and version
-
-## Current Status
-- Basic user management functionality is implemented
-- MongoDB is set up and configured
-- Error handling is in place
-- Frontend and backend are connected
-- JWT authentication with role-based access control is implemented
-- Database models for building classes, climate zones, compliance pathways, and projects are created
-- API routes and controllers for building classes, climate zones, compliance pathways, and projects are implemented
-- Server.js is updated to include the new routes
-- Seeder script is implemented to populate the database with building classifications, climate zones, and compliance pathways
-- SignIn and SignUp components are implemented with form validation
-- Auth slice is implemented for Redux state management
-- Protected routes are set up in the frontend
-- NewProject component has been implemented with multi-step form and Redux integration for project creation
-- Building type selection has been implemented with NCC building classifications
-- Form validation and error handling have been improved
-- Project creation workflow has been streamlined with proper redirection
-- UserProject component has been updated to use Redux for fetching projects
-- ProjectDetails component has been implemented for viewing project details
-- Project model has been enhanced with better validation and metadata tracking
-- Project controller has been improved with better error handling and validation
-- Fixed issues with building classification mapping and seeding
-- Added missing Class_5 building classification to Decision-Tree.json
-- Updated seeder.js to use the correct BuildingClassification model
-- Implemented report generation functionality in the backend
-- Created a comprehensive report service for generating compliance reports
-- Added a report generation endpoint to the project routes
-- Implemented the ProjectReport component in the frontend
-- Added report generation functionality to the project slice
-- Updated the UI to display the report data in a structured format
-
-## Technical Details
-- Backend runs on port 5000
-- Frontend runs on port 3000
-- MongoDB runs on default port 27017
-- Environment variables are used for configuration
-- JWT tokens expire after 30 days
-- API responses follow a consistent format with success flag and data/error fields
-
-## How to Change User Role to Admin
-To change a user's role to admin, you need to use the API directly. You can use a tool like Postman or curl to make a PUT request to the `/api/users/:id` endpoint with the following JSON body:
-
-```json
+### User Model
+```javascript
 {
-  "role": "admin"
+  username: String,
+  email: String,
+  password: String,
+  role: String,
+  createdAt: Date
 }
 ```
 
-You need to include the JWT token in the Authorization header as a Bearer token. The token can be obtained by logging in as an admin user.
+### Project Model
+```javascript
+{
+  name: String,
+  description: String,
+  buildingType: String,
+  location: String,
+  climateZone: String,
+  buildingClassification: String,
+  compliancePathway: String,
+  status: String,
+  createdBy: ObjectId,
+  updatedAt: Date
+}
+```
 
-## How to Run the Application
-1. Start the backend server:
-   ```
-   cd backend
-   npm run dev
-   ```
+## Decision Tree Implementation
+The application uses a centralized Decision-Tree.json file that contains:
+- Building classifications and their requirements
+- Climate zone mappings and specifications
+- Compliance pathways and their criteria
+- Special requirements and exemptions
+- Direct access to data without intermediate mappings
 
-2. Start the frontend application:
-   ```
-   cd frontend
-   npm start
-   ```
+## Security Features
+- JWT token-based authentication
+- Password hashing with bcrypt
+- Protected API routes
+- Input validation and sanitization
+- Error handling middleware
+- Rate limiting
+- CORS configuration
 
-3. Access the application at http://localhost:3000
+## Performance Optimizations
+- MongoDB indexing
+- Data caching
+- Lazy loading
+- Pagination
+- Query optimization
+- Response compression
+- Efficient decision tree data access
 
-## How to Update Building Types
-1. Edit the `backend/data/mappings/buildingTypeToClassification.json` file
-2. Restart the backend server with `npm run dev` in the backend directory
-3. Refresh the frontend application
+## Error Handling
+- Global error handling middleware
+- Custom error classes
+- Validation error handling
+- API error responses
+- Frontend error boundaries
+- Decision tree validation
 
-This project serves as a foundation for a NCC Section J Compliance Checker application with role-based access control and can be extended with additional features as needed. The application now includes functionality for managing building classes, climate zones, compliance pathways, and projects for NCC Section J compliance checking.
+## Testing Strategy
+- Unit tests for utilities and services
+- Integration tests for API endpoints
+- Frontend component testing
+- End-to-end testing
+- Performance testing
+- Decision tree validation tests
 
-Building Types Implementation Pattern:
+## Deployment
+- Environment-based configuration
+- Docker containerization
+- CI/CD pipeline
+- Monitoring and logging
+- Backup strategy
 
-1. Data Source:
-   - Located in: backend/data/mappings/buildingTypeToClassification.json
-   - Structure: JSON file containing an array of building types with properties:
-     - id: Unique identifier (e.g., "office_single")
-     - name: Display name (e.g., "Single Tenant Office")
-     - description: Detailed description
-     - nccClassification: NCC class number (e.g., "5")
-     - typicalUse: Common usage examples
-     - commonFeatures: Array of typical features
-     - notes: Additional information (optional)
-
-2. Backend Implementation:
-   a. Route:
-      - Endpoint: GET /api/projects/building-types
-      - Protected route (requires authentication)
-      - Defined in projectRoutes.js
-
-   b. Controller:
-      - Function: getBuildingTypes in projectController.js
-      - Simply returns the building types array from the JSON file
-      - Returns { success: true, data: buildingTypes }
-
-   c. Project Creation:
-      - When creating a project, buildingType is sent from frontend
-      - Controller finds matching building type from mapping
-      - Automatically assigns correct building classification based on nccClassification
-      - Creates project with proper building classification reference
-
-3. This pattern can be replicated for locations by:
-   a. Using similar JSON structure in locationToClimateZone.json
-   b. Creating GET /api/projects/locations endpoint
-   c. Implementing getLocations controller to return locations array
-   d. Using location data to automatically set climate zone during project creation
-
-4. Project Creation Flow:
-   a. Building Classification:
-      - When creating a project, buildingType is sent from frontend
-      - Controller finds matching building type from mapping
-      - Automatically assigns correct building classification based on nccClassification
-      - Creates project with proper building classification reference
-
-   b. Climate Zone:
-      - When creating a project, location is sent from frontend
-      - Controller uses locationToClimateZone mapping to find climate zone
-      - Automatically assigns correct climate zone based on location
-      - Creates project with proper climate zone reference
-      - Climate zone is used for compliance checking and requirements
-
-   c. Project Size:
-      - When creating a project, floorArea is sent from frontend
-      - Size is automatically determined based on floor area:
-        * Small: Less than 500 m²
-        * Medium: Between 500 m² and 2500 m²
-        * Large: More than 2500 m²
-      - Size is used for compliance checking and requirements
-      - Size-based provisions are applied based on this classification
-      - The Project model includes a pre-save middleware that automatically sets the size based on floorArea
-      - The size field is an enum with values ['small', 'medium', 'large']
-      - The floorArea field is required and must be greater than 0
-      - The size field is not directly editable by users; it's determined by the system
-
-   d. Data Flow:
-      - Frontend sends buildingType, location, and floorArea
-      - Backend validates all fields
-      - Backend looks up corresponding classifications
-      - Backend determines project size based on floor area
-      - Project is created with all references
-      - Response includes populated classification data 
+## Future Enhancements
+1. Real-time compliance updates
+2. Advanced reporting features
+3. Integration with external systems
+4. Mobile application
+5. AI-powered compliance suggestions
+6. Multi-language support
+7. Enhanced data visualization
+8. Automated compliance monitoring
+9. Decision tree versioning
+10. Enhanced decision tree validation 

@@ -1,11 +1,16 @@
 const Project = require('../models/Project');
-const BuildingClassification = require('../models/BuildingClassification');
 const ClimateZone = require('../models/ClimateZone');
+const BuildingFabric = require('../models/BuildingFabric');
+const SpecialRequirement = require('../models/SpecialRequirement');
+const CompliancePathway = require('../models/CompliancePathway');
+const { validateProject } = require('../utils/validation');
+const { getClimateZoneByLocation } = require('../utils/decisionTreeUtils');
 const asyncHandler = require('express-async-handler');
 const complianceService = require('../services/complianceService');
 const reportService = require('../services/reportService');
 const buildingTypeMapping = require('../data/mappings/buildingTypeToClassification.json');
 const { getAllLocations, getClimateZoneForLocation } = require('../utils/locationUtils');
+const ReportService = require('../services/reportService');
 
 // @desc    Get all projects for a user
 // @route   GET /api/projects
@@ -13,20 +18,13 @@ const { getAllLocations, getClimateZoneForLocation } = require('../utils/locatio
 const getProjects = asyncHandler(async (req, res) => {
   try {
     const projects = await Project.find({ owner: req.user.id })
-      .populate('buildingClassification')
       .populate('climateZone')
-      .populate('compliancePathway')
-      .sort('-createdAt');
-    
-    res.status(200).json({
-      success: true,
-      data: projects
-    });
+      .populate('buildingFabric')
+      .populate('specialRequirements')
+      .populate('compliancePathway');
+    res.json(projects);
   } catch (error) {
-    res.status(500).json({ 
-      success: false,
-      error: error.message 
-    });
+    res.status(500).json({ message: error.message });
   }
 });
 
@@ -35,37 +33,21 @@ const getProjects = asyncHandler(async (req, res) => {
 // @access  Private
 const getProject = asyncHandler(async (req, res) => {
   try {
-    const project = await Project.findById(req.params.id)
-      .populate('buildingClassification')
+    const project = await Project.findOne({
+      _id: req.params.id,
+      owner: req.user.id
+    })
       .populate('climateZone')
       .populate('buildingFabric')
-      .populate('compliancePathway')
-      .populate('specialRequirements');
+      .populate('specialRequirements')
+      .populate('compliancePathway');
 
     if (!project) {
-      return res.status(404).json({ 
-        success: false,
-        error: 'Project not found' 
-      });
+      return res.status(404).json({ message: 'Project not found' });
     }
-
-    // Check if user is the owner
-    if (project.owner.toString() !== req.user.id) {
-      return res.status(403).json({ 
-        success: false,
-        error: 'Not authorized' 
-      });
-    }
-
-    res.status(200).json({
-      success: true,
-      data: project
-    });
+    res.json(project);
   } catch (error) {
-    res.status(500).json({ 
-      success: false,
-      error: error.message 
-    });
+    res.status(500).json({ message: error.message });
   }
 });
 
@@ -74,88 +56,33 @@ const getProject = asyncHandler(async (req, res) => {
 // @access  Private
 const createProject = asyncHandler(async (req, res) => {
   try {
-    console.log('Creating project with data:', req.body);
-    console.log('User ID:', req.user.id);
-    
-    // Validate floor area
-    if (!req.body.floorArea || req.body.floorArea <= 0) {
-      return res.status(400).json({
-        success: false,
-        error: 'Floor area must be greater than 0'
-      });
-    }
-    
-    // Find building type mapping from the buildingTypes array
-    const buildingType = buildingTypeMapping.buildingTypes.find(type => type.id === req.body.buildingType);
-    if (!buildingType) {
-      return res.status(400).json({
-        success: false,
-        error: 'Invalid building type'
-      });
+    const { error } = validateProject(req.body);
+    if (error) {
+      return res.status(400).json({ message: error.details[0].message });
     }
 
-    // Find corresponding building classification
-    const nccClass = `Class_${buildingType.nccClassification}`;
-    const buildingClass = await BuildingClassification.findOne({ classType: nccClass });
-    if (!buildingClass) {
-      return res.status(400).json({
-        success: false,
-        error: `Building classification not found for type ${nccClass}`
-      });
-    }
+    const { name, description, buildingType, location, floorArea } = req.body;
 
     // Get climate zone based on location
-    const location = req.body.location;
-    if (!location) {
-      return res.status(400).json({
-        success: false,
-        error: 'Location is required to determine climate zone'
-      });
-    }
-
-    const climateZoneData = getClimateZoneForLocation(location);
-    if (!climateZoneData) {
-      return res.status(400).json({
-        success: false,
-        error: 'Climate zone not found for the specified location'
-      });
-    }
-
-    // Find the climate zone in the database
-    const climateZone = await ClimateZone.findOne({ code: `CZ${climateZoneData.id}` });
+    const climateZone = await getClimateZoneByLocation(location);
     if (!climateZone) {
-      return res.status(400).json({
-        success: false,
-        error: `Climate zone not found for location ${location}`
-      });
+      return res.status(400).json({ message: 'Invalid location or climate zone not found' });
     }
 
-    // Create project with automatically assigned classification and climate zone
     const project = new Project({
-      ...req.body,
-      buildingClassification: buildingClass._id,
-      climateZone: climateZone._id,
-      owner: req.user.id
+      name,
+      description,
+      owner: req.user.id,
+      buildingType,
+      location,
+      floorArea,
+      climateZone: climateZone._id
     });
 
     const savedProject = await project.save();
-    
-    // Populate the saved project with related data
-    const populatedProject = await Project.findById(savedProject._id)
-      .populate('buildingClassification')
-      .populate('climateZone')
-      .populate('compliancePathway');
-    
-    res.status(201).json({
-      success: true,
-      data: populatedProject
-    });
+    res.status(201).json(savedProject);
   } catch (error) {
-    console.error('Error creating project:', error);
-    res.status(400).json({ 
-      success: false,
-      error: error.message 
-    });
+    res.status(500).json({ message: error.message });
   }
 });
 
@@ -164,38 +91,41 @@ const createProject = asyncHandler(async (req, res) => {
 // @access  Private
 const updateProject = asyncHandler(async (req, res) => {
   try {
-    const project = await Project.findById(req.params.id);
+    const { error } = validateProject(req.body);
+    if (error) {
+      return res.status(400).json({ message: error.details[0].message });
+    }
+
+    const project = await Project.findOne({
+      _id: req.params.id,
+      owner: req.user.id
+    });
 
     if (!project) {
-      return res.status(404).json({ 
-        success: false,
-        error: 'Project not found' 
-      });
+      return res.status(404).json({ message: 'Project not found' });
     }
 
-    // Check if user is the owner
-    if (project.owner.toString() !== req.user.id) {
-      return res.status(403).json({ 
-        success: false,
-        error: 'Not authorized' 
-      });
+    const { name, description, buildingType, location, floorArea } = req.body;
+
+    // Update climate zone if location changes
+    if (location && location !== project.location) {
+      const climateZone = await getClimateZoneByLocation(location);
+      if (!climateZone) {
+        return res.status(400).json({ message: 'Invalid location or climate zone not found' });
+      }
+      project.climateZone = climateZone._id;
     }
 
-    const updatedProject = await Project.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
+    project.name = name || project.name;
+    project.description = description || project.description;
+    project.buildingType = buildingType || project.buildingType;
+    project.location = location || project.location;
+    project.floorArea = floorArea || project.floorArea;
 
-    res.status(200).json({
-      success: true,
-      data: updatedProject
-    });
+    const updatedProject = await project.save();
+    res.json(updatedProject);
   } catch (error) {
-    res.status(400).json({ 
-      success: false,
-      error: error.message 
-    });
+    res.status(500).json({ message: error.message });
   }
 });
 
@@ -204,34 +134,17 @@ const updateProject = asyncHandler(async (req, res) => {
 // @access  Private
 const deleteProject = asyncHandler(async (req, res) => {
   try {
-    const project = await Project.findById(req.params.id);
+    const project = await Project.findOneAndDelete({
+      _id: req.params.id,
+      owner: req.user.id
+    });
 
     if (!project) {
-      return res.status(404).json({ 
-        success: false,
-        error: 'Project not found' 
-      });
+      return res.status(404).json({ message: 'Project not found' });
     }
-
-    // Check if user is the owner
-    if (project.owner.toString() !== req.user.id) {
-      return res.status(403).json({ 
-        success: false,
-        error: 'Not authorized' 
-      });
-    }
-
-    await Project.findByIdAndDelete(req.params.id);
-    
-    res.status(200).json({ 
-      success: true,
-      data: {} 
-    });
+    res.json({ message: 'Project deleted successfully' });
   } catch (error) {
-    res.status(500).json({ 
-      success: false,
-      error: error.message 
-    });
+    res.status(500).json({ message: error.message });
   }
 });
 
@@ -273,39 +186,29 @@ const checkCompliance = asyncHandler(async (req, res) => {
 // @desc    Generate a compliance report for a project
 // @route   GET /api/projects/:id/report
 // @access  Private
-const generateReport = asyncHandler(async (req, res) => {
+const generateReport = async (req, res) => {
   try {
-    const project = await Project.findById(req.params.id);
+    const project = await Project.findById(req.params.id)
+      .populate('buildingFabric');
 
     if (!project) {
-      return res.status(404).json({ 
-        success: false,
-        error: 'Project not found' 
-      });
+      return res.status(404).json({ message: 'Project not found' });
     }
 
-    // Check if user is the owner
+    // Check if user has access to this project
     if (project.owner.toString() !== req.user.id) {
-      return res.status(403).json({ 
-        success: false,
-        error: 'Not authorized' 
-      });
+      return res.status(403).json({ message: 'Not authorized to access this project' });
     }
 
-    // Generate the report
-    const report = await reportService.generateReport(req.params.id);
-    
-    res.status(200).json({
-      success: true,
-      data: report
-    });
+    const reportService = new ReportService(project);
+    const report = await reportService.generateReport();
+
+    res.json(report);
   } catch (error) {
-    res.status(500).json({ 
-      success: false,
-      error: error.message 
-    });
+    console.error('Error generating report:', error);
+    res.status(500).json({ message: 'Error generating report', error: error.message });
   }
-});
+};
 
 const getBuildingTypes = async (req, res) => {
   try {
