@@ -85,4 +85,45 @@ This project is a web application for checking compliance with the National Cons
 - The `Decision-Tree.json` file is the source of truth for building classifications, climate zones, and compliance pathways
 - The `locationToClimateZone.json` file maps locations to climate zones
 - The `buildingTypeToClassification.json` file maps building types to NCC classifications
-- The `createdBy` field in the Project schema is set to the same value as the `owner` field 
+- The `createdBy` field in the Project schema is set to the same value as the `owner` field
+
+## Today's Changes (2024-03-19)
+
+### Building Classification Fixes
+- Fixed the building classification display in the project details page
+- Updated the `generateBuildingClassificationInfo` method in `reportService.js` to correctly return the classType
+- Ensured that the building classification (e.g., "Class_6") is properly displayed in the report
+
+### ReportService Implementation
+The `ReportService` class is responsible for generating comprehensive compliance reports for projects. It works as follows:
+
+1. **Initialization**: The service is initialized with a project object and an optional section parameter (defaults to 'full').
+
+2. **Report Generation**: The `generateReport` method orchestrates the report generation process:
+   - It starts with basic project information
+   - Based on the requested section, it adds specific information:
+     - Building classification and climate zone
+     - Compliance pathway
+     - Building fabric specifications
+     - Special requirements
+     - Exemptions
+     - Section-specific information
+
+3. **Section-Specific Methods**:
+   - `generateProjectInfo`: Returns basic project details
+   - `generateBuildingClassificationInfo`: Retrieves and formats building classification data
+   - `generateClimateZoneInfo`: Gets climate zone information based on location
+   - `generateCompliancePathwayInfo`: Determines the appropriate compliance pathway
+   - `generateBuildingFabricInfo`: Formats building fabric specifications
+   - `generateSpecialRequirementsInfo`: Retrieves special requirements for the building
+   - `generateExemptionsInfo`: Checks for applicable exemptions
+   - `generateSectionSpecificInfo`: Gets detailed information for a specific NCC section
+
+4. **Data Sources**: The service uses utility functions from `decisionTreeUtils.js` to access data from:
+   - `Decision-Tree.json`: Contains the decision tree structure
+   - `buildingTypeToClassification.json`: Maps building types to NCC classifications
+   - `locationToClimateZone.json`: Maps locations to climate zones
+
+5. **Error Handling**: Each method includes proper error handling to ensure the report generation process is robust.
+
+The report is then displayed in the frontend using the `ProjectReport.js` component, which renders the data in a structured format with appropriate sections and styling. 
