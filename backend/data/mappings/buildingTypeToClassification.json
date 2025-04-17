@@ -4,7 +4,7 @@
       "id": "office_single",
       "name": "Single Tenant Office",
       "description": "Office space occupied by a single tenant for professional or commercial purposes.",
-      "nccClassification": "5",
+      "nccClassification": "Class_5",
       "typicalUse": "Corporate offices, legal firms, accounting services, government agencies",
       "commonFeatures": [
         "Open plan workspaces",
@@ -18,7 +18,7 @@
       "id": "office_multi",
       "name": "Multi Tenant Office",
       "description": "Office building with multiple tenants sharing common spaces.",
-      "nccClassification": "5",
+      "nccClassification": "Class_5",
       "typicalUse": "Commercial office buildings, business centers, co-working spaces",
       "commonFeatures": [
         "Multiple tenant spaces",
@@ -30,7 +30,7 @@
       "id": "retail_small",
       "name": "Small Retail",
       "description": "Retail spaces under 500m² for direct sale of goods/services to the public.",
-      "nccClassification": "6",
+      "nccClassification": "Class_6",
       "typicalUse": "Shops, cafés, hairdressers, kiosks, funeral parlours",
       "commonFeatures": [
         "Shop front",
@@ -43,7 +43,7 @@
       "id": "retail_large",
       "name": "Large Retail",
       "description": "Retail spaces over 500m² or shopping centers with multiple tenants.",
-      "nccClassification": "6",
+      "nccClassification": "Class_6",
       "typicalUse": "Supermarkets, department stores, shopping malls",
       "commonFeatures": [
         "Large floor area",
@@ -55,7 +55,7 @@
       "id": "residential_single",
       "name": "Single Dwelling",
       "description": "Standalone or attached dwellings for domestic use.",
-      "nccClassification": "1a (detached) or 1b (small-scale boarding houses <300m²)",
+      "nccClassification": "Class_1a",
       "typicalUse": "Houses, duplexes, townhouses, holiday homes",
       "commonFeatures": [
         "Private living areas",
@@ -68,7 +68,7 @@
       "id": "residential_multi",
       "name": "Multi Unit Residential",
       "description": "Multi-unit buildings with sole-occupancy units (SOUs).",
-      "nccClassification": "2",
+      "nccClassification": "Class_2",
       "typicalUse": "Apartments, flats, units above a shared basement/carpark",
       "commonFeatures": [
         "SOUs with exclusive use",
@@ -80,7 +80,7 @@
       "id": "hospitality",
       "name": "Hospitality",
       "description": "Buildings for transient or long-term accommodation of unrelated persons.",
-      "nccClassification": "3 (or 1b if <300m²)",
+      "nccClassification": "Class_3",
       "typicalUse": "Hotels, hostels, backpackers, workers' quarters, aged care (non-Class 9c)",
       "commonFeatures": [
         "Guest rooms",
@@ -93,7 +93,7 @@
       "id": "healthcare",
       "name": "Healthcare",
       "description": "Buildings for medical treatment where patients may require evacuation assistance.",
-      "nccClassification": "9a",
+      "nccClassification": "Class_9a",
       "typicalUse": "Hospitals, clinics with day surgery, health labs",
       "commonFeatures": [
         "Treatment rooms",
@@ -105,7 +105,7 @@
       "id": "education",
       "name": "Education",
       "description": "Assembly buildings for social, educational, or civil purposes.",
-      "nccClassification": "9b",
+      "nccClassification": "Class_9b",
       "typicalUse": "Schools, universities, childcare centers, sports stadiums",
       "commonFeatures": [
         "Classrooms/lecture halls",
@@ -117,7 +117,7 @@
       "id": "residential_care",
       "name": "Residential Care",
       "description": "Buildings providing long-term care with physical assistance needs.",
-      "nccClassification": "9c",
+      "nccClassification": "Class_9c",
       "typicalUse": "Aged care facilities, disability care homes",
       "commonFeatures": [
         "Resident bedrooms with care support",
@@ -131,7 +131,7 @@
       "id": "industrial",
       "name": "Industrial",
       "description": "Buildings for production, storage, or wholesale display.",
-      "nccClassification": "7a (carparks) or 7b (warehouses), 8 (factories)",
+      "nccClassification": "Class_7b",
       "typicalUse": "Factories, warehouses, workshops, abattoirs",
       "commonFeatures": [
         "High ceilings",
@@ -144,7 +144,7 @@
       "id": "mixed_use",
       "name": "Mixed Use Building",
       "description": "Buildings with multiple classifications (e.g., retail + residential).",
-      "nccClassification": "Varies (e.g., 2/5/6/7)",
+      "nccClassification": "Class_5",
       "typicalUse": "Apartment over retail, office with basement carpark",
       "commonFeatures": [
         "Separately classified areas",
@@ -156,7 +156,7 @@
       "id": "non_habitable",
       "name": "Non-Habitable Structures",
       "description": "Structures not intended for human occupation.",
-      "nccClassification": "10a (sheds), 10b (pools/fences), 10c (bushfire shelters)",
+      "nccClassification": "Class_10a",
       "typicalUse": "Garages, swimming pools, retaining walls",
       "commonFeatures": [
         "No living facilities",

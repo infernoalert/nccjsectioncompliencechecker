@@ -21,6 +21,7 @@ const projectRoutes = require('./routes/projectRoutes');
 const complianceCalculatorRoutes = require('./routes/complianceCalculatorRoutes');
 const referenceDataRoutes = require('./routes/referenceDataRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const testRoutes = require('./routes/testRoutes');
 
 const app = express();
 
@@ -40,6 +41,7 @@ app.use('/api/projects', projectRoutes);
 app.use('/api', complianceCalculatorRoutes);
 app.use('/api', referenceDataRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/test', testRoutes);
 
 // Basic route
 app.get('/', (req, res) => {

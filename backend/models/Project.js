@@ -19,6 +19,15 @@ const projectSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Building type is required']
   },
+  buildingClassification: {
+    type: {
+      classification: String,
+      description: String,
+      typicalUse: String,
+      commonFeatures: [String],
+      notes: String
+    }
+  },
   location: {
     type: String,
     required: [true, 'Location is required']

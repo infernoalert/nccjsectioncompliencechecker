@@ -1,0 +1,136 @@
+{
+  "version": "1.0",
+  "last_updated": "2024-04-15",
+  "compliance_pathways": {
+    "Class_2": {
+      "Zones_1_3": {
+        "pathway": "Performance Solution",
+        "requirements": {
+          "thermal_performance": {
+            "method": "DTS",
+            "requirements": {
+              "walls": "R2.0",
+              "roof": "R4.0",
+              "floor": "R1.5"
+            }
+          },
+          "energy_usage": {
+            "method": "DTS",
+            "requirements": {
+              "lighting": "LED",
+              "heating": "Heat pump",
+              "cooling": "Air conditioning"
+            }
+          }
+        }
+      },
+      "Zones_4_6": {
+        "pathway": "Deemed-to-Satisfy",
+        "requirements": {
+          "thermal_performance": {
+            "method": "DTS",
+            "requirements": {
+              "walls": "R2.8",
+              "roof": "R4.0",
+              "floor": "R1.5"
+            }
+          },
+          "energy_usage": {
+            "method": "DTS",
+            "requirements": {
+              "lighting": "LED",
+              "heating": "Heat pump",
+              "cooling": "Natural ventilation"
+            }
+          }
+        }
+      },
+      "Zones_7_8": {
+        "pathway": "Deemed-to-Satisfy",
+        "requirements": {
+          "thermal_performance": {
+            "method": "DTS",
+            "requirements": {
+              "walls": "R3.0",
+              "roof": "R4.0",
+              "floor": "R1.5"
+            }
+          },
+          "energy_usage": {
+            "method": "DTS",
+            "requirements": {
+              "lighting": "LED",
+              "heating": "Heat pump",
+              "cooling": "Natural ventilation"
+            }
+          }
+        }
+      }
+    },
+    "Class_3": {
+      "Zones_1_3": {
+        "pathway": "Performance Solution",
+        "requirements": {
+          "thermal_performance": {
+            "method": "DTS",
+            "requirements": {
+              "walls": "R2.0",
+              "roof": "R4.0",
+              "floor": "R1.5"
+            }
+          },
+          "energy_usage": {
+            "method": "DTS",
+            "requirements": {
+              "lighting": "LED",
+              "heating": "Heat pump",
+              "cooling": "Air conditioning"
+            }
+          }
+        }
+      },
+      "Zones_4_6": {
+        "pathway": "Deemed-to-Satisfy",
+        "requirements": {
+          "thermal_performance": {
+            "method": "DTS",
+            "requirements": {
+              "walls": "R2.8",
+              "roof": "R4.0",
+              "floor": "R1.5"
+            }
+          },
+          "energy_usage": {
+            "method": "DTS",
+            "requirements": {
+              "lighting": "LED",
+              "heating": "Heat pump",
+              "cooling": "Natural ventilation"
+            }
+          }
+        }
+      },
+      "Zones_7_8": {
+        "pathway": "Deemed-to-Satisfy",
+        "requirements": {
+          "thermal_performance": {
+            "method": "DTS",
+            "requirements": {
+              "walls": "R3.0",
+              "roof": "R4.0",
+              "floor": "R1.5"
+            }
+          },
+          "energy_usage": {
+            "method": "DTS",
+            "requirements": {
+              "lighting": "LED",
+              "heating": "Heat pump",
+              "cooling": "Natural ventilation"
+            }
+          }
+        }
+      }
+    }
+  }
+} 

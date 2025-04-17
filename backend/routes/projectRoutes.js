@@ -22,8 +22,8 @@ const { getAllBuildingTypes } = require('../utils/mappingUtils');
  *       type: object
  *       required:
  *         - name
- *         - buildingClass
- *         - climateZone
+ *         - buildingType
+ *         - location
  *         - floorArea
  *       properties:
  *         _id:
@@ -32,12 +32,12 @@ const { getAllBuildingTypes } = require('../utils/mappingUtils');
  *         name:
  *           type: string
  *           description: Project name
- *         buildingClass:
+ *         buildingType:
  *           type: string
- *           description: ID of the building class
- *         climateZone:
+ *           description: Type of building
+ *         location:
  *           type: string
- *           description: ID of the climate zone
+ *           description: Project location
  *         floorArea:
  *           type: number
  *           description: Total floor area in square meters
@@ -89,49 +89,38 @@ const { getAllBuildingTypes } = require('../utils/mappingUtils');
  *             description:
  *               type: string
  *               description: Class description
- *             subtypes:
+ *             typicalUse:
+ *               type: string
+ *               description: Typical use of this building class
+ *             commonFeatures:
  *               type: array
  *               items:
  *                 type: string
- *               description: Building subtypes
- *             decisionTreeInfo:
- *               type: object
- *               description: Additional classification information from decision tree
+ *               description: Common features of this building class
+ *             notes:
+ *               type: string
+ *               description: Additional notes
  *         climateZone:
  *           type: object
  *           properties:
- *             name:
+ *             zone:
  *               type: string
- *               description: Climate zone name
- *             code:
- *               type: string
- *               description: Climate zone code
+ *               description: Climate zone number
  *             description:
  *               type: string
  *               description: Zone description
- *             requirements:
- *               type: object
- *               description: Climate zone specific requirements
  *         compliancePathway:
  *           type: object
  *           properties:
- *             name:
+ *             pathway:
  *               type: string
- *               description: Pathway name
+ *               description: Pathway type (e.g., Performance Solution, Deemed-to-Satisfy)
+ *             requirements:
+ *               type: object
+ *               description: Pathway requirements
  *             description:
  *               type: string
  *               description: Pathway description
- *             applicability:
- *               type: string
- *               description: Applicability conditions
- *             verification:
- *               type: string
- *               description: Verification method
- *             requirements:
- *               type: array
- *               items:
- *                 type: string
- *               description: Pathway requirements
  *         buildingFabric:
  *           type: object
  *           properties:
@@ -144,63 +133,63 @@ const { getAllBuildingTypes } = require('../utils/mappingUtils');
  *             floor:
  *               type: object
  *               description: Floor specifications and requirements
- *             glazing:
+ *             windows:
  *               type: object
- *               description: Glazing specifications and requirements
+ *               description: Window specifications and requirements
+ *             description:
+ *               type: string
+ *               description: Building fabric description
  *         specialRequirements:
- *           type: array
- *           items:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *                 description: Requirement name
- *               trigger:
- *                 type: string
- *                 description: What triggers this requirement
- *               requirements:
- *                 type: object
- *                 description: Detailed requirements
- *         complianceResults:
  *           type: object
  *           properties:
- *             status:
- *               type: string
- *               enum: [compliant, non-compliant, pending]
- *               description: Overall compliance status
- *             checks:
+ *             requirements:
  *               type: array
  *               items:
  *                 type: object
  *                 properties:
- *                   section:
+ *                   name:
  *                     type: string
- *                     description: Section reference
- *                   status:
+ *                     description: Requirement name
+ *                   trigger:
  *                     type: string
- *                     enum: [pass, fail, not-applicable]
- *                   details:
- *                     type: string
- *             lastChecked:
+ *                     description: What triggers this requirement
+ *                   requirements:
+ *                     type: object
+ *                     description: Detailed requirements
+ *             description:
  *               type: string
- *               format: date-time
- *             nextReviewDate:
- *               type: string
- *               format: date-time
- *         metadata:
+ *               description: Special requirements description
+ *         energy:
  *           type: object
  *           properties:
- *             generatedAt:
+ *             requirements:
+ *               type: object
+ *               description: Energy efficiency requirements
+ *             description:
  *               type: string
- *               format: date-time
- *               description: Report generation timestamp
- *             reportVersion:
+ *               description: Energy efficiency description
+ *         lighting:
+ *           type: object
+ *           properties:
+ *             requirements:
+ *               type: object
+ *               description: Lighting requirements
+ *             description:
  *               type: string
- *               description: Version of the report format
+ *               description: Lighting description
+ *         meters:
+ *           type: object
+ *           properties:
+ *             requirements:
+ *               type: object
+ *               description: Metering requirements
+ *             description:
+ *               type: string
+ *               description: Metering description
  *
  * /api/projects/{id}/report:
  *   get:
- *     summary: Generate a comprehensive compliance report for a project
+ *     summary: Generate a compliance report for a project
  *     tags: [Projects]
  *     security:
  *       - bearerAuth: []
@@ -211,6 +200,13 @@ const { getAllBuildingTypes } = require('../utils/mappingUtils');
  *         schema:
  *           type: string
  *         description: Project ID
+ *       - in: query
+ *         name: section
+ *         required: false
+ *         schema:
+ *           type: string
+ *           enum: [full, building, compliance, fabric, special, energy, lighting, meters]
+ *         description: Section of the report to generate (default: full)
  *     responses:
  *       200:
  *         description: Report generated successfully
@@ -224,6 +220,8 @@ const { getAllBuildingTypes } = require('../utils/mappingUtils');
  *                   description: Operation success status
  *                 data:
  *                   $ref: '#/components/schemas/ComplianceReport'
+ *       400:
+ *         description: Invalid section parameter
  *       401:
  *         description: Not authorized
  *       403:

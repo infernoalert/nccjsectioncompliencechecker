@@ -1,0 +1,170 @@
+{
+  "version": "1.0",
+  "last_updated": "2024-04-15",
+  "building_classifications": [
+    {
+      "id": "Class_1a",
+      "description": "A single dwelling being a detached house",
+      "typicalUse": "Houses, standalone dwellings",
+      "commonFeatures": [
+        "Private living areas",
+        "Kitchen and bathrooms",
+        "Separate entrance"
+      ],
+      "notes": "Class 1a buildings are standalone houses"
+    },
+    {
+      "id": "Class_1b",
+      "description": "A boarding house, guest house, hostel or the like",
+      "typicalUse": "Small-scale boarding houses, hostels with less than 12 residents",
+      "commonFeatures": [
+        "Shared facilities",
+        "Multiple bedrooms",
+        "Common areas"
+      ],
+      "notes": "Class 1b includes hostels <300m² with <12 residents; larger facilities are Class 3"
+    },
+    {
+      "id": "Class_2",
+      "description": "Buildings containing 2 or more sole-occupancy units",
+      "typicalUse": "Apartments, flats, units above a shared basement/carpark",
+      "commonFeatures": [
+        "SOUs with exclusive use",
+        "Common corridors/elevators",
+        "Shared amenities (e.g., laundry)"
+      ],
+      "notes": "Class 2 buildings are multi-unit residential buildings"
+    },
+    {
+      "id": "Class_3",
+      "description": "Buildings for accommodation of transient guests",
+      "typicalUse": "Hotels, hostels, backpackers, workers' quarters",
+      "commonFeatures": [
+        "Guest rooms",
+        "Shared kitchens/dining",
+        "Reception areas"
+      ],
+      "notes": "Class 3 excludes owner-occupied residences (Class 1/2) and Class 9c care facilities"
+    },
+    {
+      "id": "Class_4",
+      "description": "A dwelling in a Class 5, 6, 7, 8 or 9 building",
+      "typicalUse": "Caretaker's residence, apartment above a shop",
+      "commonFeatures": [
+        "Private living areas",
+        "Kitchen and bathrooms",
+        "Separate entrance"
+      ],
+      "notes": "Class 4 is a dwelling within a non-residential building"
+    },
+    {
+      "id": "Class_5",
+      "description": "An office building used for professional or commercial purposes",
+      "typicalUse": "Corporate offices, legal firms, accounting services, government agencies",
+      "commonFeatures": [
+        "Open plan workspaces",
+        "Meeting rooms",
+        "Reception areas",
+        "Kitchen facilities"
+      ],
+      "notes": "General medical practitioner offices are typically Class 5 unless medical treatment leaves patients non-ambulatory, in which case classified as Class 9a"
+    },
+    {
+      "id": "Class_6",
+      "description": "A building for the sale of goods by retail or the supply of services direct to the public",
+      "typicalUse": "Shops, cafés, hairdressers, kiosks, funeral parlours, supermarkets, department stores",
+      "commonFeatures": [
+        "Shop front",
+        "Customer service area",
+        "Storage space"
+      ],
+      "notes": "Service stations are Class 6, but auto repair workshops are Class 8"
+    },
+    {
+      "id": "Class_7",
+      "description": "A building used for storage, or display of goods or produce",
+      "typicalUse": "Warehouses, carparks, wholesale display areas",
+      "commonFeatures": [
+        "High ceilings",
+        "Loading bays",
+        "Storage areas"
+      ],
+      "notes": "Class 7a is for carparks, Class 7b is for warehouses"
+    },
+    {
+      "id": "Class_8",
+      "description": "A building used for the process, production, assembly, repair, servicing, treatment, or testing of goods",
+      "typicalUse": "Factories, workshops, abattoirs",
+      "commonFeatures": [
+        "Industrial machinery",
+        "Production areas",
+        "Loading bays"
+      ],
+      "notes": "Class 8 buildings are for industrial processes"
+    },
+    {
+      "id": "Class_9a",
+      "description": "A building of a public nature used for healthcare",
+      "typicalUse": "Hospitals, clinics with day surgery, health labs",
+      "commonFeatures": [
+        "Treatment rooms",
+        "Patient wards",
+        "Emergency exits with assisted access"
+      ],
+      "notes": "Class 9a buildings are for healthcare where patients may require evacuation assistance"
+    },
+    {
+      "id": "Class_9b",
+      "description": "A building of a public nature used for assembly",
+      "typicalUse": "Schools, universities, childcare centers, sports stadiums",
+      "commonFeatures": [
+        "Classrooms/lecture halls",
+        "Assembly areas",
+        "Administrative offices"
+      ],
+      "notes": "Class 9b buildings are for assembly purposes"
+    },
+    {
+      "id": "Class_9c",
+      "description": "A building of a residential nature used for care",
+      "typicalUse": "Aged care facilities, disability care homes",
+      "commonFeatures": [
+        "Resident bedrooms with care support",
+        "Common dining/recreation areas",
+        "Staff facilities",
+        "Emergency evacuation plans for non-ambulatory residents"
+      ],
+      "notes": "Class 9c requires ≥10% of residents to need physical assistance for daily activities/evacuation"
+    },
+    {
+      "id": "Class_10a",
+      "description": "A non-habitable building",
+      "typicalUse": "Garages, sheds, swimming pools",
+      "commonFeatures": [
+        "No living facilities",
+        "Utility or safety purpose"
+      ],
+      "notes": "Class 10a buildings are non-habitable structures"
+    },
+    {
+      "id": "Class_10b",
+      "description": "A fence, mast, antenna, retaining or free-standing wall, swimming pool, or the like",
+      "typicalUse": "Fences, retaining walls, swimming pools",
+      "commonFeatures": [
+        "Structural elements",
+        "Safety features"
+      ],
+      "notes": "Class 10b includes fences, retaining walls, and swimming pools"
+    },
+    {
+      "id": "Class_10c",
+      "description": "A private bushfire shelter",
+      "typicalUse": "Bushfire shelters",
+      "commonFeatures": [
+        "Fire resistance",
+        "Emergency access"
+      ],
+      "notes": "Class 10c buildings are specifically for bushfire protection"
+    }
+  ]
+} 

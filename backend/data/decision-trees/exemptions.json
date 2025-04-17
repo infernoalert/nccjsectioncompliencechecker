@@ -1,0 +1,45 @@
+{
+  "version": "1.0",
+  "last_updated": "2024-04-15",
+  "exemptions": {
+    "minor_use_rule": {
+      "name": "Minor Use Rule",
+      "description": "Exemptions for minor uses within a building that don't significantly impact energy performance",
+      "threshold": "10% of floor area",
+      "conditions": "The exempted area must be less than 10% of the total floor area",
+      "excluded_classes": ["Class_9b_early_childhood_centre", "laboratories"],
+      "applicable_sections": ["J1", "J2", "J3", "J5", "J6"]
+    },
+    "heritage_buildings": {
+      "name": "Heritage Buildings",
+      "description": "Exemptions for buildings with heritage significance",
+      "conditions": "Building must have listed heritage status",
+      "limitations": "Only heritage-sensitive elements are exempt",
+      "applicable_sections": ["J1", "J2", "J3", "J5", "J6", "J7", "J8"],
+      "documentation_required": "Heritage listing documentation"
+    },
+    "small_buildings": {
+      "name": "Small Buildings Exemption",
+      "description": "Exemptions for buildings with small floor areas",
+      "threshold": "Less than 500m² floor area",
+      "conditions": "Total floor area must be less than 500m²",
+      "applicable_sections": ["J1", "J2", "J3"],
+      "documentation_required": "Floor area calculations"
+    },
+    "temporary_buildings": {
+      "name": "Temporary Buildings",
+      "description": "Exemptions for buildings intended for temporary use",
+      "conditions": "Building must be designed for temporary use (less than 2 years)",
+      "limitations": "Limited to specific building classes",
+      "applicable_sections": ["J1", "J2", "J3", "J5", "J6"],
+      "documentation_required": "Temporary use declaration"
+    },
+    "remote_locations": {
+      "name": "Remote Locations",
+      "description": "Exemptions for buildings in remote locations with limited access to services",
+      "conditions": "Building must be in a remote location as defined by the NCC",
+      "applicable_sections": ["J1", "J2", "J3", "J5", "J6", "J7", "J8"],
+      "documentation_required": "Location verification"
+    }
+  }
+} 

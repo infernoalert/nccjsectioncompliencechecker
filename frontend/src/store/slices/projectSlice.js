@@ -149,13 +149,13 @@ export const fetchLocations = createAsyncThunk(
 
 export const generateReport = createAsyncThunk(
   'project/generateReport',
-  async (id, { getState, rejectWithValue }) => {
+  async ({ id, section = 'full' }, { getState, rejectWithValue }) => {
     try {
       const { auth } = getState();
       if (!auth.token) {
         return rejectWithValue('No authentication token available');
       }
-      const response = await axiosWithAuth(auth.token).get(`/projects/${id}/report`);
+      const response = await axiosWithAuth(auth.token).get(`/projects/${id}/report?section=${section}`);
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.error || error.message);
