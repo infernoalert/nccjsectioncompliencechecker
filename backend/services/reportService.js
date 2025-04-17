@@ -10,7 +10,8 @@ const {
   getClimateZoneByLocation,
   getCompliancePathway,
   getSpecialRequirements,
-  getExemptions
+  getExemptions,
+  getEnergyUseRequirements
 } = require('../utils/decisionTreeUtils');
 const { getSection } = require('../utils/decisionTreeFactory');
 
@@ -18,6 +19,12 @@ class ReportService {
   constructor(project, section = 'full') {
     this.project = project;
     this.section = section;
+    this.buildingClassification = null;
+    this.climateZone = null;
+    this.compliancePathway = null;
+    this.specialRequirements = null;
+    this.exemptions = null;
+    this.energyUse = null;
   }
 
   /**
@@ -51,6 +58,10 @@ class ReportService {
 
       if (this.section === 'full' || this.section === 'exemptions') {
         report.exemptions = await this.generateExemptionsInfo();
+      }
+
+      if (this.section === 'full' || this.section === 'energy') {
+        report.energyUse = await this.generateEnergyUseInfo();
       }
 
       // Add section-specific information if a specific section is requested
@@ -88,9 +99,9 @@ class ReportService {
   async generateBuildingClassificationInfo() {
     try {
       const buildingType = this.project.buildingType;
-      const buildingClassification = getBuildingClassification(buildingType);
+      this.buildingClassification = getBuildingClassification(buildingType);
       
-      if (!buildingClassification) {
+      if (!this.buildingClassification) {
         return {
           error: `Building classification not found for type: ${buildingType}`
         };
@@ -98,11 +109,13 @@ class ReportService {
 
       return {
         buildingType: buildingType,
-        classType: buildingClassification.classType,
-        description: buildingClassification.description,
-        typicalUse: buildingClassification.typicalUse,
-        commonFeatures: buildingClassification.commonFeatures,
-        notes: buildingClassification.notes
+        classType: this.buildingClassification.classType,
+        name: this.buildingClassification.name,
+        description: this.buildingClassification.description,
+        typicalUse: this.buildingClassification.typicalUse,
+        commonFeatures: this.buildingClassification.commonFeatures,
+        notes: this.buildingClassification.notes,
+        technicalDetails: this.buildingClassification.technicalDetails
       };
     } catch (error) {
       console.error('Error generating building classification info:', error);
@@ -119,6 +132,7 @@ class ReportService {
   async generateClimateZoneInfo() {
     try {
       const climateZone = await getClimateZoneByLocation(this.project.location);
+      this.climateZone = climateZone;
       return {
         zone: climateZone,
         description: `The building is located in Climate Zone ${climateZone}.`
@@ -138,12 +152,12 @@ class ReportService {
     try {
       const buildingClassification = await getBuildingClassification(this.project.buildingType);
       const climateZone = await getClimateZoneByLocation(this.project.location);
-      const pathway = await getCompliancePathway(buildingClassification, climateZone);
+      this.compliancePathway = await getCompliancePathway(buildingClassification, climateZone);
       
       return {
-        pathway: pathway.pathway,
-        requirements: pathway.requirements,
-        description: `The building is required to comply using the ${pathway.pathway} pathway.`
+        pathway: this.compliancePathway.pathway,
+        description: this.compliancePathway.description,
+        requirements: this.compliancePathway.requirements
       };
     } catch (error) {
       return {
@@ -164,10 +178,10 @@ class ReportService {
     }
     
     return {
-      walls: this.project.buildingFabric.walls,
-      roof: this.project.buildingFabric.roof,
-      floor: this.project.buildingFabric.floor,
-      windows: this.project.buildingFabric.windows,
+      walls: this.compliancePathway.requirements.walls,
+      roof: this.compliancePathway.requirements.roof,
+      floor: this.compliancePathway.requirements.floor,
+      windows: this.compliancePathway.requirements.windows,
       description: 'Building fabric details are as follows:'
     };
   }
@@ -179,10 +193,10 @@ class ReportService {
   async generateSpecialRequirementsInfo() {
     try {
       const buildingClassification = await getBuildingClassification(this.project.buildingType);
-      const requirements = await getSpecialRequirements(buildingClassification);
+      this.specialRequirements = await getSpecialRequirements(buildingClassification);
       
       return {
-        requirements,
+        requirements: this.specialRequirements,
         description: 'The following special requirements apply to this building:'
       };
     } catch (error) {
@@ -226,9 +240,9 @@ class ReportService {
   async generateExemptionsInfo() {
     try {
       const buildingClassification = await getBuildingClassification(this.project.buildingType);
-      const exemptions = await getExemptions(buildingClassification);
+      this.exemptions = await getExemptions(buildingClassification);
       
-      if (!exemptions) {
+      if (!this.exemptions) {
         return {
           message: 'No exemptions apply to this building type.',
           exemptions: []
@@ -236,7 +250,7 @@ class ReportService {
       }
       
       // Convert exemptions object to array for easier rendering
-      const exemptionsArray = Object.entries(exemptions).map(([key, value]) => ({
+      const exemptionsArray = Object.entries(this.exemptions).map(([key, value]) => ({
         id: key,
         name: key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
         ...value
@@ -250,6 +264,22 @@ class ReportService {
       return {
         error: `Error getting exemptions: ${error.message}`,
         exemptions: []
+      };
+    }
+  }
+
+  async generateEnergyUseInfo() {
+    try {
+      const buildingClassification = await getBuildingClassification(this.project.buildingType);
+      this.energyUse = await getEnergyUseRequirements(buildingClassification.classType);
+      
+      return {
+        limit: this.energyUse.limit,
+        description: this.energyUse.description
+      };
+    } catch (error) {
+      return {
+        error: `Error getting energy use requirements: ${error.message}`
       };
     }
   }

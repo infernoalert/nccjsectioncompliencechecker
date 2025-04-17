@@ -174,6 +174,34 @@ const getSpecialRequirements = async (buildingClassification) => {
 };
 
 /**
+ * Get energy use requirements for a building
+ * @param {string} buildingClassification - The building classification
+ * @returns {Promise<Object>} The energy use requirements
+ */
+const getEnergyUseRequirements = async (buildingClassification) => {
+  try {
+    // Get energy use requirements from the modular structure
+    const energyUseData = await getSection('energy-use');
+    if (!energyUseData || !energyUseData.energy_use) {
+      throw new Error('No energy use data found');
+    }
+
+    // Get the energy use requirements for the building classification
+    const energyUse = energyUseData.energy_use[buildingClassification];
+    
+    // If no specific requirements found for this classification, use the default
+    if (!energyUse) {
+      return energyUseData.energy_use.default;
+    }
+
+    return energyUse;
+  } catch (error) {
+    console.error(`Error getting energy use requirements for ${buildingClassification}:`, error);
+    throw error;
+  }
+};
+
+/**
  * Get climate zone requirements from the decision tree
  * @param {string} classType - The building class type (e.g., 'Class_5')
  * @param {string} zoneRange - The climate zone range (e.g., 'Zones_1_3')
@@ -257,5 +285,6 @@ module.exports = {
   getClimateZoneRequirements,
   getCompliancePathways,
   getExemptions,
+  getEnergyUseRequirements,
   isValidBuildingClass // Export for testing
 }; 
