@@ -1,0 +1,56 @@
+{
+  "version": "1.0",
+  "last_updated": "2024-04-15",
+  "special_requirements": {
+    "renewable_energy": {
+      "name": "Renewable Energy Provisions",
+      "trigger": "roof_area > 55m²",
+      "requirements": {
+        "roof_allocation": "20% clear area",
+        "electrical": "switchboard provisions"
+      },
+      "conditions": [
+        "Building has a roof area greater than 55m²",
+        "Not exempted by heritage or other special provisions"
+      ],
+      "exemptions": {
+        "heritage": "Heritage-listed buildings",
+        "technical": "Technical impossibility"
+      }
+    },
+    "ev_charging": {
+      "name": "Electric Vehicle Charging",
+      "trigger": "carpark >= 10 spaces/storey",
+      "requirements": {
+        "distribution": "dedicated distribution boards",
+        "capacity": "Minimum 20% of spaces",
+        "future_proofing": "Infrastructure for future expansion"
+      },
+      "conditions": [
+        "Building has a carpark with 10 or more spaces per storey",
+        "Not in a heritage-listed building"
+      ],
+      "exemptions": {
+        "heritage": "Heritage-listed buildings",
+        "remote": "Remote locations without grid connection"
+      }
+    },
+    "water_efficiency": {
+      "name": "Water Efficiency Requirements",
+      "trigger": "floor_area > 1000m²",
+      "requirements": {
+        "fixtures": "WELS 4-star or better",
+        "recycling": "Greywater system",
+        "monitoring": "Water meters for major uses"
+      },
+      "conditions": [
+        "Building floor area exceeds 1000m²",
+        "Located in water-stressed areas"
+      ],
+      "exemptions": {
+        "heritage": "Heritage-listed buildings",
+        "technical": "Technical impossibility"
+      }
+    }
+  }
+} 

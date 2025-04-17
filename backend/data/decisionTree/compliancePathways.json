@@ -1,0 +1,156 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2024-03-19",
+  "compliancePathways": {
+    "Class_2": {
+      "Zones_1_3": {
+        "pathway": "Performance Solution",
+        "requirements": {
+          "thermal_performance": {
+            "R_value_roof": 4.1,
+            "R_value_wall": 2.8,
+            "R_value_floor": 1.9
+          },
+          "energy_usage": {
+            "max_kWh_per_m2": 95,
+            "renewable_energy": "Optional"
+          }
+        }
+      },
+      "Zones_4_8": {
+        "pathway": "Deemed-to-Satisfy",
+        "requirements": {
+          "thermal_performance": {
+            "R_value_roof": 5.0,
+            "R_value_wall": 3.2,
+            "R_value_floor": 2.2
+          },
+          "energy_usage": {
+            "max_kWh_per_m2": 85,
+            "renewable_energy": "Required"
+          }
+        }
+      }
+    },
+    "Class_3": {
+      "Zones_1_3": {
+        "pathway": "Performance Solution",
+        "requirements": {
+          "thermal_performance": {
+            "R_value_roof": 4.1,
+            "R_value_wall": 2.8,
+            "R_value_floor": 1.9
+          },
+          "energy_usage": {
+            "max_kWh_per_m2": 105,
+            "renewable_energy": "Optional"
+          }
+        }
+      },
+      "Zones_4_8": {
+        "pathway": "Deemed-to-Satisfy",
+        "requirements": {
+          "thermal_performance": {
+            "R_value_roof": 5.0,
+            "R_value_wall": 3.2,
+            "R_value_floor": 2.2
+          },
+          "energy_usage": {
+            "max_kWh_per_m2": 95,
+            "renewable_energy": "Required"
+          }
+        }
+      }
+    },
+    "Class_5": {
+      "Zones_1_3": {
+        "pathway": "Performance Solution",
+        "requirements": {
+          "thermal_performance": {
+            "R_value_roof": 4.1,
+            "R_value_wall": 2.8,
+            "R_value_floor": 1.9
+          },
+          "energy_usage": {
+            "max_kWh_per_m2": 115,
+            "renewable_energy": "Optional"
+          }
+        }
+      },
+      "Zones_4_8": {
+        "pathway": "Deemed-to-Satisfy",
+        "requirements": {
+          "thermal_performance": {
+            "R_value_roof": 5.0,
+            "R_value_wall": 3.2,
+            "R_value_floor": 2.2
+          },
+          "energy_usage": {
+            "max_kWh_per_m2": 105,
+            "renewable_energy": "Required"
+          }
+        }
+      }
+    },
+    "Class_9b": {
+      "Zones_1_3": {
+        "pathway": "Performance Solution",
+        "requirements": {
+          "thermal_performance": {
+            "R_value_roof": 4.1,
+            "R_value_wall": 2.8,
+            "R_value_floor": 1.9
+          },
+          "energy_usage": {
+            "max_kWh_per_m2": 125,
+            "renewable_energy": "Optional"
+          }
+        }
+      },
+      "Zones_4_8": {
+        "pathway": "Deemed-to-Satisfy",
+        "requirements": {
+          "thermal_performance": {
+            "R_value_roof": 5.0,
+            "R_value_wall": 3.2,
+            "R_value_floor": 2.2
+          },
+          "energy_usage": {
+            "max_kWh_per_m2": 115,
+            "renewable_energy": "Required"
+          }
+        }
+      }
+    },
+    "Class_9b_early_childhood_centre": {
+      "Zones_1_3": {
+        "pathway": "Performance Solution",
+        "requirements": {
+          "thermal_performance": {
+            "R_value_roof": 4.1,
+            "R_value_wall": 2.8,
+            "R_value_floor": 1.9
+          },
+          "energy_usage": {
+            "max_kWh_per_m2": 135,
+            "renewable_energy": "Optional"
+          }
+        }
+      },
+      "Zones_4_8": {
+        "pathway": "Deemed-to-Satisfy",
+        "requirements": {
+          "thermal_performance": {
+            "R_value_roof": 5.0,
+            "R_value_wall": 3.2,
+            "R_value_floor": 2.2
+          },
+          "energy_usage": {
+            "max_kWh_per_m2": 125,
+            "renewable_energy": "Required"
+          }
+        }
+      }
+    }
+  }
+} 

@@ -99,23 +99,55 @@ router.post('/calculate-compliance', protect, async (req, res) => {
  *               items:
  *                 type: object
  *                 properties:
- *                   type:
+ *                   id:
  *                     type: string
- *                     description: Type of special requirement
- *                   description:
+ *                     description: Unique identifier for the requirement
+ *                   name:
  *                     type: string
- *                     description: Requirement description
+ *                     description: Name of the requirement
+ *                   trigger:
+ *                     type: string
+ *                     description: Condition that triggers this requirement
+ *                   requirements:
+ *                     type: object
+ *                     description: Detailed requirements
  *                   conditions:
  *                     type: array
  *                     items:
  *                       type: string
  *                     description: Conditions under which this requirement applies
+ *                   exemptions:
+ *                     type: object
+ *                     description: Possible exemptions from this requirement
  *       401:
  *         description: Not authorized
  */
 router.get('/special-requirements', protect, async (req, res) => {
-  // TODO: Implement special requirements logic
-  res.status(501).json({ message: 'Not implemented yet' });
+  try {
+    const specialRequirementsData = await getSection('special-requirements');
+    if (!specialRequirementsData || !specialRequirementsData.special_requirements) {
+      return res.status(404).json({
+        success: false,
+        error: 'Special requirements not found'
+      });
+    }
+
+    const requirements = Object.entries(specialRequirementsData.special_requirements)
+      .map(([key, requirement]) => ({
+        id: key,
+        ...requirement
+      }));
+
+    res.json({
+      success: true,
+      data: requirements
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
 });
 
 /**
@@ -141,25 +173,62 @@ router.get('/special-requirements', protect, async (req, res) => {
  *             schema:
  *               type: object
  *               properties:
- *                 type:
+ *                 id:
  *                   type: string
- *                   description: Type of special requirement
- *                 description:
+ *                   description: Unique identifier for the requirement
+ *                 name:
  *                   type: string
- *                   description: Requirement description
+ *                   description: Name of the requirement
+ *                 trigger:
+ *                   type: string
+ *                   description: Condition that triggers this requirement
+ *                 requirements:
+ *                   type: object
+ *                   description: Detailed requirements
  *                 conditions:
  *                   type: array
  *                   items:
  *                     type: string
  *                   description: Conditions under which this requirement applies
+ *                 exemptions:
+ *                   type: object
+ *                   description: Possible exemptions from this requirement
  *       401:
  *         description: Not authorized
  *       404:
  *         description: Special requirement type not found
  */
 router.get('/special-requirements/:type', protect, async (req, res) => {
-  // TODO: Implement special requirements by type logic
-  res.status(501).json({ message: 'Not implemented yet' });
+  try {
+    const specialRequirementsData = await getSection('special-requirements');
+    if (!specialRequirementsData || !specialRequirementsData.special_requirements) {
+      return res.status(404).json({
+        success: false,
+        error: 'Special requirements not found'
+      });
+    }
+
+    const requirement = specialRequirementsData.special_requirements[req.params.type];
+    if (!requirement) {
+      return res.status(404).json({
+        success: false,
+        error: `Special requirement type '${req.params.type}' not found`
+      });
+    }
+
+    res.json({
+      success: true,
+      data: {
+        id: req.params.type,
+        ...requirement
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
 });
 
 module.exports = router; 

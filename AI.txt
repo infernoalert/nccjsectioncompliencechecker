@@ -1,200 +1,88 @@
-# NCC Section J Compliance Checker - Full Stack Application
+# NCC Section Compliance Checker Project
 
 ## Project Overview
-A comprehensive web application for checking building compliance with the NCC Section J requirements. The application features a modern tech stack with Express.js backend, React frontend, and MongoDB database, implementing JWT authentication for secure access.
-
-## Tech Stack
-- **Backend**: Node.js with Express.js
-- **Frontend**: React with Redux for state management
-- **Database**: MongoDB with Mongoose ODM
-- **Authentication**: JWT (JSON Web Tokens)
-- **API Documentation**: Swagger/OpenAPI
-- **Testing**: Jest for backend, React Testing Library for frontend
+This project is a web application for checking compliance with the National Construction Code (NCC) for building projects. It allows users to create projects, specify building types, locations, and other details, and then generate compliance reports based on the NCC requirements.
 
 ## Architecture
+- **Frontend**: React with Redux for state management
+- **Backend**: Node.js with Express
+- **Database**: MongoDB with Mongoose ODM
 
-### Backend Structure
-```
-backend/
-├── config/                 # Configuration files
-│   ├── db.js              # Database connection
-│   └── config.js          # App configuration
-├── controllers/           # Request handlers
-│   ├── authController.js  # Authentication logic
-│   ├── projectController.js # Project management
-│   └── userController.js  # User management
-├── middleware/            # Custom middleware
-│   ├── auth.js           # JWT authentication
-│   └── errorHandler.js   # Global error handling
-├── models/               # Mongoose models
-│   ├── Project.js       # Project schema
-│   └── User.js          # User schema
-├── routes/              # API routes
-│   ├── authRoutes.js   # Authentication routes
-│   └── projectRoutes.js # Project management routes
-├── services/           # Business logic
-│   ├── complianceService.js # Compliance checking logic
-│   └── reportService.js    # Report generation
-├── utils/             # Utility functions
-│   ├── decisionTreeUtils.js # Decision tree operations
-│   └── mappingUtils.js     # Data mapping utilities
-└── data/             # Static data
-    └── Decision-Tree.json # Compliance decision tree
-```
+## Key Components
 
-### Frontend Structure
-```
-frontend/
-├── public/           # Static assets
-├── src/
-│   ├── components/   # React components
-│   │   ├── Auth/    # Authentication components
-│   │   ├── Layout/  # Layout components
-│   │   └── Project/ # Project management components
-│   ├── redux/       # Redux state management
-│   │   ├── slices/  # Redux slices
-│   │   └── store.js # Redux store configuration
-│   ├── services/    # API services
-│   └── utils/       # Utility functions
-└── package.json     # Frontend dependencies
-```
+### Backend
+- **Models**:
+  - Project: Stores project information including building type, location, climate zone, etc.
+  - User: Stores user information for authentication
+  - ClimateZone: Stores climate zone information
+  - BuildingFabric: Stores building fabric specifications
+  - SpecialRequirement: Stores special requirements for buildings
+  - CompliancePathway: Stores compliance pathway information
 
-## Key Features
+- **Controllers**:
+  - projectController.js: Handles project CRUD operations
+  - userController.js: Handles user authentication and management
+  - buildingClassController.js: Handles building classification operations
 
-### 1. Authentication System
-- JWT-based authentication
-- User registration and login
-- Password hashing with bcrypt
-- Protected routes and API endpoints
+- **Services**:
+  - reportService.js: Generates compliance reports
+  - complianceService.js: Checks compliance with NCC requirements
 
-### 2. Project Management
-- Create, read, update, and delete projects
-- Project details and compliance status
-- Document upload and management
-- Project history tracking
+- **Utils**:
+  - decisionTreeUtils.js: Provides functions to access data from Decision-Tree.json
+  - locationUtils.js: Provides functions to access location and climate zone data
+  - validation.js: Provides validation functions for project data
 
-### 3. Compliance Checking
-- Automated compliance verification against NCC Section J
-- Decision tree-based compliance pathway determination
-- Direct climate zone and building classification validation from Decision-Tree.json
-- Special requirements identification
-- On-demand data access without code changes
+- **Data Files**:
+  - Decision-Tree.json: Contains the decision tree structure for building classifications, climate zones, and compliance pathways
+  - locationToClimateZone.json: Maps locations to climate zones
+  - buildingTypeToClassification.json: Maps building types to NCC classifications
 
-### 4. Report Generation
-- Comprehensive compliance reports
-- PDF export functionality
-- Customizable report sections
-- Historical report tracking
-- Dynamic report generation based on decision tree data
+### Frontend
+- **Components**:
+  - NewProject.js: Form for creating new projects
+  - ProjectList.js: Displays a list of user's projects
+  - ProjectDetails.js: Displays details of a specific project
+  - ProjectReport.js: Displays a compliance report for a project
 
-### 5. Data Management
-- Centralized decision tree for compliance rules
-- Direct access to building classifications and climate zones
-- Dynamic data updates
-- Data validation and error handling
-- Efficient data caching
+- **Redux**:
+  - projectSlice.js: Manages project-related state
+  - authSlice.js: Manages authentication state
 
-## API Endpoints
+## Recent Changes
 
-### Authentication
-- POST /api/auth/register - User registration
-- POST /api/auth/login - User login
-- GET /api/auth/me - Get current user
+### Project Schema Simplification
+- Removed the `buildingClassification` field from the Project schema
+- Made `buildingFabric`, `specialRequirements`, and `compliancePathway` fields optional
+- Updated the `buildingType` field to be a simple string without an enum
+- Added proper validation for `buildingType` using the `buildingTypeToClassification.json` file
 
-### Projects
-- GET /api/projects - List all projects
-- POST /api/projects - Create new project
-- GET /api/projects/:id - Get project details
-- PUT /api/projects/:id - Update project
-- DELETE /api/projects/:id - Delete project
-- GET /api/projects/:id/report - Generate compliance report
+### Decision Tree Implementation
+- Created utility functions in `decisionTreeUtils.js` to access data from `Decision-Tree.json`
+- Implemented functions for building classifications, climate zone requirements, compliance pathways, special requirements, and exemptions
+- Updated the `ReportService` class to utilize the new utility functions
 
-## Data Models
+### Bug Fixes
+- Fixed the `createdBy` field in the Project schema by setting it to the same value as the `owner` field in the `createProject` function
+- Improved error handling in the `getClimateZoneByLocation` function
+- Updated validation messages to be more descriptive
 
-### User Model
-```javascript
-{
-  username: String,
-  email: String,
-  password: String,
-  role: String,
-  createdAt: Date
-}
-```
+## Current State
+- The application allows users to create projects with basic information (name, description, building type, location, floor area)
+- Building types are validated against the `buildingTypeToClassification.json` file
+- Locations are mapped to climate zones using the `locationToClimateZone.json` file
+- The `buildingFabric`, `specialRequirements`, and `compliancePathway` fields are optional and can be added later
+- The application can generate compliance reports based on the project information
 
-### Project Model
-```javascript
-{
-  name: String,
-  description: String,
-  buildingType: String,
-  location: String,
-  climateZone: String,
-  buildingClassification: String,
-  compliancePathway: String,
-  status: String,
-  createdBy: ObjectId,
-  updatedAt: Date
-}
-```
+## Next Steps
+- Implement the building fabric section to allow users to specify wall, roof, floor, and window materials and properties
+- Implement the special requirements section to allow users to specify fire, accessibility, acoustic, energy, and other requirements
+- Implement the compliance pathway section to allow users to specify performance, prescriptive, or deemed-to-satisfy pathways
+- Enhance the compliance checking functionality to validate projects against NCC requirements
+- Improve the report generation to include more detailed information and recommendations
 
-## Decision Tree Implementation
-The application uses a centralized Decision-Tree.json file that contains:
-- Building classifications and their requirements
-- Climate zone mappings and specifications
-- Compliance pathways and their criteria
-- Special requirements and exemptions
-- Direct access to data without intermediate mappings
-
-## Security Features
-- JWT token-based authentication
-- Password hashing with bcrypt
-- Protected API routes
-- Input validation and sanitization
-- Error handling middleware
-- Rate limiting
-- CORS configuration
-
-## Performance Optimizations
-- MongoDB indexing
-- Data caching
-- Lazy loading
-- Pagination
-- Query optimization
-- Response compression
-- Efficient decision tree data access
-
-## Error Handling
-- Global error handling middleware
-- Custom error classes
-- Validation error handling
-- API error responses
-- Frontend error boundaries
-- Decision tree validation
-
-## Testing Strategy
-- Unit tests for utilities and services
-- Integration tests for API endpoints
-- Frontend component testing
-- End-to-end testing
-- Performance testing
-- Decision tree validation tests
-
-## Deployment
-- Environment-based configuration
-- Docker containerization
-- CI/CD pipeline
-- Monitoring and logging
-- Backup strategy
-
-## Future Enhancements
-1. Real-time compliance updates
-2. Advanced reporting features
-3. Integration with external systems
-4. Mobile application
-5. AI-powered compliance suggestions
-6. Multi-language support
-7. Enhanced data visualization
-8. Automated compliance monitoring
-9. Decision tree versioning
-10. Enhanced decision tree validation 
+## Notes
+- The `Decision-Tree.json` file is the source of truth for building classifications, climate zones, and compliance pathways
+- The `locationToClimateZone.json` file maps locations to climate zones
+- The `buildingTypeToClassification.json` file maps building types to NCC classifications
+- The `createdBy` field in the Project schema is set to the same value as the `owner` field 

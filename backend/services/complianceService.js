@@ -61,21 +61,21 @@ class ComplianceService {
     const checks = [];
     
     try {
-      // Get building classification from decision tree
-      const buildingClass = getBuildingClassification(project.buildingType);
+      const buildingType = project.buildingType;
+      const buildingClassification = getBuildingClassification(buildingType);
       
-      if (!buildingClass) {
+      if (!buildingClassification) {
         checks.push({
           requirement: 'Building Classification',
           status: 'failed',
-          details: `Building classification not found for type: ${project.buildingType}`
+          details: `Building classification not found for type: ${buildingType}`
         });
         return checks;
       }
       
       // Check applicable clauses
-      if (buildingClass.applicableClauses && buildingClass.applicableClauses.length > 0) {
-        for (const clause of buildingClass.applicableClauses) {
+      if (buildingClassification.applicableClauses && buildingClassification.applicableClauses.length > 0) {
+        for (const clause of buildingClassification.applicableClauses) {
           checks.push({
             requirement: `Clause ${clause}`,
             status: 'pending',
@@ -85,8 +85,8 @@ class ComplianceService {
       }
 
       // Check subtypes if applicable
-      if (buildingClass.subtypes && buildingClass.subtypes.length > 0) {
-        for (const subtype of buildingClass.subtypes) {
+      if (buildingClassification.subtypes && buildingClassification.subtypes.length > 0) {
+        for (const subtype of buildingClassification.subtypes) {
           if (subtype.requirements) {
             for (const requirement of subtype.requirements) {
               checks.push({
@@ -224,6 +224,37 @@ class ComplianceService {
       return 'compliant';
     }
     return 'pending';
+  }
+
+  async checkBuildingClassificationCompliance(project) {
+    try {
+      const buildingType = project.buildingType;
+      const buildingClassification = getBuildingClassification(buildingType);
+      
+      if (!buildingClassification) {
+        return {
+          compliant: false,
+          details: `Invalid building type: ${buildingType}`
+        };
+      }
+
+      return {
+        compliant: true,
+        details: {
+          buildingType: buildingType,
+          classification: buildingClassification.nccClassification,
+          description: buildingClassification.description,
+          typicalUse: buildingClassification.typicalUse,
+          commonFeatures: buildingClassification.commonFeatures
+        }
+      };
+    } catch (error) {
+      console.error('Error checking building classification compliance:', error);
+      return {
+        compliant: false,
+        details: `Error checking building classification: ${error.message}`
+      };
+    }
   }
 }
 

@@ -4,12 +4,12 @@ const BuildingFabric = require('../models/BuildingFabric');
 const SpecialRequirement = require('../models/SpecialRequirement');
 const CompliancePathway = require('../models/CompliancePathway');
 const { validateProject } = require('../utils/validation');
-const { getClimateZoneByLocation } = require('../utils/decisionTreeUtils');
+const { getBuildingClassification, getClimateZoneByLocation } = require('../utils/decisionTreeUtils');
 const asyncHandler = require('express-async-handler');
 const complianceService = require('../services/complianceService');
-const reportService = require('../services/reportService');
-const { getAllLocations } = require('../utils/locationUtils');
 const ReportService = require('../services/reportService');
+const { getAllLocations } = require('../utils/locationUtils');
+const { getSection } = require('../utils/decisionTreeFactory');
 const buildingTypeMapping = require('../data/mappings/buildingTypeToClassification.json');
 
 // @desc    Get all projects for a user
@@ -58,9 +58,11 @@ exports.getProject = asyncHandler(async (req, res) => {
 exports.createProject = asyncHandler(async (req, res) => {
   const { name, description, buildingType, location, floorArea } = req.body;
 
-  // Validate building type using the mapping file
-  const buildingTypeExists = buildingTypeMapping.buildingTypes.some(type => type.id === buildingType);
-  if (!buildingTypeExists) {
+  // Validate building type using the decision tree
+  let buildingClassification;
+  try {
+    buildingClassification = await getBuildingClassification(buildingType);
+  } catch (error) {
     return res.status(400).json({
       success: false,
       error: 'Invalid building type'
@@ -68,8 +70,10 @@ exports.createProject = asyncHandler(async (req, res) => {
   }
 
   // Validate location and get climate zone
-  const climateZone = getClimateZoneByLocation(location);
-  if (!climateZone) {
+  let climateZone;
+  try {
+    climateZone = await getClimateZoneByLocation(location);
+  } catch (error) {
     return res.status(400).json({
       success: false,
       error: 'Invalid location or could not determine climate zone'
@@ -82,6 +86,7 @@ exports.createProject = asyncHandler(async (req, res) => {
     owner: req.user._id,
     createdBy: req.user._id,
     buildingType,
+    buildingClassification,
     location,
     climateZone,
     floorArea
@@ -99,36 +104,10 @@ exports.createProject = asyncHandler(async (req, res) => {
 // @route   PUT /api/projects/:id
 // @access  Private
 exports.updateProject = asyncHandler(async (req, res) => {
-  const { buildingType, location } = req.body;
+  const { name, description, buildingType, location, floorArea } = req.body;
 
-  // If building type is being updated, validate it
-  if (buildingType) {
-    const buildingTypeExists = buildingTypeMapping.buildingTypes.some(type => type.id === buildingType);
-    if (!buildingTypeExists) {
-      return res.status(400).json({
-        success: false,
-        error: 'Invalid building type'
-      });
-    }
-  }
-
-  // If location is being updated, validate it
-  if (location) {
-    const climateZone = getClimateZoneByLocation(location);
-    if (!climateZone) {
-      return res.status(400).json({
-        success: false,
-        error: 'Invalid location'
-      });
-    }
-    req.body.climateZone = climateZone;
-  }
-
-  const project = await Project.findOneAndUpdate(
-    { _id: req.params.id, owner: req.user._id },
-    req.body,
-    { new: true, runValidators: true }
-  );
+  // Get the project
+  const project = await Project.findById(req.params.id);
 
   if (!project) {
     return res.status(404).json({
@@ -137,7 +116,50 @@ exports.updateProject = asyncHandler(async (req, res) => {
     });
   }
 
-  res.status(200).json({
+  // Check if user is the owner
+  if (project.owner.toString() !== req.user._id.toString()) {
+    return res.status(401).json({
+      success: false,
+      error: 'Not authorized to update this project'
+    });
+  }
+
+  // If building type is being updated, validate it
+  if (buildingType && buildingType !== project.buildingType) {
+    try {
+      const buildingClassification = await getBuildingClassification(buildingType);
+      project.buildingClassification = buildingClassification;
+    } catch (error) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid building type'
+      });
+    }
+  }
+
+  // If location is being updated, validate it
+  if (location && location !== project.location) {
+    try {
+      const climateZone = await getClimateZoneByLocation(location);
+      project.climateZone = climateZone;
+    } catch (error) {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid location or could not determine climate zone'
+      });
+    }
+  }
+
+  // Update the project
+  project.name = name || project.name;
+  project.description = description || project.description;
+  project.buildingType = buildingType || project.buildingType;
+  project.location = location || project.location;
+  project.floorArea = floorArea || project.floorArea;
+
+  await project.save();
+
+  res.json({
     success: true,
     data: project
   });
@@ -215,7 +237,19 @@ exports.generateReport = asyncHandler(async (req, res) => {
     });
   }
 
-  const reportService = new ReportService(project);
+  // Get the section parameter from the query string
+  const section = req.query.section || 'full';
+  
+  // Validate the section parameter
+  const validSections = ['full', 'building', 'compliance', 'fabric', 'special', 'energy', 'lighting', 'meters', 'exemptions'];
+  if (!validSections.includes(section)) {
+    return res.status(400).json({
+      success: false,
+      error: `Invalid section. Must be one of: ${validSections.join(', ')}`
+    });
+  }
+
+  const reportService = new ReportService(project, section);
   const report = await reportService.generateReport();
 
   res.json({
@@ -228,17 +262,27 @@ exports.generateReport = asyncHandler(async (req, res) => {
 // @route   GET /api/projects/building-types
 // @access  Public
 exports.getBuildingTypes = asyncHandler(async (req, res) => {
-  const buildingTypes = buildingTypeMapping.buildingTypes.map(type => ({
-    id: type.id,
-    name: type.name,
-    description: type.description,
-    nccClassification: type.nccClassification
-  }));
+  try {
+    const buildingTypes = buildingTypeMapping.buildingTypes.map(type => ({
+      id: type.id,
+      name: type.name,
+      description: type.description,
+      nccClassification: type.nccClassification,
+      typicalUse: type.typicalUse,
+      commonFeatures: type.commonFeatures,
+      notes: type.notes
+    }));
 
-  res.json({
-    success: true,
-    data: buildingTypes
-  });
+    res.json({
+      success: true,
+      data: buildingTypes
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: `Error getting building types: ${error.message}`
+    });
+  }
 });
 
 // @desc    Get all locations
