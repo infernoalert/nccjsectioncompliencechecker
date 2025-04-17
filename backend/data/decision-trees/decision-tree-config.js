@@ -18,6 +18,7 @@ module.exports = {
     'climate-zones',
     'compliance-pathways',
     'special-requirements',
-    'building-fabric'
+    'building-fabric',
+    'energy-use'
   ]
 }; 

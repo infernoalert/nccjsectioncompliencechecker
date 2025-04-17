@@ -1,0 +1,42 @@
+{
+  "version": "1.0",
+  "last_updated": "2024-03-19",
+  "energy_use": {
+    "Class_2": {
+      "energy_use_limit": "unidentified",
+      "description": "Energy use limit for Class 2 buildings is not defined in the NCC."
+    },
+    "Class_4": {
+      "energy_use_limit": "unidentified",
+      "description": "Energy use limit for Class 4 parts of buildings is not defined in the NCC."
+    },
+    "Class_6": {
+      "energy_use_limit": 80,
+      "description": "Class 6 buildings must have an energy use limit of 80 kJ/m².hr."
+    },
+    "Class_5": {
+      "energy_use_limit": 43,
+      "description": "Class 5 buildings must have an energy use limit of 43 kJ/m².hr."
+    },
+    "Class_7b": {
+      "energy_use_limit": 43,
+      "description": "Class 7b buildings must have an energy use limit of 43 kJ/m².hr."
+    },
+    "Class_8": {
+      "energy_use_limit": 43,
+      "description": "Class 8 buildings must have an energy use limit of 43 kJ/m².hr."
+    },
+    "Class_9a": {
+      "energy_use_limit": 43,
+      "description": "Class 9a buildings must have an energy use limit of 43 kJ/m².hr."
+    },
+    "Class_9b": {
+      "energy_use_limit": 43,
+      "description": "Class 9b buildings must have an energy use limit of 43 kJ/m².hr."
+    },
+    "default": {
+      "energy_use_limit": 15,
+      "description": "All other building classifications must have an energy use limit of 15 kJ/m².hr."
+    }
+  }
+} 

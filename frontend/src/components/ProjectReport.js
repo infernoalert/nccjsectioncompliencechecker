@@ -327,6 +327,31 @@ const ProjectReport = () => {
 
                 <Divider sx={{ my: 3 }} />
 
+                {/* Energy Use */}
+                {report.energyUse && (
+                  <Box sx={{ mb: 4 }}>
+                    <Typography variant="h5" gutterBottom>
+                      Energy Use Requirements - J1P1
+                    </Typography>
+                    <Grid container spacing={2}>
+                      <Grid item xs={12}>
+                        <Typography variant="subtitle1">Energy Use Limit</Typography>
+                        <Typography variant="body1">
+                          {report.energyUse.limit}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12}>
+                        <Typography variant="subtitle1">Description</Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {report.energyUse.description}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                  </Box>
+                )}
+
+                <Divider sx={{ my: 3 }} />
+
                 {/* Documentation */}
                 {report.documentation && (
                   <Box sx={{ mb: 4 }}>
