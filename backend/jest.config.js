@@ -1,6 +1,6 @@
 module.exports = {
   testEnvironment: 'node',
-  testMatch: ['**/tests/**/*.test.js'],
+  testMatch: ['**/autojesttest/**/*.test.js'],
   moduleFileExtensions: ['js', 'json'],
   transform: {},
   verbose: true
