@@ -127,3 +127,199 @@ The `ReportService` class is responsible for generating comprehensive compliance
 5. **Error Handling**: Each method includes proper error handling to ensure the report generation process is robust.
 
 The report is then displayed in the frontend using the `ProjectReport.js` component, which renders the data in a structured format with appropriate sections and styling. 
+
+## Creating New Decision Trees
+
+The application uses a modular decision tree structure to store and retrieve compliance-related data. This section explains how to create a new decision tree and integrate it into the system.
+
+### Step 1: Create the Decision Tree JSON File
+
+1. Create a new JSON file in the `backend/data/decision-trees` directory with a descriptive name (e.g., `verification-methods.json`).
+2. Structure the file according to the following template:
+
+```json
+{
+  "version": "1.0",
+  "last_updated": "YYYY-MM-DD",
+  "section_name": {
+    "key1": {
+      "property1": "value1",
+      "property2": "value2"
+    },
+    "key2": {
+      "property1": "value1",
+      "property2": "value2"
+    },
+    "default": {
+      "property1": "default_value1",
+      "property2": "default_value2"
+    }
+  }
+}
+```
+
+3. Replace `section_name` with the name of your decision tree (e.g., `verification_methods`).
+4. Define the keys and properties according to your data structure.
+5. Include a `default` key for cases where a specific key is not found.
+
+### Step 2: Update the Decision Tree Configuration
+
+1. Open `backend/data/decision-trees/decision-tree-config.js`.
+2. Add your new decision tree name to the `sections` array:
+
+```javascript
+sections: [
+  'exemptions',
+  'building-classifications',
+  'climate-zones',
+  'compliance-pathways',
+  'special-requirements',
+  'building-fabric',
+  'energy-use',
+  'your-new-decision-tree'  // Add your new decision tree here
+]
+```
+
+### Step 3: Create a Utility Function
+
+1. Open `backend/utils/decisionTreeUtils.js`.
+2. Create a new function to retrieve data from your decision tree:
+
+```javascript
+const getYourNewDecisionTree = async (key) => {
+  try {
+    // Get data from the modular structure
+    const data = await getSection('your-new-decision-tree');
+    if (!data || !data.section_name) {
+      throw new Error('No data found');
+    }
+
+    // Get the data for the specific key
+    const result = data.section_name[key];
+    
+    // If no specific data found for this key, use the default
+    if (!result) {
+      return data.section_name.default;
+    }
+
+    return result;
+  } catch (error) {
+    console.error(`Error getting data for ${key}:`, error);
+    throw error;
+  }
+};
+```
+
+3. Export the new function by adding it to the `module.exports` object:
+
+```javascript
+module.exports = {
+  // ... existing exports
+  getYourNewDecisionTree,
+};
+```
+
+### Step 4: Update the ReportService
+
+1. Open `backend/services/reportService.js`.
+2. Import your new utility function:
+
+```javascript
+const {
+  // ... existing imports
+  getYourNewDecisionTree
+} = require('../utils/decisionTreeUtils');
+```
+
+3. Add a new property to the constructor:
+
+```javascript
+constructor(project, section = 'full') {
+  // ... existing properties
+  this.yourNewData = null;
+}
+```
+
+4. Create a new method to generate information from your decision tree:
+
+```javascript
+async generateYourNewDataInfo() {
+  try {
+    // Get the key based on project data
+    const key = this.project.someProperty;
+    
+    // Get the data from the decision tree
+    this.yourNewData = await getYourNewDecisionTree(key);
+    
+    return {
+      // Return the data in a structured format
+      property1: this.yourNewData.property1,
+      property2: this.yourNewData.property2
+    };
+  } catch (error) {
+    return {
+      error: `Error getting data: ${error.message}`
+    };
+  }
+}
+```
+
+5. Update the `generateReport` method to include your new data:
+
+```javascript
+async generateReport() {
+  try {
+    // ... existing code
+
+    if (this.section === 'full' || this.section === 'your-section') {
+      report.yourNewData = await this.generateYourNewDataInfo();
+    }
+
+    // ... existing code
+  } catch (error) {
+    // ... error handling
+  }
+}
+```
+
+### Step 5: Update the Frontend Component
+
+1. Open the relevant frontend component (e.g., `frontend/src/components/ProjectReport.js`).
+2. Add a new section to display your data:
+
+```jsx
+{/* Your New Data Section */}
+{report.yourNewData && (
+  <Box sx={{ mb: 4 }}>
+    <Typography variant="h5" gutterBottom>
+      Your New Data Section
+    </Typography>
+    <Grid container spacing={2}>
+      <Grid item xs={12}>
+        <Typography variant="subtitle1">Property 1</Typography>
+        <Typography variant="body1">
+          {report.yourNewData.property1}
+        </Typography>
+      </Grid>
+      <Grid item xs={12}>
+        <Typography variant="subtitle1">Property 2</Typography>
+        <Typography variant="body2" color="text.secondary">
+          {report.yourNewData.property2}
+        </Typography>
+      </Grid>
+    </Grid>
+  </Box>
+)}
+```
+
+### Example: Adding Verification Methods
+
+As an example, to add verification methods to the energy use section:
+
+1. Create `verification-methods.json` with verification methods for each building classification.
+2. Add 'verification-methods' to the sections array in `decision-tree-config.js`.
+3. Create `getVerificationMethods` function in `decisionTreeUtils.js`.
+4. Update `generateEnergyUseInfo` in `reportService.js` to include verification methods.
+5. Update the energy use section in `ProjectReport.js` to display verification methods.
+
+This modular approach allows for easy addition of new decision trees and integration with the existing report generation system. 

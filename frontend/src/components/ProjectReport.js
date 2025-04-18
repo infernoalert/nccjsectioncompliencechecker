@@ -331,7 +331,7 @@ const ProjectReport = () => {
                 {report.energyUse && (
                   <Box sx={{ mb: 4 }}>
                     <Typography variant="h5" gutterBottom>
-                      Energy Use Requirements - J1P1
+                      Energy Use Requirements
                     </Typography>
                     <Grid container spacing={2}>
                       <Grid item xs={12}>
@@ -346,6 +346,73 @@ const ProjectReport = () => {
                           {report.energyUse.description}
                         </Typography>
                       </Grid>
+                    </Grid>
+                  </Box>
+                )}
+
+                {/* Verification Methods */}
+                {report.energyUse && report.energyUse.verificationMethods && (
+                  <Box sx={{ mb: 4 }}>
+                    <Typography variant="h5" gutterBottom>
+                      Verification Methods
+                    </Typography>
+                    {Array.isArray(report.energyUse.verificationMethods) ? (
+                      report.energyUse.verificationMethods.map((method, index) => (
+                        <Box key={index} sx={{ mb: 3 }}>
+                          <Typography variant="subtitle1" gutterBottom>
+                            {method.condition}
+                          </Typography>
+                          <Box component="ul" sx={{ pl: 2 }}>
+                            {method.description.map((item, i) => (
+                              <Typography component="li" key={i} variant="body2" color="text.secondary">
+                                {item}
+                              </Typography>
+                            ))}
+                          </Box>
+                        </Box>
+                      ))
+                    ) : (
+                      <Box sx={{ mb: 3 }}>
+                        <Typography variant="subtitle1" gutterBottom>
+                          {report.energyUse.verificationMethods.condition}
+                        </Typography>
+                        <Box component="ul" sx={{ pl: 2 }}>
+                          {report.energyUse.verificationMethods.description.map((item, i) => (
+                            <Typography component="li" key={i} variant="body2" color="text.secondary">
+                              {item}
+                            </Typography>
+                          ))}
+                        </Box>
+                      </Box>
+                    )}
+                  </Box>
+                )}
+
+                {/* Energy Monitoring */}
+                {report.energyMonitoring && (
+                  <Box sx={{ mb: 4 }}>
+                    <Typography variant="h5" gutterBottom>
+                      Energy Monitoring Requirements
+                    </Typography>
+                    <Grid container spacing={2}>
+                      <Grid item xs={12}>
+                        <Typography variant="subtitle1">Requirement</Typography>
+                        <Typography variant="body1">
+                          {report.energyMonitoring.requirement}
+                        </Typography>
+                      </Grid>
+                      {report.energyMonitoring.details && report.energyMonitoring.details.length > 0 && (
+                        <Grid item xs={12}>
+                          <Typography variant="subtitle1">Details</Typography>
+                          <Box component="ul" sx={{ pl: 2 }}>
+                            {report.energyMonitoring.details.map((detail, index) => (
+                              <Typography component="li" key={index} variant="body2" color="text.secondary">
+                                {detail}
+                              </Typography>
+                            ))}
+                          </Box>
+                        </Grid>
+                      )}
                     </Grid>
                   </Box>
                 )}

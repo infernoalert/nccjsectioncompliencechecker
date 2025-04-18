@@ -206,7 +206,7 @@ const { getAllBuildingTypes } = require('../utils/mappingUtils');
  *         schema:
  *           type: string
  *           enum: [full, building, compliance, fabric, special, energy, lighting, meters]
- *         description: Section of the report to generate (default: full)
+ *         description: "Section of the report to generate (default: full)"
  *     responses:
  *       200:
  *         description: Report generated successfully

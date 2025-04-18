@@ -3,12 +3,12 @@
   "last_updated": "2024-03-19",
   "energy_use": {
     "Class_2": {
-      "energy_use_limit": "unidentified",
-      "description": "Energy use limit for Class 2 buildings is not defined in the NCC."
+      "energy_use_limit": "NSW-J1P2;J1P3",
+      "description": "Energy use limit for Class 2 buildings NOT in NSW is not defined in the NCC."
     },
     "Class_4": {
-      "energy_use_limit": "unidentified",
-      "description": "Energy use limit for Class 4 parts of buildings is not defined in the NCC."
+      "energy_use_limit": "NSW-J1P2;J1P3",
+      "description": "Energy use limit for Class 4 parts of buildings NOT in NSW is not defined in the NCC."
     },
     "Class_6": {
       "energy_use_limit": 80,

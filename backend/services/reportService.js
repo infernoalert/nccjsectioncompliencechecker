@@ -11,7 +11,9 @@ const {
   getCompliancePathway,
   getSpecialRequirements,
   getExemptions,
-  getEnergyUseRequirements
+  getEnergyUseRequirements,
+  getVerificationMethods,
+  getEnergyMonitoringRequirements
 } = require('../utils/decisionTreeUtils');
 const { getSection } = require('../utils/decisionTreeFactory');
 
@@ -25,6 +27,8 @@ class ReportService {
     this.specialRequirements = null;
     this.exemptions = null;
     this.energyUse = null;
+    this.verificationMethods = null;
+    this.energyMonitoring = null;
   }
 
   /**
@@ -62,6 +66,7 @@ class ReportService {
 
       if (this.section === 'full' || this.section === 'energy') {
         report.energyUse = await this.generateEnergyUseInfo();
+        report.energyMonitoring = await this.generateEnergyMonitoringInfo();
       }
 
       // Add section-specific information if a specific section is requested
@@ -152,7 +157,9 @@ class ReportService {
     try {
       const buildingClassification = await getBuildingClassification(this.project.buildingType);
       const climateZone = await getClimateZoneByLocation(this.project.location);
-      this.compliancePathway = await getCompliancePathway(buildingClassification, climateZone);
+      
+      // Pass only the classType property, not the entire object
+      this.compliancePathway = await getCompliancePathway(buildingClassification.classType, climateZone);
       
       return {
         pathway: this.compliancePathway.pathway,
@@ -193,7 +200,9 @@ class ReportService {
   async generateSpecialRequirementsInfo() {
     try {
       const buildingClassification = await getBuildingClassification(this.project.buildingType);
-      this.specialRequirements = await getSpecialRequirements(buildingClassification);
+      
+      // Pass only the classType property, not the entire object
+      this.specialRequirements = await getSpecialRequirements(buildingClassification.classType);
       
       return {
         requirements: this.specialRequirements,
@@ -240,7 +249,7 @@ class ReportService {
   async generateExemptionsInfo() {
     try {
       const buildingClassification = await getBuildingClassification(this.project.buildingType);
-      this.exemptions = await getExemptions(buildingClassification);
+      this.exemptions = await getExemptions(buildingClassification.classType);
       
       if (!this.exemptions) {
         return {
@@ -272,14 +281,35 @@ class ReportService {
     try {
       const buildingClassification = await getBuildingClassification(this.project.buildingType);
       this.energyUse = await getEnergyUseRequirements(buildingClassification.classType);
+      this.verificationMethods = await getVerificationMethods(buildingClassification.classType);
       
       return {
         limit: this.energyUse.limit,
-        description: this.energyUse.description
+        description: this.energyUse.description,
+        verificationMethods: this.verificationMethods
       };
     } catch (error) {
       return {
         error: `Error getting energy use requirements: ${error.message}`
+      };
+    }
+  }
+
+  async generateEnergyMonitoringInfo() {
+    try {
+      // Ensure floor area is a number
+      const floorArea = Number(this.project.floorArea) || 0;
+      console.log(`Floor area for energy monitoring: ${floorArea} m²`);
+      
+      this.energyMonitoring = await getEnergyMonitoringRequirements(floorArea);
+      
+      return {
+        requirement: this.energyMonitoring.requirement,
+        details: this.energyMonitoring.details || []
+      };
+    } catch (error) {
+      return {
+        error: `Error getting energy monitoring requirements: ${error.message}`
       };
     }
   }

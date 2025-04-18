@@ -1,0 +1,141 @@
+{
+  "version": "1.0",
+  "last_updated": "2024-03-19",
+  "verification_methods": {
+    "Class_2": [
+      {
+        "condition": "minimum 4-star NABERS Energy for Apartment Buildings",
+        "description": [
+          "(a) obtain commitment agreement; and",
+          "(b) AC ≥18 hrs/day in common lift lobbies/corridors; and",
+          "(c) energy model shows:",
+          "   (i) emissions <90% of 5-star level; and",
+          "   (ii) PMV -1 to +1 in ≥95% common areas (excl. pools) for ≥98% hours; and",
+          "   (iii) pool chambers +2°C above pool temp for ≥12 hrs/day; and",
+          "(d) complies with Specification 33"
+        ]
+      },
+      {
+        "condition": "Green Star alternative compliance",
+        "description": [
+          "(a) registered for Green Star Design & As-Built or Buildings rating; and",
+          "(b) emissions <90% of reference building; and",
+          "(c) PMV -1 to +1 in ≥95% areas for ≥98% hours; and",
+          "(d) complies with Specification 33"
+        ]
+      }
+    ],
+    "Class_3": [
+      {
+        "condition": "minimum 4-star NABERS Energy for Hotels",
+        "description": [
+          "(a) obtain commitment agreement; and",
+          "(b) operating hours:",
+          "   - ≥12 hrs/day (bedrooms/dining/conference)",
+          "   - 24 hrs/day (corridors/foyers)",
+          "   - ≥18 hrs/day (back-of-house); and",
+          "(c) energy model shows:",
+          "   (i) emissions <70% of 5-star level; and",
+          "   (ii) PMV -1 to +1 in ≥95% areas (excl. pools) for ≥98% hours; and",
+          "   (iii) pool chambers +2°C above pool temp for ≥12 hrs/day; and",
+          "(d) complies with Specification 33"
+        ]
+      },
+      {
+        "condition": "Green Star alternative compliance",
+        "description": [
+          "(a) registered for Green Star Design & As-Built or Buildings rating; and",
+          "(b) emissions <90% of reference building; and",
+          "(c) PMV -1 to +1 in ≥95% areas for ≥98% hours; and",
+          "(d) complies with Specification 33"
+        ]
+      }
+    ],
+    "Class_5": [
+      {
+        "condition": "minimum 5.5-star NABERS Energy base building",
+        "description": [
+          "(a) the energy model required demonstrates—",
+          "(b) emissions ≤67% of 5.5-star level excluding—",
+          "   (i) tenant systems; and",
+          "   (A) external lighting; and",
+          "   (B) carpark services; and",
+          "   (C) PMV -1 to +1 across ≥95% floor area for ≥98% hours; and",
+          "(c) complies with Specification 33"
+        ]
+      },
+      {
+        "condition": "Green Star alternative compliance",
+        "description": [
+          "(a) registered for Green Star Design & As-Built or Buildings rating; and",
+          "(b) emissions <90% of reference building; and",
+          "(c) PMV -1 to +1 in ≥95% areas for ≥98% hours; and",
+          "(d) complies with Specification 33"
+        ]
+      }
+    ],
+    "Class_6": [
+      {
+        "condition": "minimum 4.5-star NABERS Energy for Shopping Centres",
+        "description": [
+          "(a) obtain commitment agreement; and",
+          "(b) building must have:",
+          "   (i) ≥20% AC common area of GLA; and",
+          "   (ii) GLA >15,000 m²; and",
+          "(c) energy model shows:",
+          "   (i) emissions <80% of 4.5-star level; and",
+          "   (ii) PMV -1 to +1 in ≥95% AC spaces for ≥98% hours; and",
+          "(d) complies with Specification 33"
+        ]
+      },
+      {
+        "condition": "Green Star alternative compliance",
+        "description": [
+          "(a) registered for Green Star Design & As-Built or Buildings rating; and",
+          "(b) emissions <90% of reference building; and",
+          "(c) PMV -1 to +1 in ≥95% areas for ≥98% hours; and",
+          "(d) complies with Specification 33"
+        ]
+      }
+    ],
+    "Class_7": [
+      {
+        "condition": "Green Star alternative compliance",
+        "description": [
+          "(a) registered for Green Star Design & As-Built or Buildings rating; and",
+          "(b) emissions <90% of reference building; and",
+          "(c) PMV -1 to +1 in ≥95% areas for ≥98% hours; and",
+          "(d) complies with Specification 33"
+        ]
+      }
+    ],
+    "Class_8": [
+      {
+        "condition": "Green Star alternative compliance",
+        "description": [
+          "(a) registered for Green Star Design & As-Built or Buildings rating; and",
+          "(b) emissions <90% of reference building; and",
+          "(c) PMV -1 to +1 in ≥95% areas for ≥98% hours; and",
+          "(d) complies with Specification 33"
+        ]
+      }
+    ],
+    "Class_9": [
+      {
+        "condition": "Green Star alternative compliance",
+        "description": [
+          "(a) registered for Green Star Design & As-Built or Buildings rating; and",
+          "(b) emissions <90% of reference building; and",
+          "(c) PMV -1 to +1 in ≥95% areas for ≥98% hours; and",
+          "(d) complies with Specification 33"
+        ]
+      }
+    ],
+    "default": {
+      "condition": "Standard verification method",
+      "description": [
+        "Standard verification method applies to this building classification."
+      ]
+    }
+  }
+} 
