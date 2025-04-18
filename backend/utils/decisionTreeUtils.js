@@ -277,6 +277,77 @@ const getExemptions = async (classType) => {
   }
 };
 
+/**
+ * Get verification methods for a building classification
+ * @param {string} buildingClassification - The building classification
+ * @returns {Promise<Object>} The verification methods
+ */
+const getVerificationMethods = async (buildingClassification) => {
+  try {
+    // Get verification methods from the modular structure
+    const verificationMethodsData = await getSection('verification-methods');
+    if (!verificationMethodsData || !verificationMethodsData.verification_methods) {
+      throw new Error('No verification methods data found');
+    }
+
+    // Get the verification methods for the building classification
+    const verificationMethods = verificationMethodsData.verification_methods[buildingClassification];
+    
+    // If no specific methods found for this classification, use the default
+    if (!verificationMethods) {
+      return verificationMethodsData.verification_methods.default;
+    }
+
+    return verificationMethods;
+  } catch (error) {
+    console.error(`Error getting verification methods for ${buildingClassification}:`, error);
+    throw error;
+  }
+};
+
+/**
+ * Get energy monitoring requirements based on floor area
+ * @param {number} floorArea - The floor area of the building in square meters
+ * @returns {Promise<Object>} The energy monitoring requirements
+ */
+const getEnergyMonitoringRequirements = async (floorArea) => {
+  try {
+    // Ensure floor area is a number
+    floorArea = Number(floorArea);
+    console.log(`Processing energy monitoring requirements for floor area: ${floorArea} m²`);
+    
+    // Get energy monitoring requirements from the modular structure
+    const energyMonitoringData = await getSection('energy-monitoring');
+    if (!energyMonitoringData || !energyMonitoringData.energy_monitoring) {
+      throw new Error('No energy monitoring data found');
+    }
+
+    // Determine which area range the floor area falls into
+    let areaRange;
+    if (floorArea > 2500) {
+      areaRange = 'area > 2500';
+    } else if (floorArea > 500) {
+      areaRange = '500 < area <= 2500';
+    } else {
+      areaRange = 'area <= 500';
+    }
+    
+    console.log(`Selected area range: ${areaRange}`);
+
+    // Get the energy monitoring requirements for the area range
+    const requirements = energyMonitoringData.energy_monitoring[areaRange];
+    
+    if (!requirements) {
+      throw new Error(`No energy monitoring requirements found for area range: ${areaRange}`);
+    }
+
+    return requirements;
+  } catch (error) {
+    console.error(`Error getting energy monitoring requirements for floor area ${floorArea}:`, error);
+    throw error;
+  }
+};
+
 module.exports = {
   getBuildingClassification,
   getClimateZoneByLocation,
@@ -286,5 +357,7 @@ module.exports = {
   getCompliancePathways,
   getExemptions,
   getEnergyUseRequirements,
+  getVerificationMethods,
+  getEnergyMonitoringRequirements,
   isValidBuildingClass // Export for testing
 }; 

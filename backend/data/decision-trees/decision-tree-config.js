@@ -19,6 +19,8 @@ module.exports = {
     'compliance-pathways',
     'special-requirements',
     'building-fabric',
-    'energy-use'
+    'energy-use',
+    'verification-methods',
+    'energy-monitoring'
   ]
 }; 

@@ -1,0 +1,27 @@
+{
+  "version": "1.0",
+  "last_updated": "2024-03-19",
+  "energy_monitoring": {
+    "area > 2500": {
+      "requirement": "Energy meters must be interlinked by a communication system that collates time-of-use energy data to a single interface monitoring system for storage, analysis, and review.",
+      "details": [
+        "Energy meters must be configured to enable individual time-of-use energy data recording for:",
+        "Air-conditioning plant (including heating, cooling, and air handling fans)",
+        "Artificial lighting",
+        "Appliance power",
+        "Central hot water supply",
+        "Internal transport devices (e.g., lifts, escalators, moving walkways if more than one serves the building)",
+        "On-site renewable energy equipment",
+        "On-site electric vehicle charging equipment",
+        "On-site battery systems",
+        "Other ancillary plant"
+      ]
+    },
+    "500 < area <= 2500": {
+      "requirement": "Energy meters must be configured to record the time-of-use consumption of gas and electricity."
+    },
+    "area <= 500": {
+      "requirement": "No specific energy metering requirements based on the provided rules."
+    }
+  }
+} 
