@@ -13,7 +13,8 @@ const {
   getExemptions,
   getEnergyUseRequirements,
   getVerificationMethods,
-  getEnergyMonitoringRequirements
+  getEnergyMonitoringRequirements,
+  getCeilingFanRequirements
 } = require('../utils/decisionTreeUtils');
 const { getSection } = require('../utils/decisionTreeFactory');
 
@@ -29,6 +30,7 @@ class ReportService {
     this.energyUse = null;
     this.verificationMethods = null;
     this.energyMonitoring = null;
+    this.ceilingFanRequirements = null;
   }
 
   /**
@@ -67,6 +69,10 @@ class ReportService {
       if (this.section === 'full' || this.section === 'energy') {
         report.energyUse = await this.generateEnergyUseInfo();
         report.energyMonitoring = await this.generateEnergyMonitoringInfo();
+      }
+
+      if (this.section === 'full' || this.section === 'elemental-provisions-j3') {
+        report.elementalProvisionsJ3 = await this.generateElementalProvisionsJ3Info();
       }
 
       // Add section-specific information if a specific section is requested
@@ -310,6 +316,41 @@ class ReportService {
     } catch (error) {
       return {
         error: `Error getting energy monitoring requirements: ${error.message}`
+      };
+    }
+  }
+
+  /**
+   * Generate elemental provisions J3 information
+   * @returns {Promise<Object>} - Elemental provisions J3 information
+   */
+  async generateElementalProvisionsJ3Info() {
+    try {
+      const buildingClassification = await getBuildingClassification(this.project.buildingType);
+      const climateZone = await getClimateZoneByLocation(this.project.location);
+      
+      // Only proceed if the building is Class 2 or Class 4
+      if (buildingClassification.classType !== 'Class_2' && buildingClassification.classType !== 'Class_4') {
+        return {
+          ceilingFan: {
+            requirement: 'Not applicable',
+            description: 'Ceiling fan requirements only apply to Class 2 and Class 4 buildings.'
+          }
+        };
+      }
+
+      // Get ceiling fan requirements
+      this.ceilingFanRequirements = await getCeilingFanRequirements(buildingClassification.classType, climateZone);
+      
+      return {
+        ceilingFan: {
+          requirement: this.ceilingFanRequirements.requirement,
+          description: `For ${buildingClassification.classType} buildings in Climate Zone ${climateZone}, ${this.ceilingFanRequirements.requirement.toLowerCase()}`
+        }
+      };
+    } catch (error) {
+      return {
+        error: `Error getting elemental provisions J3 information: ${error.message}`
       };
     }
   }
