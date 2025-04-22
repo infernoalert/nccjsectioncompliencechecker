@@ -21,6 +21,7 @@ module.exports = {
     'building-fabric',
     'energy-use',
     'verification-methods',
-    'energy-monitoring'
+    'energy-monitoring',
+    'ceilingfan-elemental-provisions-j3'
   ]
 }; 

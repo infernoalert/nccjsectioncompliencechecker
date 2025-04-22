@@ -348,6 +348,41 @@ const getEnergyMonitoringRequirements = async (floorArea) => {
   }
 };
 
+/**
+ * Get ceiling fan requirements for J3 section
+ * @param {string} buildingClass - The building classification (e.g., 'Class_2')
+ * @param {string} climateZone - The climate zone
+ * @returns {Promise<Object>} The ceiling fan requirements
+ */
+const getCeilingFanRequirements = async (buildingClass, climateZone) => {
+  try {
+    // Get ceiling fan requirements from the modular structure
+    const ceilingFanData = await getSection('ceilingfan-elemental-provisions-j3');
+    if (!ceilingFanData || !ceilingFanData.ceiling_fan_requirements) {
+      throw new Error('No ceiling fan requirements data found');
+    }
+
+    // Get the requirements for the building class
+    const classRequirements = ceilingFanData.ceiling_fan_requirements[buildingClass];
+    
+    // If no specific requirements found for this class, use the default
+    if (!classRequirements) {
+      return ceilingFanData.ceiling_fan_requirements.default;
+    }
+
+    // Check if the climate zone is in the required zones
+    const isRequired = classRequirements.climate_zones.includes(climateZone);
+    
+    return {
+      requirement: isRequired ? classRequirements.requirement : ceilingFanData.ceiling_fan_requirements.default.requirement,
+      isRequired
+    };
+  } catch (error) {
+    console.error(`Error getting ceiling fan requirements for ${buildingClass} in climate zone ${climateZone}:`, error);
+    throw error;
+  }
+};
+
 module.exports = {
   getBuildingClassification,
   getClimateZoneByLocation,
@@ -359,5 +394,6 @@ module.exports = {
   getEnergyUseRequirements,
   getVerificationMethods,
   getEnergyMonitoringRequirements,
+  getCeilingFanRequirements,
   isValidBuildingClass // Export for testing
 }; 

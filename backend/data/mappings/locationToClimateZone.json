@@ -305,6 +305,114 @@
       "description": "Yass, NSW",
       "latitude": null,
       "longitude": null
+    },
+    {
+      "id": "NT-Alice-Springs",
+      "name": "Alice Springs",
+      "state": "NT",
+      "climateZone": "3",
+      "description": "Alice Springs, NT",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": "NT-Darwin",
+      "name": "Darwin",
+      "state": "NT",
+      "climateZone": "1",
+      "description": "Darwin, NT",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": "NT-Elliot",
+      "name": "Elliot",
+      "state": "NT",
+      "climateZone": "3",
+      "description": "Elliot, NT",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": "NT-Katherine",
+      "name": "Katherine",
+      "state": "NT",
+      "climateZone": "1",
+      "description": "Katherine, NT",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": "NT-Renner-Springs",
+      "name": "Renner Springs",
+      "state": "NT",
+      "climateZone": "3",
+      "description": "Renner Springs, NT",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": "NT-Tennant-Creek",
+      "name": "Tennant Creek",
+      "state": "NT",
+      "climateZone": "3",
+      "description": "Tennant Creek, NT",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": "QLD-Brisbane",
+      "name": "Brisbane",
+      "state": "QLD",
+      "climateZone": "2",
+      "description": "Brisbane, QLD",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": "QLD-Cairns",
+      "name": "Cairns",
+      "state": "QLD",
+      "climateZone": "1",
+      "description": "Cairns, QLD",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": "SA-Adelaide",
+      "name": "Adelaide",
+      "state": "SA",
+      "climateZone": "5",
+      "description": "Adelaide, SA",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": "TAS-Hobart",
+      "name": "Hobart",
+      "state": "TAS",
+      "climateZone": "7",
+      "description": "Hobart, TAS",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": "VIC-Melbourne",
+      "name": "Melbourne",
+      "state": "VIC",
+      "climateZone": "6",
+      "description": "Melbourne, VIC",
+      "latitude": null,
+      "longitude": null
+    },
+    {
+      "id": "WA-Perth",
+      "name": "Perth",
+      "state": "WA",
+      "climateZone": "5",
+      "description": "Perth, WA",
+      "latitude": null,
+      "longitude": null
     }
   ],
   "climateZones": [

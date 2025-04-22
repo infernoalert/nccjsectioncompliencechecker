@@ -246,6 +246,26 @@ const ProjectReport = () => {
                   </Box>
                 )}
 
+                {/* Elemental Provisions J3 */}
+                {report.elementalProvisionsJ3 && (
+                  <Box sx={{ mb: 4 }}>
+                    <Typography variant="h5" gutterBottom>
+                      Elemental Provisions for a Sole-Occupancy Unit J3
+                    </Typography>
+                    <Grid container spacing={2}>
+                      <Grid item xs={12}>
+                        <Typography variant="subtitle1">Ceiling Fan Requirements</Typography>
+                        <Typography variant="body1">
+                          {report.elementalProvisionsJ3.ceilingFan.requirement}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {report.elementalProvisionsJ3.ceilingFan.description}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                  </Box>
+                )}
+
                 {/* Exemptions */}
                 {report.exemptions && (
                   <Box sx={{ mb: 4 }}>

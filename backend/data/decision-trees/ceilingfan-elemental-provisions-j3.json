@@ -1,0 +1,17 @@
+{
+  "version": "1.0",
+  "last_updated": "2024-04-18",
+  "ceiling_fan_requirements": {
+    "Class_2": {
+      "climate_zones": ["1", "2", "3", "5"],
+      "requirement": "Ceiling fan may be required"
+    },
+    "Class_4": {
+      "climate_zones": ["1", "2", "3", "5"],
+      "requirement": "Ceiling fan may be required"
+    },
+    "default": {
+      "requirement": "Ceiling fan not required"
+    }
+  }
+} 
