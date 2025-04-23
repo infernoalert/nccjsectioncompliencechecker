@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { API_URL } from '../../config';
 
-const USERS_API_URL = `${API_URL}/users`;
+const USERS_API_URL = `${API_URL}/api/users`;
 
 // Create axios instance with auth header
 const axiosWithAuth = (token) => {

@@ -2,10 +2,10 @@
 const getApiUrl = () => {
   // Check if we're in production environment
   if (process.env.NODE_ENV === 'production') {
-    return 'https://api.payamamerian.com/api';
+    return 'https://api.payamamerian.com';
   }
   // Default to development URL
-  return 'http://localhost:5000/api';
+  return 'http://localhost:5000';
 };
 
 export const API_URL = getApiUrl();
