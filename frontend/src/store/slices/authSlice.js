@@ -7,7 +7,7 @@ export const login = createAsyncThunk(
     'auth/login',
     async (credentials, { rejectWithValue }) => {
         try {
-            const response = await axios.post(`${API_URL}/auth/login`, credentials);
+            const response = await axios.post(`${API_URL}/api/auth/login`, credentials);
             localStorage.setItem('token', response.data.token);
             return response.data;
         } catch (error) {
@@ -26,7 +26,7 @@ export const register = createAsyncThunk(
                 ...userData,
                 username: userData.email
             };
-            const response = await axios.post(`${API_URL}/auth/register`, registerData);
+            const response = await axios.post(`${API_URL}/api/auth/register`, registerData);
             localStorage.setItem('token', response.data.token);
             return response.data;
         } catch (error) {

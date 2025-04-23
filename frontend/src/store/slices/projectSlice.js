@@ -8,7 +8,7 @@ const axiosWithAuth = (token) => {
     throw new Error('No authentication token available');
   }
   return axios.create({
-    baseURL: API_URL,
+    baseURL: `${API_URL}/api`,
     headers: {
       Authorization: `Bearer ${token}`
     }
