@@ -49,6 +49,38 @@ This project is a web application for checking compliance with the National Cons
   - projectSlice.js: Manages project-related state
   - authSlice.js: Manages authentication state
 
+## Environment Configuration
+
+### Backend Environment
+The backend uses environment-specific configuration files:
+- `.env.development`: Development environment configuration
+- `.env.production`: Production environment configuration
+
+To run the backend, copy the appropriate environment file to `.env` in the backend directory.
+
+### Frontend Environment
+The frontend also uses environment-specific configuration files:
+- `.env.development`: Development environment configuration
+- `.env.production`: Production environment configuration
+
+To run the frontend, copy the appropriate environment file to `.env` in the frontend directory.
+
+## Available Scripts
+
+### Backend
+- `npm run dev`: Starts the development server with nodemon
+- `npm start` or `npm run start:prod`: Starts the production server
+- `npm run start:dev`: Starts the development server (same as `npm run dev`)
+- `npm test`: Runs the test suite
+
+### Frontend
+- `npm start` or `npm run start:dev`: Starts the development server
+- `npm run start:prod`: Starts the production server
+- `npm run build`: Builds the app for production
+- `npm run build:dev`: Builds the app for development
+- `npm test`: Runs the test suite
+- `npm run eject`: Ejects from Create React App
+
 ## Recent Changes
 
 ### Project Schema Simplification

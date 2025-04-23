@@ -49,3 +49,6 @@ yarn-error.log*
 # Logs
 logs
 *.log 
+
+backend/.env.production
+frontend/.env.production

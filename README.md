@@ -15,6 +15,8 @@ A full-stack application for checking NCC Section J compliance, built with Expre
 │   ├── models/       # Mongoose models
 │   ├── routes/       # API routes
 │   ├── utils/        # Utility functions
+│   ├── services/     # Business logic services
+│   ├── data/         # Data files and decision trees
 │   └── server.js     # Express server entry point
 ├── frontend/         # React application
 │   ├── public/       # Static files
@@ -35,7 +37,19 @@ A full-stack application for checking NCC Section J compliance, built with Expre
 
 Follow these steps in order to start the application:
 
-### 1. Start MongoDB
+### 1. Environment Setup
+
+Before starting the application, you need to set up the environment files:
+
+1. For the backend:
+   - Copy `.env.development` to `.env` in the backend directory for development
+   - Copy `.env.production` to `.env` in the backend directory for production
+
+2. For the frontend:
+   - Copy `.env.development` to `.env` in the frontend directory for development
+   - Copy `.env.production` to `.env` in the frontend directory for production
+
+### 2. Start MongoDB
 
 First, ensure MongoDB is running on your system:
 
@@ -47,7 +61,7 @@ net start MongoDB
 sc query MongoDB
 ```
 
-### 2. Start the Backend Server
+### 3. Start the Backend Server
 
 1. Navigate to the backend directory:
    ```bash
@@ -59,23 +73,14 @@ sc query MongoDB
    npm install
    ```
 
-3. Create a .env file in the backend directory with the following variables:
-   ```
-   PORT=5000
-   MONGODB_URI=mongodb://localhost:27017/ncc-compliance
-   NODE_ENV=development
-   JWT_SECRET=your_jwt_secret_key_here
-   JWT_EXPIRE=30d
-   ```
-
-4. Start the development server:
+3. Start the development server:
    ```bash
    npm run dev
    ```
 
 The backend server will start on http://localhost:5000
 
-### 3. Start the Frontend Application
+### 4. Start the Frontend Application
 
 1. Open a new terminal and navigate to the frontend directory:
    ```bash
@@ -98,11 +103,15 @@ The frontend application will start on http://localhost:3000
 
 ### Backend
 - `npm run dev`: Starts the development server with nodemon
-- `npm start`: Starts the production server
+- `npm start` or `npm run start:prod`: Starts the production server
+- `npm run start:dev`: Starts the development server (same as `npm run dev`)
+- `npm test`: Runs the test suite
 
 ### Frontend
-- `npm start`: Starts the development server
-- `npm build`: Builds the app for production
+- `npm start` or `npm run start:dev`: Starts the development server
+- `npm run start:prod`: Starts the production server
+- `npm run build`: Builds the app for production
+- `npm run build:dev`: Builds the app for development
 - `npm test`: Runs the test suite
 - `npm run eject`: Ejects from Create React App
 
