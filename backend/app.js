@@ -10,6 +10,7 @@ const authRoutes = require('./routes/authRoutes');
 const projectRoutes = require('./routes/projectRoutes');
 const buildingClassRoutes = require('./routes/buildingClassRoutes');
 const locationRoutes = require('./routes/locationRoutes');
+const healthRoutes = require('./routes/healthRoutes');
 
 const app = express();
 
@@ -20,6 +21,9 @@ app.use(morgan('dev'));
 
 // API Documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+// Health check route
+app.use('/health', healthRoutes);
 
 // Routes
 app.use('/api/auth', authRoutes);

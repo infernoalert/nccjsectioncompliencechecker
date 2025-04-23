@@ -14,7 +14,8 @@
     "pm2:delete": "pm2 delete ecosystem.config.js",
     "pm2:logs": "pm2 logs",
     "pm2:monit": "pm2 monit",
-    "pm2:status": "pm2 status"
+    "pm2:status": "pm2 status",
+    "health-check": "node scripts/health-check.js"
   },
   "keywords": [],
   "author": "",
