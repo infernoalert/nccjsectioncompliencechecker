@@ -2,7 +2,7 @@
 const fs = require('fs');
 const path = require('path');
 
-// Define the path to the decision tree
+// Use relative paths consistently
 const decisionTreePath = path.join(__dirname, 'data', 'Decision-Tree.json');
 
 // Try to load the decision tree

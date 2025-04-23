@@ -1,9 +1,14 @@
 const ClimateZone = require('../models/ClimateZone');
-const decisionTree = require('../../Decision-Tree.json');
-const locationToClimateZone = require('../data/mappings/locationToClimateZone.json');
-const { getSection } = require('./decisionTreeFactory');
 const fs = require('fs');
 const path = require('path');
+
+// Use relative paths consistently
+const decisionTreePath = path.join(__dirname, '..', 'data', 'Decision-Tree.json');
+const locationToClimateZone = require('../data/mappings/locationToClimateZone.json');
+const { getSection } = require('./decisionTreeFactory');
+
+// Load decision tree data
+const decisionTree = JSON.parse(fs.readFileSync(decisionTreePath, 'utf8'));
 
 // Load mapping data
 const buildingTypeMapping = require('../data/mappings/buildingTypeToClassification.json');
