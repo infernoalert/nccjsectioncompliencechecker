@@ -16,12 +16,16 @@ module.exports = {
         NODE_ENV: 'development',
         PORT: 5000
       },
-      env_file: '.env.production', // Use production environment file
+      env_file: './.env.production', // Use production environment file with correct path
       log_date_format: 'YYYY-MM-DD HH:mm:ss',
-      error_file: 'logs/error.log',
-      out_file: 'logs/out.log',
+      error_file: '/home/payamame/nccj/logs/error.log', // Use absolute path for production
+      out_file: '/home/payamame/nccj/logs/out.log', // Use absolute path for production
       merge_logs: true,
-      time: true
+      time: true,
+      // Add more detailed logging
+      log_type: 'json',
+      // Add debug mode for more verbose logs
+      node_args: '--trace-warnings'
     }
   ]
 }; 
