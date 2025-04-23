@@ -269,3 +269,30 @@ Note: Only existing admin users can promote other users to admin role. This is a
 ## License
 
 This project is licensed under the ISC License.
+
+## Database Seeding
+
+To seed the database with initial data, use the following command:
+
+```bash
+node -r dotenv/config seeder.js -i dotenv_config_path=.env.production
+```
+
+This command:
+- Uses `dotenv/config` to load environment variables
+- Runs the seeder script with the `-i` flag to import data
+- Uses `.env.production` for production environment configuration
+- Will seed the database with:
+  - Climate zones
+  - Compliance pathways
+  - Special requirements
+  - Building classifications
+
+The seeder will construct the MongoDB URI from individual environment variables:
+- MONGO_USER
+- MONGO_PASSWORD
+- MONGO_PATH
+- MONGO_PORT
+- MONGO_DATABASE
+
+Make sure your `.env.production` file contains all required MongoDB configuration variables before running the seeder.
