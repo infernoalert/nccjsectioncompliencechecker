@@ -5,12 +5,15 @@
  * It handles loading the appropriate decision tree based on the configuration.
  */
 
-const fs = require('fs').promises;
+const fs = require('fs');
 const path = require('path');
 const config = require('../data/decision-trees/decision-tree-config');
 
+// Use relative paths consistently
+const treePath = path.join(__dirname, '..', 'data', 'Decision-Tree.json');
+
 // Cache for loaded decision tree sections
-const sectionCache = {};
+const sectionCache = new Map();
 
 // Cache for the monolithic tree
 let monolithicTreeCache = null;
@@ -22,8 +25,8 @@ let monolithicTreeCache = null;
  */
 async function loadModularSection(section) {
   // Check if the section is already in the cache
-  if (sectionCache[section]) {
-    return sectionCache[section];
+  if (sectionCache.has(section)) {
+    return sectionCache.get(section);
   }
 
   // Construct the path to the section file
@@ -31,13 +34,13 @@ async function loadModularSection(section) {
 
   try {
     // Check if the file exists
-    await fs.access(sectionPath);
+    await fs.promises.access(sectionPath);
     
     // Read and parse the section file
-    const sectionData = JSON.parse(await fs.readFile(sectionPath, 'utf8'));
+    const sectionData = JSON.parse(await fs.promises.readFile(sectionPath, 'utf8'));
     
     // Cache the section data
-    sectionCache[section] = sectionData;
+    sectionCache.set(section, sectionData);
     
     return sectionData;
   } catch (error) {
@@ -62,8 +65,7 @@ async function loadMonolithicTree() {
     }
 
     try {
-        const treePath = path.join(__dirname, '..', 'data', 'Decision-Tree.json');
-        const treeData = await fs.readFile(treePath, 'utf8');
+        const treeData = await fs.promises.readFile(treePath, 'utf8');
         monolithicTreeCache = JSON.parse(treeData);
         return monolithicTreeCache;
     } catch (error) {

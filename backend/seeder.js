@@ -3,8 +3,34 @@ const dotenv = require('dotenv');
 const fs = require('fs');
 const path = require('path');
 
-// Load env vars
-dotenv.config();
+// Load env vars based on environment
+const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env';
+dotenv.config({ path: path.join(__dirname, envFile) });
+
+// Log environment info
+console.log('Loading environment from:', envFile);
+
+// Construct MongoDB URI from individual components
+const mongoUser = process.env.MONGO_USER;
+const mongoPassword = process.env.MONGO_PASSWORD;
+const mongoPath = process.env.MONGO_PATH;
+const mongoPort = process.env.MONGO_PORT;
+const mongoDatabase = process.env.MONGO_DATABASE;
+
+// Check if all required MongoDB components are present
+if (!mongoUser || !mongoPassword || !mongoPath || !mongoPort || !mongoDatabase) {
+  console.error('Missing required MongoDB configuration:');
+  console.error('MONGO_USER:', !!mongoUser);
+  console.error('MONGO_PASSWORD:', !!mongoPassword);
+  console.error('MONGO_PATH:', !!mongoPath);
+  console.error('MONGO_PORT:', !!mongoPort);
+  console.error('MONGO_DATABASE:', !!mongoDatabase);
+  process.exit(1);
+}
+
+// Construct MongoDB URI
+const MONGODB_URI = `mongodb://${mongoUser}:${mongoPassword}@${mongoPath}:${mongoPort}/${mongoDatabase}`;
+console.log('MongoDB URI constructed successfully');
 
 // Import models
 const ClimateZone = require('./models/ClimateZone');
@@ -12,10 +38,10 @@ const CompliancePathway = require('./models/CompliancePathway');
 const SpecialRequirement = require('./models/SpecialRequirement');
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI)
+mongoose.connect(MONGODB_URI)
   .then(() => {
     console.log('MongoDB Connected');
-    console.log('Connection URI:', process.env.MONGODB_URI);
+    console.log('Connected to database:', mongoDatabase);
   })
   .catch(err => {
     console.error('MongoDB connection error:', err);
@@ -28,30 +54,19 @@ mongoose.connect(process.env.MONGODB_URI)
   });
 
 // Read decision tree data
-// Determine the correct path based on environment
-let decisionTreePath, zoneDataPath;
+// Use relative paths consistently in both environments
+const decisionTreePath = path.join(__dirname, 'data/Decision-Tree.json');
+const locationToClimateZonePath = path.join(__dirname, 'data/mappings/locationToClimateZone.json');
 
-// Check if we're in production environment
-const isProduction = process.env.NODE_ENV === 'production' || __dirname.includes('nccj');
-
-if (isProduction) {
-  // Production environment - use absolute paths
-  decisionTreePath = '/home/payamame/nccj/Decision-Tree.json';
-  zoneDataPath = '/home/payamame/nccj/zone.json';
-} else {
-  // Development environment - use relative paths
-  decisionTreePath = path.join(__dirname, '../Decision-Tree.json');
-  zoneDataPath = path.join(__dirname, '../zone.json');
-}
-
-console.log('Environment:', isProduction ? 'production' : 'development');
+// Log the paths being used
+console.log('Environment:', process.env.NODE_ENV === 'production' ? 'production' : 'development');
 console.log('Current directory:', __dirname);
-console.log('Reading decision tree data from:', decisionTreePath);
-console.log('Reading zone data from:', zoneDataPath);
+console.log('Decision tree path:', decisionTreePath);
+console.log('Location to climate zone path:', locationToClimateZonePath);
 
 try {
   const decisionTreeData = JSON.parse(fs.readFileSync(decisionTreePath, 'utf8'));
-  const zoneData = JSON.parse(fs.readFileSync(zoneDataPath, 'utf8'));
+  const locationToClimateZoneData = JSON.parse(fs.readFileSync(locationToClimateZonePath, 'utf8'));
 
   // Building Classifications data - Keep for reference but don't seed
   const buildingClassifications = Object.entries(decisionTreeData.decision_tree.building_classification).map(([name, data]) => ({
@@ -87,30 +102,30 @@ try {
       console.log('Building Classes are now accessed directly from Decision-Tree.json');
 
       // Seed Climate Zones
-      const climateZones = zoneData.climateZones.map(zone => ({
-        name: `Climate Zone ${zone.zone}`,
-        code: `CZ${zone.zone}`,
-        description: climateZoneDescriptions[zone.zone],
+      const climateZones = locationToClimateZoneData.climateZones.map(zone => ({
+        name: `Climate Zone ${zone.id}`,
+        code: `CZ${zone.id}`,
+        description: zone.description,
         temperatureRange: {
-          min: zone.zone <= 3 ? 25 : zone.zone <= 6 ? 15 : 5,
-          max: zone.zone <= 3 ? 35 : zone.zone <= 6 ? 25 : 15
+          min: zone.id <= 3 ? 25 : zone.id <= 6 ? 15 : 5,
+          max: zone.id <= 3 ? 35 : zone.id <= 6 ? 25 : 15
         },
         humidityRange: {
-          min: zone.zone <= 3 ? 60 : zone.zone <= 6 ? 40 : 20,
-          max: zone.zone <= 3 ? 90 : zone.zone <= 6 ? 70 : 50
+          min: zone.id <= 3 ? 60 : zone.id <= 6 ? 40 : 20,
+          max: zone.id <= 3 ? 90 : zone.id <= 6 ? 70 : 50
         },
-        solarRadiation: zone.zone <= 3 ? 6.5 : zone.zone <= 6 ? 5.0 : 3.5,
-        windSpeed: zone.zone <= 3 ? 3.0 : zone.zone <= 6 ? 4.0 : 5.0,
-        insulation: zone.zone <= 6 ? 'standard' : 'enhanced',
-        wallRValue: zone.zone <= 3 ? 'R1.4' : zone.zone <= 6 ? 'R2.0' : 'R2.8',
-        roofRValue: zone.zone <= 3 ? 'R2.7' : zone.zone <= 6 ? 'R3.2' : 'R3.7',
+        solarRadiation: zone.id <= 3 ? 6.5 : zone.id <= 6 ? 5.0 : 3.5,
+        windSpeed: zone.id <= 3 ? 3.0 : zone.id <= 6 ? 4.0 : 5.0,
+        insulation: zone.requirements?.insulation || (zone.id <= 6 ? 'standard' : 'enhanced'),
+        wallRValue: zone.id <= 3 ? 'R1.4' : zone.id <= 6 ? 'R2.0' : 'R2.8',
+        roofRValue: zone.id <= 3 ? 'R2.7' : zone.id <= 6 ? 'R3.2' : 'R3.7',
         glazing: {
-          shgc: zone.zone <= 3 ? 0.4 : zone.zone <= 6 ? 0.5 : 0.6,
-          uValue: zone.zone <= 3 ? 5.4 : zone.zone <= 6 ? 5.0 : 4.5
+          shgc: zone.id <= 3 ? 0.4 : zone.id <= 6 ? 0.5 : 0.6,
+          uValue: zone.id <= 3 ? 5.4 : zone.id <= 6 ? 5.0 : 4.5
         },
         hvac: {
-          cooling: zone.zone <= 3 ? 'required' : 'optional',
-          heating: zone.zone >= 6 ? 'required' : 'optional'
+          cooling: zone.id <= 3 ? 'required' : 'optional',
+          heating: zone.id >= 6 ? 'required' : 'optional'
         }
       }));
       await ClimateZone.insertMany(climateZones);
