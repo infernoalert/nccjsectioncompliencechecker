@@ -6,16 +6,20 @@ const options = {
     info: {
       title: 'NCC Section J Compliance API',
       version: '1.0.0',
-      description: 'API documentation for NCC Section J Compliance Checker',
+      description: 'API documentation for NCC Section J Compliance Checker. This API provides endpoints for managing building compliance, climate zones, and project management.',
       contact: {
         name: 'API Support',
         email: 'support@example.com'
+      },
+      license: {
+        name: 'MIT',
+        url: 'https://opensource.org/licenses/MIT'
       }
     },
     servers: [
       {
-        url: 'http://localhost:5000',
-        description: 'Development server'
+        url: process.env.BASE_URL || 'http://localhost:5000',
+        description: process.env.NODE_ENV === 'production' ? 'Production server' : 'Development server'
       }
     ],
     components: {
