@@ -7,6 +7,7 @@ This project is a web application for checking compliance with the National Cons
 - **Frontend**: React with Redux for state management
 - **Backend**: Node.js with Express
 - **Database**: MongoDB with Mongoose ODM
+- **Process Manager**: PM2 for production deployment
 
 ## Key Components
 
@@ -72,6 +73,13 @@ To run the frontend, copy the appropriate environment file to `.env` in the fron
 - `npm start` or `npm run start:prod`: Starts the production server
 - `npm run start:dev`: Starts the development server (same as `npm run dev`)
 - `npm test`: Runs the test suite
+- `npm run pm2:start`: Starts the application with PM2 in production mode
+- `npm run pm2:stop`: Stops the PM2 application
+- `npm run pm2:restart`: Restarts the PM2 application
+- `npm run pm2:delete`: Deletes the PM2 application
+- `npm run pm2:logs`: Shows the PM2 logs
+- `npm run pm2:monit`: Opens the PM2 monitoring interface
+- `npm run pm2:status`: Shows the PM2 status
 
 ### Frontend
 - `npm start` or `npm run start:dev`: Starts the development server
@@ -80,6 +88,70 @@ To run the frontend, copy the appropriate environment file to `.env` in the fron
 - `npm run build:dev`: Builds the app for development
 - `npm test`: Runs the test suite
 - `npm run eject`: Ejects from Create React App
+
+## Production Deployment
+
+### Backend Deployment with PM2
+
+PM2 is a process manager for Node.js applications that helps keep your application running 24/7 and provides features like automatic restarts, load balancing, and monitoring.
+
+#### PM2 Configuration
+
+The PM2 configuration is defined in the `ecosystem.config.js` file in the backend directory. This file contains the following settings:
+
+- **name**: The name of the application in PM2
+- **script**: The entry point script (server.js)
+- **instances**: Number of instances to launch (set to 'max' to use all available CPU cores)
+- **exec_mode**: Execution mode ('cluster' for load balancing)
+- **autorestart**: Automatically restart the application if it crashes
+- **watch**: Watch for file changes and restart the application
+- **max_memory_restart**: Restart the application if memory exceeds the specified limit
+- **env_production**: Environment variables for production mode
+- **env**: Environment variables for development mode
+- **env_file**: Path to the environment file
+- **log_date_format**: Format for log timestamps
+- **error_file**: Path to the error log file
+- **out_file**: Path to the output log file
+- **merge_logs**: Merge logs from all instances
+- **time**: Add timestamps to logs
+
+#### Deployment Scripts
+
+The backend includes deployment scripts for both Windows and Unix-based systems:
+
+- **deploy.bat**: Windows batch file for deployment
+- **deploy.sh**: Shell script for Unix-based systems
+
+These scripts perform the following tasks:
+1. Stop any running instances of the application
+2. Install dependencies
+3. Copy the production environment file to .env
+4. Start the application with PM2
+5. Save the PM2 process list
+6. Display the current PM2 status
+
+#### PM2 Commands
+
+The following PM2 commands are available through npm scripts:
+
+- **npm run pm2:start**: Start the application with PM2
+- **npm run pm2:stop**: Stop the application
+- **npm run pm2:restart**: Restart the application
+- **npm run pm2:delete**: Delete the application from PM2
+- **npm run pm2:logs**: View the application logs
+- **npm run pm2:monit**: Open the PM2 monitoring interface
+- **npm run pm2:status**: View the PM2 status
+
+### Frontend Deployment
+
+The frontend can be deployed by building the application and serving the static files:
+
+1. Build the application:
+   ```bash
+   npm run build
+   ```
+
+2. Deploy the `build` directory to your web server.
 
 ## Recent Changes
 

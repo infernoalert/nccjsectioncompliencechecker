@@ -32,6 +32,7 @@ A full-stack application for checking NCC Section J compliance, built with Expre
 - Node.js (v14 or higher)
 - npm (v6 or higher)
 - MongoDB (v4.4 or higher)
+- PM2 (for production deployment)
 
 ## Getting Started
 
@@ -106,6 +107,13 @@ The frontend application will start on http://localhost:3000
 - `npm start` or `npm run start:prod`: Starts the production server
 - `npm run start:dev`: Starts the development server (same as `npm run dev`)
 - `npm test`: Runs the test suite
+- `npm run pm2:start`: Starts the application with PM2 in production mode
+- `npm run pm2:stop`: Stops the PM2 application
+- `npm run pm2:restart`: Restarts the PM2 application
+- `npm run pm2:delete`: Deletes the PM2 application
+- `npm run pm2:logs`: Shows the PM2 logs
+- `npm run pm2:monit`: Opens the PM2 monitoring interface
+- `npm run pm2:status`: Shows the PM2 status
 
 ### Frontend
 - `npm start` or `npm run start:dev`: Starts the development server
@@ -114,6 +122,65 @@ The frontend application will start on http://localhost:3000
 - `npm run build:dev`: Builds the app for development
 - `npm test`: Runs the test suite
 - `npm run eject`: Ejects from Create React App
+
+## Production Deployment
+
+### Backend Deployment with PM2
+
+PM2 is a process manager for Node.js applications that helps keep your application running 24/7 and provides features like automatic restarts, load balancing, and monitoring.
+
+1. Install PM2 globally:
+   ```bash
+   npm install -g pm2
+   ```
+
+2. Navigate to the backend directory:
+   ```bash
+   cd backend
+   ```
+
+3. Run the deployment script:
+   - On Windows:
+     ```bash
+     deploy.bat
+     ```
+   - On Linux/Mac:
+     ```bash
+     ./deploy.sh
+     ```
+
+4. Alternatively, you can manually deploy:
+   ```bash
+   # Copy production environment file
+   copy .env.production .env
+   
+   # Start with PM2
+   npm run pm2:start
+   ```
+
+5. To monitor your application:
+   ```bash
+   npm run pm2:monit
+   ```
+
+6. To view logs:
+   ```bash
+   npm run pm2:logs
+   ```
+
+### Frontend Deployment
+
+1. Navigate to the frontend directory:
+   ```bash
+   cd frontend
+   ```
+
+2. Build the application:
+   ```bash
+   npm run build
+   ```
+
+3. Deploy the `build` directory to your web server.
 
 ## API Documentation
 
@@ -185,6 +252,11 @@ Note: Only existing admin users can promote other users to admin role. This is a
    - Check if port 3000 is available
    - Verify all dependencies are installed
    - Clear npm cache: `npm cache clean --force`
+
+4. If PM2 fails to start:
+   - Check if PM2 is installed globally
+   - Verify the ecosystem.config.js file exists
+   - Check the PM2 logs: `pm2 logs`
 
 ## Contributing
 

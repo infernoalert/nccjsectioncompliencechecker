@@ -7,7 +7,14 @@
     "dev": "cross-env NODE_ENV=development nodemon -r dotenv/config server.js dotenv_config_path=.env.development",
     "test": "jest",
     "start:prod": "cross-env NODE_ENV=production node -r dotenv/config server.js dotenv_config_path=.env.production",
-    "start:dev": "cross-env NODE_ENV=development nodemon -r dotenv/config server.js dotenv_config_path=.env.development"
+    "start:dev": "cross-env NODE_ENV=development nodemon -r dotenv/config server.js dotenv_config_path=.env.development",
+    "pm2:start": "pm2 start ecosystem.config.js --env production",
+    "pm2:stop": "pm2 stop ecosystem.config.js",
+    "pm2:restart": "pm2 restart ecosystem.config.js",
+    "pm2:delete": "pm2 delete ecosystem.config.js",
+    "pm2:logs": "pm2 logs",
+    "pm2:monit": "pm2 monit",
+    "pm2:status": "pm2 status"
   },
   "keywords": [],
   "author": "",
