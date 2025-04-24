@@ -1,5 +1,8 @@
 const swaggerJsdoc = require('swagger-jsdoc');
 
+// Log the environment for debugging
+console.log('Swagger NODE_ENV:', process.env.NODE_ENV);
+
 const options = {
   definition: {
     openapi: '3.0.0',
@@ -18,12 +21,12 @@ const options = {
     },
     servers: [
       {
-        url: process.env.NODE_ENV === 'production' 
-          ? 'https://api.payamamerian.com' 
-          : 'http://localhost:5000',
-        description: process.env.NODE_ENV === 'production' 
-          ? 'Production server' 
-          : 'Development server'
+        url: 'https://api.payamamerian.com',
+        description: 'Production server'
+      },
+      {
+        url: 'http://localhost:5000',
+        description: 'Development server'
       }
     ],
     components: {
