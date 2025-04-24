@@ -3,30 +3,34 @@ module.exports = {
     {
       name: 'ncc-compliance-backend',
       script: 'server.js',
-      instances: 2, // Start with fewer instances for testing
-      exec_mode: 'cluster',
+      instances: 1,
       autorestart: true,
       watch: false,
       max_memory_restart: '1G',
       env_production: {
         NODE_ENV: 'production',
-        PORT: process.env.PORT || 9951,
-        DEBUG: '*'
+        PORT: 9951,
+        DEBUG: 'app:*',
+        MONGO_PATH: '136.243.36.77',
+        MONGO_PORT: '27017',
+        MONGO_DATABASE: process.env.MONGO_DATABASE,
+        MONGO_USER: process.env.MONGO_USER,
+        MONGO_PASSWORD: process.env.MONGO_PASSWORD
       },
-      env: {
+      env_development: {
         NODE_ENV: 'development',
-        PORT: 5000
+        PORT: 5000,
+        DEBUG: 'app:*',
+        MONGO_PATH: 'localhost',
+        MONGO_PORT: '27017',
+        MONGO_DATABASE: 'ncc-compliance',
+        MONGO_USER: 'admin',
+        MONGO_PASSWORD: 'admin'
       },
-      log_date_format: 'YYYY-MM-DD HH:mm:ss',
-      error_file: 'logs/error.log', // Use relative path
-      out_file: 'logs/out.log', // Use relative path
-      merge_logs: true,
-      time: true,
-      log_type: 'json',
-      node_args: '--trace-warnings -r dotenv/config',
-      // Add error handling
-      max_restarts: 10,
-      min_uptime: '5s'
+      error_file: 'logs/err.log',
+      out_file: 'logs/out.log',
+      log_file: 'logs/combined.log',
+      time: true
     }
   ]
 }; 
