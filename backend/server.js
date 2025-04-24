@@ -88,7 +88,7 @@ app.get('/', (req, res) => {
 app.use(errorHandler);
 
 // Start server
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || (isProduction ? 9951 : 5000);
 const server = app.listen(PORT, () => {
     console.log(`Server running in ${isProduction ? 'production' : 'development'} mode on port ${PORT}`);
 });

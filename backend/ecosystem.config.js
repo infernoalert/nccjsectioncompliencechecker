@@ -10,7 +10,7 @@ module.exports = {
       max_memory_restart: '1G',
       env_production: {
         NODE_ENV: 'production',
-        PORT: 9951, // Match the port in .env.production
+        PORT: process.env.PORT || 9951,
         DEBUG: '*'
       },
       env: {
