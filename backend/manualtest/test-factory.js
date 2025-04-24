@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 
 // Use relative paths consistently
-const decisionTreePath = path.join(__dirname, 'data', 'Decision-Tree.json');
+const decisionTreePath = path.join(__dirname, '..', 'data', 'Decision-Tree.json');
 
 // Try to load the decision tree
 try {

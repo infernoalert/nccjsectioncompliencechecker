@@ -18,8 +18,12 @@ const options = {
     },
     servers: [
       {
-        url: process.env.BASE_URL || 'http://localhost:5000',
-        description: process.env.NODE_ENV === 'production' ? 'Production server' : 'Development server'
+        url: 'http://localhost:5000',
+        description: 'Development server'
+      },
+      {
+        url: 'https://api.payamamerian.com',
+        description: 'Production server'
       }
     ],
     components: {

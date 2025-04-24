@@ -2,13 +2,15 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { API_URL } from '../../config';
 
+const PROJECTS_API_URL = `${API_URL}/api/projects`;
+
 // Create axios instance with auth token
 const axiosWithAuth = (token) => {
   if (!token) {
     throw new Error('No authentication token available');
   }
   return axios.create({
-    baseURL: `${API_URL}/api`,
+    baseURL: PROJECTS_API_URL,
     headers: {
       Authorization: `Bearer ${token}`
     }
@@ -24,7 +26,7 @@ export const fetchProjects = createAsyncThunk(
       if (!auth.token) {
         return rejectWithValue('No authentication token available');
       }
-      const response = await axiosWithAuth(auth.token).get('/projects');
+      const response = await axiosWithAuth(auth.token).get('/');
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.error || error.message);
@@ -40,7 +42,7 @@ export const fetchProject = createAsyncThunk(
       if (!auth.token) {
         return rejectWithValue('No authentication token available');
       }
-      const response = await axiosWithAuth(auth.token).get(`/projects/${id}`);
+      const response = await axiosWithAuth(auth.token).get(`/${id}`);
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.error || error.message);
@@ -56,7 +58,7 @@ export const createProject = createAsyncThunk(
       if (!auth.token) {
         return rejectWithValue('No authentication token available');
       }
-      const response = await axiosWithAuth(auth.token).post('/projects', projectData);
+      const response = await axiosWithAuth(auth.token).post('/', projectData);
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.error || error.message);
@@ -72,7 +74,7 @@ export const updateProject = createAsyncThunk(
       if (!auth.token) {
         return rejectWithValue('No authentication token available');
       }
-      const response = await axiosWithAuth(auth.token).put(`/projects/${id}`, data);
+      const response = await axiosWithAuth(auth.token).put(`/${id}`, data);
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.error || error.message);
@@ -88,7 +90,7 @@ export const deleteProject = createAsyncThunk(
       if (!auth.token) {
         return rejectWithValue('No authentication token available');
       }
-      await axiosWithAuth(auth.token).delete(`/projects/${id}`);
+      await axiosWithAuth(auth.token).delete(`/${id}`);
       return id;
     } catch (error) {
       return rejectWithValue(error.response?.data?.error || error.message);
@@ -104,7 +106,7 @@ export const checkCompliance = createAsyncThunk(
       if (!auth.token) {
         return rejectWithValue('No authentication token available');
       }
-      const response = await axiosWithAuth(auth.token).post(`/projects/${id}/check-compliance`);
+      const response = await axiosWithAuth(auth.token).post(`/${id}/check-compliance`);
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.error || error.message);
@@ -121,7 +123,7 @@ export const fetchBuildingTypes = createAsyncThunk(
       if (!auth.token) {
         return rejectWithValue('No authentication token available');
       }
-      const response = await axiosWithAuth(auth.token).get('/projects/building-types');
+      const response = await axiosWithAuth(auth.token).get('/building-types');
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.error || error.message);
@@ -138,7 +140,7 @@ export const fetchLocations = createAsyncThunk(
       if (!auth.token) {
         return rejectWithValue('No authentication token available');
       }
-      const response = await axiosWithAuth(auth.token).get('/projects/locations');
+      const response = await axiosWithAuth(auth.token).get('/locations');
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.error || error.message);
@@ -154,7 +156,7 @@ export const generateReport = createAsyncThunk(
       if (!auth.token) {
         return rejectWithValue('No authentication token available');
       }
-      const response = await axiosWithAuth(auth.token).get(`/projects/${id}/report?section=${section}`);
+      const response = await axiosWithAuth(auth.token).get(`/${id}/report?section=${section}`);
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.error || error.message);

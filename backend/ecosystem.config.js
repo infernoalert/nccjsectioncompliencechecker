@@ -10,7 +10,8 @@ module.exports = {
       max_memory_restart: '1G',
       env_production: {
         NODE_ENV: 'production',
-        PORT: 9951 // Match the port in .env.production
+        PORT: 9951, // Match the port in .env.production
+        DEBUG: '*'
       },
       env: {
         NODE_ENV: 'development',
@@ -26,13 +27,7 @@ module.exports = {
       node_args: '--trace-warnings',
       // Add error handling
       max_restarts: 10,
-      min_uptime: '5s',
-      // Add environment variables for debugging
-      env_production: {
-        NODE_ENV: 'production',
-        PORT: 9951,
-        DEBUG: '*'
-      }
+      min_uptime: '5s'
     }
   ]
 }; 
