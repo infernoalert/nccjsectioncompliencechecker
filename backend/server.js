@@ -12,7 +12,8 @@ const fs = require('fs');
 dotenv.config();
 
 // Determine if we're in production environment
-const isProduction = process.env.NODE_ENV === 'production' || __dirname.includes('nccj');
+// Only use NODE_ENV to determine the environment
+const isProduction = process.env.NODE_ENV === 'production';
 
 // Create logs directory if it doesn't exist
 const logsDir = isProduction 
