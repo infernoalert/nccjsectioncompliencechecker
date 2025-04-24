@@ -22,7 +22,7 @@ const { protect } = require('../middleware/auth');
  *             properties:
  *               username:
  *                 type: string
- *                 description: User's username
+ *                 description: User's username (will be used as name if not provided)
  *               email:
  *                 type: string
  *                 format: email
