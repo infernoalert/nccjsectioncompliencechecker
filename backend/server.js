@@ -8,8 +8,9 @@ const errorHandler = require('./middleware/errorHandler');
 const path = require('path');
 const fs = require('fs');
 
-// Load env vars
-dotenv.config();
+// Load env vars based on environment
+const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development';
+dotenv.config({ path: path.resolve(process.cwd(), envFile) });
 
 // Determine if we're in production environment
 // Only use NODE_ENV to determine the environment

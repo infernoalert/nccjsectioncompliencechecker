@@ -17,14 +17,13 @@ module.exports = {
         NODE_ENV: 'development',
         PORT: 5000
       },
-      env_file: '.env.production',
       log_date_format: 'YYYY-MM-DD HH:mm:ss',
       error_file: 'logs/error.log', // Use relative path
       out_file: 'logs/out.log', // Use relative path
       merge_logs: true,
       time: true,
       log_type: 'json',
-      node_args: '--trace-warnings',
+      node_args: '--trace-warnings -r dotenv/config',
       // Add error handling
       max_restarts: 10,
       min_uptime: '5s'
