@@ -65,7 +65,33 @@ app.use(cors());
 app.use(express.json());
 
 // Swagger Documentation
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+  explorer: true,
+  swaggerOptions: {
+    persistAuthorization: true,
+    displayRequestDuration: true,
+    docExpansion: 'list',
+    defaultModelsExpandDepth: 3,
+    defaultModelExpandDepth: 3,
+    defaultModelRendering: 'model',
+    displayOperationId: true,
+    filter: true,
+    showExtensions: true,
+    showCommonExtensions: true,
+    deepLinking: true,
+    syntaxHighlight: {
+      theme: 'monokai'
+    },
+    tryItOutEnabled: true,
+    requestInterceptor: (req) => {
+      // Add a timestamp to bypass cache
+      const timestamp = new Date().getTime();
+      const separator = req.url.includes('?') ? '&' : '?';
+      req.url = `${req.url}${separator}_=${timestamp}`;
+      return req;
+    }
+  }
+}));
 
 // Mount routes
 app.use('/api/users', userRoutes);

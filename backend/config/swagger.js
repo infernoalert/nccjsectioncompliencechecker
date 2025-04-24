@@ -3,6 +3,22 @@ const swaggerJsdoc = require('swagger-jsdoc');
 // Log the environment for debugging
 console.log('Swagger NODE_ENV:', process.env.NODE_ENV);
 
+// Define server URLs for different environments
+const developmentServer = {
+  url: 'http://localhost:5000',
+  description: 'Development Server'
+};
+
+const productionServer = {
+  url: 'https://api.payamamerian.com',
+  description: 'Production Server'
+};
+
+// Define servers based on environment
+const servers = process.env.NODE_ENV === 'production'
+  ? [productionServer]
+  : [developmentServer];
+
 const options = {
   definition: {
     openapi: '3.0.0',
@@ -19,16 +35,7 @@ const options = {
         url: 'https://opensource.org/licenses/MIT'
       }
     },
-    servers: [
-      {
-        url: 'https://api.payamamerian.com',
-        description: 'Production server'
-      },
-      {
-        url: 'http://localhost:5000',
-        description: 'Development server'
-      }
-    ],
+    servers: servers,
     components: {
       securitySchemes: {
         bearerAuth: {
