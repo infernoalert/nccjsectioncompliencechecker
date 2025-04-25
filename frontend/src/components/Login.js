@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { login, clearError } from '../store/slices/authSlice';
 import {
     TextField,
@@ -85,6 +85,14 @@ const Login = () => {
                     >
                         {loading ? <CircularProgress size={24} /> : 'Login'}
                     </Button>
+                    <Box sx={{ mt: 2, textAlign: 'center' }}>
+                        <Typography variant="body2" color="text.secondary">
+                            Not registered yet?{' '}
+                            <Link to="/register" style={{ textDecoration: 'none', color: 'primary.main' }}>
+                                Click here to register
+                            </Link>
+                        </Typography>
+                    </Box>
                 </form>
             </Paper>
         </Box>
