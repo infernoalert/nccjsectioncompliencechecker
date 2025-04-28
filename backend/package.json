@@ -13,7 +13,8 @@
     "pm2:stop": "pm2 stop all",
     "pm2:restart": "pm2 restart all",
     "pm2:logs": "pm2 logs",
-    "pm2:status": "pm2 status"
+    "pm2:status": "pm2 status",
+    "pm2:delete": "pm2 delete all"
   },
   "keywords": [],
   "author": "",

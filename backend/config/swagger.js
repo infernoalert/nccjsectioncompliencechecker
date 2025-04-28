@@ -2,6 +2,11 @@ const swaggerJsdoc = require('swagger-jsdoc');
 
 // Log the environment for debugging
 console.log('Swagger NODE_ENV:', process.env.NODE_ENV);
+console.log('Swagger Environment Variables:', {
+  NODE_ENV: process.env.NODE_ENV,
+  PORT: process.env.PORT,
+  MONGO_PATH: process.env.MONGO_PATH
+});
 
 // Define server URLs for different environments
 const developmentServer = {
@@ -18,6 +23,8 @@ const productionServer = {
 const servers = process.env.NODE_ENV === 'production'
   ? [productionServer]
   : [developmentServer];
+
+console.log('Selected Swagger Servers:', servers);
 
 const options = {
   definition: {
