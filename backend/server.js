@@ -63,7 +63,7 @@ const app = express();
 // Middleware
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? ['https://nccjsectioncompliencechecker.vercel.app', 'https://api.payamamerian.com'] 
+    ? ['https://nccjsectioncompliencechecker.vercel.app', 'https://api.payamamerian.com', 'https://ncc.payamamerian.com'] 
     : 'http://localhost:3000',
   credentials: true
 }));
