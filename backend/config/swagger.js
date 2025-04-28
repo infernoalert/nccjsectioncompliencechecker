@@ -14,8 +14,9 @@ const developmentServer = {
   description: 'Development Server'
 };
 
+// Use a more flexible production server configuration
 const productionServer = {
-  url: 'https://api.payamamerian.com',
+  url: process.env.API_URL || 'http://136.243.36.77:9951', // Use environment variable or fallback to IP
   description: 'Production Server'
 };
 
