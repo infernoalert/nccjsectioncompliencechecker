@@ -15,7 +15,8 @@ module.exports = {
         MONGO_PORT: '27017',
         MONGO_DATABASE: process.env.MONGO_DATABASE,
         MONGO_USER: process.env.MONGO_USER,
-        MONGO_PASSWORD: process.env.MONGO_PASSWORD
+        MONGO_PASSWORD: process.env.MONGO_PASSWORD,
+        API_URL: 'http://136.243.36.77:9951'
       },
       env_development: {
         NODE_ENV: 'development',
