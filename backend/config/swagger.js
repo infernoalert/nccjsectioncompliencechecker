@@ -9,14 +9,14 @@ console.log('Swagger Environment Variables:', {
 });
 
 // Define server URLs for different environments
+// Use relative URLs instead of absolute URLs
 const developmentServer = {
   url: 'http://localhost:5000',
   description: 'Development Server'
 };
 
-// Use a more flexible production server configuration
 const productionServer = {
-  url: process.env.API_URL || 'http://136.243.36.77:9951', // Use environment variable or fallback to IP
+  url: 'https://api.payamamerian.com',
   description: 'Production Server'
 };
 

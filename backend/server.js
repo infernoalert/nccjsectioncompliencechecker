@@ -61,7 +61,12 @@ const healthRoutes = require('./routes/healthRoutes');
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: process.env.NODE_ENV === 'production' 
+    ? ['https://nccjsectioncompliencechecker.vercel.app', 'https://api.payamamerian.com'] 
+    : 'http://localhost:3000',
+  credentials: true
+}));
 app.use(express.json());
 
 // Swagger Documentation
@@ -83,6 +88,12 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
       theme: 'monokai'
     },
     tryItOutEnabled: true,
+    // Use the current host for requests
+    url: process.env.NODE_ENV === 'production' 
+      ? 'https://api.payamamerian.com' 
+      : 'http://localhost:5000',
+    // Disable host validation
+    validatorUrl: null,
     requestInterceptor: (req) => {
       // Add a timestamp to bypass cache
       const timestamp = new Date().getTime();
