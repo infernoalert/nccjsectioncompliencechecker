@@ -7,7 +7,10 @@
       "climateZone": "7",
       "description": "Canberra, ACT",
       "latitude": null,
-      "longitude": null
+      "longitude": null,
+      "Annual heating degree hours": 35153,
+      "Annual cooling degree hours": 2863,
+      "Annual dehumidification gram hours": 0
     },
     {
       "id": "NSW-Albury",
@@ -16,7 +19,10 @@
       "climateZone": "4",
       "description": "Albury, NSW",
       "latitude": null,
-      "longitude": null
+      "longitude": null,
+      "Annual heating degree hours": "Not Specified",
+      "Annual cooling degree hours": "Not Specified",
+      "Annual dehumidification gram hours": "Not Specified"
     },
     {
       "id": "NSW-Armidale",
@@ -25,7 +31,10 @@
       "climateZone": "7",
       "description": "Armidale, NSW",
       "latitude": null,
-      "longitude": null
+      "longitude": null,
+      "Annual heating degree hours": 33374,
+      "Annual cooling degree hours": 1039,
+      "Annual dehumidification gram hours": 9
     },
     {
       "id": "NSW-Batemans-Bay",
@@ -34,7 +43,10 @@
       "climateZone": "6",
       "description": "Batemans Bay, NSW",
       "latitude": null,
-      "longitude": null
+      "longitude": null,
+      "Annual heating degree hours": "Not Specified",
+      "Annual cooling degree hours": "Not Specified",
+      "Annual dehumidification gram hours": "Not Specified"
     },
     {
       "id": "NSW-Bathurst",
@@ -43,7 +55,10 @@
       "climateZone": "7",
       "description": "Bathurst, NSW",
       "latitude": null,
-      "longitude": null
+      "longitude": null,
+      "Annual heating degree hours": "Not Specified",
+      "Annual cooling degree hours": "Not Specified",
+      "Annual dehumidification gram hours": "Not Specified"
     },
     {
       "id": "NSW-Bega",
@@ -52,7 +67,10 @@
       "climateZone": "6",
       "description": "Bega, NSW",
       "latitude": null,
-      "longitude": null
+      "longitude": null,
+      "Annual heating degree hours": "Not Specified",
+      "Annual cooling degree hours": "Not Specified",
+      "Annual dehumidification gram hours": "Not Specified"
     },
     {
       "id": "NSW-Bellingen-Shire---Dorrigo-Plateau",
@@ -61,7 +79,10 @@
       "climateZone": "7",
       "description": "Bellingen Shire - Dorrigo Plateau, NSW",
       "latitude": null,
-      "longitude": null
+      "longitude": null,
+      "Annual heating degree hours": "Not Specified",
+      "Annual cooling degree hours": "Not Specified",
+      "Annual dehumidification gram hours": "Not Specified"
     },
     {
       "id": "NSW-Bellingen-Shire---Valley-&-seaboard",
@@ -70,7 +91,10 @@
       "climateZone": "2",
       "description": "Bellingen Shire - Valley & seaboard, NSW",
       "latitude": null,
-      "longitude": null
+      "longitude": null,
+      "Annual heating degree hours": "Not Specified",
+      "Annual cooling degree hours": "Not Specified",
+      "Annual dehumidification gram hours": "Not Specified"
     },
     {
       "id": "NSW-Bourke",
@@ -79,7 +103,10 @@
       "climateZone": "4",
       "description": "Bourke, NSW",
       "latitude": null,
-      "longitude": null
+      "longitude": null,
+      "Annual heating degree hours": "Not Specified",
+      "Annual cooling degree hours": "Not Specified",
+      "Annual dehumidification gram hours": "Not Specified"
     },
     {
       "id": "NSW-Broken-Hill",
@@ -88,7 +115,10 @@
       "climateZone": "4",
       "description": "Broken Hill, NSW",
       "latitude": null,
-      "longitude": null
+      "longitude": null,
+      "Annual heating degree hours": "Not Specified",
+      "Annual cooling degree hours": "Not Specified",
+      "Annual dehumidification gram hours": "Not Specified"
     },
     {
       "id": "NSW-Byron-Bay",
@@ -97,7 +127,10 @@
       "climateZone": "2",
       "description": "Byron Bay, NSW",
       "latitude": null,
-      "longitude": null
+      "longitude": null,
+      "Annual heating degree hours": "Not Specified",
+      "Annual cooling degree hours": "Not Specified",
+      "Annual dehumidification gram hours": "Not Specified"
     },
     {
       "id": "NSW-Cobar",
@@ -106,7 +139,10 @@
       "climateZone": "4",
       "description": "Cobar, NSW",
       "latitude": null,
-      "longitude": null
+      "longitude": null,
+      "Annual heating degree hours": 13663,
+      "Annual cooling degree hours": 7616,
+      "Annual dehumidification gram hours": 101
     },
     {
       "id": "NSW-Coffs-Harbour",
@@ -115,7 +151,10 @@
       "climateZone": "2",
       "description": "Coffs Harbour, NSW",
       "latitude": null,
-      "longitude": null
+      "longitude": null,
+      "Annual heating degree hours": 7137,
+      "Annual cooling degree hours": 1309,
+      "Annual dehumidification gram hours": 231
     },
     {
       "id": "NSW-Dubbo",
@@ -124,7 +163,10 @@
       "climateZone": "4",
       "description": "Dubbo, NSW",
       "latitude": null,
-      "longitude": null
+      "longitude": null,
+      "Annual heating degree hours": 20431,
+      "Annual cooling degree hours": 5332,
+      "Annual dehumidification gram hours": 36
     },
     {
       "id": "NSW-Goulburn",
@@ -133,7 +175,10 @@
       "climateZone": "7",
       "description": "Goulburn, NSW",
       "latitude": null,
-      "longitude": null
+      "longitude": null,
+      "Annual heating degree hours": "Not Specified",
+      "Annual cooling degree hours": "Not Specified",
+      "Annual dehumidification gram hours": "Not Specified"
     },
     {
       "id": "NSW-Grafton",
@@ -142,7 +187,10 @@
       "climateZone": "2",
       "description": "Grafton, NSW",
       "latitude": null,
-      "longitude": null
+      "longitude": null,
+      "Annual heating degree hours": "Not Specified",
+      "Annual cooling degree hours": "Not Specified",
+      "Annual dehumidification gram hours": "Not Specified"
     },
     {
       "id": "NSW-Griffith",
@@ -151,7 +199,10 @@
       "climateZone": "4",
       "description": "Griffith, NSW",
       "latitude": null,
-      "longitude": null
+      "longitude": null,
+      "Annual heating degree hours": "Not Specified",
+      "Annual cooling degree hours": "Not Specified",
+      "Annual dehumidification gram hours": "Not Specified"
     },
     {
       "id": "NSW-Ivanhoe",
@@ -160,7 +211,10 @@
       "climateZone": "4",
       "description": "Ivanhoe, NSW",
       "latitude": null,
-      "longitude": null
+      "longitude": null,
+      "Annual heating degree hours": "Not Specified",
+      "Annual cooling degree hours": "Not Specified",
+      "Annual dehumidification gram hours": "Not Specified"
     },
     {
       "id": "NSW-Lismore",
@@ -169,7 +223,10 @@
       "climateZone": "2",
       "description": "Lismore, NSW",
       "latitude": null,
-      "longitude": null
+      "longitude": null,
+      "Annual heating degree hours": "Not Specified",
+      "Annual cooling degree hours": "Not Specified",
+      "Annual dehumidification gram hours": "Not Specified"
     },
     {
       "id": "NSW-Lord-Howe-Island",
@@ -178,7 +235,10 @@
       "climateZone": "2",
       "description": "Lord Howe Island, NSW",
       "latitude": null,
-      "longitude": null
+      "longitude": null,
+      "Annual heating degree hours": "Not Specified",
+      "Annual cooling degree hours": "Not Specified",
+      "Annual dehumidification gram hours": "Not Specified"
     },
     {
       "id": "NSW-Moree",
@@ -187,7 +247,10 @@
       "climateZone": "4",
       "description": "Moree, NSW",
       "latitude": null,
-      "longitude": null
+      "longitude": null,
+      "Annual heating degree hours": 13986,
+      "Annual cooling degree hours": 7291,
+      "Annual dehumidification gram hours": 151
     },
     {
       "id": "NSW-Newcastle",
@@ -196,7 +259,10 @@
       "climateZone": "5",
       "description": "Newcastle, NSW",
       "latitude": null,
-      "longitude": null
+      "longitude": null,
+      "Annual heating degree hours": "Not Specified",
+      "Annual cooling degree hours": "Not Specified",
+      "Annual dehumidification gram hours": "Not Specified"
     },
     {
       "id": "NSW-Nowra",
@@ -205,7 +271,10 @@
       "climateZone": "6",
       "description": "Nowra, NSW",
       "latitude": null,
-      "longitude": null
+      "longitude": null,
+      "Annual heating degree hours": 14813,
+      "Annual cooling degree hours": 2801,
+      "Annual dehumidification gram hours": 56
     },
     {
       "id": "NSW-Orange",
@@ -214,7 +283,10 @@
       "climateZone": "7",
       "description": "Orange, NSW",
       "latitude": null,
-      "longitude": null
+      "longitude": null,
+      "Annual heating degree hours": 40325,
+      "Annual cooling degree hours": 1192,
+      "Annual dehumidification gram hours": 2
     },
     {
       "id": "NSW-Perisher---Smiggins",
@@ -223,7 +295,10 @@
       "climateZone": "8",
       "description": "Perisher - Smiggins, NSW",
       "latitude": null,
-      "longitude": null
+      "longitude": null,
+      "Annual heating degree hours": "Not Specified",
+      "Annual cooling degree hours": "Not Specified",
+      "Annual dehumidification gram hours": "Not Specified"
     },
     {
       "id": "NSW-Port-Macquarie",
@@ -232,7 +307,10 @@
       "climateZone": "5",
       "description": "Port Macquarie, NSW",
       "latitude": null,
-      "longitude": null
+      "longitude": null,
+      "Annual heating degree hours": "Not Specified",
+      "Annual cooling degree hours": "Not Specified",
+      "Annual dehumidification gram hours": "Not Specified"
     },
     {
       "id": "NSW-Sydney-East",
@@ -241,7 +319,10 @@
       "climateZone": "5",
       "description": "Sydney East, NSW",
       "latitude": null,
-      "longitude": null
+      "longitude": null,
+      "Annual heating degree hours": "Not Specified",
+      "Annual cooling degree hours": "Not Specified",
+      "Annual dehumidification gram hours": "Not Specified"
     },
     {
       "id": "NSW-Sydney-West",
@@ -250,7 +331,10 @@
       "climateZone": "6",
       "description": "Sydney West, NSW",
       "latitude": null,
-      "longitude": null
+      "longitude": null,
+      "Annual heating degree hours": "Not Specified",
+      "Annual cooling degree hours": "Not Specified",
+      "Annual dehumidification gram hours": "Not Specified"
     },
     {
       "id": "NSW-Tamworth",
@@ -259,7 +343,10 @@
       "climateZone": "4",
       "description": "Tamworth, NSW",
       "latitude": null,
-      "longitude": null
+      "longitude": null,
+      "Annual heating degree hours": "Not Specified",
+      "Annual cooling degree hours": "Not Specified",
+      "Annual dehumidification gram hours": "Not Specified"
     },
     {
       "id": "NSW-Thredbo",
@@ -268,7 +355,10 @@
       "climateZone": "8",
       "description": "Thredbo, NSW",
       "latitude": null,
-      "longitude": null
+      "longitude": null,
+      "Annual heating degree hours": 61209,
+      "Annual cooling degree hours": 147,
+      "Annual dehumidification gram hours": 0
     },
     {
       "id": "NSW-Wagga-Wagga",
@@ -277,7 +367,10 @@
       "climateZone": "4",
       "description": "Wagga Wagga, NSW",
       "latitude": null,
-      "longitude": null
+      "longitude": null,
+      "Annual heating degree hours": 24833,
+      "Annual cooling degree hours": 4678,
+      "Annual dehumidification gram hours": 0
     },
     {
       "id": "NSW-Williamtown",
@@ -286,7 +379,10 @@
       "climateZone": "5",
       "description": "Williamtown, NSW",
       "latitude": null,
-      "longitude": null
+      "longitude": null,
+      "Annual heating degree hours": 11713,
+      "Annual cooling degree hours": 2802,
+      "Annual dehumidification gram hours": 276
     },
     {
       "id": "NSW-Wollongong",
@@ -295,7 +391,10 @@
       "climateZone": "5",
       "description": "Wollongong, NSW",
       "latitude": null,
-      "longitude": null
+      "longitude": null,
+      "Annual heating degree hours": "Not Specified",
+      "Annual cooling degree hours": "Not Specified",
+      "Annual dehumidification gram hours": "Not Specified"
     },
     {
       "id": "NSW-Yass",
@@ -304,7 +403,10 @@
       "climateZone": "6",
       "description": "Yass, NSW",
       "latitude": null,
-      "longitude": null
+      "longitude": null,
+      "Annual heating degree hours": "Not Specified",
+      "Annual cooling degree hours": "Not Specified",
+      "Annual dehumidification gram hours": "Not Specified"
     },
     {
       "id": "NT-Alice-Springs",
@@ -313,7 +415,10 @@
       "climateZone": "3",
       "description": "Alice Springs, NT",
       "latitude": null,
-      "longitude": null
+      "longitude": null,
+      "Annual heating degree hours": 11767,
+      "Annual cooling degree hours": 13149,
+      "Annual dehumidification gram hours": 125
     },
     {
       "id": "NT-Darwin",
@@ -322,7 +427,10 @@
       "climateZone": "1",
       "description": "Darwin, NT",
       "latitude": null,
-      "longitude": null
+      "longitude": null,
+      "Annual heating degree hours": 0,
+      "Annual cooling degree hours": 15770,
+      "Annual dehumidification gram hours": 15364
     },
     {
       "id": "NT-Elliot",
@@ -331,7 +439,10 @@
       "climateZone": "3",
       "description": "Elliot, NT",
       "latitude": null,
-      "longitude": null
+      "longitude": null,
+      "Annual heating degree hours": "Not Specified",
+      "Annual cooling degree hours": "Not Specified",
+      "Annual dehumidification gram hours": "Not Specified"
     },
     {
       "id": "NT-Katherine",
@@ -340,7 +451,10 @@
       "climateZone": "1",
       "description": "Katherine, NT",
       "latitude": null,
-      "longitude": null
+      "longitude": null,
+      "Annual heating degree hours": "Not Specified",
+      "Annual cooling degree hours": "Not Specified",
+      "Annual dehumidification gram hours": "Not Specified"
     },
     {
       "id": "NT-Renner-Springs",
@@ -349,7 +463,10 @@
       "climateZone": "3",
       "description": "Renner Springs, NT",
       "latitude": null,
-      "longitude": null
+      "longitude": null,
+      "Annual heating degree hours": "Not Specified",
+      "Annual cooling degree hours": "Not Specified",
+      "Annual dehumidification gram hours": "Not Specified"
     },
     {
       "id": "NT-Tennant-Creek",
@@ -358,7 +475,10 @@
       "climateZone": "3",
       "description": "Tennant Creek, NT",
       "latitude": null,
-      "longitude": null
+      "longitude": null,
+      "Annual heating degree hours": 1171,
+      "Annual cooling degree hours": 18644,
+      "Annual dehumidification gram hours": 1747
     },
     {
       "id": "QLD-Brisbane",
@@ -367,7 +487,10 @@
       "climateZone": "2",
       "description": "Brisbane, QLD",
       "latitude": null,
-      "longitude": null
+      "longitude": null,
+      "Annual heating degree hours": 4744,
+      "Annual cooling degree hours": 2228,
+      "Annual dehumidification gram hours": 1415
     },
     {
       "id": "QLD-Cairns",
@@ -376,7 +499,10 @@
       "climateZone": "1",
       "description": "Cairns, QLD",
       "latitude": null,
-      "longitude": null
+      "longitude": null,
+      "Annual heating degree hours": 268,
+      "Annual cooling degree hours": 6411,
+      "Annual dehumidification gram hours": 6030
     },
     {
       "id": "SA-Adelaide",
@@ -385,7 +511,10 @@
       "climateZone": "5",
       "description": "Adelaide, SA",
       "latitude": null,
-      "longitude": null
+      "longitude": null,
+      "Annual heating degree hours": 13066,
+      "Annual cooling degree hours": 5132,
+      "Annual dehumidification gram hours": 0
     },
     {
       "id": "TAS-Hobart",
@@ -394,7 +523,10 @@
       "climateZone": "7",
       "description": "Hobart, TAS",
       "latitude": null,
-      "longitude": null
+      "longitude": null,
+      "Annual heating degree hours": 28542,
+      "Annual cooling degree hours": 451,
+      "Annual dehumidification gram hours": 0
     },
     {
       "id": "VIC-Melbourne",
@@ -403,7 +535,10 @@
       "climateZone": "6",
       "description": "Melbourne, VIC",
       "latitude": null,
-      "longitude": null
+      "longitude": null,
+      "Annual heating degree hours": 14494,
+      "Annual cooling degree hours": 2416,
+      "Annual dehumidification gram hours": 0
     },
     {
       "id": "WA-Perth",
@@ -412,7 +547,10 @@
       "climateZone": "5",
       "description": "Perth, WA",
       "latitude": null,
-      "longitude": null
+      "longitude": null,
+      "Annual heating degree hours": 11024,
+      "Annual cooling degree hours": 6084,
+      "Annual dehumidification gram hours": 0
     }
   ],
   "climateZones": [

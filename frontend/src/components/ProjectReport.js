@@ -143,33 +143,56 @@ const ProjectReport = () => {
               </Box>
 
               {/* Building Classification & Climate Zone Subsection */}
-              {report.buildingClassification && (
-                <Box sx={{ mb: 4 }}>
-                  <Typography variant="h5" gutterBottom>
-                    Building Classification & Climate Zone
-                  </Typography>
-                  <Grid container spacing={2}>
-                    <Grid item xs={12} md={6}>
-                      <Typography variant="subtitle1">Building Classification</Typography>
-                      <Typography variant="body1">
-                        {report.buildingClassification.classType}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {report.buildingClassification.description}
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={12} md={6}>
-                      <Typography variant="subtitle1">Climate Zone</Typography>
-                      <Typography variant="body1">
-                        {report.climateZone.name}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {report.climateZone.description}
-                      </Typography>
-                    </Grid>
+              <Box sx={{ mb: 4 }}>
+                <Typography variant="h5" gutterBottom>
+                  Building Classification & Climate Zone
+                </Typography>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} md={6}>
+                    <Typography variant="subtitle1">Building Classification</Typography>
+                    <Typography variant="body1">
+                      {report.buildingClassification.classType}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {report.buildingClassification.description}
+                    </Typography>
                   </Grid>
-                </Box>
-              )}
+                  <Grid item xs={12} md={6}>
+                    <Typography variant="subtitle1">Climate Zone</Typography>
+                    <Typography variant="body1">
+                      {report.climateZone.name}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {report.climateZone.description}
+                    </Typography>
+                  </Grid>
+                  {/* Display climate data for Class_2 and Class_4 buildings */}
+                  {(report.buildingClassification.classType === 'Class_2' || 
+                    report.buildingClassification.classType === 'Class_4') && 
+                    report.climateZone.annualHeatingDegreeHours && (
+                    <>
+                      <Grid item xs={12} md={4}>
+                        <Typography variant="subtitle1">Annual Heating Degree Hours</Typography>
+                        <Typography variant="body1">
+                          {report.climateZone.annualHeatingDegreeHours}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12} md={4}>
+                        <Typography variant="subtitle1">Annual Cooling Degree Hours</Typography>
+                        <Typography variant="body1">
+                          {report.climateZone.annualCoolingDegreeHours}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12} md={4}>
+                        <Typography variant="subtitle1">Annual Dehumidification Gram Hours</Typography>
+                        <Typography variant="body1">
+                          {report.climateZone.annualDehumidificationGramHours}
+                        </Typography>
+                      </Grid>
+                    </>
+                  )}
+                </Grid>
+              </Box>
 
               {/* Compliance Pathway Subsection */}
               {report.compliancePathway && (

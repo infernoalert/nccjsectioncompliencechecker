@@ -17,6 +17,7 @@ const {
   getCeilingFanRequirements
 } = require('../utils/decisionTreeUtils');
 const { getSection } = require('../utils/decisionTreeFactory');
+const locationToClimateZone = require('../data/mappings/locationToClimateZone.json');
 
 class ReportService {
   constructor(project, section = 'full') {
@@ -145,10 +146,29 @@ class ReportService {
     try {
       const climateZone = await getClimateZoneByLocation(this.project.location);
       this.climateZone = climateZone;
-      return {
+
+      // Get the location data from locationToClimateZone.json
+      const locationData = locationToClimateZone.locations.find(
+        loc => loc.id === this.project.location
+      );
+
+      // Get building classification
+      const buildingClassification = await getBuildingClassification(this.project.buildingType);
+      const isClass2OrClass4 = buildingClassification.classType === 'Class_2' || buildingClassification.classType === 'Class_4';
+
+      const climateInfo = {
         zone: climateZone,
         description: `The building is located in Climate Zone ${climateZone}.`
       };
+
+      // Add heating, cooling, and dehumidification data only for Class_2 and Class_4 buildings
+      if (isClass2OrClass4 && locationData) {
+        climateInfo.annualHeatingDegreeHours = locationData['Annual heating degree hours'];
+        climateInfo.annualCoolingDegreeHours = locationData['Annual cooling degree hours'];
+        climateInfo.annualDehumidificationGramHours = locationData['Annual dehumidification gram hours'];
+      }
+
+      return climateInfo;
     } catch (error) {
       return {
         error: `Error getting climate zone: ${error.message}`
