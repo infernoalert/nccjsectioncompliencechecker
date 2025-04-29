@@ -41,6 +41,21 @@ const projectSchema = new mongoose.Schema({
     required: [true, 'Floor area is required'],
     min: [0, 'Floor area must be greater than 0']
   },
+  totalAreaOfHabitableRooms: {
+    type: Number,
+    min: [0, 'Total area of habitable rooms must be greater than or equal to 0'],
+    default: null,
+    validate: {
+      validator: function(value) {
+        // If the value is null, it's valid (for non-Class_2 and non-Class_4 buildings)
+        if (value === null) return true;
+        
+        // For Class_2 and Class_4 buildings, the value must be a positive number
+        return value > 0;
+      },
+      message: 'Total area of habitable rooms must be a positive number for Class_2 and Class_4 buildings'
+    }
+  },
   buildingFabric: {
     type: {
       walls: {
