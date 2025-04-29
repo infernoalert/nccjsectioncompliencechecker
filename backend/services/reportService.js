@@ -99,7 +99,8 @@ class ReportService {
       description: this.project.description,
       buildingType: this.project.buildingType,
       location: this.project.location,
-      floorArea: this.project.floorArea
+      floorArea: this.project.floorArea,
+      totalAreaOfHabitableRooms: this.project.totalAreaOfHabitableRooms
     };
   }
 
