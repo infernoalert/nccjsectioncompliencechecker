@@ -44,7 +44,21 @@ This project is a web application for checking compliance with the National Cons
   - NewProject.js: Form for creating new projects
   - ProjectList.js: Displays a list of user's projects
   - ProjectDetails.js: Displays details of a specific project
-  - ProjectReport.js: Displays a compliance report for a project
+  - ProjectReport.js: Displays a compliance report for a project with four main sections:
+    1. General
+       - Project Information
+       - Building Classification & Climate Zone
+       - Compliance Pathway
+    2. Performance Requirement
+       - Energy Use Requirements
+    3. Other 1
+       - Building Fabric Specifications
+       - Special Requirements & Exemptions
+       - Elemental Provisions J3
+    4. Other 2
+       - Exemptions
+       - Compliance Results
+       - Documentation
 
 - **Redux**:
   - projectSlice.js: Manages project-related state
@@ -155,6 +169,25 @@ The frontend can be deployed by building the application and serving the static 
 
 ## Recent Changes
 
+### Report Structure Reorganization
+- Reorganized the report display into four main sections:
+  1. General
+     - Project Information
+     - Building Classification & Climate Zone
+     - Compliance Pathway
+  2. Performance Requirement
+     - Energy Use Requirements
+  3. Other 1
+     - Building Fabric Specifications
+     - Special Requirements & Exemptions
+     - Elemental Provisions J3
+  4. Other 2
+     - Exemptions
+     - Compliance Results
+     - Documentation
+- Improved visual organization with clear section headers and dividers
+- Maintained all existing functionality while improving the layout
+
 ### Project Schema Simplification
 - Removed the `buildingClassification` field from the Project schema
 - Made `buildingFabric`, `specialRequirements`, and `compliancePathway` fields optional
@@ -177,6 +210,7 @@ The frontend can be deployed by building the application and serving the static 
 - Locations are mapped to climate zones using the `locationToClimateZone.json` file
 - The `buildingFabric`, `specialRequirements`, and `compliancePathway` fields are optional and can be added later
 - The application can generate compliance reports based on the project information
+- Reports are organized into four main sections for better readability and organization
 
 ## Next Steps
 - Implement the building fabric section to allow users to specify wall, roof, floor, and window materials and properties
@@ -184,6 +218,7 @@ The frontend can be deployed by building the application and serving the static 
 - Implement the compliance pathway section to allow users to specify performance, prescriptive, or deemed-to-satisfy pathways
 - Enhance the compliance checking functionality to validate projects against NCC requirements
 - Improve the report generation to include more detailed information and recommendations
+- Add more subsections to "Other 1" and "Other 2" as needed
 
 ## Notes
 - The `Decision-Tree.json` file is the source of truth for building classifications, climate zones, and compliance pathways
@@ -192,6 +227,11 @@ The frontend can be deployed by building the application and serving the static 
 - The `createdBy` field in the Project schema is set to the same value as the `owner` field
 
 ## Today's Changes (2024-03-19)
+
+### Report Structure Reorganization
+- Reorganized the report display into four main sections for better organization and readability
+- Added clear section headers with consistent styling
+- Maintained all existing functionality while improving the layout
 
 ### Building Classification Fixes
 - Fixed the building classification display in the project details page

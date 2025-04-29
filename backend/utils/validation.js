@@ -6,6 +6,7 @@ const projectSchema = Joi.object({
   buildingType: Joi.string().required(),
   location: Joi.string().required(),
   floorArea: Joi.number().required().min(0),
+  totalAreaOfHabitableRooms: Joi.number().min(0).allow(null),
   climateZone: Joi.string().hex().length(24),
   buildingFabric: Joi.string().hex().length(24),
   specialRequirements: Joi.array().items(Joi.string().hex().length(24)),
