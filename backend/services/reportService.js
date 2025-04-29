@@ -311,7 +311,7 @@ class ReportService {
       this.verificationMethods = await getVerificationMethods(buildingClassification.classType);
       
       return {
-        limit: this.energyUse.limit,
+        limit: this.energyUse.energy_use_limit,
         description: this.energyUse.description,
         verificationMethods: this.verificationMethods
       };

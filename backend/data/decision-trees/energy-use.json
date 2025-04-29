@@ -3,40 +3,40 @@
   "last_updated": "2024-03-19",
   "energy_use": {
     "Class_2": {
-      "energy_use_limit": "NSW-J1P2;J1P3",
-      "description": "Energy use limit for Class 2 buildings NOT in NSW is not defined in the NCC."
+      "energy_use_limit": "Single Occupancy Unit sections excluded",
+      "description": "The building (excluding SOUs), including its services, must have features that facilitate the efficient use of energy appropriate to:\n(a) the function and use of the building; and\n(b) the level of human comfort required for the building use; and\n(c) solar radiation being (i) utilised for heating; and (ii) controlled to minimise energy for cooling; and\n(d) the energy source of the services; and\n(e) the sealing of the building envelope against air leakage."
     },
     "Class_4": {
-      "energy_use_limit": "NSW-J1P2;J1P3",
-      "description": "Energy use limit for Class 4 parts of buildings NOT in NSW is not defined in the NCC."
+      "energy_use_limit": "Part of a building sections excluded",
+      "description": "The building (excluding the Class 4 part), including its services, must have features that facilitate the efficient use of energy appropriate to:\n(a) the function and use of the building; and\n(b) the level of human comfort required for the building use; and\n(c) solar radiation being (i) utilised for heating; and (ii) controlled to minimise energy for cooling; and\n(d) the energy source of the services; and\n(e) the sealing of the building envelope against air leakage."
     },
     "Class_6": {
-      "energy_use_limit": 80,
-      "description": "Class 6 buildings must have an energy use limit of 80 kJ/m².hr."
+      "energy_use_limit": "80 kJ/m².",
+      "description": "Features must facilitate the efficient use of energy appropriate to:\n(a) the function and use of the building; and\n(b) the level of human comfort required for the building use; and\n(c) solar radiation being (i) utilised for heating; and (ii) controlled to minimise energy for cooling; and\n(d) the energy source of the services; and\n(e) the sealing of the building envelope against air leakage.\n\nAdditionally, for conditioned spaces, Class 6 buildings must have an energy use limit of 80 kJ/m².hr."
     },
     "Class_5": {
-      "energy_use_limit": 43,
-      "description": "Class 5 buildings must have an energy use limit of 43 kJ/m².hr."
+      "energy_use_limit": "43 kJ/m².",
+      "description": "Features must facilitate the efficient use of energy appropriate to:\n(a) the function and use of the building; and\n(b) the level of human comfort required for the building use; and\n(c) solar radiation being (i) utilised for heating; and (ii) controlled to minimise energy for cooling; and\n(d) the energy source of the services; and\n(e) the sealing of the building envelope against air leakage.\n\nAdditionally, for conditioned spaces, Class 5 buildings must have an energy use limit of 43 kJ/m².hr."
     },
     "Class_7b": {
-      "energy_use_limit": 43,
-      "description": "Class 7b buildings must have an energy use limit of 43 kJ/m².hr."
+      "energy_use_limit": "43 kJ/m².",
+      "description": "Features must facilitate the efficient use of energy appropriate to:\n(a) the function and use of the building; and\n(b) the level of human comfort required for the building use; and\n(c) solar radiation being (i) utilised for heating; and (ii) controlled to minimise energy for cooling; and\n(d) the energy source of the services; and\n(e) the sealing of the building envelope against air leakage.\n\nAdditionally, for conditioned spaces, Class 7b buildings must have an energy use limit of 43 kJ/m².hr."
     },
     "Class_8": {
-      "energy_use_limit": 43,
-      "description": "Class 8 buildings must have an energy use limit of 43 kJ/m².hr."
+      "energy_use_limit": "43 kJ/m².",
+      "description": "Features must facilitate the efficient use of energy appropriate to:\n(a) the function and use of the building; and\n(b) the level of human comfort required for the building use; and\n(c) solar radiation being (i) utilised for heating; and (ii) controlled to minimise energy for cooling; and\n(d) the energy source of the services; and\n(e) the sealing of the building envelope against air leakage.\n\nAdditionally, for conditioned spaces, Class 8 buildings must have an energy use limit of 43 kJ/m².hr."
     },
     "Class_9a": {
-      "energy_use_limit": 43,
-      "description": "Class 9a buildings must have an energy use limit of 43 kJ/m².hr."
+      "energy_use_limit": "43 kJ/m².",
+      "description": "Features must facilitate the efficient use of energy appropriate to:\n(a) the function and use of the building; and\n(b) the level of human comfort required for the building use; and\n(c) solar radiation being (i) utilised for heating; and (ii) controlled to minimise energy for cooling; and\n(d) the energy source of the services; and\n(e) the sealing of the building envelope against air leakage.\n\nAdditionally, for conditioned spaces, Class 9a buildings must have an energy use limit of 43 kJ/m².hr."
     },
     "Class_9b": {
-      "energy_use_limit": 43,
-      "description": "Class 9b buildings must have an energy use limit of 43 kJ/m².hr."
+      "energy_use_limit": "43 kJ/m².",
+      "description": "Features must facilitate the efficient use of energy appropriate to:\n(a) the function and use of the building; and\n(b) the level of human comfort required for the building use; and\n(c) solar radiation being (i) utilised for heating; and (ii) controlled to minimise energy for cooling; and\n(d) the energy source of the services; and\n(e) the sealing of the building envelope against air leakage.\n\nAdditionally, for conditioned spaces, Class 9b buildings must have an energy use limit of 43 kJ/m².hr."
     },
     "default": {
-      "energy_use_limit": 15,
-      "description": "All other building classifications must have an energy use limit of 15 kJ/m².hr."
+      "energy_use_limit": "15 kJ/m².",
+      "description": "Features must facilitate the efficient use of energy appropriate to:\n(a) the function and use of the building; and\n(b) the level of human comfort required for the building use; and\n(c) solar radiation being (i) utilised for heating; and (ii) controlled to minimise energy for cooling; and\n(d) the energy source of the services; and\n(e) the sealing of the building envelope against air leakage.\n\nAdditionally, for conditioned spaces, All other building classifications must have an energy use limit of 15 kJ/m².hr."
     }
   }
 } 
