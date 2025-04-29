@@ -89,7 +89,8 @@ exports.createProject = asyncHandler(async (req, res) => {
     buildingClassification,
     location,
     climateZone,
-    floorArea
+    floorArea,
+    totalAreaOfHabitableRooms: req.body.totalAreaOfHabitableRooms
   });
 
   await project.save();
@@ -156,6 +157,7 @@ exports.updateProject = asyncHandler(async (req, res) => {
   project.buildingType = buildingType || project.buildingType;
   project.location = location || project.location;
   project.floorArea = floorArea || project.floorArea;
+  project.totalAreaOfHabitableRooms = req.body.totalAreaOfHabitableRooms !== undefined ? req.body.totalAreaOfHabitableRooms : project.totalAreaOfHabitableRooms;
 
   await project.save();
 

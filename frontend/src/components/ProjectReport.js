@@ -128,8 +128,16 @@ const ProjectReport = () => {
                     <Typography variant="body1">{report.projectInfo.location}</Typography>
                   </Grid>
                   <Grid item xs={12} md={6}>
-                    <Typography variant="subtitle1">Owner</Typography>
-                    <Typography variant="body1">{report.projectInfo.owner}</Typography>
+                    <Typography variant="subtitle1">Floor Area</Typography>
+                    <Typography variant="body1">{report.projectInfo.floorArea} m²</Typography>
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <Typography variant="subtitle1">Total Area of Habitable Rooms</Typography>
+                    <Typography variant="body1">
+                      {report.projectInfo.totalAreaOfHabitableRooms !== null 
+                        ? `${report.projectInfo.totalAreaOfHabitableRooms} m²` 
+                        : 'Not applicable'}
+                    </Typography>
                   </Grid>
                 </Grid>
               </Box>
