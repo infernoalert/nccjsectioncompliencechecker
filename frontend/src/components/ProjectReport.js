@@ -103,455 +103,317 @@ const ProjectReport = () => {
 
         {report ? (
           <>
-            {/* Project Information - Always show */}
+            {/* General Section */}
             <Box sx={{ mb: 4 }}>
-              <Typography variant="h5" gutterBottom>
-                Project Information
+              <Typography variant="h4" gutterBottom>
+                General
               </Typography>
-              <Grid container spacing={2}>
-                <Grid item xs={12} md={6}>
-                  <Typography variant="subtitle1">Project Name</Typography>
-                  <Typography variant="body1">{report.projectInfo.name}</Typography>
+
+              {/* Project Information Subsection */}
+              <Box sx={{ mb: 4 }}>
+                <Typography variant="h5" gutterBottom>
+                  Project Information
+                </Typography>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} md={6}>
+                    <Typography variant="subtitle1">Project Name</Typography>
+                    <Typography variant="body1">{report.projectInfo.name}</Typography>
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <Typography variant="subtitle1">Building Type</Typography>
+                    <Typography variant="body1">{report.projectInfo.buildingType}</Typography>
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <Typography variant="subtitle1">Location</Typography>
+                    <Typography variant="body1">{report.projectInfo.location}</Typography>
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <Typography variant="subtitle1">Owner</Typography>
+                    <Typography variant="body1">{report.projectInfo.owner}</Typography>
+                  </Grid>
                 </Grid>
-                <Grid item xs={12} md={6}>
-                  <Typography variant="subtitle1">Building Type</Typography>
-                  <Typography variant="body1">{report.projectInfo.buildingType}</Typography>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <Typography variant="subtitle1">Location</Typography>
-                  <Typography variant="body1">{report.projectInfo.location}</Typography>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <Typography variant="subtitle1">Owner</Typography>
-                  <Typography variant="body1">{report.projectInfo.owner}</Typography>
-                </Grid>
-              </Grid>
+              </Box>
+
+              {/* Building Classification & Climate Zone Subsection */}
+              {report.buildingClassification && (
+                <Box sx={{ mb: 4 }}>
+                  <Typography variant="h5" gutterBottom>
+                    Building Classification & Climate Zone
+                  </Typography>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} md={6}>
+                      <Typography variant="subtitle1">Building Classification</Typography>
+                      <Typography variant="body1">
+                        {report.buildingClassification.classType}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {report.buildingClassification.description}
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                      <Typography variant="subtitle1">Climate Zone</Typography>
+                      <Typography variant="body1">
+                        {report.climateZone.name}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {report.climateZone.description}
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                </Box>
+              )}
+
+              {/* Compliance Pathway Subsection */}
+              {report.compliancePathway && (
+                <Box sx={{ mb: 4 }}>
+                  <Typography variant="h5" gutterBottom>
+                    Compliance Pathway
+                  </Typography>
+                  <Typography variant="body1">
+                    {report.compliancePathway.name}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                    {report.compliancePathway.description}
+                  </Typography>
+                </Box>
+              )}
             </Box>
 
             <Divider sx={{ my: 3 }} />
 
-            {/* Show section-specific content based on the requested section */}
-            {section === 'full' && (
-              <>
-                {/* Building Classification & Climate Zone */}
-                {report.buildingClassification && (
-                  <Box sx={{ mb: 4 }}>
-                    <Typography variant="h5" gutterBottom>
-                      Building Classification & Climate Zone
-                    </Typography>
-                    <Grid container spacing={2}>
-                      <Grid item xs={12} md={6}>
-                        <Typography variant="subtitle1">Building Classification</Typography>
-                        <Typography variant="body1">
-                          {report.buildingClassification.classType}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          {report.buildingClassification.description}
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={12} md={6}>
-                        <Typography variant="subtitle1">Climate Zone</Typography>
-                        <Typography variant="body1">
-                          {report.climateZone.name}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          {report.climateZone.description}
-                        </Typography>
-                      </Grid>
+            {/* Performance Requirement Section */}
+            <Box sx={{ mb: 4 }}>
+              <Typography variant="h4" gutterBottom>
+                Performance Requirement
+              </Typography>
+
+              {/* Energy Use Requirements Subsection */}
+              {report.energyUse && (
+                <Box sx={{ mb: 4 }}>
+                  <Typography variant="h5" gutterBottom>
+                    J1P1: Energy Use
+                  </Typography>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                      <Typography variant="subtitle1">Energy Use Limit</Typography>
+                      <Typography variant="body1">
+                        {report.energyUse.limit}
+                      </Typography>
                     </Grid>
-                  </Box>
-                )}
+                    <Grid item xs={12}>
+                      <Typography variant="subtitle1">Description</Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {report.energyUse.description}
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                </Box>
+              )}
+            </Box>
 
-                <Divider sx={{ my: 3 }} />
+            <Divider sx={{ my: 3 }} />
 
-                {/* Compliance Pathway */}
-                {report.compliancePathway && (
-                  <Box sx={{ mb: 4 }}>
-                    <Typography variant="h5" gutterBottom>
-                      Compliance Pathway
-                    </Typography>
-                    <Typography variant="body1">
-                      {report.compliancePathway.name}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                      {report.compliancePathway.description}
-                    </Typography>
-                  </Box>
-                )}
+            {/* Other 1 Section */}
+            <Box sx={{ mb: 4 }}>
+              <Typography variant="h4" gutterBottom>
+                Other 1
+              </Typography>
 
-                <Divider sx={{ my: 3 }} />
-
-                {/* Building Fabric */}
-                {report.buildingFabric && (
-                  <Box sx={{ mb: 4 }}>
-                    <Typography variant="h5" gutterBottom>
-                      Building Fabric Specifications
-                    </Typography>
-                    <TableContainer>
-                      <Table>
-                        <TableHead>
-                          <TableRow>
-                            <TableCell>Component</TableCell>
-                            <TableCell>Specification</TableCell>
-                            <TableCell>Compliance Status</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {Object.entries(report.buildingFabric).map(([component, details]) => (
-                            <TableRow key={component}>
-                              <TableCell>{component}</TableCell>
-                              <TableCell>{details.specification}</TableCell>
-                              <TableCell>
-                                <Typography
-                                  color={details.compliant ? 'success.main' : 'error.main'}
-                                >
-                                  {details.compliant ? 'Compliant' : 'Non-compliant'}
-                                </Typography>
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  </Box>
-                )}
-
-                <Divider sx={{ my: 3 }} />
-
-                {/* Special Requirements */}
-                {report.specialRequirements && (
-                  <Box sx={{ mb: 4 }}>
-                    <Typography variant="h5" gutterBottom>
-                      Special Requirements & Exemptions
-                    </Typography>
-                    {report.specialRequirements.length > 0 ? (
-                      <Box sx={{ mb: 3 }}>
-                        <Typography variant="subtitle1" gutterBottom>
-                          Special Requirements
-                        </Typography>
-                        <ul>
-                          {report.specialRequirements.map((req, index) => (
-                            <li key={index}>
-                              <Typography variant="body1">{req.name}</Typography>
-                              <Typography variant="body2" color="text.secondary">
-                                {req.description}
+              {/* Building Fabric */}
+              {report.buildingFabric && (
+                <Box sx={{ mb: 4 }}>
+                  <Typography variant="h5" gutterBottom>
+                    Building Fabric Specifications
+                  </Typography>
+                  <TableContainer>
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>Component</TableCell>
+                          <TableCell>Specification</TableCell>
+                          <TableCell>Compliance Status</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {Object.entries(report.buildingFabric).map(([component, details]) => (
+                          <TableRow key={component}>
+                            <TableCell>{component}</TableCell>
+                            <TableCell>{details.specification}</TableCell>
+                            <TableCell>
+                              <Typography
+                                color={details.compliant ? 'success.main' : 'error.main'}
+                              >
+                                {details.compliant ? 'Compliant' : 'Non-compliant'}
                               </Typography>
-                            </li>
-                          ))}
-                        </ul>
-                      </Box>
-                    ) : (
-                      <Typography variant="body1">No special requirements specified</Typography>
-                    )}
-                  </Box>
-                )}
-
-                {/* Elemental Provisions J3 */}
-                {report.elementalProvisionsJ3 && (
-                  <Box sx={{ mb: 4 }}>
-                    <Typography variant="h5" gutterBottom>
-                      Elemental Provisions for a Sole-Occupancy Unit J3
-                    </Typography>
-                    <Grid container spacing={2}>
-                      <Grid item xs={12}>
-                        <Typography variant="subtitle1">Ceiling Fan Requirements</Typography>
-                        <Typography variant="body1">
-                          {report.elementalProvisionsJ3.ceilingFan.requirement}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          {report.elementalProvisionsJ3.ceilingFan.description}
-                        </Typography>
-                      </Grid>
-                    </Grid>
-                  </Box>
-                )}
-
-                {/* Exemptions */}
-                {report.exemptions && (
-                  <Box sx={{ mb: 4 }}>
-                    <Typography variant="h5" gutterBottom>
-                      Exemptions
-                    </Typography>
-                    {report.exemptions.exemptions && report.exemptions.exemptions.length > 0 ? (
-                      <Box sx={{ mb: 3 }}>
-                        <Typography variant="body1" gutterBottom>
-                          {report.exemptions.message}
-                        </Typography>
-                        <TableContainer component={Paper} sx={{ mt: 2 }}>
-                          <Table>
-                            <TableHead>
-                              <TableRow>
-                                <TableCell>Exemption</TableCell>
-                                <TableCell>Description</TableCell>
-                                <TableCell>Conditions</TableCell>
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
-                              {report.exemptions.exemptions.map((exemption, index) => (
-                                <TableRow key={index}>
-                                  <TableCell>{exemption.name}</TableCell>
-                                  <TableCell>
-                                    {exemption.description || 'No description available'}
-                                  </TableCell>
-                                  <TableCell>
-                                    {exemption.conditions || exemption.threshold || 'No specific conditions'}
-                                  </TableCell>
-                                </TableRow>
-                              ))}
-                            </TableBody>
-                          </Table>
-                        </TableContainer>
-                      </Box>
-                    ) : (
-                      <Typography variant="body1">{report.exemptions.message || 'No exemptions apply to this building.'}</Typography>
-                    )}
-                  </Box>
-                )}
-
-                <Divider sx={{ my: 3 }} />
-
-                {/* Compliance Results */}
-                {report.complianceResults && (
-                  <Box sx={{ mb: 4 }}>
-                    <Typography variant="h5" gutterBottom>
-                      Compliance Results
-                    </Typography>
-                    <TableContainer>
-                      <Table>
-                        <TableHead>
-                          <TableRow>
-                            <TableCell>Requirement</TableCell>
-                            <TableCell>Status</TableCell>
-                            <TableCell>Details</TableCell>
+                            </TableCell>
                           </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {report.complianceResults.checks.map((check, index) => (
-                            <TableRow key={index}>
-                              <TableCell>{check.requirement}</TableCell>
-                              <TableCell>
-                                <Typography
-                                  color={check.passed ? 'success.main' : 'error.main'}
-                                >
-                                  {check.passed ? 'Passed' : 'Failed'}
-                                </Typography>
-                              </TableCell>
-                              <TableCell>{check.details}</TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  </Box>
-                )}
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </Box>
+              )}
 
-                <Divider sx={{ my: 3 }} />
-
-                {/* Energy Use */}
-                {report.energyUse && (
-                  <Box sx={{ mb: 4 }}>
-                    <Typography variant="h5" gutterBottom>
-                      Energy Use Requirements
-                    </Typography>
-                    <Grid container spacing={2}>
-                      <Grid item xs={12}>
-                        <Typography variant="subtitle1">Energy Use Limit</Typography>
-                        <Typography variant="body1">
-                          {report.energyUse.limit}
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={12}>
-                        <Typography variant="subtitle1">Description</Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          {report.energyUse.description}
-                        </Typography>
-                      </Grid>
-                    </Grid>
-                  </Box>
-                )}
-
-                {/* Verification Methods */}
-                {report.energyUse && report.energyUse.verificationMethods && (
-                  <Box sx={{ mb: 4 }}>
-                    <Typography variant="h5" gutterBottom>
-                      Verification Methods
-                    </Typography>
-                    {Array.isArray(report.energyUse.verificationMethods) ? (
-                      report.energyUse.verificationMethods.map((method, index) => (
-                        <Box key={index} sx={{ mb: 3 }}>
-                          <Typography variant="subtitle1" gutterBottom>
-                            {method.condition}
-                          </Typography>
-                          <Box component="ul" sx={{ pl: 2 }}>
-                            {method.description.map((item, i) => (
-                              <Typography component="li" key={i} variant="body2" color="text.secondary">
-                                {item}
-                              </Typography>
-                            ))}
-                          </Box>
-                        </Box>
-                      ))
-                    ) : (
-                      <Box sx={{ mb: 3 }}>
-                        <Typography variant="subtitle1" gutterBottom>
-                          {report.energyUse.verificationMethods.condition}
-                        </Typography>
-                        <Box component="ul" sx={{ pl: 2 }}>
-                          {report.energyUse.verificationMethods.description.map((item, i) => (
-                            <Typography component="li" key={i} variant="body2" color="text.secondary">
-                              {item}
+              {/* Special Requirements */}
+              {report.specialRequirements && (
+                <Box sx={{ mb: 4 }}>
+                  <Typography variant="h5" gutterBottom>
+                    Special Requirements & Exemptions
+                  </Typography>
+                  {report.specialRequirements.length > 0 ? (
+                    <Box sx={{ mb: 3 }}>
+                      <Typography variant="subtitle1" gutterBottom>
+                        Special Requirements
+                      </Typography>
+                      <ul>
+                        {report.specialRequirements.map((req, index) => (
+                          <li key={index}>
+                            <Typography variant="body1">{req.name}</Typography>
+                            <Typography variant="body2" color="text.secondary">
+                              {req.description}
                             </Typography>
-                          ))}
-                        </Box>
-                      </Box>
-                    )}
-                  </Box>
-                )}
+                          </li>
+                        ))}
+                      </ul>
+                    </Box>
+                  ) : (
+                    <Typography variant="body1">No special requirements specified</Typography>
+                  )}
+                </Box>
+              )}
 
-                {/* Energy Monitoring */}
-                {report.energyMonitoring && (
-                  <Box sx={{ mb: 4 }}>
-                    <Typography variant="h5" gutterBottom>
-                      Energy Monitoring Requirements
-                    </Typography>
-                    <Grid container spacing={2}>
-                      <Grid item xs={12}>
-                        <Typography variant="subtitle1">Requirement</Typography>
-                        <Typography variant="body1">
-                          {report.energyMonitoring.requirement}
-                        </Typography>
-                      </Grid>
-                      {report.energyMonitoring.details && report.energyMonitoring.details.length > 0 && (
-                        <Grid item xs={12}>
-                          <Typography variant="subtitle1">Details</Typography>
-                          <Box component="ul" sx={{ pl: 2 }}>
-                            {report.energyMonitoring.details.map((detail, index) => (
-                              <Typography component="li" key={index} variant="body2" color="text.secondary">
-                                {detail}
-                              </Typography>
-                            ))}
-                          </Box>
-                        </Grid>
-                      )}
+              {/* Elemental Provisions J3 */}
+              {report.elementalProvisionsJ3 && (
+                <Box sx={{ mb: 4 }}>
+                  <Typography variant="h5" gutterBottom>
+                    Elemental Provisions for a Sole-Occupancy Unit J3
+                  </Typography>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                      <Typography variant="subtitle1">Ceiling Fan Requirements</Typography>
+                      <Typography variant="body1">
+                        {report.elementalProvisionsJ3.ceilingFan.requirement}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {report.elementalProvisionsJ3.ceilingFan.description}
+                      </Typography>
                     </Grid>
-                  </Box>
-                )}
+                  </Grid>
+                </Box>
+              )}
+            </Box>
 
-                <Divider sx={{ my: 3 }} />
+            <Divider sx={{ my: 3 }} />
 
-                {/* Documentation */}
-                {report.documentation && (
-                  <Box sx={{ mb: 4 }}>
-                    <Typography variant="h5" gutterBottom>
-                      Documentation
-                    </Typography>
-                    {report.documentation.length > 0 ? (
-                      <TableContainer>
+            {/* Other 2 Section */}
+            <Box sx={{ mb: 4 }}>
+              <Typography variant="h4" gutterBottom>
+                Other 2
+              </Typography>
+
+              {/* Exemptions */}
+              {report.exemptions && (
+                <Box sx={{ mb: 4 }}>
+                  <Typography variant="h5" gutterBottom>
+                    Exemptions
+                  </Typography>
+                  {report.exemptions.exemptions && report.exemptions.exemptions.length > 0 ? (
+                    <Box sx={{ mb: 3 }}>
+                      <Typography variant="body1" gutterBottom>
+                        {report.exemptions.message}
+                      </Typography>
+                      <TableContainer component={Paper} sx={{ mt: 2 }}>
                         <Table>
                           <TableHead>
                             <TableRow>
-                              <TableCell>Document Name</TableCell>
-                              <TableCell>Type</TableCell>
-                              <TableCell>Status</TableCell>
+                              <TableCell>Exemption</TableCell>
+                              <TableCell>Description</TableCell>
+                              <TableCell>Conditions</TableCell>
                             </TableRow>
                           </TableHead>
                           <TableBody>
-                            {report.documentation.map((doc, index) => (
+                            {report.exemptions.exemptions.map((exemption, index) => (
                               <TableRow key={index}>
-                                <TableCell>{doc.name}</TableCell>
-                                <TableCell>{doc.type}</TableCell>
+                                <TableCell>{exemption.name}</TableCell>
                                 <TableCell>
-                                  <Typography
-                                    color={doc.status === 'provided' ? 'success.main' : 'warning.main'}
-                                  >
-                                    {doc.status === 'provided' ? 'Provided' : 'Pending'}
-                                  </Typography>
+                                  {exemption.description || 'No description available'}
+                                </TableCell>
+                                <TableCell>
+                                  {exemption.conditions || exemption.threshold || 'No specific conditions'}
                                 </TableCell>
                               </TableRow>
                             ))}
                           </TableBody>
                         </Table>
                       </TableContainer>
-                    ) : (
-                      <Typography variant="body1">No documentation required</Typography>
-                    )}
-                  </Box>
-                )}
-              </>
-            )}
+                    </Box>
+                  ) : (
+                    <Typography variant="body1">{report.exemptions.message || 'No exemptions apply to this building.'}</Typography>
+                  )}
+                </Box>
+              )}
 
-            {/* Section-specific content */}
-            {section !== 'full' && (
-              <>
-                {/* Building Classification & Climate Zone */}
-                {section === 'building' && report.buildingClassification && (
-                  <Box sx={{ mb: 4 }}>
-                    <Typography variant="h5" gutterBottom>
-                      Building Classification & Climate Zone
-                    </Typography>
-                    <Grid container spacing={2}>
-                      <Grid item xs={12} md={6}>
-                        <Typography variant="subtitle1">Building Classification</Typography>
-                        <Typography variant="body1">
-                          {report.buildingClassification.classType}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          {report.buildingClassification.description}
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={12} md={6}>
-                        <Typography variant="subtitle1">Climate Zone</Typography>
-                        <Typography variant="body1">
-                          {report.climateZone.name}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          {report.climateZone.description}
-                        </Typography>
-                      </Grid>
-                    </Grid>
-                  </Box>
-                )}
+              {/* Compliance Results */}
+              {report.complianceResults && (
+                <Box sx={{ mb: 4 }}>
+                  <Typography variant="h5" gutterBottom>
+                    Compliance Results
+                  </Typography>
+                  <TableContainer>
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>Requirement</TableCell>
+                          <TableCell>Status</TableCell>
+                          <TableCell>Details</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {report.complianceResults.checks.map((check, index) => (
+                          <TableRow key={index}>
+                            <TableCell>{check.requirement}</TableCell>
+                            <TableCell>
+                              <Typography
+                                color={check.passed ? 'success.main' : 'error.main'}
+                              >
+                                {check.passed ? 'Passed' : 'Failed'}
+                              </Typography>
+                            </TableCell>
+                            <TableCell>{check.details}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </Box>
+              )}
 
-                {/* Compliance Pathway */}
-                {section === 'compliance' && report.compliancePathway && (
-                  <Box sx={{ mb: 4 }}>
-                    <Typography variant="h5" gutterBottom>
-                      Compliance Pathway
-                    </Typography>
-                    <Typography variant="body1">
-                      {report.compliancePathway.name}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                      {report.compliancePathway.description}
-                    </Typography>
-                  </Box>
-                )}
-
-                {/* Building Fabric */}
-                {section === 'fabric' && report.buildingFabric && (
-                  <Box sx={{ mb: 4 }}>
-                    <Typography variant="h5" gutterBottom>
-                      Building Fabric Specifications
-                    </Typography>
+              {/* Documentation */}
+              {report.documentation && (
+                <Box sx={{ mb: 4 }}>
+                  <Typography variant="h5" gutterBottom>
+                    Documentation
+                  </Typography>
+                  {report.documentation.length > 0 ? (
                     <TableContainer>
                       <Table>
                         <TableHead>
                           <TableRow>
-                            <TableCell>Component</TableCell>
-                            <TableCell>Specification</TableCell>
-                            <TableCell>Compliance Status</TableCell>
+                            <TableCell>Document Name</TableCell>
+                            <TableCell>Type</TableCell>
+                            <TableCell>Status</TableCell>
                           </TableRow>
                         </TableHead>
                         <TableBody>
-                          {Object.entries(report.buildingFabric).map(([component, details]) => (
-                            <TableRow key={component}>
-                              <TableCell>{component}</TableCell>
-                              <TableCell>{details.specification}</TableCell>
+                          {report.documentation.map((doc, index) => (
+                            <TableRow key={index}>
+                              <TableCell>{doc.name}</TableCell>
+                              <TableCell>{doc.type}</TableCell>
                               <TableCell>
                                 <Typography
-                                  color={details.compliant ? 'success.main' : 'error.main'}
+                                  color={doc.status === 'provided' ? 'success.main' : 'warning.main'}
                                 >
-                                  {details.compliant ? 'Compliant' : 'Non-compliant'}
+                                  {doc.status === 'provided' ? 'Provided' : 'Pending'}
                                 </Typography>
                               </TableCell>
                             </TableRow>
@@ -559,121 +421,12 @@ const ProjectReport = () => {
                         </TableBody>
                       </Table>
                     </TableContainer>
-                  </Box>
-                )}
-
-                {/* Special Requirements */}
-                {section === 'special' && report.specialRequirements && (
-                  <Box sx={{ mb: 4 }}>
-                    <Typography variant="h5" gutterBottom>
-                      Special Requirements
-                    </Typography>
-                    {report.specialRequirements.length > 0 ? (
-                      <Box sx={{ mb: 3 }}>
-                        <Typography variant="subtitle1" gutterBottom>
-                          Special Requirements
-                        </Typography>
-                        <ul>
-                          {report.specialRequirements.map((req, index) => (
-                            <li key={index}>
-                              <Typography variant="body1">{req.name}</Typography>
-                              <Typography variant="body2" color="text.secondary">
-                                {req.description}
-                              </Typography>
-                            </li>
-                          ))}
-                        </ul>
-                      </Box>
-                    ) : (
-                      <Typography variant="body1">No special requirements specified</Typography>
-                    )}
-                  </Box>
-                )}
-
-                {/* Exemptions */}
-                {section === 'exemptions' && report.exemptions && (
-                  <Box sx={{ mb: 4 }}>
-                    <Typography variant="h5" gutterBottom>
-                      Exemptions
-                    </Typography>
-                    {report.exemptions.exemptions && report.exemptions.exemptions.length > 0 ? (
-                      <Box sx={{ mb: 3 }}>
-                        <Typography variant="body1" gutterBottom>
-                          {report.exemptions.message}
-                        </Typography>
-                        <TableContainer component={Paper} sx={{ mt: 2 }}>
-                          <Table>
-                            <TableHead>
-                              <TableRow>
-                                <TableCell>Exemption</TableCell>
-                                <TableCell>Description</TableCell>
-                                <TableCell>Conditions</TableCell>
-                                <TableCell>Documentation Required</TableCell>
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
-                              {report.exemptions.exemptions.map((exemption, index) => (
-                                <TableRow key={index}>
-                                  <TableCell>{exemption.name}</TableCell>
-                                  <TableCell>
-                                    {exemption.description || 'No description available'}
-                                  </TableCell>
-                                  <TableCell>
-                                    {exemption.conditions || exemption.threshold || 'No specific conditions'}
-                                  </TableCell>
-                                  <TableCell>
-                                    {exemption.documentation_required || 'None specified'}
-                                  </TableCell>
-                                </TableRow>
-                              ))}
-                            </TableBody>
-                          </Table>
-                        </TableContainer>
-                      </Box>
-                    ) : (
-                      <Typography variant="body1">{report.exemptions.message || 'No exemptions apply to this building.'}</Typography>
-                    )}
-                  </Box>
-                )}
-
-                {/* Other sections */}
-                {['energy', 'lighting', 'meters'].includes(section) && report[section] && (
-                  <Box sx={{ mb: 4 }}>
-                    <Typography variant="h5" gutterBottom>
-                      {section.charAt(0).toUpperCase() + section.slice(1)} Requirements
-                    </Typography>
-                    <Typography variant="body1">
-                      {report[section].description}
-                    </Typography>
-                    {report[section].requirements && (
-                      <Box sx={{ mt: 2 }}>
-                        <Typography variant="subtitle1" gutterBottom>
-                          Requirements
-                        </Typography>
-                        <TableContainer>
-                          <Table>
-                            <TableHead>
-                              <TableRow>
-                                <TableCell>Requirement</TableCell>
-                                <TableCell>Details</TableCell>
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
-                              {Object.entries(report[section].requirements).map(([key, value], index) => (
-                                <TableRow key={index}>
-                                  <TableCell>{key}</TableCell>
-                                  <TableCell>{JSON.stringify(value)}</TableCell>
-                                </TableRow>
-                              ))}
-                            </TableBody>
-                          </Table>
-                        </TableContainer>
-                      </Box>
-                    )}
-                  </Box>
-                )}
-              </>
-            )}
+                  ) : (
+                    <Typography variant="body1">No documentation required</Typography>
+                  )}
+                </Box>
+              )}
+            </Box>
           </>
         ) : (
           <Box sx={{ textAlign: 'center', py: 4 }}>
