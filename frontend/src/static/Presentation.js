@@ -1,19 +1,8 @@
 import React from 'react';
-import { Box, Typography, Container } from '@mui/material';
+import SlideShow from './components/SlideShow';
 
 const Presentation = () => {
-  return (
-    <Container maxWidth="lg">
-      <Box sx={{ py: 4 }}>
-        <Typography variant="h3" component="h1" gutterBottom>
-          Presentation
-        </Typography>
-        <Typography variant="body1" paragraph>
-          This is a static presentation page. You can add your content here.
-        </Typography>
-      </Box>
-    </Container>
-  );
+  return <SlideShow />;
 };
 
 export default Presentation; 
