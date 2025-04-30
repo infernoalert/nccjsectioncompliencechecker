@@ -18,7 +18,9 @@ const {
 } = require('../utils/decisionTreeUtils');
 const { getSection } = require('../utils/decisionTreeFactory');
 const locationToClimateZone = require('../data/mappings/locationToClimateZone.json');
-const j1p2calc = require('../data/decision-trees/j1p2calc.json');
+const j1p2totalheatingload = require('../data/decision-trees/j1p2totalheatingload.json');
+const j1p2totalcoolingload = require('../data/decision-trees/j1p2totalcoolingload.json');
+const j1p2thermalenergyload = require('../data/decision-trees/j1p2thermalenergyload.json');
 
 class ReportService {
   constructor(project, section = 'full') {
@@ -33,7 +35,6 @@ class ReportService {
     this.verificationMethods = null;
     this.energyMonitoring = null;
     this.ceilingFanRequirements = null;
-    this.j1p2calc = null;
   }
 
   /**
@@ -392,12 +393,19 @@ class ReportService {
    */
   async generateJ1P2CalcInfo() {
     try {
-      // Get the J1P2 calculation data
-      this.j1p2calc = j1p2calc;
-      
       return {
-        variables: this.j1p2calc.variables,
-        description: "J1P2 calculation for thermal energy load assessment"
+        totalheatingload: {
+          description: j1p2totalheatingload.description,
+          descriptionValue: j1p2totalheatingload.descriptionValue
+        },
+        totalcoolingload: {
+          description: j1p2totalcoolingload.description,
+          descriptionValue: j1p2totalcoolingload.descriptionValue
+        },
+        thermalenergyload: {
+          description: j1p2thermalenergyload.description,
+          descriptionValue: j1p2thermalenergyload.descriptionValue
+        }
       };
     } catch (error) {
       return {

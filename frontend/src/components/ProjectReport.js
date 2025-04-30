@@ -247,17 +247,17 @@ const ProjectReport = () => {
                   <Typography variant="h5" gutterBottom>
                     J1P2: Thermal Energy Load Assessment
                   </Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                    {report.j1p2calc.description}
-                  </Typography>
                   <Grid container spacing={2}>
-                    {Object.entries(report.j1p2calc.variables).map(([key, value]) => (
+                    {Object.entries(report.j1p2calc).map(([key, value]) => (
                       <Grid item xs={12} key={key}>
                         <Typography variant="subtitle1" sx={{ textTransform: 'capitalize' }}>
                           {key.replace(/([A-Z])/g, ' $1').trim()}
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
                           {value.description}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          Value: {value.descriptionValue}
                         </Typography>
                       </Grid>
                     ))}
