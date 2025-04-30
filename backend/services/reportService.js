@@ -18,7 +18,7 @@ const {
 } = require('../utils/decisionTreeUtils');
 const { getSection } = require('../utils/decisionTreeFactory');
 const locationToClimateZone = require('../data/mappings/locationToClimateZone.json');
-const j1p2totalheatingload = require('../data/decision-trees/j1p2totalheatingload.json');
+const j1p2totalheatingload = require('../data/decision-trees/j1p2totalheatingload.js');
 const j1p2totalcoolingload = require('../data/decision-trees/j1p2totalcoolingload.json');
 const j1p2thermalenergyload = require('../data/decision-trees/j1p2thermalenergyload.json');
 
@@ -393,10 +393,27 @@ class ReportService {
    */
   async generateJ1P2CalcInfo() {
     try {
+      // Get the location data from locationToClimateZone.json
+      const locationData = locationToClimateZone.locations.find(
+        loc => loc.id === this.project.location
+      );
+      
+      // Get the annual heating degree hours from the location data
+      const annualHeatingDegreeHours = locationData ? locationData['Annual heating degree hours'] : 15000;
+      
+      // Create a function to return the annual heating degree hours
+      const getHeatingDegreeHours = () => annualHeatingDegreeHours;
+      
+      // Create a function to return the total area of habitable rooms
+      const getTotalAreaOfHabitableRooms = () => this.project.totalAreaOfHabitableRooms || 100;
+      
+      // Call the j1p2totalheatingload function with both functions
+      const j1p2totalheatingloadResult = j1p2totalheatingload(getHeatingDegreeHours, getTotalAreaOfHabitableRooms);
+      
       return {
         totalheatingload: {
-          description: j1p2totalheatingload.description,
-          descriptionValue: j1p2totalheatingload.descriptionValue
+          description: j1p2totalheatingloadResult.description,
+          descriptionValue: j1p2totalheatingloadResult.descriptionValue
         },
         totalcoolingload: {
           description: j1p2totalcoolingload.description,
