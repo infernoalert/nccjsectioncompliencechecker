@@ -20,7 +20,7 @@ const { getSection } = require('../utils/decisionTreeFactory');
 const locationToClimateZone = require('../data/mappings/locationToClimateZone.json');
 const j1p2totalheatingload = require('../data/decision-trees/j1p2totalheatingload.js');
 const j1p2totalcoolingload = require('../data/decision-trees/j1p2totalcoolingload.js');
-const j1p2thermalenergyload = require('../data/decision-trees/j1p2thermalenergyload.json');
+const j1p2thermalenergyload = require('../data/decision-trees/j1p2thermalenergyload.js');
 
 class ReportService {
   constructor(project, section = 'full') {
@@ -419,6 +419,22 @@ class ReportService {
       // Call the j1p2totalcoolingload function with the required functions
       const j1p2totalcoolingloadResult = j1p2totalcoolingload(getCoolingDegreeHours, getDehumidificationGramHours, getTotalAreaOfHabitableRooms);
       
+      // Create functions to return the heating and cooling load limits
+      const getHeatingLoadLimit = () => {
+        // Extract the numeric value from the descriptionValue string
+        const value = parseFloat(j1p2totalheatingloadResult.descriptionValue);
+        return isNaN(value) ? 20 : value;
+      };
+      
+      const getCoolingLoadLimit = () => {
+        // Extract the numeric value from the descriptionValue string
+        const value = parseFloat(j1p2totalcoolingloadResult.descriptionValue);
+        return isNaN(value) ? 15 : value;
+      };
+      
+      // Call the j1p2thermalenergyload function with the required functions
+      const j1p2thermalenergyloadResult = j1p2thermalenergyload(getHeatingLoadLimit, getCoolingLoadLimit);
+      
       return {
         totalheatingload: {
           description: j1p2totalheatingloadResult.description,
@@ -429,8 +445,8 @@ class ReportService {
           descriptionValue: j1p2totalcoolingloadResult.descriptionValue
         },
         thermalenergyload: {
-          description: j1p2thermalenergyload.description,
-          descriptionValue: j1p2thermalenergyload.descriptionValue
+          description: j1p2thermalenergyloadResult.description,
+          descriptionValue: j1p2thermalenergyloadResult.descriptionValue
         }
       };
     } catch (error) {
