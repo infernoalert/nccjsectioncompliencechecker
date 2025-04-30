@@ -10,6 +10,7 @@ import ProjectDetails from './components/ProjectDetails';
 import ProjectForm from './components/ProjectForm';
 import ProjectReport from './components/ProjectReport';
 import Navbar from './components/Navbar';
+import Presentation from './static/Presentation';
 import { useSelector } from 'react-redux';
 
 // Create a theme instance
@@ -42,6 +43,7 @@ function App() {
           {/* Public routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/presentation" element={<Presentation />} />
 
           {/* Protected routes */}
           <Route
