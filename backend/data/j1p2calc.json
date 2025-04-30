@@ -1,0 +1,15 @@
+{
+  "version": "1.0",
+  "last_updated": "2024-03-19",
+  "variables": {
+    "totalheatingload": {
+      "description": "later"
+    },
+    "totalcoolingload": {
+      "description": "later"
+    },
+    "thermalenergyload": {
+      "description": "later"
+    }
+  }
+} 

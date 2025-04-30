@@ -240,6 +240,30 @@ const ProjectReport = () => {
                   </Grid>
                 </Box>
               )}
+
+              {/* J1P2 Calculation Subsection - Only for Class_2 and Class_4 buildings */}
+              {report.j1p2calc && (
+                <Box sx={{ mb: 4 }}>
+                  <Typography variant="h5" gutterBottom>
+                    J1P2: Thermal Energy Load Assessment
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                    {report.j1p2calc.description}
+                  </Typography>
+                  <Grid container spacing={2}>
+                    {Object.entries(report.j1p2calc.variables).map(([key, value]) => (
+                      <Grid item xs={12} key={key}>
+                        <Typography variant="subtitle1" sx={{ textTransform: 'capitalize' }}>
+                          {key.replace(/([A-Z])/g, ' $1').trim()}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {value.description}
+                        </Typography>
+                      </Grid>
+                    ))}
+                  </Grid>
+                </Box>
+              )}
             </Box>
 
             <Divider sx={{ my: 3 }} />
