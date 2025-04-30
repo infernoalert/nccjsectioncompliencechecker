@@ -18,6 +18,7 @@ const {
 } = require('../utils/decisionTreeUtils');
 const { getSection } = require('../utils/decisionTreeFactory');
 const locationToClimateZone = require('../data/mappings/locationToClimateZone.json');
+const j1p2calc = require('../data/j1p2calc.json');
 
 class ReportService {
   constructor(project, section = 'full') {
@@ -32,6 +33,7 @@ class ReportService {
     this.verificationMethods = null;
     this.energyMonitoring = null;
     this.ceilingFanRequirements = null;
+    this.j1p2calc = null;
   }
 
   /**
@@ -70,6 +72,14 @@ class ReportService {
       if (this.section === 'full' || this.section === 'energy') {
         report.energyUse = await this.generateEnergyUseInfo();
         report.energyMonitoring = await this.generateEnergyMonitoringInfo();
+        
+        // Add J1P2 calculation for Class_2 and Class_4 buildings
+        const buildingClassification = await getBuildingClassification(this.project.buildingType);
+        if (buildingClassification && 
+            (buildingClassification.classType === 'Class_2' || 
+             buildingClassification.classType === 'Class_4')) {
+          report.j1p2calc = await this.generateJ1P2CalcInfo();
+        }
       }
 
       if (this.section === 'full' || this.section === 'elemental-provisions-j3') {
@@ -372,6 +382,26 @@ class ReportService {
     } catch (error) {
       return {
         error: `Error getting elemental provisions J3 information: ${error.message}`
+      };
+    }
+  }
+
+  /**
+   * Generate J1P2 calculation information
+   * @returns {Promise<Object>} - J1P2 calculation information
+   */
+  async generateJ1P2CalcInfo() {
+    try {
+      // Get the J1P2 calculation data
+      this.j1p2calc = j1p2calc;
+      
+      return {
+        variables: this.j1p2calc.variables,
+        description: "J1P2 calculation for thermal energy load assessment"
+      };
+    } catch (error) {
+      return {
+        error: `Error getting J1P2 calculation information: ${error.message}`
       };
     }
   }
