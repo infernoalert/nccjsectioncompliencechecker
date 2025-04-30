@@ -212,23 +212,6 @@ The frontend can be deployed by building the application and serving the static 
 - Updated validation messages to be more descriptive
 - Fixed the import path for `locationToClimateZone.json` in `reportService.js`
 
-## Current State
-- The application allows users to create projects with basic information (name, description, building type, location, floor area)
-- Building types are validated against the `buildingTypeToClassification.json` file
-- Locations are mapped to climate zones using the `locationToClimateZone.json` file
-- The `buildingFabric`, `specialRequirements`, and `compliancePathway` fields are optional and can be added later
-- The application can generate compliance reports based on the project information
-- Reports are organized into four main sections for better readability and organization
-- For Class_2 and Class_4 buildings, the report includes heating, cooling, and dehumidification data in the Building Classification & Climate Zone section
-
-## Next Steps
-- Implement the building fabric section to allow users to specify wall, roof, floor, and window materials and properties
-- Implement the special requirements section to allow users to specify fire, accessibility, acoustic, energy, and other requirements
-- Implement the compliance pathway section to allow users to specify performance, prescriptive, or deemed-to-satisfy pathways
-- Enhance the compliance checking functionality to validate projects against NCC requirements
-- Improve the report generation to include more detailed information and recommendations
-- Add more subsections to "Other 1" and "Other 2" as needed
-
 ## Notes
 - The `Decision-Tree.json` file is the source of truth for building classifications, climate zones, and compliance pathways
 - The `locationToClimateZone.json` file maps locations to climate zones and contains heating, cooling, and dehumidification data

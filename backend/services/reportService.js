@@ -18,7 +18,7 @@ const {
 } = require('../utils/decisionTreeUtils');
 const { getSection } = require('../utils/decisionTreeFactory');
 const locationToClimateZone = require('../data/mappings/locationToClimateZone.json');
-const j1p2calc = require('../data/j1p2calc.json');
+const j1p2calc = require('../data/decision-trees/j1p2calc.json');
 
 class ReportService {
   constructor(project, section = 'full') {
