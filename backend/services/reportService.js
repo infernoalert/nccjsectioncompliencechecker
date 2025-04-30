@@ -19,7 +19,7 @@ const {
 const { getSection } = require('../utils/decisionTreeFactory');
 const locationToClimateZone = require('../data/mappings/locationToClimateZone.json');
 const j1p2totalheatingload = require('../data/decision-trees/j1p2totalheatingload.js');
-const j1p2totalcoolingload = require('../data/decision-trees/j1p2totalcoolingload.json');
+const j1p2totalcoolingload = require('../data/decision-trees/j1p2totalcoolingload.js');
 const j1p2thermalenergyload = require('../data/decision-trees/j1p2thermalenergyload.json');
 
 class ReportService {
@@ -401,14 +401,23 @@ class ReportService {
       // Get the annual heating degree hours from the location data
       const annualHeatingDegreeHours = locationData ? locationData['Annual heating degree hours'] : 15000;
       
-      // Create a function to return the annual heating degree hours
-      const getHeatingDegreeHours = () => annualHeatingDegreeHours;
+      // Get the annual cooling degree hours from the location data
+      const annualCoolingDegreeHours = locationData ? locationData['Annual cooling degree hours'] : 5000;
       
-      // Create a function to return the total area of habitable rooms
+      // Get the annual dehumidification gram hours from the location data
+      const annualDehumidificationGramHours = locationData ? locationData['Annual dehumidification gram hours'] : 1000;
+      
+      // Create functions to return the values
+      const getHeatingDegreeHours = () => annualHeatingDegreeHours;
+      const getCoolingDegreeHours = () => annualCoolingDegreeHours;
+      const getDehumidificationGramHours = () => annualDehumidificationGramHours;
       const getTotalAreaOfHabitableRooms = () => this.project.totalAreaOfHabitableRooms || 100;
       
-      // Call the j1p2totalheatingload function with both functions
+      // Call the j1p2totalheatingload function with the getHeatingDegreeHours function
       const j1p2totalheatingloadResult = j1p2totalheatingload(getHeatingDegreeHours, getTotalAreaOfHabitableRooms);
+      
+      // Call the j1p2totalcoolingload function with the required functions
+      const j1p2totalcoolingloadResult = j1p2totalcoolingload(getCoolingDegreeHours, getDehumidificationGramHours, getTotalAreaOfHabitableRooms);
       
       return {
         totalheatingload: {
@@ -416,8 +425,8 @@ class ReportService {
           descriptionValue: j1p2totalheatingloadResult.descriptionValue
         },
         totalcoolingload: {
-          description: j1p2totalcoolingload.description,
-          descriptionValue: j1p2totalcoolingload.descriptionValue
+          description: j1p2totalcoolingloadResult.description,
+          descriptionValue: j1p2totalcoolingloadResult.descriptionValue
         },
         thermalenergyload: {
           description: j1p2thermalenergyload.description,
