@@ -219,7 +219,7 @@ const ProjectReport = () => {
               </Typography>
 
               {/* Energy Use Requirements Subsection */}
-              {report.energyUse && (
+              {report.energyUse ? (
                 <Box sx={{ mb: 4 }}>
                   <Typography variant="h5" gutterBottom>
                     J1P1: Energy Use
@@ -238,6 +238,15 @@ const ProjectReport = () => {
                       </Typography>
                     </Grid>
                   </Grid>
+                </Box>
+              ) : (
+                <Box sx={{ mb: 4 }}>
+                  <Typography variant="h5" gutterBottom>
+                    J1P1: Energy Use
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Not applicable to Class 2 buildings or Class 4 parts of buildings.
+                  </Typography>
                 </Box>
               )}
 
@@ -261,6 +270,24 @@ const ProjectReport = () => {
                         </Typography>
                       </Grid>
                     ))}
+                  </Grid>
+                </Box>
+              )}
+
+              {/* J1P3 Energy Usage Subsection - Only for Class_2 and Class_4 buildings */}
+              {report.j1p3energyusage && (
+                <Box sx={{ mb: 4 }}>
+                  <Typography variant="h5" gutterBottom>
+                    {report.j1p3energyusage.title}
+                  </Typography>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                      {report.j1p3energyusage.description.map((line, index) => (
+                        <Typography key={index} variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                          {line}
+                        </Typography>
+                      ))}
+                    </Grid>
                   </Grid>
                 </Box>
               )}

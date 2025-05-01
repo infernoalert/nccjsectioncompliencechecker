@@ -21,6 +21,7 @@ const locationToClimateZone = require('../data/mappings/locationToClimateZone.js
 const j1p2totalheatingload = require('../data/decision-trees/j1p2totalheatingload.js');
 const j1p2totalcoolingload = require('../data/decision-trees/j1p2totalcoolingload.js');
 const j1p2thermalenergyload = require('../data/decision-trees/j1p2thermalenergyload.js');
+const j1p3energyusage = require('../data/decision-trees/j1p3-energy-usage.json');
 
 class ReportService {
   constructor(project, section = 'full') {
@@ -74,12 +75,13 @@ class ReportService {
         report.energyUse = await this.generateEnergyUseInfo();
         report.energyMonitoring = await this.generateEnergyMonitoringInfo();
         
-        // Add J1P2 calculation for Class_2 and Class_4 buildings
+        // Add J1P2 and J1P3 calculations for Class_2 and Class_4 buildings
         const buildingClassification = await getBuildingClassification(this.project.buildingType);
         if (buildingClassification && 
             (buildingClassification.classType === 'Class_2' || 
              buildingClassification.classType === 'Class_4')) {
           report.j1p2calc = await this.generateJ1P2CalcInfo();
+          report.j1p3energyusage = await this.generateJ1P3EnergyUsageInfo();
         }
       }
 
@@ -318,17 +320,21 @@ class ReportService {
   async generateEnergyUseInfo() {
     try {
       const buildingClassification = await getBuildingClassification(this.project.buildingType);
-      this.energyUse = await getEnergyUseRequirements(buildingClassification.classType);
-      this.verificationMethods = await getVerificationMethods(buildingClassification.classType);
       
-      return {
-        limit: this.energyUse.energy_use_limit,
-        description: this.energyUse.description,
-        verificationMethods: this.verificationMethods
-      };
+      // Only show J1P1 for buildings that are NOT Class_2 or Class_4
+      if (buildingClassification && 
+          buildingClassification.classType !== 'Class_2' && 
+          buildingClassification.classType !== 'Class_4') {
+        const energyUseRequirements = await getEnergyUseRequirements(buildingClassification.classType);
+        return {
+          limit: energyUseRequirements.energy_use_limit,
+          description: energyUseRequirements.description
+        };
+      }
+      return null;
     } catch (error) {
       return {
-        error: `Error getting energy use requirements: ${error.message}`
+        error: `Error getting energy use information: ${error.message}`
       };
     }
   }
@@ -452,6 +458,25 @@ class ReportService {
     } catch (error) {
       return {
         error: `Error getting J1P2 calculation information: ${error.message}`
+      };
+    }
+  }
+
+  async generateJ1P3EnergyUsageInfo() {
+    try {
+      const buildingClassification = await getBuildingClassification(this.project.buildingType);
+      if (buildingClassification && 
+          (buildingClassification.classType === 'Class_2' || 
+           buildingClassification.classType === 'Class_4')) {
+        return {
+          title: j1p3energyusage.energy_usage[buildingClassification.classType].title,
+          description: j1p3energyusage.energy_usage[buildingClassification.classType].description
+        };
+      }
+      return null;
+    } catch (error) {
+      return {
+        error: `Error getting J1P3 energy usage information: ${error.message}`
       };
     }
   }
