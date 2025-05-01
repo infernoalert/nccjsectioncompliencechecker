@@ -309,6 +309,36 @@ const ProjectReport = () => {
                   </Grid>
                 </Box>
               )}
+
+              {/* Verification Methods Subsection */}
+              {report.verificationMethods && (
+                <Box sx={{ mb: 4 }}>
+                  <Typography variant="h5" gutterBottom>
+                    Verification Methods
+                  </Typography>
+                  <Grid container spacing={2}>
+                    {report.verificationMethods.methods.map((method, index) => (
+                      <Grid item xs={12} key={index}>
+                        <Typography variant="subtitle1" gutterBottom>
+                          {method.condition}
+                        </Typography>
+                        <Box component="ul" sx={{ pl: 2 }}>
+                          {method.description.map((line, lineIndex) => (
+                            <Typography 
+                              key={lineIndex} 
+                              variant="body2" 
+                              color="text.secondary"
+                              component="li"
+                            >
+                              {line}
+                            </Typography>
+                          ))}
+                        </Box>
+                      </Grid>
+                    ))}
+                  </Grid>
+                </Box>
+              )}
             </Box>
 
             <Divider sx={{ my: 3 }} />
