@@ -9,8 +9,10 @@ import {
     Typography,
     Alert,
     CircularProgress,
-    Box
+    Box,
+    Container
 } from '@mui/material';
+import LoginHeader from './LoginHeader';
 
 const Login = () => {
     const dispatch = useDispatch();
@@ -44,57 +46,60 @@ const Login = () => {
     };
 
     return (
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 8 }}>
-            <Paper sx={{ p: 4, maxWidth: 400, width: '100%' }}>
-                <Typography variant="h5" gutterBottom align="center">
-                    Login
-                </Typography>
-                {error && (
-                    <Alert severity="error" onClose={handleClearError} sx={{ mb: 2 }}>
-                        {typeof error === 'object' ? error.message : error}
-                    </Alert>
-                )}
-                <form onSubmit={handleSubmit}>
-                    <TextField
-                        fullWidth
-                        label="Email"
-                        name="email"
-                        type="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        margin="normal"
-                        required
-                    />
-                    <TextField
-                        fullWidth
-                        label="Password"
-                        name="password"
-                        type="password"
-                        value={formData.password}
-                        onChange={handleChange}
-                        margin="normal"
-                        required
-                    />
-                    <Button
-                        type="submit"
-                        variant="contained"
-                        color="primary"
-                        fullWidth
-                        sx={{ mt: 3 }}
-                        disabled={loading}
-                    >
-                        {loading ? <CircularProgress size={24} /> : 'Login'}
-                    </Button>
-                    <Box sx={{ mt: 2, textAlign: 'center' }}>
-                        <Typography variant="body2" color="text.secondary">
-                            Not registered yet?{' '}
-                            <Link to="/register" style={{ textDecoration: 'none', color: 'primary.main' }}>
-                                Click here to register
-                            </Link>
-                        </Typography>
-                    </Box>
-                </form>
-            </Paper>
+        <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+            <LoginHeader />
+            <Container maxWidth="sm" sx={{ mt: 8, flex: 1 }}>
+                <Paper sx={{ p: 4 }}>
+                    <Typography variant="h5" gutterBottom align="center">
+                        Login
+                    </Typography>
+                    {error && (
+                        <Alert severity="error" onClose={handleClearError} sx={{ mb: 2 }}>
+                            {typeof error === 'object' ? error.message : error}
+                        </Alert>
+                    )}
+                    <form onSubmit={handleSubmit}>
+                        <TextField
+                            fullWidth
+                            label="Email"
+                            name="email"
+                            type="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            margin="normal"
+                            required
+                        />
+                        <TextField
+                            fullWidth
+                            label="Password"
+                            name="password"
+                            type="password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            margin="normal"
+                            required
+                        />
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            color="primary"
+                            fullWidth
+                            sx={{ mt: 3 }}
+                            disabled={loading}
+                        >
+                            {loading ? <CircularProgress size={24} /> : 'Login'}
+                        </Button>
+                        <Box sx={{ mt: 2, textAlign: 'center' }}>
+                            <Typography variant="body2" color="text.secondary">
+                                Not registered yet?{' '}
+                                <Link to="/register" style={{ textDecoration: 'none', color: 'primary.main' }}>
+                                    Click here to register
+                                </Link>
+                            </Typography>
+                        </Box>
+                    </form>
+                </Paper>
+            </Container>
         </Box>
     );
 };
