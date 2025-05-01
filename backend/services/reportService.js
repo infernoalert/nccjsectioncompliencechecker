@@ -22,6 +22,7 @@ const j1p2totalheatingload = require('../data/decision-trees/j1p2totalheatingloa
 const j1p2totalcoolingload = require('../data/decision-trees/j1p2totalcoolingload.js');
 const j1p2thermalenergyload = require('../data/decision-trees/j1p2thermalenergyload.js');
 const j1p3energyusage = require('../data/decision-trees/j1p3-energy-usage.json');
+const j1p4evse = require('../data/decision-trees/j1p4-evse.json');
 
 class ReportService {
   constructor(project, section = 'full') {
@@ -74,6 +75,7 @@ class ReportService {
       if (this.section === 'full' || this.section === 'energy') {
         report.energyUse = await this.generateEnergyUseInfo();
         report.energyMonitoring = await this.generateEnergyMonitoringInfo();
+        report.j1p4evse = await this.generateJ1P4EVSEInfo();
         
         // Add J1P2 and J1P3 calculations for Class_2 and Class_4 buildings
         const buildingClassification = await getBuildingClassification(this.project.buildingType);
@@ -477,6 +479,19 @@ class ReportService {
     } catch (error) {
       return {
         error: `Error getting J1P3 energy usage information: ${error.message}`
+      };
+    }
+  }
+
+  async generateJ1P4EVSEInfo() {
+    try {
+      return {
+        title: j1p4evse.evse.title,
+        description: j1p4evse.evse.description
+      };
+    } catch (error) {
+      return {
+        error: `Error getting J1P4 EVSE information: ${error.message}`
       };
     }
   }

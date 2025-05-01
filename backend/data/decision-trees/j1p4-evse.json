@@ -1,0 +1,11 @@
+{
+  "version": "1.0",
+  "last_updated": "2024-03-19",
+  "evse": {
+    "title": "J1P4: Renewable energy and electric vehicle charging",
+    "description": [
+      "A building must have features that facilitate the future installation of on-site renewable energy generation and storage and electric vehicle charging equipment."
+    ],
+    "applies_to": "all_building_classes"
+  }
+} 
