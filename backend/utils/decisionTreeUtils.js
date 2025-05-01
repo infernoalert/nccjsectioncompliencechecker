@@ -28,7 +28,8 @@ const VALID_BUILDING_CLASSES = [
   'Class_8',
   'Class_9a',
   'Class_9b',
-  'Class_9c'
+  'Class_9c',
+  'Class_10a'
 ];
 
 /**
@@ -283,30 +284,25 @@ const getExemptions = async (classType) => {
 };
 
 /**
- * Get verification methods for a building classification
- * @param {string} buildingClassification - The building classification
- * @returns {Promise<Object>} The verification methods
+ * Get verification methods for a building class
+ * @param {string} classType - The building class type
+ * @returns {Array} - Array of verification methods
  */
-const getVerificationMethods = async (buildingClassification) => {
+const getVerificationMethods = async (classType) => {
   try {
-    // Get verification methods from the modular structure
-    const verificationMethodsData = await getSection('verification-methods');
-    if (!verificationMethodsData || !verificationMethodsData.verification_methods) {
-      throw new Error('No verification methods data found');
-    }
-
-    // Get the verification methods for the building classification
-    const verificationMethods = verificationMethodsData.verification_methods[buildingClassification];
+    const verificationMethods = require('../data/decision-trees/verification-methods.json');
+    const methods = verificationMethods.verification_methods[classType];
     
-    // If no specific methods found for this classification, use the default
-    if (!verificationMethods) {
-      return verificationMethodsData.verification_methods.default;
+    if (!methods) {
+      // Return an empty array if no methods are found
+      return [];
     }
-
-    return verificationMethods;
+    
+    return methods;
   } catch (error) {
-    console.error(`Error getting verification methods for ${buildingClassification}:`, error);
-    throw error;
+    console.error('Error getting verification methods:', error);
+    // Return an empty array on error
+    return [];
   }
 };
 

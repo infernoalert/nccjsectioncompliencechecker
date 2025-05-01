@@ -76,6 +76,7 @@ class ReportService {
         report.energyUse = await this.generateEnergyUseInfo();
         report.energyMonitoring = await this.generateEnergyMonitoringInfo();
         report.j1p4evse = await this.generateJ1P4EVSEInfo();
+        report.verificationMethods = await this.generateVerificationMethodsInfo();
         
         // Add J1P2 and J1P3 calculations for Class_2 and Class_4 buildings
         const buildingClassification = await getBuildingClassification(this.project.buildingType);
@@ -492,6 +493,34 @@ class ReportService {
     } catch (error) {
       return {
         error: `Error getting J1P4 EVSE information: ${error.message}`
+      };
+    }
+  }
+
+  /**
+   * Generate verification methods information
+   * @returns {Promise<Object>} - Verification methods information
+   */
+  async generateVerificationMethodsInfo() {
+    try {
+      const buildingClassification = await getBuildingClassification(this.project.buildingType);
+      const verificationMethods = await getVerificationMethods(buildingClassification.classType);
+      
+      // Convert the methods object to an array if it's not already
+      const methodsArray = Array.isArray(verificationMethods) 
+        ? verificationMethods 
+        : Object.entries(verificationMethods).map(([key, value]) => ({
+            condition: key,
+            description: Array.isArray(value) ? value : [value]
+          }));
+      
+      return {
+        methods: methodsArray,
+        description: 'The following verification methods apply to this building:'
+      };
+    } catch (error) {
+      return {
+        error: `Error getting verification methods: ${error.message}`
       };
     }
   }
