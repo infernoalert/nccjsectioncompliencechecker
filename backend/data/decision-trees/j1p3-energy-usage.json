@@ -1,0 +1,38 @@
+{
+  "version": "1.0",
+  "last_updated": "2024-03-19",
+  "energy_usage": {
+    "Class_2": {
+      "title": "J1P3: Energy usage of a sole-occupancy unit",
+      "description": [
+        "The energy value of the domestic services of a sole-occupancy unit of a Class 2 building or Class 4 part of a building must not exceed the energy value with—",
+        "a) a 3-star ducted heat pump, rated under the 2019 GEMS determination, heating all spaces that are provided with heating; and",
+        "b) a 3-star ducted heat pump, rated under the 2019 GEMS determination, cooling all spaces that are provided with cooling; and",
+        "c) a 5-star instantaneous gas water heater, rated under the 2017 GEMS determination, providing all domestic hot water; and",
+        "d) a lighting power density of 4 W/m2 serving all internal spaces that are provided with artificial lighting.",
+        "",
+        "(2) Domestic services, including any associated distribution system and components must, to the degree necessary, have features that facilitate the efficient use of energy appropriate to—",
+        "a) the domestic service and its usage; and",
+        "b) the geographic location of the building; and",
+        "c) the location of the domestic service; and",
+        "d) the energy source."
+      ]
+    },
+    "Class_4": {
+      "title": "J1P3: Energy usage of a sole-occupancy unit",
+      "description": [
+        "The energy value of the domestic services of a sole-occupancy unit of a Class 2 building or Class 4 part of a building must not exceed the energy value with—",
+        "a) a 3-star ducted heat pump, rated under the 2019 GEMS determination, heating all spaces that are provided with heating; and",
+        "b) a 3-star ducted heat pump, rated under the 2019 GEMS determination, cooling all spaces that are provided with cooling; and",
+        "c) a 5-star instantaneous gas water heater, rated under the 2017 GEMS determination, providing all domestic hot water; and",
+        "d) a lighting power density of 4 W/m2 serving all internal spaces that are provided with artificial lighting.",
+        "",
+        "(2) Domestic services, including any associated distribution system and components must, to the degree necessary, have features that facilitate the efficient use of energy appropriate to—",
+        "a) the domestic service and its usage; and",
+        "b) the geographic location of the building; and",
+        "c) the location of the domestic service; and",
+        "d) the energy source."
+      ]
+    }
+  }
+} 
