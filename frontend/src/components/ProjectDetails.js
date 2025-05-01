@@ -172,14 +172,14 @@ const ProjectDetails = () => {
             startIcon={<AssessmentIcon />}
             onClick={() => navigate(`/projects/${id}/report?section=exemptions`)}
           >
-            Generate Exemptions Report
+            {/* Generate Exemptions Report
           </Button>
           <Button
             variant="outlined"
             color="error"
             startIcon={<DeleteIcon />}
             onClick={handleDelete}
-          >
+          > */}
             Delete Project
           </Button>
         </Box>

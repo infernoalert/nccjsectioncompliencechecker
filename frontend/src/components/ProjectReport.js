@@ -291,6 +291,24 @@ const ProjectReport = () => {
                   </Grid>
                 </Box>
               )}
+
+              {/* J1P4 EVSE Subsection - Applies to all building classes */}
+              {report.j1p4evse && (
+                <Box sx={{ mb: 4 }}>
+                  <Typography variant="h5" gutterBottom>
+                    {report.j1p4evse.title}
+                  </Typography>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                      {report.j1p4evse.description.map((line, index) => (
+                        <Typography key={index} variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                          {line}
+                        </Typography>
+                      ))}
+                    </Grid>
+                  </Grid>
+                </Box>
+              )}
             </Box>
 
             <Divider sx={{ my: 3 }} />
