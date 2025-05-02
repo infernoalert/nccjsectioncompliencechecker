@@ -14,7 +14,8 @@ const {
   getEnergyUseRequirements,
   getVerificationMethods,
   getEnergyMonitoringRequirements,
-  getCeilingFanRequirements
+  getCeilingFanRequirements,
+  getEnergyEfficiencyRequirements
 } = require('../utils/decisionTreeUtils');
 const { getSection } = require('../utils/decisionTreeFactory');
 const locationToClimateZone = require('../data/mappings/locationToClimateZone.json');
@@ -323,18 +324,28 @@ class ReportService {
   async generateEnergyUseInfo() {
     try {
       const buildingClassification = await getBuildingClassification(this.project.buildingType);
+      const totalAreaOfHabitableRooms = this.project.totalAreaOfHabitableRooms || 0;
       
-      // Only show J1P1 for buildings that are NOT Class_2 or Class_4
-      if (buildingClassification && 
-          buildingClassification.classType !== 'Class_2' && 
-          buildingClassification.classType !== 'Class_4') {
-        const energyUseRequirements = await getEnergyUseRequirements(buildingClassification.classType);
+      // Get energy efficiency requirements based on building class and total area
+      const energyEfficiencyRequirements = await getEnergyEfficiencyRequirements(
+        buildingClassification.classType,
+        totalAreaOfHabitableRooms
+      );
+
+      // For Class_2 and Class_4 buildings, return the filtered requirements
+      if (buildingClassification.classType === 'Class_2' || buildingClassification.classType === 'Class_4') {
         return {
-          limit: energyUseRequirements.energy_use_limit,
-          description: energyUseRequirements.description
+          requirements: energyEfficiencyRequirements,
+          description: `Energy efficiency requirements for ${buildingClassification.classType} building with Total Area of Habitable Rooms ${totalAreaOfHabitableRooms} m²`
         };
       }
-      return null;
+
+      // For other building classes, return J1P1 requirements
+      const energyUseRequirements = await getEnergyUseRequirements(buildingClassification.classType);
+      return {
+        limit: energyUseRequirements.energy_use_limit,
+        description: energyUseRequirements.description
+      };
     } catch (error) {
       return {
         error: `Error getting energy use information: ${error.message}`
