@@ -15,7 +15,8 @@ const {
   getVerificationMethods,
   getEnergyMonitoringRequirements,
   getCeilingFanRequirements,
-  getEnergyEfficiencyRequirements
+  getEnergyEfficiencyRequirements,
+  getJ3D3Requirements
 } = require('../utils/decisionTreeUtils');
 const { getSection } = require('../utils/decisionTreeFactory');
 const locationToClimateZone = require('../data/mappings/locationToClimateZone.json');
@@ -91,6 +92,19 @@ class ReportService {
 
       if (this.section === 'full' || this.section === 'elemental-provisions-j3') {
         report.elementalProvisionsJ3 = await this.generateElementalProvisionsJ3Info();
+      }
+
+      // Add J3D3 requirements for Class_2 and Class_4 buildings
+      if (this.section === 'full' || this.section === 'dts') {
+        const buildingClassification = await getBuildingClassification(this.project.buildingType);
+        if (buildingClassification && 
+            (buildingClassification.classType === 'Class_2' || 
+             buildingClassification.classType === 'Class_4')) {
+          report.j3d3Requirements = await getJ3D3Requirements(
+            buildingClassification.classType,
+            this.project.location
+          );
+        }
       }
 
       // Add section-specific information if a specific section is requested

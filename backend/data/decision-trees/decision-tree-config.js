@@ -22,6 +22,7 @@ module.exports = {
     'energy-use',
     'verification-methods',
     'energy-monitoring',
-    'ceilingfan-elemental-provisions-j3'
+    'ceilingfan-elemental-provisions-j3',
+    'j3d3energyratesw'
   ]
 }; 

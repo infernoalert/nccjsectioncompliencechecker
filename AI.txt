@@ -562,21 +562,25 @@ The compliance report is organized into four main sections:
    - Building Classification & Climate Zone
    - Compliance Pathway
 
-2. **Performance Requirement**
+2. **DTS - Deemed-to-Satisfy**
+   - J2 Energy Efficiency
+     - Displays energy efficiency requirements based on building class
+     - For Class_2 and Class_4 buildings, shows requirements based on Total Area of Habitable Rooms
+     - Includes J1P2, J1P3, and J1P4 requirements as applicable
+   - J3D3: Reducing heating and cooling loads of a sole-occupancy unit of a Class 2 building or a Class 4 part of a building using house energy rating software
+     - Only visible for Class_2 and Class_4 buildings
+     - Requirements based on climate zone and Total Area of Habitable Rooms
+     - Includes general requirements, climate zone specific requirements, and floor area requirements
+   - Building Fabric Specifications
+   - Special Requirements & Exemptions
+   - Elemental Provisions J3
+
+3. **Performance Requirement**
    - J1P1: Energy Use
    - J1P2: Thermal Energy Load Assessment (for Class_2 and Class_4 buildings)
    - J1P3: Energy Usage (for Class_2 and Class_4 buildings)
    - J1P4: EVSE Requirements
    - Verification Methods
-
-3. **DTS - Deemed-to-Satisfy**
-   - J2 Energy Efficiency
-     - Displays energy efficiency requirements based on building class
-     - For Class_2 and Class_4 buildings, shows requirements based on Total Area of Habitable Rooms
-     - Includes J1P2, J1P3, and J1P4 requirements as applicable
-   - Building Fabric Specifications
-   - Special Requirements & Exemptions
-   - Elemental Provisions J3
 
 4. **Other 2**
    - Exemptions

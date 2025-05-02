@@ -1,0 +1,245 @@
+{
+  "version": "1.0",
+  "last_updated": "2025-05-02",
+  "energy_efficiency_requirements": {
+    "Class_2_and_4": [
+      {
+        "condition": "General - J3D3 (Energy Rating & Related Compliance)",
+        "description": [
+          "Sole-occupancy units must collectively achieve an average energy rating of not less than 7 stars (including separate heating/cooling load limits).",
+          "Sole-occupancy units must individually achieve an energy rating of not less than 6 stars (including separate heating/cooling load limits).",
+          "Compliance required with J3D5 and J3D6 for thermal breaks.",
+          "Compliance required with Table J3D7w for compensating loss of ceiling insulation (if not handled by software). (-TableJ3D7w-)",
+          "Compliance required with J4D3 for general thermal construction.",
+          "Compliance required with J3D10(3), J3D10(5), and J3D10(6) for floor edge insulation.",
+          "Compliance required with Part J5 for building sealing.",
+          "Energy ratings must be achieved using accredited house energy rating software and ABCB Standard load limits."
+        ]
+      }
+
+
+
+,
+      {
+        "condition": "General - J3D5 (Roof Thermal Breaks)",
+        "description": [
+          "Roofs with metal sheet roofing fixed directly to metal purlins/rafters/battens (with no ceiling lining or lining fixed directly) must have a thermal break (≥ R0.2) installed between roofing and support.",
+          "Does not apply to roofs constructed using insulated sandwich panels."
+        ]
+      },
+      {
+        "condition": "General - J3D6 (Wall Thermal Breaks)",
+        "description": [
+          "Metal-framed envelope walls clad with weatherboards, fibre-cement, metal sheeting etc. (with no wall lining or lining fixed directly to the same frame) must have a thermal break (≥ R0.2) installed at all points of contact between cladding and frame.",
+          "Does not apply to walls constructed using insulated sandwich panels."
+        ]
+      },
+      {
+        "condition": "General - J4D3 (Thermal Construction General)",
+        "description": [
+          "Insulation must comply with AS/NZS 4859.1 and be installed continuously, abutting/overlapping, and without affecting services.",
+          "Reflective insulation requires necessary airspace, close fitting, adequate support, and proper joining (overlap or tape).",
+          "Bulk insulation must maintain position/thickness and overlap walls where necessary.",
+          "Thermal properties are deemed per Specification 36.",
+          "Calculation of Total R-Value/U-Value must follow specified methods (AS/NZS 4859.2, Spec 37, Spec 39, CIBSE Guide A)."
+        ]
+      },
+      {
+        "condition": "General - J3D10 (Floors - Specifics)",
+        "description": [
+          "Concrete slab-on-ground with in-slab/in-screed heating/cooling requires R1.0 vertical edge insulation.",
+          "Required edge insulation must be water-resistant and continuous to specified depth.",
+          "Requirement for edge insulation does not apply to in-screed systems solely in bathrooms/amenity areas."
+        ]
+      },
+      {
+        "condition": "General - Part J5 (Building Sealing - Base Requirements)",
+        "description": [
+          "Applies to envelope elements.",
+          "Chimneys/flues for open solid-fuel appliances need dampers.",
+          "Windows/doors forming part of the envelope must be sealed (unless meeting exclusions like AS 2047, fire doors, security doors).",
+          "Seals must use draft protection devices (bottom edge of door) or foam/rubber/fibrous seals (other edges).",
+          "Loading dock entrances to conditioned spaces need rapid roller doors."
+        ]
+      },
+      {
+        "condition": "General - Part J5 (Building Sealing - Conditional on Space Type)",
+        "description": [
+          "Roof lights serving a conditioned space must be sealed (imperforate diffuser, weatherproof seal, or shutter).",
+          "Exhaust fans serving a conditioned space need a sealing device (e.g., self-closing damper).",
+          "Evaporative coolers serving a heated space need a self-closing damper."
+        ]
+      },
+      {
+        "condition": "Climate Zone 1 (Specific Exclusions/Inclusions)",
+        "description": [
+          "Part J5 (Building Sealing) does NOT apply if the only air-conditioning is an evaporative cooler."
+        ]
+      },
+      {
+        "condition": "Climate Zone 2 (Specific Exclusions/Inclusions)",
+        "description": [
+          "Part J5 (Building Sealing) does NOT apply if the only air-conditioning is an evaporative cooler."
+        ]
+      },
+      {
+        "condition": "Climate Zone 3 (Specific Exclusions/Inclusions)",
+        "description": [
+          "Part J5 (Building Sealing) does NOT apply if the only air-conditioning is an evaporative cooler."
+        ]
+      },
+      {
+        "condition": "Climate Zone 4 (Specific Requirements)",
+        "description": [
+          "J5D4: Roof lights serving a habitable room must be sealed.",
+          "J5D5: Doors/openable windows must be sealed.",
+          "J5D6: Exhaust fans serving a habitable room need a sealing device.",
+          "J5D7: Ceilings/walls/floors/openings must be constructed to minimise air leakage.",
+          "J5D8: Evaporative coolers must be fitted with a self-closing damper."
+        ]
+      },
+      {
+        "condition": "Climate Zone 5 (Specific Exclusions/Inclusions)",
+        "description": [
+          "Part J5 (Building Sealing) does NOT apply if the only air-conditioning is an evaporative cooler.",
+          "J5D4: Roof lights serving a habitable room must be sealed.",
+          "J5D5: Doors/openable windows must be sealed.",
+          "J5D6: Exhaust fans serving a habitable room need a sealing device.",
+          "J5D7: Ceilings/walls/floors/openings must be constructed to minimise air leakage.",
+          "J5D8: Evaporative coolers must be fitted with a self-closing damper."
+        ]
+      },
+       {
+        "condition": "Climate Zone 6 (Specific Requirements)",
+        "description": [
+          "J5D4: Roof lights serving a habitable room must be sealed.",
+          "J5D5: Doors/openable windows must be sealed.",
+          "J5D6: Exhaust fans serving a habitable room need a sealing device.",
+          "J5D7: Ceilings/walls/floors/openings must be constructed to minimise air leakage.",
+          "J5D8: Evaporative coolers must be fitted with a self-closing damper."
+        ]
+      },
+       {
+        "condition": "Climate Zone 7 (Specific Requirements)",
+        "description": [
+          "J5D4: Roof lights serving a habitable room must be sealed.",
+          "J5D5: Doors/openable windows must be sealed.",
+          "J5D6: Exhaust fans serving a habitable room need a sealing device.",
+          "J5D7: Ceilings/walls/floors/openings must be constructed to minimise air leakage.",
+          "J5D8: Evaporative coolers must be fitted with a self-closing damper."
+        ]
+      },
+       {
+        "condition": "Climate Zone 8 (Specific Requirements)",
+        "description": [
+          "J5D4: Roof lights serving a habitable room must be sealed.",
+          "J5D5: Doors/openable windows must be sealed.",
+          "J5D6: Exhaust fans serving a habitable room need a sealing device.",
+          "J5D7: Ceilings/walls/floors/openings must be constructed to minimise air leakage.",
+          "J5D8: Evaporative coolers must be fitted with a self-closing damper."
+        ]
+      },
+      {
+        "condition": "Floor Area > 50 m² (Conditioned Space Entrance)",
+        "description": [
+          "J5D5(4): Entrance leading to a conditioned space requires an airlock, self-closing door, rapid roller door, or revolving door (unless it's a café/restaurant/shop meeting specific zone criteria)."
+        ]
+      }
+    ],
+    "Class_3_5_to_9": [
+      {
+        "condition": "General - Part J5 (Building Sealing - Base Requirements)",
+        "description": [
+          "Applies to envelope elements.",
+          "Chimneys/flues for open solid-fuel appliances need dampers.",
+          "Windows/doors forming part of the envelope must be sealed (unless meeting exclusions like AS 2047, fire doors, security doors).",
+          "Seals must use draft protection devices (bottom edge of door) or foam/rubber/fibrous seals (other edges).",
+          "Loading dock entrances to conditioned spaces need rapid roller doors."
+        ]
+      },
+      {
+        "condition": "General - Part J5 (Building Sealing - Conditional on Space Type)",
+        "description": [
+          "Roof lights serving a conditioned space must be sealed (imperforate diffuser, weatherproof seal, or shutter).",
+          "Exhaust fans serving a conditioned space need a sealing device (e.g., self-closing damper).",
+          "Evaporative coolers serving a heated space need a self-closing damper."
+        ]
+      },
+      {
+        "condition": "Climate Zone 1 (Specific Exclusions/Inclusions)",
+        "description": [
+          "Part J5 (Building Sealing) does NOT apply if the only air-conditioning is an evaporative cooler."
+        ]
+      },
+      {
+        "condition": "Climate Zone 2 (Specific Exclusions/Inclusions)",
+        "description": [
+          "Part J5 (Building Sealing) does NOT apply if the only air-conditioning is an evaporative cooler."
+        ]
+      },
+      {
+        "condition": "Climate Zone 3 (Specific Exclusions/Inclusions)",
+        "description": [
+          "Part J5 (Building Sealing) does NOT apply if the only air-conditioning is an evaporative cooler."
+        ]
+      },
+      {
+        "condition": "Climate Zone 4 (Specific Requirements)",
+        "description": [
+          "J5D4: Roof lights serving a habitable room must be sealed.",
+          "J5D5: Doors/openable windows must be sealed.",
+          "J5D6: Exhaust fans serving a habitable room need a sealing device.",
+          "J5D7: Ceilings/walls/floors/openings must be constructed to minimise air leakage.",
+          "J5D8: Evaporative coolers must be fitted with a self-closing damper."
+        ]
+      },
+      {
+        "condition": "Climate Zone 5 (Specific Exclusions/Inclusions)",
+        "description": [
+          "Part J5 (Building Sealing) does NOT apply if the only air-conditioning is an evaporative cooler.",
+          "J5D4: Roof lights serving a habitable room must be sealed.",
+          "J5D5: Doors/openable windows must be sealed.",
+          "J5D6: Exhaust fans serving a habitable room need a sealing device.",
+          "J5D7: Ceilings/walls/floors/openings must be constructed to minimise air leakage.",
+          "J5D8: Evaporative coolers must be fitted with a self-closing damper."
+        ]
+      },
+       {
+        "condition": "Climate Zone 6 (Specific Requirements)",
+        "description": [
+          "J5D4: Roof lights serving a habitable room must be sealed.",
+          "J5D5: Doors/openable windows must be sealed.",
+          "J5D6: Exhaust fans serving a habitable room need a sealing device.",
+          "J5D7: Ceilings/walls/floors/openings must be constructed to minimise air leakage.",
+          "J5D8: Evaporative coolers must be fitted with a self-closing damper."
+        ]
+      },
+       {
+        "condition": "Climate Zone 7 (Specific Requirements)",
+        "description": [
+          "J5D4: Roof lights serving a habitable room must be sealed.",
+          "J5D5: Doors/openable windows must be sealed.",
+          "J5D6: Exhaust fans serving a habitable room need a sealing device.",
+          "J5D7: Ceilings/walls/floors/openings must be constructed to minimise air leakage.",
+          "J5D8: Evaporative coolers must be fitted with a self-closing damper."
+        ]
+      },
+       {
+        "condition": "Climate Zone 8 (Specific Requirements)",
+        "description": [
+          "J5D4: Roof lights serving a habitable room must be sealed.",
+          "J5D5: Doors/openable windows must be sealed.",
+          "J5D6: Exhaust fans serving a habitable room need a sealing device.",
+          "J5D7: Ceilings/walls/floors/openings must be constructed to minimise air leakage.",
+          "J5D8: Evaporative coolers must be fitted with a self-closing damper."
+        ]
+      },
+      {
+        "condition": "Floor Area > 50 m² (Conditioned Space Entrance)",
+        "description": [
+          "J5D5(4): Entrance leading to a conditioned space requires an airlock, self-closing door, rapid roller door, or revolving door (unless it's a café/restaurant/shop meeting specific zone criteria)."
+        ]
+      }
+    ]
+  }
+}

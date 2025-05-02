@@ -399,6 +399,130 @@ const ProjectReport = () => {
                 </Box>
               )}
 
+              {/* J3D3 Requirements Subsection - Only for Class_2 and Class_4 buildings */}
+              {report.j3d3Requirements && (
+                <Box sx={{ mb: 4 }}>
+                  <Typography variant="h5" gutterBottom>
+                    {report.j3d3Requirements.general?.title}
+                  </Typography>
+                  <Typography variant="body1" sx={{ mb: 2 }}>
+                    {report.j3d3Requirements.general?.description}
+                  </Typography>
+
+                  {/* General Requirements */}
+                  {report.j3d3Requirements.general?.requirements && (
+                    <Box sx={{ mb: 3 }}>
+                      <Typography variant="h6" gutterBottom>
+                        General Requirements
+                      </Typography>
+                      <Grid container spacing={2}>
+                        {report.j3d3Requirements.general.requirements.map((req, index) => (
+                          <Grid item xs={12} key={index}>
+                            <Typography variant="subtitle1">{req.condition}</Typography>
+                            <Typography variant="body2" color="text.secondary">
+                              {req.description}
+                            </Typography>
+                          </Grid>
+                        ))}
+                      </Grid>
+                    </Box>
+                  )}
+
+                  {/* J3D7 Ceiling Insulation Table */}
+                  {report.j3d3Requirements.general?.tables?.j3d7_ceiling_insulation && (
+                    <Box sx={{ mb: 3 }}>
+                      <Typography variant="h6" gutterBottom>
+                        {report.j3d3Requirements.general.tables.j3d7_ceiling_insulation.title}
+                      </Typography>
+                      <TableContainer component={Paper}>
+                        <Table>
+                          <TableHead>
+                            <TableRow>
+                              {report.j3d3Requirements.general.tables.j3d7_ceiling_insulation.headers.map((header, index) => (
+                                <TableCell 
+                                  key={index}
+                                  align={report.j3d3Requirements.general.tables.j3d7_ceiling_insulation.format.alignment[index]}
+                                  sx={{ width: report.j3d3Requirements.general.tables.j3d7_ceiling_insulation.format.width[index] }}
+                                >
+                                  {header}
+                                </TableCell>
+                              ))}
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {report.j3d3Requirements.general.tables.j3d7_ceiling_insulation.rows.map((row, rowIndex) => (
+                              <TableRow key={rowIndex}>
+                                {row.map((cell, cellIndex) => (
+                                  <TableCell 
+                                    key={cellIndex}
+                                    align={report.j3d3Requirements.general.tables.j3d7_ceiling_insulation.format.alignment[cellIndex]}
+                                  >
+                                    {cell === null ? '-' : cell}
+                                  </TableCell>
+                                ))}
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    </Box>
+                  )}
+
+                  {/* Climate Zone Specific Requirements */}
+                  {report.j3d3Requirements.climateZone && (
+                    <Box sx={{ mb: 3 }}>
+                      <Typography variant="h6" gutterBottom>
+                        Climate Zone Specific Requirements
+                      </Typography>
+                      <Grid container spacing={2}>
+                        {report.j3d3Requirements.climateZone.heating_load_limit && (
+                          <Grid item xs={12}>
+                            <Typography variant="subtitle1">Heating Load Limit</Typography>
+                            <Typography variant="body2" color="text.secondary">
+                              {report.j3d3Requirements.climateZone.heating_load_limit}
+                            </Typography>
+                          </Grid>
+                        )}
+                        {report.j3d3Requirements.climateZone.cooling_load_limit && (
+                          <Grid item xs={12}>
+                            <Typography variant="subtitle1">Cooling Load Limit</Typography>
+                            <Typography variant="body2" color="text.secondary">
+                              {report.j3d3Requirements.climateZone.cooling_load_limit}
+                            </Typography>
+                          </Grid>
+                        )}
+                        {report.j3d3Requirements.climateZone.additional_requirements?.map((req, index) => (
+                          <Grid item xs={12} key={index}>
+                            <Typography variant="body2" color="text.secondary">
+                              {req}
+                            </Typography>
+                          </Grid>
+                        ))}
+                      </Grid>
+                    </Box>
+                  )}
+
+                  {/* Floor Area Requirements */}
+                  {report.j3d3Requirements.floorArea && (
+                    <Box sx={{ mb: 3 }}>
+                      <Typography variant="h6" gutterBottom>
+                        Floor Area Requirements
+                      </Typography>
+                      <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                          <Typography variant="subtitle1">
+                            {report.j3d3Requirements.floorArea.condition}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            {report.j3d3Requirements.floorArea.description}
+                          </Typography>
+                        </Grid>
+                      </Grid>
+                    </Box>
+                  )}
+                </Box>
+              )}
+
               {/* Building Fabric */}
               {report.buildingFabric && (
                 <Box sx={{ mb: 4 }}>
