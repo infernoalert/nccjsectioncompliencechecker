@@ -430,6 +430,50 @@ const getEnergyEfficiencyRequirements = async (buildingClassification, totalArea
   }
 };
 
+/**
+ * Get J3D3 requirements for a building
+ * @param {string} buildingClass - The building class (e.g., 'Class_2', 'Class_4')
+ * @param {string} location - The location ID (e.g., 'NSW-Sydney-East')
+ * @returns {Promise<Object>} - The J3D3 requirements
+ */
+const getJ3D3Requirements = async (buildingClass, location) => {
+  try {
+    const data = await getSection('j3d3energyratesw');
+    if (!data || !data.j3d3_requirements) {
+      throw new Error('No J3D3 requirements found');
+    }
+
+    // Only return requirements for Class_2 and Class_4
+    if (buildingClass !== 'Class_2' && buildingClass !== 'Class_4') {
+      return null;
+    }
+
+    // Get climate zone from location
+    const locationData = locationToClimateZone.locations.find(loc => loc.id === location);
+    if (!locationData) {
+      throw new Error(`Location not found: ${location}`);
+    }
+
+    const climateZone = locationData.climateZone;
+    const requirements = data.j3d3_requirements.Class_2_and_4;
+
+    // Get the specific requirements for this climate zone
+    const zoneRequirements = requirements.climate_zones[climateZone];
+    if (!zoneRequirements) {
+      throw new Error(`No J3D3 requirements found for climate zone ${climateZone}`);
+    }
+
+    return {
+      general: requirements.general,
+      climateZone: zoneRequirements,
+      floorArea: requirements.floor_area_requirements
+    };
+  } catch (error) {
+    console.error('Error getting J3D3 requirements:', error);
+    return null;
+  }
+};
+
 module.exports = {
   getBuildingClassification,
   getClimateZoneByLocation,
@@ -443,5 +487,6 @@ module.exports = {
   getEnergyMonitoringRequirements,
   getCeilingFanRequirements,
   getEnergyEfficiencyRequirements,
+  getJ3D3Requirements,
   isValidBuildingClass // Export for testing
 }; 

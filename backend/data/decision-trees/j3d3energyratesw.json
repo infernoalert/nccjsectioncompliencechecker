@@ -1,0 +1,175 @@
+{
+  "version": "1.0",
+  "last_updated": "2025-05-02",
+  "j3d3_requirements": {
+    "Class_2_and_4": {
+      "general": {
+        "title": "J3D3: Reducing heating and cooling loads of a sole-occupancy unit of a Class 2 building or a Class 4 part of a building using house energy rating software",
+        "description": "Energy efficiency requirements for Class 2 and Class 4 buildings based on climate zone and Total Area of Habitable Rooms",
+        "requirements": [
+          {
+            "condition": "General - J3D3 (Energy Rating & Related Compliance)",
+            "description": [
+              "Sole-occupancy units must collectively achieve an average energy rating of not less than 7 stars (including separate heating/cooling load limits).",
+              "Sole-occupancy units must individually achieve an energy rating of not less than 6 stars (including separate heating/cooling load limits).",
+              "Compliance required with J3D5 and J3D6 for thermal breaks.",
+              "Compliance required with Table J3D7w for compensating loss of ceiling insulation (if not handled by software).",
+              "Compliance required with J4D3 for general thermal construction.",
+              "Compliance required with J3D10(3), J3D10(5), and J3D10(6) for floor edge insulation.",
+              "Compliance required with Part J5 for building sealing.",
+              "Energy ratings must be achieved using accredited house energy rating software and ABCB Standard load limits."
+            ]
+          },
+          {
+            "condition": "General - J3D5 (Roof Thermal Breaks)",
+            "description": [
+              "Roofs with metal sheet roofing fixed directly to metal purlins/rafters/battens (with no ceiling lining or lining fixed directly) must have a thermal break (≥ R0.2) installed between roofing and support.",
+              "Does not apply to roofs constructed using insulated sandwich panels."
+            ]
+          },
+          {
+            "condition": "General - J3D6 (Wall Thermal Breaks)",
+            "description": [
+              "Metal-framed envelope walls clad with weatherboards, fibre-cement, metal sheeting etc. (with no wall lining or lining fixed directly to the same frame) must have a thermal break (≥ R0.2) installed at all points of contact between cladding and frame.",
+              "Does not apply to walls constructed using insulated sandwich panels."
+            ]
+          },
+          {
+            "condition": "General - J4D3 (Thermal Construction General)",
+            "description": [
+              "Insulation must comply with AS/NZS 4859.1 and be installed continuously, abutting/overlapping, and without affecting services.",
+              "Reflective insulation requires necessary airspace, close fitting, adequate support, and proper joining (overlap or tape).",
+              "Bulk insulation must maintain position/thickness and overlap walls where necessary.",
+              "Thermal properties are deemed per Specification 36.",
+              "Calculation of Total R-Value/U-Value must follow specified methods (AS/NZS 4859.2, Spec 37, Spec 39, CIBSE Guide A)."
+            ]
+          },
+          {
+            "condition": "General - J3D10 (Floors - Specifics)",
+            "description": [
+              "Concrete slab-on-ground with in-slab/in-screed heating/cooling requires R1.0 vertical edge insulation.",
+              "Required edge insulation must be water-resistant and continuous to specified depth.",
+              "Requirement for edge insulation does not apply to in-screed systems solely in bathrooms/amenity areas."
+            ]
+          }
+        ],
+        "tables": {
+          "j3d7_ceiling_insulation": {
+            "title": "Minimum R-Value of ceiling insulation required to satisfy J3D7(1) and J3D7(3)",
+            "headers": [
+              "Percentage of ceiling area uninsulated", 
+              "Base R-Value 1.0", 
+              "Base R-Value 1.5", 
+              "Base R-Value 2.0", 
+              "Base R-Value 2.5", 
+              "Base R-Value 3.0", 
+              "Base R-Value 3.5", 
+              "Base R-Value 4.0", 
+              "Base R-Value 4.5", 
+              "Base R-Value 5.0", 
+              "Base R-Value 5.5"
+            ],
+            "rows": [
+              [ "0.5% to less than 1.0%", 1.0, 1.6, 2.2, 2.8, 3.4, 4.0, 4.7, 5.4, 6.2, 6.9 ],
+              [ "1.0% to less than 1.5%", 1.1, 1.7, 2.3, 2.9, 3.6, 4.4, 5.2, 6.1, 7.0, null ],
+              [ "1.5% to less than 2.0%", 1.1, 1.7, 2.4, 3.1, 3.9, 4.8, 5.8, 6.8, null, null ],
+              [ "2.0% to less than 2.5%", 1.1, 1.8, 2.5, 3.3, 4.2, 5.3, 6.5, null, null, null ],
+              [ "2.5% to less than 3.0%", 1.2, 1.9, 2.6, 3.6, 4.6, 5.9, null, null, null, null ],
+              [ "3.0% to less than 4.0%", 1.2, 2.0, 3.0, 4.2, 5.7, null, null, null, null, null ],
+              [ "4.0% to less than 5.0%", 1.3, 2.2, 3.4, 5.0, null, null, null, null, null, null ]
+            ],
+            "format": {
+              "alignment": ["left", "right", "right", "right", "right", "right", "right", "right", "right", "right", "right"],
+              "width": ["25%", "7.5%", "7.5%", "7.5%", "7.5%", "7.5%", "7.5%", "7.5%", "7.5%", "7.5%", "7.5%"]
+            }
+          }
+        }
+      },
+      "climate_zones": {
+        "1": {
+          "heating_load_limit": "Not applicable",
+          "cooling_load_limit": "Not applicable",
+          "additional_requirements": [
+            "Part J5 (Building Sealing) does NOT apply if the only air-conditioning is an evaporative cooler."
+          ]
+        },
+        "2": {
+          "heating_load_limit": "Not applicable",
+          "cooling_load_limit": "Not applicable",
+          "additional_requirements": [
+            "Part J5 (Building Sealing) does NOT apply if the only air-conditioning is an evaporative cooler."
+          ]
+        },
+        "3": {
+          "heating_load_limit": "Not applicable",
+          "cooling_load_limit": "Not applicable",
+          "additional_requirements": [
+            "Part J5 (Building Sealing) does NOT apply if the only air-conditioning is an evaporative cooler."
+          ]
+        },
+        "4": {
+          "heating_load_limit": "Not applicable",
+          "cooling_load_limit": "Not applicable",
+          "additional_requirements": [
+            "J5D4: Roof lights serving a habitable room must be sealed.",
+            "J5D5: Doors/openable windows must be sealed.",
+            "J5D6: Exhaust fans serving a habitable room need a sealing device.",
+            "J5D7: Ceilings/walls/floors/openings must be constructed to minimise air leakage.",
+            "J5D8: Evaporative coolers must be fitted with a self-closing damper."
+          ]
+        },
+        "5": {
+          "heating_load_limit": "Not applicable",
+          "cooling_load_limit": "Not applicable",
+          "additional_requirements": [
+            "Part J5 (Building Sealing) does NOT apply if the only air-conditioning is an evaporative cooler.",
+            "J5D4: Roof lights serving a habitable room must be sealed.",
+            "J5D5: Doors/openable windows must be sealed.",
+            "J5D6: Exhaust fans serving a habitable room need a sealing device.",
+            "J5D7: Ceilings/walls/floors/openings must be constructed to minimise air leakage.",
+            "J5D8: Evaporative coolers must be fitted with a self-closing damper."
+          ]
+        },
+        "6": {
+          "heating_load_limit": "Not applicable",
+          "cooling_load_limit": "Not applicable",
+          "additional_requirements": [
+            "J5D4: Roof lights serving a habitable room must be sealed.",
+            "J5D5: Doors/openable windows must be sealed.",
+            "J5D6: Exhaust fans serving a habitable room need a sealing device.",
+            "J5D7: Ceilings/walls/floors/openings must be constructed to minimise air leakage.",
+            "J5D8: Evaporative coolers must be fitted with a self-closing damper."
+          ]
+        },
+        "7": {
+          "heating_load_limit": "Not applicable",
+          "cooling_load_limit": "Not applicable",
+          "additional_requirements": [
+            "J5D4: Roof lights serving a habitable room must be sealed.",
+            "J5D5: Doors/openable windows must be sealed.",
+            "J5D6: Exhaust fans serving a habitable room need a sealing device.",
+            "J5D7: Ceilings/walls/floors/openings must be constructed to minimise air leakage.",
+            "J5D8: Evaporative coolers must be fitted with a self-closing damper."
+          ]
+        },
+        "8": {
+          "heating_load_limit": "Not applicable",
+          "cooling_load_limit": "Not applicable",
+          "additional_requirements": [
+            "J5D4: Roof lights serving a habitable room must be sealed.",
+            "J5D5: Doors/openable windows must be sealed.",
+            "J5D6: Exhaust fans serving a habitable room need a sealing device.",
+            "J5D7: Ceilings/walls/floors/openings must be constructed to minimise air leakage.",
+            "J5D8: Evaporative coolers must be fitted with a self-closing damper."
+          ]
+        }
+      },
+      "floor_area_requirements": {
+        "condition": "Floor Area > 50 m² (Conditioned Space Entrance)",
+        "description": [
+          "J5D5(4): Entrance leading to a conditioned space requires an airlock, self-closing door, rapid roller door, or revolving door (unless it's a café/restaurant/shop meeting specific zone criteria)."
+        ]
+      }
+    }
+  }
+} 
