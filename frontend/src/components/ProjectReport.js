@@ -17,6 +17,9 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  List,
+  ListItem,
+  ListItemText,
 } from '@mui/material';
 import { fetchProject, generateReport } from '../store/slices/projectSlice';
 
@@ -52,6 +55,94 @@ const ProjectReport = () => {
 
   const handleGenerateReport = () => {
     dispatch(generateReport({ id, section }));
+  };
+
+  const renderJ3D3Requirements = () => {
+    if (!report.j3d3Requirements) return null;
+
+    return (
+      <Box sx={{ mb: 4 }}>
+        <Typography variant="h5" gutterBottom>
+          J3D3: Reducing heating and cooling loads
+        </Typography>
+        
+        {/* General Requirements */}
+        <Box sx={{ mb: 3 }}>
+          <Typography variant="h6" gutterBottom>
+            General Requirements
+          </Typography>
+          <List>
+            {report.j3d3Requirements.general_requirements.description.map((req, index) => (
+              <ListItem key={index}>
+                <ListItemText primary={req} />
+              </ListItem>
+            ))}
+          </List>
+        </Box>
+
+        {/* Specific Requirements */}
+        <Box sx={{ mb: 3 }}>
+          <Typography variant="h6" gutterBottom>
+            Specific Requirements
+          </Typography>
+          <List>
+            {report.j3d3Requirements.specific_requirements.requirements.map((req, index) => (
+              <ListItem key={index}>
+                <ListItemText primary={req} />
+              </ListItem>
+            ))}
+          </List>
+        </Box>
+
+        {/* Thermal Breaks */}
+        <Box sx={{ mb: 3 }}>
+          <Typography variant="h6" gutterBottom>
+            Thermal Breaks
+          </Typography>
+          <List>
+            {Object.values(report.j3d3Requirements.thermal_breaks).map((breakType, index) => (
+              <ListItem key={index}>
+                <ListItemText 
+                  primary={breakType.condition}
+                  secondary={breakType.requirements.join('. ')}
+                />
+              </ListItem>
+            ))}
+          </List>
+        </Box>
+
+        {/* Floor Requirements */}
+        <Box sx={{ mb: 3 }}>
+          <Typography variant="h6" gutterBottom>
+            Floor Requirements
+          </Typography>
+          <List>
+            {report.j3d3Requirements.floor_requirements.requirements.map((req, index) => (
+              <ListItem key={index}>
+                <ListItemText primary={req} />
+              </ListItem>
+            ))}
+          </List>
+        </Box>
+
+        {/* Building Sealing */}
+        <Box sx={{ mb: 3 }}>
+          <Typography variant="h6" gutterBottom>
+            Building Sealing
+          </Typography>
+          <List>
+            {Object.values(report.j3d3Requirements.building_sealing).map((sealingType, index) => (
+              <ListItem key={index}>
+                <ListItemText 
+                  primary={sealingType.condition}
+                  secondary={sealingType.requirements.join('. ')}
+                />
+              </ListItem>
+            ))}
+          </List>
+        </Box>
+      </Box>
+    );
   };
 
   if (loading) {
@@ -396,6 +487,94 @@ const ProjectReport = () => {
                       </Grid>
                     ))}
                   </Grid>
+                </Box>
+              )}
+
+              {/* J3D3 Requirements Subsection */}
+              {report.j3d3Requirements && (
+                <Box sx={{ mb: 4 }}>
+                  <Typography variant="h5" gutterBottom>
+                    J3D3: Reducing heating and cooling loads
+                  </Typography>
+                  <Typography variant="subtitle1" gutterBottom>
+                    Using house energy rating software
+                  </Typography>
+                  
+                  {/* General Requirements */}
+                  <Box sx={{ mb: 3 }}>
+                    <Typography variant="h6" gutterBottom>
+                      General Requirements
+                    </Typography>
+                    <List>
+                      {report.j3d3Requirements.general_requirements.description.map((req, index) => (
+                        <ListItem key={index}>
+                          <ListItemText primary={req} />
+                        </ListItem>
+                      ))}
+                    </List>
+                  </Box>
+
+                  {/* Specific Requirements */}
+                  <Box sx={{ mb: 3 }}>
+                    <Typography variant="h6" gutterBottom>
+                      Specific Requirements for Climate Zone {report.climateZone.zone}
+                    </Typography>
+                    <List>
+                      {report.j3d3Requirements.specific_requirements.requirements.map((req, index) => (
+                        <ListItem key={index}>
+                          <ListItemText primary={req} />
+                        </ListItem>
+                      ))}
+                    </List>
+                  </Box>
+
+                  {/* Thermal Breaks */}
+                  <Box sx={{ mb: 3 }}>
+                    <Typography variant="h6" gutterBottom>
+                      Thermal Breaks
+                    </Typography>
+                    <List>
+                      {Object.values(report.j3d3Requirements.thermal_breaks).map((breakType, index) => (
+                        <ListItem key={index}>
+                          <ListItemText 
+                            primary={breakType.condition}
+                            secondary={breakType.requirements.join('. ')}
+                          />
+                        </ListItem>
+                      ))}
+                    </List>
+                  </Box>
+
+                  {/* Floor Requirements */}
+                  <Box sx={{ mb: 3 }}>
+                    <Typography variant="h6" gutterBottom>
+                      Floor Requirements
+                    </Typography>
+                    <List>
+                      {report.j3d3Requirements.floor_requirements.requirements.map((req, index) => (
+                        <ListItem key={index}>
+                          <ListItemText primary={req} />
+                        </ListItem>
+                      ))}
+                    </List>
+                  </Box>
+
+                  {/* Building Sealing */}
+                  <Box sx={{ mb: 3 }}>
+                    <Typography variant="h6" gutterBottom>
+                      Building Sealing
+                    </Typography>
+                    <List>
+                      {Object.values(report.j3d3Requirements.building_sealing).map((sealingType, index) => (
+                        <ListItem key={index}>
+                          <ListItemText 
+                            primary={sealingType.condition}
+                            secondary={sealingType.requirements.join('. ')}
+                          />
+                        </ListItem>
+                      ))}
+                    </List>
+                  </Box>
                 </Box>
               )}
 
