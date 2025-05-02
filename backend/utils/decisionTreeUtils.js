@@ -384,6 +384,52 @@ const getCeilingFanRequirements = async (buildingClass, climateZone) => {
   }
 };
 
+/**
+ * Get energy efficiency requirements for a building
+ * @param {string} buildingClassification - The building classification
+ * @param {number} totalAreaOfHabitableRooms - Total area of habitable rooms in m²
+ * @returns {Promise<Object>} The energy efficiency requirements
+ */
+const getEnergyEfficiencyRequirements = async (buildingClassification, totalAreaOfHabitableRooms) => {
+  try {
+    // Get energy efficiency requirements from the modular structure
+    const energyEfficiencyData = await getSection('j2energyefficiency');
+    if (!energyEfficiencyData || !energyEfficiencyData.energy_efficiency_requirements) {
+      throw new Error('No energy efficiency data found');
+    }
+
+    // Get the requirements for the building classification
+    const requirements = energyEfficiencyData.energy_efficiency_requirements[buildingClassification];
+    
+    // If no specific requirements found for this classification, use the default
+    if (!requirements) {
+      return energyEfficiencyData.energy_efficiency_requirements.default;
+    }
+
+    // For Class_2 and Class_4, filter requirements based on Total Area of Habitable Rooms
+    if (buildingClassification === 'Class_2' || buildingClassification === 'Class_4') {
+      const filteredRequirements = requirements.filter(req => {
+        if (req.condition.includes('J1P3')) {
+          if (req.condition.includes('≤ 500 m²') && totalAreaOfHabitableRooms <= 500) {
+            return true;
+          }
+          if (req.condition.includes('> 500 m²') && totalAreaOfHabitableRooms > 500) {
+            return true;
+          }
+          return false;
+        }
+        return true;
+      });
+      return filteredRequirements;
+    }
+
+    return requirements;
+  } catch (error) {
+    console.error(`Error getting energy efficiency requirements for ${buildingClassification}:`, error);
+    throw error;
+  }
+};
+
 module.exports = {
   getBuildingClassification,
   getClimateZoneByLocation,
@@ -396,5 +442,6 @@ module.exports = {
   getVerificationMethods,
   getEnergyMonitoringRequirements,
   getCeilingFanRequirements,
+  getEnergyEfficiencyRequirements,
   isValidBuildingClass // Export for testing
 }; 

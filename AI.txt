@@ -59,7 +59,7 @@ This project is a web application for checking compliance with the National Cons
          - Total Heating Load
          - Total Cooling Load
          - Thermal Energy Load
-    3. Other 1
+    3. DTS - Deemed-to-Satisfy
        - Building Fabric Specifications
        - Special Requirements & Exemptions
        - Elemental Provisions J3
@@ -202,7 +202,7 @@ The frontend can be deployed by building the application and serving the static 
   2. Performance Requirement
      - Energy Use Requirements
      - J1P2 Calculations (for Class_2 and Class_4 buildings)
-  3. Other 1
+  3. DTS - Deemed-to-Satisfy
      - Building Fabric Specifications
      - Special Requirements & Exemptions
      - Elemental Provisions J3
@@ -223,6 +223,37 @@ The frontend can be deployed by building the application and serving the static 
 - Created utility functions in `decisionTreeUtils.js` to access data from `Decision-Tree.json`
 - Implemented functions for building classifications, climate zone requirements, compliance pathways, special requirements, and exemptions
 - Updated the `ReportService` class to utilize the new utility functions
+
+### Verification Methods Implementation
+The verification methods are implemented as a modular decision tree structure in `verification-methods.json`. This structure works as follows:
+
+1. **Class-Based Organization**:
+   - Each building class (Class_2 through Class_9c) has its own set of verification methods
+   - Classes are organized hierarchically in the JSON structure
+   - A default verification method is provided for cases where a specific class isn't found
+
+2. **Method Structure**:
+   Each verification method contains:
+   - `condition`: The specific condition or requirement that must be met
+   - `description`: A detailed list of requirements that must be satisfied
+
+3. **Class-Specific Examples**:
+   - **Class_2**: Includes methods like "J1V1-minimum 4-star NABERS Energy for Apartment Buildings" and "J1V2-Green Star alternative compliance"
+   - **Class_3**: Includes methods like "J1V1-minimum 4-star NABERS Energy for Hotels" and "J1V2-Green Star alternative compliance"
+   - **Class_5**: Includes methods like "J1V1-minimum 5.5-star NABERS Energy base building" and "J1V2-Green Star alternative compliance"
+   - **Class_6**: Includes methods like "J1V1-minimum 4.5-star NABERS Energy for Shopping Centres" and "J1V2-Green Star alternative compliance"
+   - **Class_7-9c**: Primarily use the "J1V2-Green Star alternative compliance" method
+
+4. **Integration with Report Service**:
+   - The verification methods are accessed through the `getVerificationMethods` utility function
+   - The report service includes these methods in the energy use section of the compliance report
+   - The methods are displayed conditionally based on the building class
+
+5. **Default Handling**:
+   - If a specific verification method isn't found for a building class, the default method is used
+   - The default method provides a standard verification approach
+
+This modular approach allows for easy addition of new verification methods and ensures that each building class has appropriate compliance verification options.
 
 ### Bug Fixes
 - Fixed the `createdBy` field in the Project schema by setting it to the same value as the `owner` field in the `createProject` function
@@ -521,3 +552,33 @@ As an example of how we added J1P2 calculations for Class_2 and Class_4 building
 4. The data is sourced from the `locationToClimateZone.json` file
 
 This approach allows for easy addition of new calculations to the report based on specific building classifications. 
+
+## Report Structure
+
+The compliance report is organized into four main sections:
+
+1. **General**
+   - Project Information
+   - Building Classification & Climate Zone
+   - Compliance Pathway
+
+2. **Performance Requirement**
+   - J1P1: Energy Use
+   - J1P2: Thermal Energy Load Assessment (for Class_2 and Class_4 buildings)
+   - J1P3: Energy Usage (for Class_2 and Class_4 buildings)
+   - J1P4: EVSE Requirements
+   - Verification Methods
+
+3. **DTS - Deemed-to-Satisfy**
+   - J2 Energy Efficiency
+     - Displays energy efficiency requirements based on building class
+     - For Class_2 and Class_4 buildings, shows requirements based on Total Area of Habitable Rooms
+     - Includes J1P2, J1P3, and J1P4 requirements as applicable
+   - Building Fabric Specifications
+   - Special Requirements & Exemptions
+   - Elemental Provisions J3
+
+4. **Other 2**
+   - Exemptions
+   - Compliance Results
+   - Documentation

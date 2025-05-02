@@ -224,20 +224,43 @@ const ProjectReport = () => {
                   <Typography variant="h5" gutterBottom>
                     J1P1: Energy Use
                   </Typography>
-                  <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                      <Typography variant="subtitle1">Energy Use Limit</Typography>
-                      <Typography variant="body1">
-                        {report.energyUse.limit}
-                      </Typography>
+                  {report.energyUse.requirements ? (
+                    // Display energy efficiency requirements for Class_2 and Class_4 buildings
+                    <Grid container spacing={2}>
+                      <Grid item xs={12}>
+                        <Typography variant="subtitle1">Description</Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {report.energyUse.description}
+                        </Typography>
+                      </Grid>
+                      {report.energyUse.requirements.map((requirement, index) => (
+                        <Grid item xs={12} key={index}>
+                          <Typography variant="subtitle1">{requirement.condition}</Typography>
+                          {requirement.description.map((line, lineIndex) => (
+                            <Typography key={lineIndex} variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                              {line}
+                            </Typography>
+                          ))}
+                        </Grid>
+                      ))}
                     </Grid>
-                    <Grid item xs={12}>
-                      <Typography variant="subtitle1">Description</Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {report.energyUse.description}
-                      </Typography>
+                  ) : (
+                    // Display J1P1 requirements for other building classes
+                    <Grid container spacing={2}>
+                      <Grid item xs={12}>
+                        <Typography variant="subtitle1">Energy Use Limit</Typography>
+                        <Typography variant="body1">
+                          {report.energyUse.limit}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12}>
+                        <Typography variant="subtitle1">Description</Typography>
+                        <Typography variant="body2" color="text.secondary">
+                          {report.energyUse.description}
+                        </Typography>
+                      </Grid>
                     </Grid>
-                  </Grid>
+                  )}
                 </Box>
               ) : (
                 <Box sx={{ mb: 4 }}>
@@ -245,7 +268,7 @@ const ProjectReport = () => {
                     J1P1: Energy Use
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    Not applicable to Class 2 buildings or Class 4 parts of buildings.
+                    Not applicable to this building type.
                   </Typography>
                 </Box>
               )}
@@ -343,11 +366,38 @@ const ProjectReport = () => {
 
             <Divider sx={{ my: 3 }} />
 
-            {/* Other 1 Section */}
+            {/* DTS - Deemed-to-Satisfy Section */}
             <Box sx={{ mb: 4 }}>
               <Typography variant="h4" gutterBottom>
-                Other 1
+                DTS - Deemed-to-Satisfy
               </Typography>
+
+              {/* J2 Energy Efficiency Subsection */}
+              {report.energyUse && report.energyUse.requirements && (
+                <Box sx={{ mb: 4 }}>
+                  <Typography variant="h5" gutterBottom>
+                    J2 Energy Efficiency
+                  </Typography>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12}>
+                      <Typography variant="subtitle1">Description</Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {report.energyUse.description}
+                      </Typography>
+                    </Grid>
+                    {report.energyUse.requirements.map((requirement, index) => (
+                      <Grid item xs={12} key={index}>
+                        <Typography variant="subtitle1">{requirement.condition}</Typography>
+                        {requirement.description.map((line, lineIndex) => (
+                          <Typography key={lineIndex} variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                            {line}
+                          </Typography>
+                        ))}
+                      </Grid>
+                    ))}
+                  </Grid>
+                </Box>
+              )}
 
               {/* Building Fabric */}
               {report.buildingFabric && (

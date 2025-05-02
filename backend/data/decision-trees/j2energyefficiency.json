@@ -1,0 +1,174 @@
+{
+  "version": "1.0",
+  "last_updated": "2024-03-19",
+  "energy_efficiency_requirements": {
+    "Class_2": [
+      {
+        "condition": "J1P2 - Sole-occupancy unit of a Class 2 building",
+        "description": [
+          "J3D3, using house energy rating software; or",
+          "the following—",
+          "(a) J3D4, for ceiling fans; and",
+          "(b) (i) J3D5, J3D6, J4D3, J4D7(3), J4D7(4) and Part J5, for general thermal construction; and",
+          "   (ii) J3D7, for roofs; and",
+          "   (iii) J3D8 and J3D11 to J3D13, or J3D9, for walls and glazing; and",
+          "   (iv) J3D10, for floors"
+        ]
+      },
+      {
+        "condition": "J1P3 - Sole-occupancy unit with Total Area of Habitable Rooms ≤ 500 m²",
+        "description": [
+          "(a) for the net equivalent energy usage—",
+          "   (i) J3D14, for a sole-occupancy unit with a total floor area not greater than 500 m²; or",
+          "   (ii) J3D15, using house energy rating software; and",
+          "(b) Part J6, for air-conditioning and ventilation; and",
+          "(c) Part J7, for artificial lighting and power"
+        ]
+      },
+      {
+        "condition": "J1P3 - Sole-occupancy unit with Total Area of Habitable Rooms > 500 m²",
+        "description": [
+          "(a) for the net equivalent energy usage—",
+          "   (i) J3D15, using house energy rating software; and",
+          "(b) Part J6, for air-conditioning and ventilation; and",
+          "(c) Part J7, for artificial lighting and power"
+        ]
+      }
+    ],
+    "Class_4": [
+      {
+        "condition": "J1P2 - Class 4 part of a building",
+        "description": [
+          "J3D3, using house energy rating software; or",
+          "the following—",
+          "(a) J3D4, for ceiling fans; and",
+          "(b) (i) J3D5, J3D6, J4D3, J4D7(3), J4D7(4) and Part J5, for general thermal construction; and",
+          "   (ii) J3D7, for roofs; and",
+          "   (iii) J3D8 and J3D11 to J3D13, or J3D9, for walls and glazing; and",
+          "   (iv) J3D10, for floors"
+        ]
+      },
+      {
+        "condition": "J1P3 - Class 4 part with Total Area of Habitable Rooms ≤ 500 m²",
+        "description": [
+          "(a) for the net equivalent energy usage—",
+          "   (i) J3D14, for a Class 4 part with a total floor area not greater than 500 m²; or",
+          "   (ii) J3D15, using house energy rating software; and",
+          "(b) Part J6, for air-conditioning and ventilation; and",
+          "(c) Part J7, for artificial lighting and power"
+        ]
+      },
+      {
+        "condition": "J1P3 - Class 4 part with Total Area of Habitable Rooms > 500 m²",
+        "description": [
+          "(a) for the net equivalent energy usage—",
+          "   (i) J3D15, using house energy rating software; and",
+          "(b) Part J6, for air-conditioning and ventilation; and",
+          "(c) Part J7, for artificial lighting and power"
+        ]
+      }
+    ],
+    "Class_3": [
+      {
+        "condition": "J1P1 - Energy Use Requirements",
+        "description": [
+          "(a) Part J5, for building sealing; and",
+          "(b) Part J6, for air-conditioning and ventilation; and",
+          "(c) Part J7, for artificial lighting and power; and",
+          "(d) Part J8, for heated water supply and swimming pool and spa pool plant; and",
+          "(e) J9D3, for facilities for energy monitoring"
+        ]
+      }
+    ],
+    "Class_5": [
+      {
+        "condition": "J1P1 - Energy Use Requirements",
+        "description": [
+          "(a) Part J5, for building sealing; and",
+          "(b) Part J6, for air-conditioning and ventilation; and",
+          "(c) Part J7, for artificial lighting and power; and",
+          "(d) Part J8, for heated water supply and swimming pool and spa pool plant; and",
+          "(e) J9D3, for facilities for energy monitoring"
+        ]
+      }
+    ],
+    "Class_6": [
+      {
+        "condition": "J1P1 - Energy Use Requirements",
+        "description": [
+          "(a) Part J5, for building sealing; and",
+          "(b) Part J6, for air-conditioning and ventilation; and",
+          "(c) Part J7, for artificial lighting and power; and",
+          "(d) Part J8, for heated water supply and swimming pool and spa pool plant; and",
+          "(e) J9D3, for facilities for energy monitoring"
+        ]
+      }
+    ],
+    "Class_7": [
+      {
+        "condition": "J1P1 - Energy Use Requirements",
+        "description": [
+          "(a) Part J5, for building sealing; and",
+          "(b) Part J6, for air-conditioning and ventilation; and",
+          "(c) Part J7, for artificial lighting and power; and",
+          "(d) Part J8, for heated water supply and swimming pool and spa pool plant; and",
+          "(e) J9D3, for facilities for energy monitoring"
+        ]
+      }
+    ],
+    "Class_8": [
+      {
+        "condition": "J1P1 - Energy Use Requirements",
+        "description": [
+          "(a) Part J5, for building sealing; and",
+          "(b) Part J6, for air-conditioning and ventilation; and",
+          "(c) Part J7, for artificial lighting and power; and",
+          "(d) Part J8, for heated water supply and swimming pool and spa pool plant; and",
+          "(e) J9D3, for facilities for energy monitoring"
+        ]
+      }
+    ],
+    "Class_9a": [
+      {
+        "condition": "J1P1 - Energy Use Requirements",
+        "description": [
+          "(a) Part J5, for building sealing; and",
+          "(b) Part J6, for air-conditioning and ventilation; and",
+          "(c) Part J7, for artificial lighting and power; and",
+          "(d) Part J8, for heated water supply and swimming pool and spa pool plant; and",
+          "(e) J9D3, for facilities for energy monitoring"
+        ]
+      }
+    ],
+    "Class_9b": [
+      {
+        "condition": "J1P1 - Energy Use Requirements",
+        "description": [
+          "(a) Part J5, for building sealing; and",
+          "(b) Part J6, for air-conditioning and ventilation; and",
+          "(c) Part J7, for artificial lighting and power; and",
+          "(d) Part J8, for heated water supply and swimming pool and spa pool plant; and",
+          "(e) J9D3, for facilities for energy monitoring"
+        ]
+      }
+    ],
+    "Class_9c": [
+      {
+        "condition": "J1P1 - Energy Use Requirements",
+        "description": [
+          "(a) Part J5, for building sealing; and",
+          "(b) Part J6, for air-conditioning and ventilation; and",
+          "(c) Part J7, for artificial lighting and power; and",
+          "(d) Part J8, for heated water supply and swimming pool and spa pool plant; and",
+          "(e) J9D3, for facilities for energy monitoring"
+        ]
+      }
+    ],
+    "default": {
+      "condition": "J1P4 - Energy Monitoring Requirements",
+      "description": [
+        "For a Class 2 to 9 building, Performance Requirement J1P4 is satisfied by complying with J9D4 and J9D5"
+      ]
+    }
+  }
+} 
