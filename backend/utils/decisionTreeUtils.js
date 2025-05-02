@@ -430,6 +430,42 @@ const getEnergyEfficiencyRequirements = async (buildingClassification, totalArea
   }
 };
 
+const getJ3D3Requirements = async (climateZone, habitableRoomArea) => {
+  try {
+    // Load the J3D3 data
+    const data = require('../data/decision-trees/j3d3energyratingsw.json');
+    
+    // Get the requirements for the specific climate zone
+    const zoneData = data.requirements.climate_zone_requirements[`Zone_${climateZone}`];
+    if (!zoneData) {
+      throw new Error(`No requirements found for Climate Zone ${climateZone}`);
+    }
+
+    // Determine the area category
+    const areaCategory = habitableRoomArea <= 100 ? "≤ 100 m²" : "> 100 m²";
+    
+    // Find the requirements for the specific area category
+    const requirements = zoneData.conditions.find(
+      condition => condition.habitable_room_area === areaCategory
+    );
+
+    if (!requirements) {
+      throw new Error(`No requirements found for area ${areaCategory} in Climate Zone ${climateZone}`);
+    }
+
+    return {
+      general_requirements: data.requirements.general_requirements,
+      specific_requirements: requirements,
+      thermal_breaks: data.requirements.thermal_breaks,
+      floor_requirements: data.requirements.floor_requirements,
+      building_sealing: data.requirements.building_sealing
+    };
+  } catch (error) {
+    console.error('Error getting J3D3 requirements:', error);
+    throw error;
+  }
+};
+
 module.exports = {
   getBuildingClassification,
   getClimateZoneByLocation,
@@ -443,5 +479,6 @@ module.exports = {
   getEnergyMonitoringRequirements,
   getCeilingFanRequirements,
   getEnergyEfficiencyRequirements,
-  isValidBuildingClass // Export for testing
+  isValidBuildingClass,
+  getJ3D3Requirements
 }; 
