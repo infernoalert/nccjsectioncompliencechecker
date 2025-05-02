@@ -1,0 +1,281 @@
+{
+  "version": "1.0",
+  "last_updated": "2024-05-02",
+  "section": "J3D3",
+  "title": "Reducing heating and cooling loads of a sole-occupancy unit of a Class 2 building or a Class 4 part of a building using house energy rating software",
+  "applicable_building_classes": ["Class_2", "Class_4"],
+  "requirements": {
+    "general_requirements": {
+      "condition": "General - J3D3 (Energy Rating & Related Compliance)",
+      "description": [
+        "Sole-occupancy units must collectively achieve an average energy rating of not less than 7 stars (including separate heating/cooling load limits).",
+        "Sole-occupancy units must individually achieve an energy rating of not less than 6 stars (including separate heating/cooling load limits).",
+        "Compliance required with J3D5 and J3D6 for thermal breaks.",
+        "Compliance required with Table J3D7w for compensating loss of ceiling insulation (if not handled by software).",
+        "Compliance required with J4D3 for general thermal construction.",
+        "Compliance required with J3D10(3), J3D10(5), and J3D10(6) for floor edge insulation.",
+        "Compliance required with Part J5 for building sealing.",
+        "Energy ratings must be achieved using accredited house energy rating software and ABCB Standard load limits."
+      ]
+    },
+    "climate_zone_requirements": {
+      "Zone_1": {
+        "conditions": [
+          {
+            "habitable_room_area": "≤ 100 m²",
+            "requirements": [
+              "Average energy rating: 7 stars minimum",
+              "Individual unit rating: 6 stars minimum",
+              "Compliance with thermal breaks (J3D5, J3D6)",
+              "Compliance with building sealing (Part J5)",
+              "Simplified ventilation requirements"
+            ]
+          },
+          {
+            "habitable_room_area": "> 100 m²",
+            "requirements": [
+              "Average energy rating: 7 stars minimum",
+              "Individual unit rating: 6 stars minimum",
+              "Compliance with thermal breaks (J3D5, J3D6)",
+              "Compliance with building sealing (Part J5)",
+              "Full ventilation requirements",
+              "Additional insulation requirements"
+            ]
+          }
+        ]
+      },
+      "Zone_2": {
+        "conditions": [
+          {
+            "habitable_room_area": "≤ 100 m²",
+            "requirements": [
+              "Average energy rating: 7 stars minimum",
+              "Individual unit rating: 6 stars minimum",
+              "Compliance with thermal breaks (J3D5, J3D6)",
+              "Compliance with building sealing (Part J5)",
+              "Simplified ventilation requirements"
+            ]
+          },
+          {
+            "habitable_room_area": "> 100 m²",
+            "requirements": [
+              "Average energy rating: 7 stars minimum",
+              "Individual unit rating: 6 stars minimum",
+              "Compliance with thermal breaks (J3D5, J3D6)",
+              "Compliance with building sealing (Part J5)",
+              "Full ventilation requirements",
+              "Additional insulation requirements"
+            ]
+          }
+        ]
+      },
+      "Zone_3": {
+        "conditions": [
+          {
+            "habitable_room_area": "≤ 100 m²",
+            "requirements": [
+              "Average energy rating: 7 stars minimum",
+              "Individual unit rating: 6 stars minimum",
+              "Compliance with thermal breaks (J3D5, J3D6)",
+              "Compliance with building sealing (Part J5)",
+              "Simplified ventilation requirements"
+            ]
+          },
+          {
+            "habitable_room_area": "> 100 m²",
+            "requirements": [
+              "Average energy rating: 7 stars minimum",
+              "Individual unit rating: 6 stars minimum",
+              "Compliance with thermal breaks (J3D5, J3D6)",
+              "Compliance with building sealing (Part J5)",
+              "Full ventilation requirements",
+              "Additional insulation requirements"
+            ]
+          }
+        ]
+      },
+      "Zone_4": {
+        "conditions": [
+          {
+            "habitable_room_area": "≤ 100 m²",
+            "requirements": [
+              "Average energy rating: 7 stars minimum",
+              "Individual unit rating: 6 stars minimum",
+              "Compliance with thermal breaks (J3D5, J3D6)",
+              "Compliance with building sealing (Part J5)",
+              "Additional sealing requirements for habitable rooms",
+              "Simplified ventilation requirements"
+            ]
+          },
+          {
+            "habitable_room_area": "> 100 m²",
+            "requirements": [
+              "Average energy rating: 7 stars minimum",
+              "Individual unit rating: 6 stars minimum",
+              "Compliance with thermal breaks (J3D5, J3D6)",
+              "Compliance with building sealing (Part J5)",
+              "Additional sealing requirements for habitable rooms",
+              "Full ventilation requirements",
+              "Enhanced insulation requirements"
+            ]
+          }
+        ]
+      },
+      "Zone_5": {
+        "conditions": [
+          {
+            "habitable_room_area": "≤ 100 m²",
+            "requirements": [
+              "Average energy rating: 7 stars minimum",
+              "Individual unit rating: 6 stars minimum",
+              "Compliance with thermal breaks (J3D5, J3D6)",
+              "Compliance with building sealing (Part J5)",
+              "Additional sealing requirements for habitable rooms",
+              "Simplified ventilation requirements"
+            ]
+          },
+          {
+            "habitable_room_area": "> 100 m²",
+            "requirements": [
+              "Average energy rating: 7 stars minimum",
+              "Individual unit rating: 6 stars minimum",
+              "Compliance with thermal breaks (J3D5, J3D6)",
+              "Compliance with building sealing (Part J5)",
+              "Additional sealing requirements for habitable rooms",
+              "Full ventilation requirements",
+              "Enhanced insulation requirements"
+            ]
+          }
+        ]
+      },
+      "Zone_6": {
+        "conditions": [
+          {
+            "habitable_room_area": "≤ 100 m²",
+            "requirements": [
+              "Average energy rating: 7 stars minimum",
+              "Individual unit rating: 6 stars minimum",
+              "Compliance with thermal breaks (J3D5, J3D6)",
+              "Compliance with building sealing (Part J5)",
+              "Additional sealing requirements for habitable rooms",
+              "Simplified ventilation requirements"
+            ]
+          },
+          {
+            "habitable_room_area": "> 100 m²",
+            "requirements": [
+              "Average energy rating: 7 stars minimum",
+              "Individual unit rating: 6 stars minimum",
+              "Compliance with thermal breaks (J3D5, J3D6)",
+              "Compliance with building sealing (Part J5)",
+              "Additional sealing requirements for habitable rooms",
+              "Full ventilation requirements",
+              "Enhanced insulation requirements"
+            ]
+          }
+        ]
+      },
+      "Zone_7": {
+        "conditions": [
+          {
+            "habitable_room_area": "≤ 100 m²",
+            "requirements": [
+              "Average energy rating: 7 stars minimum",
+              "Individual unit rating: 6 stars minimum",
+              "Compliance with thermal breaks (J3D5, J3D6)",
+              "Compliance with building sealing (Part J5)",
+              "Additional sealing requirements for habitable rooms",
+              "Simplified ventilation requirements"
+            ]
+          },
+          {
+            "habitable_room_area": "> 100 m²",
+            "requirements": [
+              "Average energy rating: 7 stars minimum",
+              "Individual unit rating: 6 stars minimum",
+              "Compliance with thermal breaks (J3D5, J3D6)",
+              "Compliance with building sealing (Part J5)",
+              "Additional sealing requirements for habitable rooms",
+              "Full ventilation requirements",
+              "Enhanced insulation requirements"
+            ]
+          }
+        ]
+      },
+      "Zone_8": {
+        "conditions": [
+          {
+            "habitable_room_area": "≤ 100 m²",
+            "requirements": [
+              "Average energy rating: 7 stars minimum",
+              "Individual unit rating: 6 stars minimum",
+              "Compliance with thermal breaks (J3D5, J3D6)",
+              "Compliance with building sealing (Part J5)",
+              "Additional sealing requirements for habitable rooms",
+              "Simplified ventilation requirements"
+            ]
+          },
+          {
+            "habitable_room_area": "> 100 m²",
+            "requirements": [
+              "Average energy rating: 7 stars minimum",
+              "Individual unit rating: 6 stars minimum",
+              "Compliance with thermal breaks (J3D5, J3D6)",
+              "Compliance with building sealing (Part J5)",
+              "Additional sealing requirements for habitable rooms",
+              "Full ventilation requirements",
+              "Enhanced insulation requirements"
+            ]
+          }
+        ]
+      }
+    },
+    "thermal_breaks": {
+      "roof_thermal_breaks": {
+        "condition": "J3D5 (Roof Thermal Breaks)",
+        "requirements": [
+          "Roofs with metal sheet roofing fixed directly to metal purlins/rafters/battens (with no ceiling lining or lining fixed directly) must have a thermal break (≥ R0.2) installed between roofing and support.",
+          "Does not apply to roofs constructed using insulated sandwich panels."
+        ]
+      },
+      "wall_thermal_breaks": {
+        "condition": "J3D6 (Wall Thermal Breaks)",
+        "requirements": [
+          "Metal-framed envelope walls clad with weatherboards, fibre-cement, metal sheeting etc. (with no wall lining or lining fixed directly to the same frame) must have a thermal break (≥ R0.2) installed at all points of contact between cladding and frame.",
+          "Does not apply to walls constructed using insulated sandwich panels."
+        ]
+      }
+    },
+    "floor_requirements": {
+      "condition": "J3D10 (Floors - Specifics)",
+      "requirements": [
+        "Concrete slab-on-ground with in-slab/in-screed heating/cooling requires R1.0 vertical edge insulation.",
+        "Required edge insulation must be water-resistant and continuous to specified depth.",
+        "Requirement for edge insulation does not apply to in-screed systems solely in bathrooms/amenity areas."
+      ]
+    },
+    "building_sealing": {
+      "base_requirements": {
+        "condition": "Part J5 (Building Sealing - Base Requirements)",
+        "requirements": [
+          "Applies to envelope elements.",
+          "Chimneys/flues for open solid-fuel appliances need dampers.",
+          "Windows/doors forming part of the envelope must be sealed (unless meeting exclusions like AS 2047, fire doors, security doors).",
+          "Seals must use draft protection devices (bottom edge of door) or foam/rubber/fibrous seals (other edges).",
+          "Loading dock entrances to conditioned spaces need rapid roller doors."
+        ]
+      },
+      "space_type_requirements": {
+        "condition": "Part J5 (Building Sealing - Conditional on Space Type)",
+        "requirements": [
+          "Roof lights serving a conditioned space must be sealed (imperforate diffuser, weatherproof seal, or shutter).",
+          "Exhaust fans serving a conditioned space need a sealing device (e.g., self-closing damper).",
+          "Evaporative coolers serving a heated space need a self-closing damper."
+        ]
+      }
+    },
+    "table_j3d7w": {
+      "note": "This table is referenced but not included in the JSON structure. It should be implemented as a separate component in the UI with 8x10 dimensions."
+    }
+  }
+} 

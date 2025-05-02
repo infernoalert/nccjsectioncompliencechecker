@@ -39,6 +39,7 @@ class ReportService {
     this.verificationMethods = null;
     this.energyMonitoring = null;
     this.ceilingFanRequirements = null;
+    this.j3d3Requirements = null;
   }
 
   /**
@@ -47,10 +48,20 @@ class ReportService {
    */
   async generateReport() {
     try {
-      // Base report with project info
       const report = {
-        projectInfo: this.generateProjectInfo(),
+        projectInfo: await this.generateProjectInfo(),
+        buildingClassification: await this.generateBuildingClassificationInfo(),
+        climateZone: await this.generateClimateZoneInfo(),
+        compliancePathway: await this.generateCompliancePathwayInfo(),
+        buildingFabric: await this.generateBuildingFabricInfo(),
+        specialRequirements: await this.generateSpecialRequirementsInfo(),
+        exemptions: await this.generateExemptionsInfo()
       };
+
+      // Add J3D3 requirements for Class_2 and Class_4 buildings
+      if (this.project.buildingType === 'Class_2' || this.project.buildingType === 'Class_4') {
+        report.j3d3Requirements = await this.generateJ3D3Requirements();
+      }
 
       // Add section-specific information based on the requested section
       if (this.section === 'full' || this.section === 'building') {
@@ -117,7 +128,8 @@ class ReportService {
 
       return report;
     } catch (error) {
-      throw new Error(`Error generating report: ${error.message}`);
+      console.error('Error generating report:', error);
+      throw error;
     }
   }
 
@@ -546,6 +558,36 @@ class ReportService {
     } catch (error) {
       return {
         error: `Error getting verification methods: ${error.message}`
+      };
+    }
+  }
+
+  async generateJ3D3Requirements() {
+    try {
+      // Only generate J3D3 requirements for Class_2 and Class_4 buildings
+      if (this.project.buildingType !== 'Class_2' && this.project.buildingType !== 'Class_4') {
+        return null;
+      }
+
+      // Get climate zone from project location
+      const climateZone = await getClimateZoneByLocation(this.project.location);
+      
+      // Get habitable room area from project
+      const habitableRoomArea = this.project.habitableRoomArea || 0;
+
+      this.j3d3Requirements = await getJ3D3Requirements(climateZone, habitableRoomArea);
+
+      return {
+        general_requirements: this.j3d3Requirements.general_requirements,
+        specific_requirements: this.j3d3Requirements.specific_requirements,
+        thermal_breaks: this.j3d3Requirements.thermal_breaks,
+        floor_requirements: this.j3d3Requirements.floor_requirements,
+        building_sealing: this.j3d3Requirements.building_sealing
+      };
+    } catch (error) {
+      console.error('Error generating J3D3 requirements:', error);
+      return {
+        error: `Error generating J3D3 requirements: ${error.message}`
       };
     }
   }
