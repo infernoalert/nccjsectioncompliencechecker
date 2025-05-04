@@ -58,7 +58,7 @@ const ProjectReport = () => {
   };
 
   const renderJ3D3Requirements = () => {
-    if (!report.j3d3Requirements) return null;
+    if (!report?.j3d3Requirements) return null;
 
     return (
       <Box sx={{ mb: 4 }}>
@@ -67,80 +67,90 @@ const ProjectReport = () => {
         </Typography>
         
         {/* General Requirements */}
-        <Box sx={{ mb: 3 }}>
-          <Typography variant="h6" gutterBottom>
-            General Requirements
-          </Typography>
-          <List>
-            {report.j3d3Requirements.general_requirements.description.map((req, index) => (
-              <ListItem key={index}>
-                <ListItemText primary={req} />
-              </ListItem>
-            ))}
-          </List>
-        </Box>
+        {report.j3d3Requirements.general_requirements?.description && (
+          <Box sx={{ mb: 3 }}>
+            <Typography variant="h6" gutterBottom>
+              General Requirements
+            </Typography>
+            <List>
+              {report.j3d3Requirements.general_requirements.description.map((req, index) => (
+                <ListItem key={index}>
+                  <ListItemText primary={req} />
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+        )}
 
         {/* Specific Requirements */}
-        <Box sx={{ mb: 3 }}>
-          <Typography variant="h6" gutterBottom>
-            Specific Requirements
-          </Typography>
-          <List>
-            {report.j3d3Requirements.specific_requirements.requirements.map((req, index) => (
-              <ListItem key={index}>
-                <ListItemText primary={req} />
-              </ListItem>
-            ))}
-          </List>
-        </Box>
+        {report.j3d3Requirements.specific_requirements?.requirements && (
+          <Box sx={{ mb: 3 }}>
+            <Typography variant="h6" gutterBottom>
+              Specific Requirements
+            </Typography>
+            <List>
+              {report.j3d3Requirements.specific_requirements.requirements.map((req, index) => (
+                <ListItem key={index}>
+                  <ListItemText primary={req} />
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+        )}
 
         {/* Thermal Breaks */}
-        <Box sx={{ mb: 3 }}>
-          <Typography variant="h6" gutterBottom>
-            Thermal Breaks
-          </Typography>
-          <List>
-            {Object.values(report.j3d3Requirements.thermal_breaks).map((breakType, index) => (
-              <ListItem key={index}>
-                <ListItemText 
-                  primary={breakType.condition}
-                  secondary={breakType.requirements.join('. ')}
-                />
-              </ListItem>
-            ))}
-          </List>
-        </Box>
+        {report.j3d3Requirements.thermal_breaks && (
+          <Box sx={{ mb: 3 }}>
+            <Typography variant="h6" gutterBottom>
+              Thermal Breaks
+            </Typography>
+            <List>
+              {Object.values(report.j3d3Requirements.thermal_breaks).map((breakType, index) => (
+                <ListItem key={index}>
+                  <ListItemText 
+                    primary={breakType?.condition}
+                    secondary={breakType?.requirements?.join('. ')}
+                  />
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+        )}
 
         {/* Floor Requirements */}
-        <Box sx={{ mb: 3 }}>
-          <Typography variant="h6" gutterBottom>
-            Floor Requirements
-          </Typography>
-          <List>
-            {report.j3d3Requirements.floor_requirements.requirements.map((req, index) => (
-              <ListItem key={index}>
-                <ListItemText primary={req} />
-              </ListItem>
-            ))}
-          </List>
-        </Box>
+        {report.j3d3Requirements.floor_requirements?.requirements && (
+          <Box sx={{ mb: 3 }}>
+            <Typography variant="h6" gutterBottom>
+              Floor Requirements
+            </Typography>
+            <List>
+              {report.j3d3Requirements.floor_requirements.requirements.map((req, index) => (
+                <ListItem key={index}>
+                  <ListItemText primary={req} />
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+        )}
 
         {/* Building Sealing */}
-        <Box sx={{ mb: 3 }}>
-          <Typography variant="h6" gutterBottom>
-            Building Sealing
-          </Typography>
-          <List>
-            {Object.values(report.j3d3Requirements.building_sealing).map((sealingType, index) => (
-              <ListItem key={index}>
-                <ListItemText 
-                  primary={sealingType.condition}
-                  secondary={sealingType.requirements.join('. ')}
-                />
-              </ListItem>
-            ))}
-          </List>
-        </Box>
+        {report.j3d3Requirements.building_sealing && (
+          <Box sx={{ mb: 3 }}>
+            <Typography variant="h6" gutterBottom>
+              Building Sealing
+            </Typography>
+            <List>
+              {Object.values(report.j3d3Requirements.building_sealing).map((sealingType, index) => (
+                <ListItem key={index}>
+                  <ListItemText 
+                    primary={sealingType?.condition}
+                    secondary={sealingType?.requirements?.join('. ')}
+                  />
+                </ListItem>
+              ))}
+            </List>
+          </Box>
+        )}
       </Box>
     );
   };
@@ -559,6 +569,93 @@ const ProjectReport = () => {
                     </Box>
                   )}
 
+                  {/* Elemental Provisions J3 */}
+                  {report.elementalProvisionsJ3 && (
+                    <Box sx={{ mb: 4 }}>
+                      <Typography variant="h5" gutterBottom>
+                        {report.elementalProvisionsJ3.ceilingFan?.title || 'Elemental Provisions for a Sole-Occupancy Unit J3'}
+                      </Typography>
+                      <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                          <Typography variant="subtitle1">Description</Typography>
+                          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                            {report.elementalProvisionsJ3.ceilingFan?.description}
+                          </Typography>
+
+                          {/* General Requirements */}
+                          {report.elementalProvisionsJ3.ceilingFan?.generalRequirements?.map((req, index) => (
+                            <Box key={index} sx={{ mb: 2 }}>
+                              <Typography variant="subtitle1">{req.condition}</Typography>
+                              <List>
+                                {req.description.map((desc, descIndex) => (
+                                  <ListItem key={descIndex}>
+                                    <ListItemText primary={desc} />
+                                  </ListItem>
+                                ))}
+                              </List>
+                            </Box>
+                          ))}
+
+                          {/* Climate Zone Specific Requirements */}
+                          {report.elementalProvisionsJ3.ceilingFan?.climateZoneSpecific && (
+                            <Box sx={{ mb: 2 }}>
+                              <Typography variant="subtitle1">
+                                {report.elementalProvisionsJ3.ceilingFan.climateZoneSpecific.condition}
+                              </Typography>
+                              <List>
+                                {report.elementalProvisionsJ3.ceilingFan.climateZoneSpecific.requirements.map((req, index) => (
+                                  <ListItem key={index}>
+                                    <ListItemText primary={req} />
+                                  </ListItem>
+                                ))}
+                              </List>
+                            </Box>
+                          )}
+
+                          {/* Table J3D4 */}
+                          {report.elementalProvisionsJ3.ceilingFan?.table && (
+                            <Box sx={{ mt: 2 }}>
+                              <Typography variant="subtitle1" gutterBottom>
+                                {report.elementalProvisionsJ3.ceilingFan.table.title}
+                              </Typography>
+                              <TableContainer component={Paper}>
+                                <Table>
+                                  <TableHead>
+                                    <TableRow>
+                                      {report.elementalProvisionsJ3.ceilingFan.table.headers.map((header, index) => (
+                                        <TableCell 
+                                          key={index}
+                                          align={report.elementalProvisionsJ3.ceilingFan.table.format.alignment[index]}
+                                          sx={{ width: report.elementalProvisionsJ3.ceilingFan.table.format.width[index] }}
+                                        >
+                                          {header}
+                                        </TableCell>
+                                      ))}
+                                    </TableRow>
+                                  </TableHead>
+                                  <TableBody>
+                                    {report.elementalProvisionsJ3.ceilingFan.table.rows.map((row, rowIndex) => (
+                                      <TableRow key={rowIndex}>
+                                        {row.map((cell, cellIndex) => (
+                                          <TableCell 
+                                            key={cellIndex}
+                                            align={report.elementalProvisionsJ3.ceilingFan.table.format.alignment[cellIndex]}
+                                          >
+                                            {cell}
+                                          </TableCell>
+                                        ))}
+                                      </TableRow>
+                                    ))}
+                                  </TableBody>
+                                </Table>
+                              </TableContainer>
+                            </Box>
+                          )}
+                        </Grid>
+                      </Grid>
+                    </Box>
+                  )}
+
                   {/* Climate Zone Specific Requirements */}
                   {report.j3d3Requirements.climateZone && (
                     <Box sx={{ mb: 3 }}>
@@ -674,26 +771,6 @@ const ProjectReport = () => {
                   ) : (
                     <Typography variant="body1">No special requirements specified</Typography>
                   )}
-                </Box>
-              )}
-
-              {/* Elemental Provisions J3 */}
-              {report.elementalProvisionsJ3 && (
-                <Box sx={{ mb: 4 }}>
-                  <Typography variant="h5" gutterBottom>
-                    Elemental Provisions for a Sole-Occupancy Unit J3
-                  </Typography>
-                  <Grid container spacing={2}>
-                    <Grid item xs={12}>
-                      <Typography variant="subtitle1">Ceiling Fan Requirements</Typography>
-                      <Typography variant="body1">
-                        {report.elementalProvisionsJ3.ceilingFan.requirement}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        {report.elementalProvisionsJ3.ceilingFan.description}
-                      </Typography>
-                    </Grid>
-                  </Grid>
                 </Box>
               )}
             </Box>

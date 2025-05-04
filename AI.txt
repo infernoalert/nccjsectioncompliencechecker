@@ -571,9 +571,16 @@ The compliance report is organized into four main sections:
      - Only visible for Class_2 and Class_4 buildings
      - Requirements based on climate zone and Total Area of Habitable Rooms
      - Includes general requirements, climate zone specific requirements, and floor area requirements
+   - J3D7 Ceiling Insulation Table
+     - Displays ceiling insulation requirements based on climate zone
+     - Shows minimum R-values for different ceiling types
+   - Elemental Provisions J3 (J3D4 Ceiling Fan Requirements)
+     - Title and description of ceiling fan requirements
+     - General requirements for ceiling fan installation
+     - Climate zone specific requirements
+     - Table J3D4 showing minimum ceiling fan requirements based on room size
    - Building Fabric Specifications
    - Special Requirements & Exemptions
-   - Elemental Provisions J3
 
 3. **Performance Requirement**
    - J1P1: Energy Use
