@@ -358,7 +358,7 @@ const getEnergyMonitoringRequirements = async (floorArea) => {
 const getCeilingFanRequirements = async (buildingClass, climateZone) => {
   try {
     // Get ceiling fan requirements from the modular structure
-    const ceilingFanData = await getSection('ceilingfan-elemental-provisions-j3');
+    const ceilingFanData = await getSection('j3d4ceilingfan');
     if (!ceilingFanData || !ceilingFanData.ceiling_fan_requirements) {
       throw new Error('No ceiling fan requirements data found');
     }

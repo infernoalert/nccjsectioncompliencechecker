@@ -417,14 +417,24 @@ class ReportService {
         };
       }
 
-      // Get ceiling fan requirements
-      this.ceilingFanRequirements = await getCeilingFanRequirements(buildingClassification.classType, climateZone);
+      // Get ceiling fan requirements from the JSON file
+      const ceilingFanData = require('../data/decision-trees/j3d4ceilingfan.json');
+      const requirements = ceilingFanData.j3d4_requirements.Class_2_and_4;
+      
+      // Get climate zone specific requirements
+      const climateZoneRequirements = requirements.climate_zone_specific[climateZone];
+      
+      // Format the requirements
+      const formattedRequirements = {
+        title: requirements.title,
+        description: requirements.description,
+        generalRequirements: requirements.general_requirements,
+        climateZoneSpecific: climateZoneRequirements,
+        table: requirements.tables.TableJ3D4
+      };
       
       return {
-        ceilingFan: {
-          requirement: this.ceilingFanRequirements.requirement,
-          description: `For ${buildingClassification.classType} buildings in Climate Zone ${climateZone}, ${this.ceilingFanRequirements.requirement.toLowerCase()}`
-        }
+        ceilingFan: formattedRequirements
       };
     } catch (error) {
       return {
