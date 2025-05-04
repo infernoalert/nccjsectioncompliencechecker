@@ -9,6 +9,17 @@ exports.register = async (req, res, next) => {
         const { username, email, password, role } = req.body;
         
         console.log('Registration request:', { username, email, role });
+        console.log('ALLOW_ADMIN_REGISTRATION:', process.env.ALLOW_ADMIN_REGISTRATION);
+        console.log('Type of ALLOW_ADMIN_REGISTRATION:', typeof process.env.ALLOW_ADMIN_REGISTRATION);
+
+        // Check if admin registration is allowed
+        if (role === 'admin' && process.env.ALLOW_ADMIN_REGISTRATION !== 'true') {
+            console.log('Admin registration blocked. Value:', process.env.ALLOW_ADMIN_REGISTRATION);
+            return res.status(403).json({
+                success: false,
+                error: 'Forbidden'
+            });
+        }
 
         // Check if user already exists
         const userExists = await User.findOne({ $or: [{ email }, { username }] });
