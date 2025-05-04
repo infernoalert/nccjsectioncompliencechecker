@@ -11,52 +11,70 @@ import {
   Grid
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-import { fetchProjects } from '../store/slices/projectSlice';
+import { getProjects } from '../features/projects/projectSlice';
 
 const UserProject = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { projects, loading, error } = useSelector((state) => state.project);
+  const { projects = [], loading, error } = useSelector((state) => state.projects || {});
   const { token, isAuthenticated } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    console.log('Auth State:', { token, isAuthenticated });
-    if (!isAuthenticated) {
-      console.log('Not authenticated, redirecting to login');
-      navigate('/login');
-      return;
-    }
     if (token) {
       console.log('Fetching projects with token:', token);
-      dispatch(fetchProjects());
+      dispatch(getProjects());
     } else {
       console.log('No token available');
     }
-  }, [dispatch, token, isAuthenticated, navigate]);
-
-  const handleCreateProject = () => {
-    navigate('/projects/new');
-  };
-
-  const handleViewProject = (projectId) => {
-    navigate(`/projects/${projectId}`);
-  };
+  }, [dispatch, token]);
 
   if (!isAuthenticated) {
     return null;
   }
 
+  if (loading) {
+    return (
+      <Container maxWidth="lg">
+        <Box sx={{ mt: 4, mb: 4 }}>
+          <Paper elevation={3} sx={{ p: 4 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
+              <CircularProgress />
+            </Box>
+          </Paper>
+        </Box>
+      </Container>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container maxWidth="lg">
+        <Box sx={{ mt: 4, mb: 4 }}>
+          <Paper elevation={3} sx={{ p: 4 }}>
+            <Typography variant="body1" color="error" sx={{ mb: 3 }}>
+              {typeof error === 'object' ? error.message : error}
+            </Typography>
+          </Paper>
+        </Box>
+      </Container>
+    );
+  }
+
+  const handleCreateProject = () => {
+    navigate('/projects/create');
+  };
+
   return (
     <Container maxWidth="lg">
       <Box sx={{ mt: 4, mb: 4 }}>
         <Paper elevation={3} sx={{ p: 4 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
             <Typography variant="h4" component="h1">
               My Projects
             </Typography>
-            <Button 
-              variant="contained" 
-              color="primary" 
+            <Button
+              variant="contained"
+              color="primary"
               startIcon={<AddIcon />}
               onClick={handleCreateProject}
             >
@@ -64,45 +82,7 @@ const UserProject = () => {
             </Button>
           </Box>
           
-          {error && (
-            <Typography variant="body1" color="error" sx={{ mb: 3 }}>
-              {typeof error === 'object' ? error.message : error}
-            </Typography>
-          )}
-          
-          {loading ? (
-            <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
-              <CircularProgress />
-            </Box>
-          ) : projects && projects.length > 0 ? (
-            <Grid container spacing={3}>
-              {projects.map((project) => (
-                <Grid item xs={12} md={6} lg={4} key={project._id}>
-                  <Paper elevation={2}>
-                    <Box sx={{ p: 2 }}>
-                      <Typography variant="h6" gutterBottom>
-                        {project.name}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        Type: {project.buildingType}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        Status: {project.status || 'Not Started'}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        Last Updated: {new Date(project.updatedAt).toLocaleDateString()}
-                      </Typography>
-                    </Box>
-                    <Box sx={{ display: 'flex', justifyContent: 'flex-end', p: 1 }}>
-                      <Button size="small" onClick={() => handleViewProject(project._id)}>
-                        View Details
-                      </Button>
-                    </Box>
-                  </Paper>
-                </Grid>
-              ))}
-            </Grid>
-          ) : (
+          {projects.length === 0 ? (
             <Box sx={{ textAlign: 'center', p: 4 }}>
               <Typography variant="h6" gutterBottom>
                 No projects found
@@ -120,6 +100,21 @@ const UserProject = () => {
                 Create New Project
               </Button>
             </Box>
+          ) : (
+            <Grid container spacing={3}>
+              {projects.map((project) => (
+                <Grid item xs={12} sm={6} md={4} key={project._id}>
+                  <Paper elevation={2} sx={{ p: 3 }}>
+                    <Typography variant="h6" gutterBottom>
+                      {project.name}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {project.description}
+                    </Typography>
+                  </Paper>
+                </Grid>
+              ))}
+            </Grid>
           )}
         </Paper>
       </Box>

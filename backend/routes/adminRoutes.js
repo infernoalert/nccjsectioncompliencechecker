@@ -1,6 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const { protect, authorize } = require('../middleware/auth');
+const {
+    getUsers,
+    revokeUserAccess,
+    restoreUserAccess
+} = require('../controllers/adminController');
 
 /**
  * @swagger
@@ -156,5 +161,10 @@ router.post('/exemptions', protect, authorize('admin'), async (req, res) => {
   // TODO: Implement exemption creation logic
   res.status(501).json({ message: 'Not implemented yet' });
 });
+
+// User management routes
+router.get('/users', getUsers);
+router.put('/users/:id/revoke', revokeUserAccess);
+router.put('/users/:id/restore', restoreUserAccess);
 
 module.exports = router; 

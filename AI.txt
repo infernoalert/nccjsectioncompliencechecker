@@ -177,6 +177,19 @@ The frontend can be deployed by building the application and serving the static 
 
 ## Recent Changes
 
+### Admin Registration Security
+- Added environment-based control for admin user registration
+- Implemented `ALLOW_ADMIN_REGISTRATION` environment variable
+- Added security check in `authController.js` to prevent unauthorized admin registration
+- Environment variable controls:
+  - Development: `ALLOW_ADMIN_REGISTRATION=true` in `.env.development`
+  - Production: `ALLOW_ADMIN_REGISTRATION=false` in `.env.production`
+- Security features:
+  - Generic error message for unauthorized admin registration attempts
+  - Environment-specific control
+  - Prevents unauthorized admin user creation
+  - Maintains security in production environment
+
 ### J1P2 Calculations for Class_2 and Class_4 Buildings
 - Added J1P2 calculations to the Performance Requirement section of the report
 - Created three JavaScript files in the `backend/data/decision-trees` directory:
