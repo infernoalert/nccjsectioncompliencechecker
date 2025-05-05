@@ -9,6 +9,7 @@ import NewProject from './components/NewProject';
 import ProjectDetails from './components/ProjectDetails';
 import ProjectForm from './components/ProjectForm';
 import ProjectReport from './components/ProjectReport';
+import NotFound from './components/NotFound';
 import Navbar from './components/Navbar';
 import Presentation from './static/Presentation';
 import { useSelector } from 'react-redux';
@@ -103,6 +104,9 @@ function App() {
               </ProtectedRoute>
             }
           />
+
+          {/* 404 Route - Catch all unmatched routes */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
     </ThemeProvider>
