@@ -106,7 +106,8 @@ const ProjectDetails = () => {
                   Project Details
                 </Typography>
                 <Typography variant="body1" paragraph>
-                  <strong>Building Type:</strong> {currentProject.buildingType}
+                  <strong>Building Type:</strong>{' '}
+                  {currentProject.buildingType || 'Not specified'}
                 </Typography>
                 <Typography variant="body1" paragraph>
                   <strong>Building Classification:</strong>{' '}
@@ -128,10 +129,6 @@ const ProjectDetails = () => {
               <CardContent>
                 <Typography variant="h6" gutterBottom>
                   Compliance Information
-                </Typography>
-                <Typography variant="body1" paragraph>
-                  <strong>Compliance Pathway:</strong>{' '}
-                  {currentProject.compliancePathway?.name || 'Not specified'}
                 </Typography>
                 <Typography variant="body1" paragraph>
                   <strong>Last Updated:</strong>{' '}

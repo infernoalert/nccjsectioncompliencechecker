@@ -92,7 +92,6 @@ const ProjectList = () => {
               <TableCell>Name</TableCell>
               <TableCell>Building Class</TableCell>
               <TableCell>Climate Zone</TableCell>
-              <TableCell>Compliance Pathway</TableCell>
               <TableCell>Status</TableCell>
               <TableCell>Last Checked</TableCell>
               <TableCell>Actions</TableCell>
@@ -104,7 +103,6 @@ const ProjectList = () => {
                 <TableCell>{project.name}</TableCell>
                 <TableCell>{project.buildingClassification?.classType?.replace('Class_', '') || 'Not specified'}</TableCell>
                 <TableCell>{project.climateZone?.zoneRange || 'Not specified'}</TableCell>
-                <TableCell>{project.compliancePathway?.name || 'Not specified'}</TableCell>
                 <TableCell>
                   <Chip
                     label={project.complianceResults.status}

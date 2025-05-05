@@ -1,6 +1,5 @@
 const ClimateZone = require('../models/ClimateZone');
 const BuildingFabric = require('../models/BuildingFabric');
-const CompliancePathway = require('../models/CompliancePathway');
 const SpecialRequirement = require('../models/SpecialRequirement');
 const Project = require('../models/Project');
 const { getBuildingClassification } = require('../utils/decisionTreeUtils');
@@ -11,7 +10,6 @@ class ComplianceService {
       const project = await Project.findById(projectId)
         .populate('climateZone')
         .populate('buildingFabric')
-        .populate('compliancePathway')
         .populate('specialRequirements');
 
       if (!project) {

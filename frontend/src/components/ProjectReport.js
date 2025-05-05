@@ -130,15 +130,6 @@ const PDFReport = ({ report }) => (
           </>
         )}
 
-        {/* Compliance Pathway */}
-        {report.compliancePathway && (
-          <>
-            <Text style={styles.sectionTitle}>Compliance Pathway</Text>
-            <Text style={styles.text}>Name: {report.compliancePathway.name}</Text>
-            <Text style={styles.text}>Description: {report.compliancePathway.description}</Text>
-          </>
-        )}
-
         {/* Performance Requirement */}
         <Text style={styles.sectionTitle}>Performance Requirement</Text>
         
@@ -659,21 +650,6 @@ const ProjectReport = () => {
                   )}
                 </Grid>
               </Box>
-
-              {/* Compliance Pathway Subsection */}
-              {report.compliancePathway && (
-                <Box sx={{ mb: 4 }}>
-                  <Typography variant="h5" gutterBottom>
-                    Compliance Pathway
-                  </Typography>
-                  <Typography variant="body1">
-                    {report.compliancePathway.name}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                    {report.compliancePathway.description}
-                  </Typography>
-                </Box>
-              )}
             </Box>
 
             <Divider sx={{ my: 3 }} />
@@ -685,57 +661,32 @@ const ProjectReport = () => {
               </Typography>
 
               {/* Energy Use Requirements Subsection */}
-              {report.energyUse ? (
-                <Box sx={{ mb: 4 }}>
+              {report.energyUse && (
+                <Box sx={{ mb: 3 }}>
                   <Typography variant="h5" gutterBottom>
                     J1P1: Energy Use
+                  </Typography>
+                  <Typography variant="body1" paragraph>
+                    {report.energyUse.description}
                   </Typography>
                   {report.energyUse.requirements ? (
-                    // Display energy efficiency requirements for Class_2 and Class_4 buildings
-                    <Grid container spacing={2}>
-                      <Grid item xs={12}>
-                        <Typography variant="subtitle1">Description</Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          {report.energyUse.description}
+                    report.energyUse.requirements.map((requirement, index) => (
+                      <Box key={index} sx={{ mb: 2 }}>
+                        <Typography variant="subtitle1">
+                          Condition: {requirement.condition}
                         </Typography>
-                      </Grid>
-                      {report.energyUse.requirements.map((requirement, index) => (
-                        <Grid item xs={12} key={index}>
-                          <Typography variant="subtitle1">{requirement.condition}</Typography>
-                          {requirement.description.map((line, lineIndex) => (
-                            <Typography key={lineIndex} variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                              {line}
-                            </Typography>
-                          ))}
-                        </Grid>
-                      ))}
-                    </Grid>
+                        {requirement.description.map((line, lineIndex) => (
+                          <Typography key={lineIndex} variant="body2" color="text.secondary">
+                            {line}
+                          </Typography>
+                        ))}
+                      </Box>
+                    ))
                   ) : (
-                    // Display J1P1 requirements for other building classes
-                    <Grid container spacing={2}>
-                      <Grid item xs={12}>
-                        <Typography variant="subtitle1">Energy Use Limit</Typography>
-                        <Typography variant="body1">
-                          {report.energyUse.limit}
-                        </Typography>
-                      </Grid>
-                      <Grid item xs={12}>
-                        <Typography variant="subtitle1">Description</Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          {report.energyUse.description}
-                        </Typography>
-                      </Grid>
-                    </Grid>
+                    <Typography variant="body1">
+                      Energy Use Limit: {report.energyUse.limit}
+                    </Typography>
                   )}
-                </Box>
-              ) : (
-                <Box sx={{ mb: 4 }}>
-                  <Typography variant="h5" gutterBottom>
-                    J1P1: Energy Use
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Not applicable to this building type.
-                  </Typography>
                 </Box>
               )}
 

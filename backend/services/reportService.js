@@ -1,6 +1,5 @@
 const Project = require('../models/Project');
 const ClimateZone = require('../models/ClimateZone');
-const CompliancePathway = require('../models/CompliancePathway');
 const BuildingFabric = require('../models/BuildingFabric');
 const SpecialRequirement = require('../models/SpecialRequirement');
 const SectionJPart = require('../models/SectionJPart');
@@ -8,7 +7,6 @@ const ExemptionAndConcession = require('../models/ExemptionAndConcession');
 const {
   getBuildingClassification,
   getClimateZoneByLocation,
-  getCompliancePathway,
   getSpecialRequirements,
   getExemptions,
   getEnergyUseRequirements,
@@ -32,7 +30,6 @@ class ReportService {
     this.section = section;
     this.buildingClassification = null;
     this.climateZone = null;
-    this.compliancePathway = null;
     this.specialRequirements = null;
     this.exemptions = null;
     this.energyUse = null;
@@ -52,7 +49,6 @@ class ReportService {
         projectInfo: await this.generateProjectInfo(),
         buildingClassification: await this.generateBuildingClassificationInfo(),
         climateZone: await this.generateClimateZoneInfo(),
-        compliancePathway: await this.generateCompliancePathwayInfo(),
         buildingFabric: await this.generateBuildingFabricInfo(),
         specialRequirements: await this.generateSpecialRequirementsInfo(),
         exemptions: await this.generateExemptionsInfo()
@@ -67,10 +63,6 @@ class ReportService {
       if (this.section === 'full' || this.section === 'building') {
         report.buildingClassification = await this.generateBuildingClassificationInfo();
         report.climateZone = await this.generateClimateZoneInfo();
-      }
-
-      if (this.section === 'full' || this.section === 'compliance') {
-        report.compliancePathway = await this.generateCompliancePathwayInfo();
       }
 
       if (this.section === 'full' || this.section === 'fabric') {
@@ -215,30 +207,6 @@ class ReportService {
     } catch (error) {
       return {
         error: `Error getting climate zone: ${error.message}`
-      };
-    }
-  }
-
-  /**
-   * Generate compliance pathway information
-   * @returns {Promise<Object>} - Compliance pathway information
-   */
-  async generateCompliancePathwayInfo() {
-    try {
-      const buildingClassification = await getBuildingClassification(this.project.buildingType);
-      const climateZone = await getClimateZoneByLocation(this.project.location);
-      
-      // Pass only the classType property, not the entire object
-      this.compliancePathway = await getCompliancePathway(buildingClassification.classType, climateZone);
-      
-      return {
-        pathway: this.compliancePathway.pathway,
-        description: this.compliancePathway.description,
-        requirements: this.compliancePathway.requirements
-      };
-    } catch (error) {
-      return {
-        error: `Error getting compliance pathway: ${error.message}`
       };
     }
   }

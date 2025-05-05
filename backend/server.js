@@ -50,7 +50,6 @@ let dbConnection = null;
 const userRoutes = require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
 const climateZoneRoutes = require('./routes/climateZoneRoutes');
-const compliancePathwayRoutes = require('./routes/compliancePathwayRoutes');
 const projectRoutes = require('./routes/projectRoutes');
 const complianceCalculatorRoutes = require('./routes/complianceCalculatorRoutes');
 const referenceDataRoutes = require('./routes/referenceDataRoutes');
@@ -108,7 +107,6 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
 app.use('/api/users', userRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/climate-zones', climateZoneRoutes);
-app.use('/api/compliance-pathways', compliancePathwayRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api', complianceCalculatorRoutes);
 app.use('/api', referenceDataRoutes);

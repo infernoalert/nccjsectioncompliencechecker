@@ -102,18 +102,6 @@ const projectSchema = new mongoose.Schema({
       }
     }]
   },
-  compliancePathway: {
-    type: {
-      type: String,
-      enum: ['performance', 'prescriptive', 'deemed_to_satisfy']
-    },
-    description: String,
-    status: {
-      type: String,
-      enum: ['pending', 'compliant', 'non_compliant'],
-      default: 'pending'
-    }
-  },
   complianceStatus: {
     type: String,
     enum: ['pending', 'compliant', 'non_compliant'],

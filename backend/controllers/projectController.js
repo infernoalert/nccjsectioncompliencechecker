@@ -2,7 +2,6 @@ const Project = require('../models/Project');
 const ClimateZone = require('../models/ClimateZone');
 const BuildingFabric = require('../models/BuildingFabric');
 const SpecialRequirement = require('../models/SpecialRequirement');
-const CompliancePathway = require('../models/CompliancePathway');
 const { validateProject } = require('../utils/validation');
 const { getBuildingClassification, getClimateZoneByLocation } = require('../utils/decisionTreeUtils');
 const asyncHandler = require('express-async-handler');
@@ -19,8 +18,7 @@ exports.getProjects = asyncHandler(async (req, res) => {
   const projects = await Project.find({ owner: req.user.id })
     .populate('climateZone')
     .populate('buildingFabric')
-    .populate('specialRequirements')
-    .populate('compliancePathway');
+    .populate('specialRequirements');
   res.json({
     success: true,
     data: projects
@@ -37,8 +35,7 @@ exports.getProject = asyncHandler(async (req, res) => {
   })
     .populate('climateZone')
     .populate('buildingFabric')
-    .populate('specialRequirements')
-    .populate('compliancePathway');
+    .populate('specialRequirements');
 
   if (!project) {
     return res.status(404).json({

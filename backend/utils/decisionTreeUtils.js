@@ -106,45 +106,6 @@ const getClimateZoneByLocation = (location) => {
 };
 
 /**
- * Get compliance pathway requirements
- * @param {string} buildingClassification - The building classification
- * @param {string} climateZone - The climate zone
- * @returns {Promise<Object>} The compliance pathway requirements
- */
-const getCompliancePathway = async (buildingClassification, climateZone) => {
-  try {
-    // Validate building class type
-    if (!isValidBuildingClass(buildingClassification)) {
-      throw new Error(`Invalid building class type: ${buildingClassification}`);
-    }
-
-    // Get compliance pathways from the modular structure
-    const pathwaysData = await getSection('compliancePathways');
-    if (!pathwaysData || !pathwaysData.compliancePathways) {
-      throw new Error('No compliance pathways data found');
-    }
-
-    const pathways = pathwaysData.compliancePathways[buildingClassification];
-    if (!pathways) {
-      throw new Error(`No compliance pathways found for building class: ${buildingClassification}`);
-    }
-
-    // Determine which zone range the climate zone falls into
-    const zoneRange = climateZone <= 3 ? 'Zones_1_3' : 'Zones_4_8';
-    const pathway = pathways[zoneRange];
-    
-    if (!pathway) {
-      throw new Error(`No compliance pathway found for ${buildingClassification} in ${zoneRange}`);
-    }
-
-    return pathway;
-  } catch (error) {
-    console.error(`Error getting compliance pathway for ${buildingClassification} in ${climateZone}:`, error);
-    throw error;
-  }
-};
-
-/**
  * Get special requirements for a building
  * @param {string} buildingClassification - The building classification
  * @returns {Promise<Array>} List of special requirements
@@ -220,20 +181,6 @@ const getClimateZoneRequirements = (classType, zoneRange) => {
   }
   
   return buildingClass.climate_zones[zoneRange] || null;
-};
-
-/**
- * Get compliance pathways from the decision tree
- * @param {string} classType - The building class type (e.g., 'Class_5')
- * @returns {Array|null} - The compliance pathways or null if not found
- */
-const getCompliancePathways = (classType) => {
-  const buildingClass = getBuildingClassification(classType);
-  if (!buildingClass) {
-    return null;
-  }
-  
-  return buildingClass.compliance_pathways || null;
 };
 
 /**
@@ -477,10 +424,8 @@ const getJ3D3Requirements = async (buildingClass, location) => {
 module.exports = {
   getBuildingClassification,
   getClimateZoneByLocation,
-  getCompliancePathway,
   getSpecialRequirements,
   getClimateZoneRequirements,
-  getCompliancePathways,
   getExemptions,
   getEnergyUseRequirements,
   getVerificationMethods,

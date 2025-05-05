@@ -9,8 +9,7 @@ const projectSchema = Joi.object({
   totalAreaOfHabitableRooms: Joi.number().min(0).allow(null),
   climateZone: Joi.string().hex().length(24),
   buildingFabric: Joi.string().hex().length(24),
-  specialRequirements: Joi.array().items(Joi.string().hex().length(24)),
-  compliancePathway: Joi.string().hex().length(24)
+  specialRequirements: Joi.array().items(Joi.string().hex().length(24))
 });
 
 const validateProject = (projectData) => {
