@@ -22,6 +22,9 @@ import {
   ListItemText,
 } from '@mui/material';
 import { fetchProject, generateReport } from '../store/slices/projectSlice';
+import { Document, Page, Text, View, StyleSheet, PDFViewer } from '@react-pdf/renderer';
+import PrintIcon from '@mui/icons-material/Print';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 
 /**
  * ProjectReport Component
@@ -38,12 +41,318 @@ import { fetchProject, generateReport } from '../store/slices/projectSlice';
  * 
  * The report can be viewed on screen or downloaded as a PDF (future enhancement).
  */
+
+// PDF Styles
+const styles = StyleSheet.create({
+  page: {
+    padding: 30,
+    fontFamily: 'Helvetica',
+  },
+  title: {
+    fontSize: 24,
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  section: {
+    marginBottom: 20,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    marginBottom: 10,
+  },
+  subsectionTitle: {
+    fontSize: 16,
+    marginBottom: 8,
+  },
+  text: {
+    fontSize: 12,
+    marginBottom: 5,
+  },
+  table: {
+    display: 'table',
+    width: 'auto',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderRightWidth: 0,
+    borderBottomWidth: 0,
+  },
+  tableRow: {
+    margin: 'auto',
+    flexDirection: 'row',
+  },
+  tableCol: {
+    width: '25%',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    borderLeftWidth: 0,
+    borderTopWidth: 0,
+  },
+  tableCell: {
+    margin: 'auto',
+    marginTop: 5,
+    fontSize: 10,
+  },
+});
+
+// PDF Document Component
+const PDFReport = ({ report }) => (
+  <Document>
+    <Page size="A4" style={styles.page}>
+      <View style={styles.section}>
+        <Text style={styles.title}>NCC Section J Compliance Report</Text>
+        <Text style={styles.text}>Generated on {new Date().toLocaleDateString()}</Text>
+        
+        {/* Project Information */}
+        <Text style={styles.sectionTitle}>Project Information</Text>
+        <Text style={styles.text}>Project Name: {report.projectInfo.name}</Text>
+        <Text style={styles.text}>Building Type: {report.projectInfo.buildingType}</Text>
+        <Text style={styles.text}>Location: {report.projectInfo.location}</Text>
+        <Text style={styles.text}>Floor Area: {report.projectInfo.floorArea} m²</Text>
+        <Text style={styles.text}>
+          Total Area of Habitable Rooms: {report.projectInfo.totalAreaOfHabitableRooms || 'Not applicable'} m²
+        </Text>
+
+        {/* Building Classification & Climate Zone */}
+        <Text style={styles.sectionTitle}>Building Classification & Climate Zone</Text>
+        <Text style={styles.text}>Building Classification: {report.buildingClassification.classType}</Text>
+        <Text style={styles.text}>Description: {report.buildingClassification.description}</Text>
+        <Text style={styles.text}>Climate Zone: {report.climateZone.name}</Text>
+        <Text style={styles.text}>Description: {report.climateZone.description}</Text>
+
+        {/* Climate Data for Class_2 and Class_4 buildings */}
+        {(report.buildingClassification.classType === 'Class_2' || 
+          report.buildingClassification.classType === 'Class_4') && 
+          report.climateZone.annualHeatingDegreeHours && (
+          <>
+            <Text style={styles.text}>Annual Heating Degree Hours: {report.climateZone.annualHeatingDegreeHours}</Text>
+            <Text style={styles.text}>Annual Cooling Degree Hours: {report.climateZone.annualCoolingDegreeHours}</Text>
+            <Text style={styles.text}>Annual Dehumidification Gram Hours: {report.climateZone.annualDehumidificationGramHours}</Text>
+          </>
+        )}
+
+        {/* Compliance Pathway */}
+        {report.compliancePathway && (
+          <>
+            <Text style={styles.sectionTitle}>Compliance Pathway</Text>
+            <Text style={styles.text}>Name: {report.compliancePathway.name}</Text>
+            <Text style={styles.text}>Description: {report.compliancePathway.description}</Text>
+          </>
+        )}
+
+        {/* Performance Requirement */}
+        <Text style={styles.sectionTitle}>Performance Requirement</Text>
+        
+        {/* Energy Use Requirements */}
+        {report.energyUse && (
+          <>
+            <Text style={styles.subsectionTitle}>J1P1: Energy Use</Text>
+            <Text style={styles.text}>Description: {report.energyUse.description}</Text>
+            {report.energyUse.requirements ? (
+              report.energyUse.requirements.map((requirement, index) => (
+                <View key={index} style={styles.section}>
+                  <Text style={styles.text}>Condition: {requirement.condition}</Text>
+                  {requirement.description.map((line, lineIndex) => (
+                    <Text key={lineIndex} style={styles.text}>{line}</Text>
+                  ))}
+                </View>
+              ))
+            ) : (
+              <Text style={styles.text}>Energy Use Limit: {report.energyUse.limit}</Text>
+            )}
+          </>
+        )}
+
+        {/* J1P2 Calculations */}
+        {report.j1p2calc && (
+          <>
+            <Text style={styles.subsectionTitle}>J1P2: Thermal Energy Load Assessment</Text>
+            {Object.entries(report.j1p2calc).map(([key, value]) => (
+              <View key={key} style={styles.section}>
+                <Text style={styles.text}>
+                  {key.replace(/([A-Z])/g, ' $1').trim()}: {value.description}
+                </Text>
+                <Text style={styles.text}>Value: {value.descriptionValue}</Text>
+              </View>
+            ))}
+          </>
+        )}
+
+        {/* J1P3 Energy Usage */}
+        {report.j1p3energyusage && (
+          <>
+            <Text style={styles.subsectionTitle}>{report.j1p3energyusage.title}</Text>
+            {report.j1p3energyusage.description.map((line, index) => (
+              <Text key={index} style={styles.text}>{line}</Text>
+            ))}
+          </>
+        )}
+
+        {/* J1P4 EVSE */}
+        {report.j1p4evse && (
+          <>
+            <Text style={styles.subsectionTitle}>{report.j1p4evse.title}</Text>
+            {report.j1p4evse.description.map((line, index) => (
+              <Text key={index} style={styles.text}>{line}</Text>
+            ))}
+          </>
+        )}
+
+        {/* Verification Methods */}
+        {report.verificationMethods && (
+          <>
+            <Text style={styles.subsectionTitle}>Verification Methods</Text>
+            {report.verificationMethods.methods.map((method, index) => (
+              <View key={index} style={styles.section}>
+                <Text style={styles.text}>Condition: {method.condition}</Text>
+                {method.description.map((line, lineIndex) => (
+                  <Text key={lineIndex} style={styles.text}>{line}</Text>
+                ))}
+              </View>
+            ))}
+          </>
+        )}
+
+        {/* DTS - Deemed-to-Satisfy */}
+        <Text style={styles.sectionTitle}>DTS - Deemed-to-Satisfy</Text>
+
+        {/* Building Fabric */}
+        {report.buildingFabric && (
+          <>
+            <Text style={styles.subsectionTitle}>Building Fabric Specifications</Text>
+            <View style={styles.table}>
+              <View style={styles.tableRow}>
+                <View style={styles.tableCol}>
+                  <Text style={styles.tableCell}>Component</Text>
+                </View>
+                <View style={styles.tableCol}>
+                  <Text style={styles.tableCell}>Specification</Text>
+                </View>
+                <View style={styles.tableCol}>
+                  <Text style={styles.tableCell}>Compliance Status</Text>
+                </View>
+              </View>
+              {Object.entries(report.buildingFabric).map(([component, details]) => (
+                <View key={component} style={styles.tableRow}>
+                  <View style={styles.tableCol}>
+                    <Text style={styles.tableCell}>{component}</Text>
+                  </View>
+                  <View style={styles.tableCol}>
+                    <Text style={styles.tableCell}>{details.specification}</Text>
+                  </View>
+                  <View style={styles.tableCol}>
+                    <Text style={styles.tableCell}>{details.compliant ? 'Compliant' : 'Non-compliant'}</Text>
+                  </View>
+                </View>
+              ))}
+            </View>
+          </>
+        )}
+
+        {/* Special Requirements */}
+        {report.specialRequirements && (
+          <>
+            <Text style={styles.subsectionTitle}>Special Requirements & Exemptions</Text>
+            {report.specialRequirements.length > 0 ? (
+              report.specialRequirements.map((req, index) => (
+                <View key={index} style={styles.section}>
+                  <Text style={styles.text}>Name: {req.name}</Text>
+                  <Text style={styles.text}>Description: {req.description}</Text>
+                </View>
+              ))
+            ) : (
+              <Text style={styles.text}>No special requirements specified</Text>
+            )}
+          </>
+        )}
+
+        {/* Exemptions */}
+        {report.exemptions && (
+          <>
+            <Text style={styles.subsectionTitle}>Exemptions</Text>
+            {report.exemptions.exemptions && report.exemptions.exemptions.length > 0 ? (
+              <>
+                <Text style={styles.text}>{report.exemptions.message}</Text>
+                <View style={styles.table}>
+                  <View style={styles.tableRow}>
+                    <View style={styles.tableCol}>
+                      <Text style={styles.tableCell}>Exemption</Text>
+                    </View>
+                    <View style={styles.tableCol}>
+                      <Text style={styles.tableCell}>Description</Text>
+                    </View>
+                    <View style={styles.tableCol}>
+                      <Text style={styles.tableCell}>Conditions</Text>
+                    </View>
+                  </View>
+                  {report.exemptions.exemptions.map((exemption, index) => (
+                    <View key={index} style={styles.tableRow}>
+                      <View style={styles.tableCol}>
+                        <Text style={styles.tableCell}>{exemption.name}</Text>
+                      </View>
+                      <View style={styles.tableCol}>
+                        <Text style={styles.tableCell}>{exemption.description || 'No description available'}</Text>
+                      </View>
+                      <View style={styles.tableCol}>
+                        <Text style={styles.tableCell}>{exemption.conditions || exemption.threshold || 'No specific conditions'}</Text>
+                      </View>
+                    </View>
+                  ))}
+                </View>
+              </>
+            ) : (
+              <Text style={styles.text}>No exemptions specified</Text>
+            )}
+          </>
+        )}
+
+        {/* Documentation */}
+        {report.documentation && (
+          <>
+            <Text style={styles.subsectionTitle}>Documentation</Text>
+            {report.documentation.length > 0 ? (
+              <View style={styles.table}>
+                <View style={styles.tableRow}>
+                  <View style={styles.tableCol}>
+                    <Text style={styles.tableCell}>Document Name</Text>
+                  </View>
+                  <View style={styles.tableCol}>
+                    <Text style={styles.tableCell}>Type</Text>
+                  </View>
+                  <View style={styles.tableCol}>
+                    <Text style={styles.tableCell}>Status</Text>
+                  </View>
+                </View>
+                {report.documentation.map((doc, index) => (
+                  <View key={index} style={styles.tableRow}>
+                    <View style={styles.tableCol}>
+                      <Text style={styles.tableCell}>{doc.name}</Text>
+                    </View>
+                    <View style={styles.tableCol}>
+                      <Text style={styles.tableCell}>{doc.type}</Text>
+                    </View>
+                    <View style={styles.tableCol}>
+                      <Text style={styles.tableCell}>{doc.status === 'provided' ? 'Provided' : 'Pending'}</Text>
+                    </View>
+                  </View>
+                ))}
+              </View>
+            ) : (
+              <Text style={styles.text}>No documentation required</Text>
+            )}
+          </>
+        )}
+      </View>
+    </Page>
+  </Document>
+);
+
 const ProjectReport = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
   const { currentProject, report, loading, error } = useSelector((state) => state.project);
+  const [showPDF, setShowPDF] = useState(false);
   
   // Get section from URL query params
   const queryParams = new URLSearchParams(location.search);
@@ -55,6 +364,18 @@ const ProjectReport = () => {
 
   const handleGenerateReport = () => {
     dispatch(generateReport({ id, section }));
+  };
+
+  const handlePrint = () => {
+    window.print();
+  };
+
+  const handleExportPDF = () => {
+    setShowPDF(true);
+  };
+
+  const handleClosePDF = () => {
+    setShowPDF(false);
   };
 
   const renderJ3D3Requirements = () => {
@@ -190,15 +511,59 @@ const ProjectReport = () => {
           <Typography variant="subtitle1" color="text.secondary">
             Generated on {new Date().toLocaleDateString()}
           </Typography>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleGenerateReport}
-            sx={{ mt: 2 }}
-          >
-            Generate Report
-          </Button>
+          <Box sx={{ mt: 2, display: 'flex', gap: 2 }}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleGenerateReport}
+            >
+              Generate Report
+            </Button>
+            <Button
+              variant="outlined"
+              color="primary"
+              startIcon={<PrintIcon />}
+              onClick={handlePrint}
+            >
+              Print Report
+            </Button>
+            <Button
+              variant="outlined"
+              color="primary"
+              startIcon={<PictureAsPdfIcon />}
+              onClick={handleExportPDF}
+            >
+              Download PDF
+            </Button>
+          </Box>
         </Box>
+
+        {/* PDF Viewer Modal */}
+        {showPDF && report && (
+          <Box
+            sx={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: 'rgba(0,0,0,0.5)',
+              zIndex: 1300,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Box sx={{ width: '90%', height: '90%', bgcolor: 'white', p: 2 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
+                <Button onClick={handleClosePDF}>Close</Button>
+              </Box>
+              <PDFViewer style={{ width: '100%', height: '90%' }}>
+                <PDFReport report={report} />
+              </PDFViewer>
+            </Box>
+          </Box>
+        )}
 
         <Divider sx={{ my: 3 }} />
 
