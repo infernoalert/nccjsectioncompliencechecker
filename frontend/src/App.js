@@ -12,6 +12,8 @@ import ProjectReport from './components/ProjectReport';
 import NotFound from './components/NotFound';
 import Navbar from './components/Navbar';
 import Presentation from './static/Presentation';
+import UserList from './components/UserList';
+import CreateUser from './components/CreateUser';
 import { useSelector } from 'react-redux';
 import './styles/print.css';
 
@@ -28,9 +30,18 @@ const theme = createTheme({
 });
 
 // Protected Route component
-const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated } = useSelector((state) => state.auth);
-  return isAuthenticated ? children : <Navigate to="/login" />;
+const ProtectedRoute = ({ children, roles = [] }) => {
+  const { isAuthenticated, user } = useSelector((state) => state.auth);
+  
+  if (!isAuthenticated) {
+    return <Navigate to="/login" />;
+  }
+
+  if (roles.length > 0 && !roles.includes(user.role)) {
+    return <Navigate to="/" />;
+  }
+
+  return children;
 };
 
 function App() {
@@ -101,6 +112,22 @@ function App() {
             element={
               <ProtectedRoute>
                 <div>Dashboard (Coming Soon)</div>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/users"
+            element={
+              <ProtectedRoute roles={['admin']}>
+                <UserList />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/users/new"
+            element={
+              <ProtectedRoute roles={['admin']}>
+                <CreateUser />
               </ProtectedRoute>
             }
           />

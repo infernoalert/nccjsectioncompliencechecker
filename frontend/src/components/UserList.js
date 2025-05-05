@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchUsers } from '../store/slices/userSlice';
+import { fetchUsers, deleteUser } from '../store/slices/userSlice';
 import {
     Table,
     TableBody,
@@ -11,8 +11,11 @@ import {
     Paper,
     Typography,
     CircularProgress,
-    Alert
+    Alert,
+    IconButton,
+    Box
 } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const UserList = () => {
     const dispatch = useDispatch();
@@ -21,6 +24,12 @@ const UserList = () => {
     useEffect(() => {
         dispatch(fetchUsers());
     }, [dispatch]);
+
+    const handleDelete = (userId) => {
+        if (window.confirm('Are you sure you want to delete this user?')) {
+            dispatch(deleteUser(userId));
+        }
+    };
 
     if (loading) {
         return <CircularProgress />;
@@ -31,7 +40,7 @@ const UserList = () => {
     }
 
     return (
-        <div>
+        <Box sx={{ p: 3 }}>
             <Typography variant="h4" gutterBottom>
                 Users
             </Typography>
@@ -43,6 +52,7 @@ const UserList = () => {
                             <TableCell>Email</TableCell>
                             <TableCell>Role</TableCell>
                             <TableCell>Created At</TableCell>
+                            <TableCell>Actions</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -54,12 +64,21 @@ const UserList = () => {
                                 <TableCell>
                                     {new Date(user.createdAt).toLocaleDateString()}
                                 </TableCell>
+                                <TableCell>
+                                    <IconButton 
+                                        onClick={() => handleDelete(user._id)}
+                                        color="error"
+                                        size="small"
+                                    >
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
             </TableContainer>
-        </div>
+        </Box>
     );
 };
 
