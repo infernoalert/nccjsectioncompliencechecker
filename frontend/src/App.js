@@ -12,6 +12,7 @@ import ProjectReport from './components/ProjectReport';
 import Navbar from './components/Navbar';
 import Presentation from './static/Presentation';
 import { useSelector } from 'react-redux';
+import './styles/print.css';
 
 // Create a theme instance
 const theme = createTheme({
