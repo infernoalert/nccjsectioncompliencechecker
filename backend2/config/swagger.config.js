@@ -7,31 +7,27 @@ const options = {
       title: 'NCC Compliance Checker API',
       version: '1.0.0',
       description: 'API documentation for NCC Compliance Checker',
-      contact: {
-        name: 'API Support',
-        email: 'support@example.com'
-      }
     },
     servers: [
       {
         url: 'http://localhost:5000',
-        description: 'Development server'
-      }
+        description: 'Development server',
+      },
     ],
     components: {
       securitySchemes: {
         bearerAuth: {
           type: 'http',
           scheme: 'bearer',
-          bearerFormat: 'JWT'
-        }
-      }
+          bearerFormat: 'JWT',
+        },
+      },
     },
     security: [{
-      bearerAuth: []
-    }]
+      bearerAuth: [],
+    }],
   },
-  apis: ['./routes/*.js', './models/*.js'] // Path to the API docs
+  apis: ['./routes/*.js'], // Path to the API docs
 };
 
 const specs = swaggerJsdoc(options);

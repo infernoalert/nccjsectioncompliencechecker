@@ -6,25 +6,14 @@ const projectSchema = new mongoose.Schema({
     required: [true, 'Project name is required'],
     trim: true
   },
-  location: {
-    state: {
-      type: String,
-      required: [true, 'State is required']
-    },
-    postcode: {
-      type: String,
-      required: [true, 'Postcode is required']
-    },
-    suburb: {
-      type: String,
-      required: [true, 'Suburb is required']
-    }
-  },
-  buildingClass: {
+  buildingType: {
     type: String,
-    required: [true, 'Building class is required'],
-    enum: ['Class_1', 'Class_2', 'Class_3', 'Class_4', 'Class_5', 
-           'Class_6', 'Class_7', 'Class_8', 'Class_9', 'Class_10']
+    required: [true, 'Building type is required'],
+    enum: ['Class_1', 'Class_2', 'Class_3', 'Class_4', 'Class_5', 'Class_6', 'Class_7', 'Class_8', 'Class_9', 'Class_10']
+  },
+  location: {
+    type: String,
+    required: [true, 'Location is required']
   },
   climateZone: {
     type: String,
@@ -32,27 +21,23 @@ const projectSchema = new mongoose.Schema({
   },
   totalArea: {
     type: Number,
-    required: [true, 'Total area is required'],
-    min: [0, 'Total area must be positive']
+    required: [true, 'Total area is required']
   },
-  totalAreaHabitableRooms: {
+  totalHabitableArea: {
     type: Number,
-    required: [true, 'Total area of habitable rooms is required'],
-    min: [0, 'Total area of habitable rooms must be positive']
+    required: [true, 'Total habitable area is required']
   },
-  annualHeatingDegreeHours: {
-    type: Number,
-    required: [true, 'Annual heating degree hours is required']
+  buildingFabric: {
+    type: mongoose.Schema.Types.Mixed,
+    default: {}
   },
-  annualCoolingDegreeHours: {
-    type: Number,
-    required: [true, 'Annual cooling degree hours is required']
-  },
-  annualDehumidificationGramHours: {
-    type: Number,
-    required: [true, 'Annual dehumidification gram hours is required']
-  },
-  createdBy: {
+  specialRequirements: [{
+    type: String
+  }],
+  exemptions: [{
+    type: String
+  }],
+  user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true
@@ -69,7 +54,11 @@ const projectSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Add index for efficient querying
-projectSchema.index({ buildingClass: 1, climateZone: 1 });
+// Add indexes for frequently queried fields
+projectSchema.index({ user: 1 });
+projectSchema.index({ buildingType: 1 });
+projectSchema.index({ climateZone: 1 });
 
-module.exports = mongoose.model('Project', projectSchema); 
+const Project = mongoose.model('Project', projectSchema);
+
+module.exports = Project; 
