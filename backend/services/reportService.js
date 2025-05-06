@@ -1,606 +1,387 @@
-const Project = require('../models/Project');
-const ClimateZone = require('../models/ClimateZone');
-const CompliancePathway = require('../models/CompliancePathway');
-const BuildingFabric = require('../models/BuildingFabric');
-const SpecialRequirement = require('../models/SpecialRequirement');
-const SectionJPart = require('../models/SectionJPart');
-const ExemptionAndConcession = require('../models/ExemptionAndConcession');
-const {
-  getBuildingClassification,
-  getClimateZoneByLocation,
-  getCompliancePathway,
-  getSpecialRequirements,
-  getExemptions,
-  getEnergyUseRequirements,
-  getVerificationMethods,
-  getEnergyMonitoringRequirements,
-  getCeilingFanRequirements,
-  getEnergyEfficiencyRequirements,
-  getJ3D3Requirements
-} = require('../utils/decisionTreeUtils');
-const { getSection } = require('../utils/decisionTreeFactory');
-const locationToClimateZone = require('../data/mappings/locationToClimateZone.json');
+// backend/services/reportService.js
+const Project = require('../models/Project'); // Assuming still needed for project data access
+const { loadReportSections } = require('../utils/sectionLoader'); // Import the new loader
+const { getBuildingClassification, getClimateZoneByLocation } = require('../utils/decisionTreeUtils'); // Keep necessary utils
+const locationToClimateZone = require('../data/mappings/locationToClimateZone.json'); // Keep if needed for climate zone details
+
+// --- Retain JS Calculation Imports ---
 const j1p2totalheatingload = require('../data/decision-trees/j1p2totalheatingload.js');
 const j1p2totalcoolingload = require('../data/decision-trees/j1p2totalcoolingload.js');
 const j1p2thermalenergyload = require('../data/decision-trees/j1p2thermalenergyload.js');
-const j1p3energyusage = require('../data/decision-trees/j1p3-energy-usage.json');
-const j1p4evse = require('../data/decision-trees/j1p4-evse.json');
+// --- End JS Calculation Imports ---
+
 
 class ReportService {
-  constructor(project, section = 'full') {
-    this.project = project;
-    this.section = section;
-    this.buildingClassification = null;
-    this.climateZone = null;
-    this.compliancePathway = null;
-    this.specialRequirements = null;
-    this.exemptions = null;
-    this.energyUse = null;
-    this.verificationMethods = null;
-    this.energyMonitoring = null;
-    this.ceilingFanRequirements = null;
-    this.j3d3Requirements = null;
-  }
-
-  /**
-   * Generate a comprehensive compliance report for a project
-   * @returns {Promise<Object>} - The generated report
-   */
-  async generateReport() {
-    try {
-      const report = {
-        projectInfo: await this.generateProjectInfo(),
-        buildingClassification: await this.generateBuildingClassificationInfo(),
-        climateZone: await this.generateClimateZoneInfo(),
-        compliancePathway: await this.generateCompliancePathwayInfo(),
-        buildingFabric: await this.generateBuildingFabricInfo(),
-        specialRequirements: await this.generateSpecialRequirementsInfo(),
-        exemptions: await this.generateExemptionsInfo()
-      };
-
-      // Add J3D3 requirements for Class_2 and Class_4 buildings
-      if (this.project.buildingType === 'Class_2' || this.project.buildingType === 'Class_4') {
-        report.j3d3Requirements = await this.generateJ3D3Requirements();
-      }
-
-      // Add section-specific information based on the requested section
-      if (this.section === 'full' || this.section === 'building') {
-        report.buildingClassification = await this.generateBuildingClassificationInfo();
-        report.climateZone = await this.generateClimateZoneInfo();
-      }
-
-      if (this.section === 'full' || this.section === 'compliance') {
-        report.compliancePathway = await this.generateCompliancePathwayInfo();
-      }
-
-      if (this.section === 'full' || this.section === 'fabric') {
-        report.buildingFabric = this.generateBuildingFabricInfo();
-      }
-
-      if (this.section === 'full' || this.section === 'special') {
-        report.specialRequirements = await this.generateSpecialRequirementsInfo();
-      }
-
-      if (this.section === 'full' || this.section === 'exemptions') {
-        report.exemptions = await this.generateExemptionsInfo();
-      }
-
-      if (this.section === 'full' || this.section === 'energy') {
-        report.energyUse = await this.generateEnergyUseInfo();
-        report.energyMonitoring = await this.generateEnergyMonitoringInfo();
-        report.j1p4evse = await this.generateJ1P4EVSEInfo();
-        report.verificationMethods = await this.generateVerificationMethodsInfo();
-        
-        // Add J1P2 and J1P3 calculations for Class_2 and Class_4 buildings
-        const buildingClassification = await getBuildingClassification(this.project.buildingType);
-        if (buildingClassification && 
-            (buildingClassification.classType === 'Class_2' || 
-             buildingClassification.classType === 'Class_4')) {
-          report.j1p2calc = await this.generateJ1P2CalcInfo();
-          report.j1p3energyusage = await this.generateJ1P3EnergyUsageInfo();
+    constructor(project, section = 'full') {
+        if (!project) {
+            throw new Error("Project data is required for ReportService.");
         }
-      }
+        this.project = project;
+        // Normalize section parameter to lowercase for consistent checks
+        this.sectionParam = section ? section.toLowerCase() : 'full';
+        this.buildingClassification = null; // Cache fetched classification
+        this.climateZone = null; // Cache fetched climate zone
+    }
 
-      if (this.section === 'full' || this.section === 'elemental-provisions-j3') {
-        report.elementalProvisionsJ3 = await this.generateElementalProvisionsJ3Info();
-      }
+    /**
+     * Initialize essential project properties like classification and climate zone.
+     */
+    async initialize() {
+        // Fetch and cache these upfront as they are needed frequently
+        this.buildingClassification = await getBuildingClassification(this.project.buildingType);
+        this.climateZone = await getClimateZoneByLocation(this.project.location);
+    }
 
-      // Add J3D3 requirements for Class_2 and Class_4 buildings
-      if (this.section === 'full' || this.section === 'dts') {
-        const buildingClassification = await getBuildingClassification(this.project.buildingType);
-        if (buildingClassification && 
-            (buildingClassification.classType === 'Class_2' || 
-             buildingClassification.classType === 'Class_4')) {
-          report.j3d3Requirements = await getJ3D3Requirements(
-            buildingClassification.classType,
-            this.project.location
-          );
+    /**
+     * Generate a comprehensive compliance report for a project.
+     * @returns {Promise<Object>} - The generated report
+     */
+    async generateReport() {
+        try {
+            await this.initialize(); // Ensure classification and zone are loaded
+
+            const report = {};
+
+            // --- Static/Core Sections (Generated directly from project/models/calcs) ---
+            if (this.shouldIncludeSection('projectinfo')) { // Use helper for clarity
+                 report.projectInfo = this.generateProjectInfo();
+            }
+            if (this.shouldIncludeSection('buildingclassification')) {
+                 report.buildingClassification = await this.generateBuildingClassificationInfo(); // Keep existing logic
+            }
+             if (this.shouldIncludeSection('climatezone')) {
+                 report.climateZone = await this.generateClimateZoneInfo(); // Keep existing logic
+             }
+            // Add other core sections like Compliance Pathway, Building Fabric if they are *not* converted to dynamic JSON
+            // report.compliancePathway = await this.generateCompliancePathwayInfo(); // Example if kept
+            // report.buildingFabric = this.generateBuildingFabricInfo(); // Example if kept
+
+            // --- JS Calculation Sections (Keep separate) ---
+            // Add J1P2 calculations only if the section is requested ('full' or 'energy')
+            // AND only for applicable building classes
+            if (this.shouldIncludeSection('energy') && this.buildingClassification &&
+                (this.buildingClassification.classType === 'Class_2' ||
+                 this.buildingClassification.classType === 'Class_4'))
+            {
+                 if (this.shouldIncludeSection('j1p2calc')) { // Optional: check specific calc section
+                      report.j1p2calc = await this.generateJ1P2CalcInfo(); // Keep existing J1P2 calc logic
+                 }
+            }
+
+            // --- Dynamic JSON Sections ---
+            report.dynamicSections = await this.generateDynamicSections();
+
+            return report;
+        } catch (error) {
+            console.error('Error generating report:', error);
+            // Consider more specific error reporting
+            throw new Error(`Failed to generate report: ${error.message}`);
         }
-      }
+    }
 
-      // Add section-specific information if a specific section is requested
-      if (this.section !== 'full') {
-        const sectionData = await this.generateSectionSpecificInfo();
-        if (sectionData) {
-          report[this.section] = sectionData;
+    /**
+     * Checks if a section should be included based on the 'section' query parameter.
+     * @param {string} sectionKey - The key of the section to check (lowercase).
+     * @returns {boolean} - True if the section should be included.
+     */
+    shouldIncludeSection(sectionKey) {
+        if (this.sectionParam === 'full') {
+            return true;
         }
-      }
-
-      return report;
-    } catch (error) {
-      console.error('Error generating report:', error);
-      throw error;
+        return this.sectionParam === sectionKey.toLowerCase();
     }
-  }
 
-  /**
-   * Generate project information section
-   * @returns {Object} - Project information
-   */
-  generateProjectInfo() {
-    return {
-      name: this.project.name,
-      description: this.project.description,
-      buildingType: this.project.buildingType,
-      location: this.project.location,
-      floorArea: this.project.floorArea,
-      totalAreaOfHabitableRooms: this.project.totalAreaOfHabitableRooms
-    };
-  }
 
-  /**
-   * Generate building classification information
-   * @returns {Promise<Object>} - Building classification information
-   */
-  async generateBuildingClassificationInfo() {
-    try {
-      const buildingType = this.project.buildingType;
-      this.buildingClassification = getBuildingClassification(buildingType);
-      
-      if (!this.buildingClassification) {
-        return {
-          error: `Building classification not found for type: ${buildingType}`
+    /**
+     * Loads, filters, and processes dynamic sections defined in JSON files.
+     * @returns {Promise<Array<Object>>} - Array of applicable, processed dynamic sections.
+     */
+    async generateDynamicSections() {
+        const allSections = loadReportSections(); // Load all defined sections from JSON
+        const applicableSections = [];
+
+        // Use cached classification and zone
+        const projectContext = {
+            project: this.project,
+            buildingClassification: this.buildingClassification,
+            climateZone: this.climateZone,
         };
-      }
 
-      return {
-        buildingType: buildingType,
-        classType: this.buildingClassification.classType,
-        name: this.buildingClassification.name,
-        description: this.buildingClassification.description,
-        typicalUse: this.buildingClassification.typicalUse,
-        commonFeatures: this.buildingClassification.commonFeatures,
-        notes: this.buildingClassification.notes,
-        technicalDetails: this.buildingClassification.technicalDetails
-      };
-    } catch (error) {
-      console.error('Error generating building classification info:', error);
-      return {
-        error: `Error generating building classification info: ${error.message}`
-      };
-    }
-  }
+        for (const sectionDefinition of allSections) {
+            // Check if section matches the requested sectionParam OR if 'full' report is requested
+             if (this.sectionParam !== 'full' && this.sectionParam !== sectionDefinition.sectionId.toLowerCase()) {
+                 continue; // Skip if a specific section is requested and this isn't it
+             }
 
-  /**
-   * Generate climate zone information
-   * @returns {Promise<Object>} - Climate zone information
-   */
-  async generateClimateZoneInfo() {
-    try {
-      const climateZone = await getClimateZoneByLocation(this.project.location);
-      this.climateZone = climateZone;
+            // Check overall applicability
+            if (this.checkApplicability(sectionDefinition.overallApplicability, projectContext)) {
+                const processedSection = {
+                    sectionId: sectionDefinition.sectionId,
+                    title: sectionDefinition.title,
+                    displayOrder: sectionDefinition.displayOrder || 999, // Default order
+                    contentBlocks: [],
+                     _sourceFile: sectionDefinition._sourceFile // Keep for debugging
+                };
 
-      // Get the location data from locationToClimateZone.json
-      const locationData = locationToClimateZone.locations.find(
-        loc => loc.id === this.project.location
-      );
+                // Process content blocks within the applicable section
+                for (const block of sectionDefinition.contentBlocks) {
+                    // Check block-specific applicability (if defined)
+                    if (this.checkApplicability(block.blockApplicability || {}, projectContext)) { // Pass empty obj if null/undefined
+                        // Process content (handle variants, table filtering etc.)
+                        const processedBlock = this.processContentBlock(block, projectContext);
+                        if (processedBlock) { // Ensure processing didn't return null
+                            processedSection.contentBlocks.push(processedBlock);
+                        }
+                    }
+                }
 
-      // Get building classification
-      const buildingClassification = await getBuildingClassification(this.project.buildingType);
-      const isClass2OrClass4 = buildingClassification.classType === 'Class_2' || buildingClassification.classType === 'Class_4';
-
-      const climateInfo = {
-        zone: climateZone,
-        description: `The building is located in Climate Zone ${climateZone}.`
-      };
-
-      // Add heating, cooling, and dehumidification data only for Class_2 and Class_4 buildings
-      if (isClass2OrClass4 && locationData) {
-        climateInfo.annualHeatingDegreeHours = locationData['Annual heating degree hours'];
-        climateInfo.annualCoolingDegreeHours = locationData['Annual cooling degree hours'];
-        climateInfo.annualDehumidificationGramHours = locationData['Annual dehumidification gram hours'];
-      }
-
-      return climateInfo;
-    } catch (error) {
-      return {
-        error: `Error getting climate zone: ${error.message}`
-      };
-    }
-  }
-
-  /**
-   * Generate compliance pathway information
-   * @returns {Promise<Object>} - Compliance pathway information
-   */
-  async generateCompliancePathwayInfo() {
-    try {
-      const buildingClassification = await getBuildingClassification(this.project.buildingType);
-      const climateZone = await getClimateZoneByLocation(this.project.location);
-      
-      // Pass only the classType property, not the entire object
-      this.compliancePathway = await getCompliancePathway(buildingClassification.classType, climateZone);
-      
-      return {
-        pathway: this.compliancePathway.pathway,
-        description: this.compliancePathway.description,
-        requirements: this.compliancePathway.requirements
-      };
-    } catch (error) {
-      return {
-        error: `Error getting compliance pathway: ${error.message}`
-      };
-    }
-  }
-
-  /**
-   * Generate building fabric information
-   * @returns {Object} - Building fabric information
-   */
-  generateBuildingFabricInfo() {
-    if (!this.project.buildingFabric) {
-      return {
-        error: 'No building fabric information available'
-      };
-    }
-    
-    return {
-      walls: this.compliancePathway.requirements.walls,
-      roof: this.compliancePathway.requirements.roof,
-      floor: this.compliancePathway.requirements.floor,
-      windows: this.compliancePathway.requirements.windows,
-      description: 'Building fabric details are as follows:'
-    };
-  }
-
-  /**
-   * Generate special requirements information
-   * @returns {Promise<Object>} - Special requirements information
-   */
-  async generateSpecialRequirementsInfo() {
-    try {
-      const buildingClassification = await getBuildingClassification(this.project.buildingType);
-      
-      // Pass only the classType property, not the entire object
-      this.specialRequirements = await getSpecialRequirements(buildingClassification.classType);
-      
-      return {
-        requirements: this.specialRequirements,
-        description: 'The following special requirements apply to this building:'
-      };
-    } catch (error) {
-      return {
-        error: `Error getting special requirements: ${error.message}`
-      };
-    }
-  }
-
-  /**
-   * Generate section-specific information
-   * @returns {Promise<Object>} - Section-specific information
-   */
-  async generateSectionSpecificInfo() {
-    try {
-      // Get the section-specific decision tree
-      const sectionData = await getSection(this.section);
-      if (!sectionData) {
-        return null;
-      }
-
-      // Get the building classification and climate zone
-      const buildingClassification = await getBuildingClassification(this.project.buildingType);
-      const climateZone = await getClimateZoneByLocation(this.project.location);
-
-      // Return section-specific information
-      return {
-        requirements: sectionData.requirements,
-        description: `Section ${this.section} requirements for ${buildingClassification} in Climate Zone ${climateZone}.`
-      };
-    } catch (error) {
-      console.error(`Error generating section-specific info for ${this.section}:`, error);
-      return null;
-    }
-  }
-
-  /**
-   * Generate exemptions information
-   * @returns {Promise<Object>} - Exemptions information
-   */
-  async generateExemptionsInfo() {
-    try {
-      const buildingClassification = await getBuildingClassification(this.project.buildingType);
-      this.exemptions = await getExemptions(buildingClassification.classType);
-      
-      if (!this.exemptions) {
-        return {
-          message: 'No exemptions apply to this building type.',
-          exemptions: []
-        };
-      }
-      
-      // Convert exemptions object to array for easier rendering
-      const exemptionsArray = Object.entries(this.exemptions).map(([key, value]) => ({
-        id: key,
-        name: key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
-        ...value
-      }));
-      
-      return {
-        message: 'The following exemptions may apply to this building:',
-        exemptions: exemptionsArray
-      };
-    } catch (error) {
-      return {
-        error: `Error getting exemptions: ${error.message}`,
-        exemptions: []
-      };
-    }
-  }
-
-  async generateEnergyUseInfo() {
-    try {
-      const buildingClassification = await getBuildingClassification(this.project.buildingType);
-      const totalAreaOfHabitableRooms = this.project.totalAreaOfHabitableRooms || 0;
-      
-      // Get energy efficiency requirements based on building class and total area
-      const energyEfficiencyRequirements = await getEnergyEfficiencyRequirements(
-        buildingClassification.classType,
-        totalAreaOfHabitableRooms
-      );
-
-      // For Class_2 and Class_4 buildings, return the filtered requirements
-      if (buildingClassification.classType === 'Class_2' || buildingClassification.classType === 'Class_4') {
-        return {
-          requirements: energyEfficiencyRequirements,
-          description: `Energy efficiency requirements for ${buildingClassification.classType} building with Total Area of Habitable Rooms ${totalAreaOfHabitableRooms} m²`
-        };
-      }
-
-      // For other building classes, return J1P1 requirements
-      const energyUseRequirements = await getEnergyUseRequirements(buildingClassification.classType);
-      return {
-        limit: energyUseRequirements.energy_use_limit,
-        description: energyUseRequirements.description
-      };
-    } catch (error) {
-      return {
-        error: `Error getting energy use information: ${error.message}`
-      };
-    }
-  }
-
-  async generateEnergyMonitoringInfo() {
-    try {
-      // Ensure floor area is a number
-      const floorArea = Number(this.project.floorArea) || 0;
-      console.log(`Floor area for energy monitoring: ${floorArea} m²`);
-      
-      this.energyMonitoring = await getEnergyMonitoringRequirements(floorArea);
-      
-      return {
-        requirement: this.energyMonitoring.requirement,
-        details: this.energyMonitoring.details || []
-      };
-    } catch (error) {
-      return {
-        error: `Error getting energy monitoring requirements: ${error.message}`
-      };
-    }
-  }
-
-  /**
-   * Generate elemental provisions J3 information
-   * @returns {Promise<Object>} - Elemental provisions J3 information
-   */
-  async generateElementalProvisionsJ3Info() {
-    try {
-      const buildingClassification = await getBuildingClassification(this.project.buildingType);
-      const climateZone = await getClimateZoneByLocation(this.project.location);
-      
-      // Only proceed if the building is Class 2 or Class 4
-      if (buildingClassification.classType !== 'Class_2' && buildingClassification.classType !== 'Class_4') {
-        return {
-          ceilingFan: {
-            requirement: 'Not applicable',
-            description: 'Ceiling fan requirements only apply to Class 2 and Class 4 buildings.'
-          }
-        };
-      }
-
-      // Get ceiling fan requirements from the JSON file
-      const ceilingFanData = require('../data/decision-trees/j3d4ceilingfan.json');
-      const requirements = ceilingFanData.j3d4_requirements.Class_2_and_4;
-      
-      // Get climate zone specific requirements
-      const climateZoneRequirements = requirements.climate_zone_specific[climateZone];
-      
-      // Format the requirements
-      const formattedRequirements = {
-        title: requirements.title,
-        description: requirements.description,
-        generalRequirements: requirements.general_requirements,
-        climateZoneSpecific: climateZoneRequirements,
-        table: requirements.tables.TableJ3D4
-      };
-      
-      return {
-        ceilingFan: formattedRequirements
-      };
-    } catch (error) {
-      return {
-        error: `Error getting elemental provisions J3 information: ${error.message}`
-      };
-    }
-  }
-
-  /**
-   * Generate J1P2 calculation information
-   * @returns {Promise<Object>} - J1P2 calculation information
-   */
-  async generateJ1P2CalcInfo() {
-    try {
-      // Get the location data from locationToClimateZone.json
-      const locationData = locationToClimateZone.locations.find(
-        loc => loc.id === this.project.location
-      );
-      
-      // Get the annual heating degree hours from the location data
-      const annualHeatingDegreeHours = locationData ? locationData['Annual heating degree hours'] : 15000;
-      
-      // Get the annual cooling degree hours from the location data
-      const annualCoolingDegreeHours = locationData ? locationData['Annual cooling degree hours'] : 5000;
-      
-      // Get the annual dehumidification gram hours from the location data
-      const annualDehumidificationGramHours = locationData ? locationData['Annual dehumidification gram hours'] : 1000;
-      
-      // Create functions to return the values
-      const getHeatingDegreeHours = () => annualHeatingDegreeHours;
-      const getCoolingDegreeHours = () => annualCoolingDegreeHours;
-      const getDehumidificationGramHours = () => annualDehumidificationGramHours;
-      const getTotalAreaOfHabitableRooms = () => this.project.totalAreaOfHabitableRooms || 100;
-      
-      // Call the j1p2totalheatingload function with the getHeatingDegreeHours function
-      const j1p2totalheatingloadResult = j1p2totalheatingload(getHeatingDegreeHours, getTotalAreaOfHabitableRooms);
-      
-      // Call the j1p2totalcoolingload function with the required functions
-      const j1p2totalcoolingloadResult = j1p2totalcoolingload(getCoolingDegreeHours, getDehumidificationGramHours, getTotalAreaOfHabitableRooms);
-      
-      // Create functions to return the heating and cooling load limits
-      const getHeatingLoadLimit = () => {
-        // Extract the numeric value from the descriptionValue string
-        const value = parseFloat(j1p2totalheatingloadResult.descriptionValue);
-        return isNaN(value) ? 20 : value;
-      };
-      
-      const getCoolingLoadLimit = () => {
-        // Extract the numeric value from the descriptionValue string
-        const value = parseFloat(j1p2totalcoolingloadResult.descriptionValue);
-        return isNaN(value) ? 15 : value;
-      };
-      
-      // Call the j1p2thermalenergyload function with the required functions
-      const j1p2thermalenergyloadResult = j1p2thermalenergyload(getHeatingLoadLimit, getCoolingLoadLimit);
-      
-      return {
-        totalheatingload: {
-          description: j1p2totalheatingloadResult.description,
-          descriptionValue: j1p2totalheatingloadResult.descriptionValue
-        },
-        totalcoolingload: {
-          description: j1p2totalcoolingloadResult.description,
-          descriptionValue: j1p2totalcoolingloadResult.descriptionValue
-        },
-        thermalenergyload: {
-          description: j1p2thermalenergyloadResult.description,
-          descriptionValue: j1p2thermalenergyloadResult.descriptionValue
+                // Only add the section if it has any applicable content blocks
+                if (processedSection.contentBlocks.length > 0) {
+                     applicableSections.push(processedSection);
+                }
+            }
         }
-      };
-    } catch (error) {
-      return {
-        error: `Error getting J1P2 calculation information: ${error.message}`
-      };
-    }
-  }
 
-  async generateJ1P3EnergyUsageInfo() {
-    try {
-      const buildingClassification = await getBuildingClassification(this.project.buildingType);
-      if (buildingClassification && 
-          (buildingClassification.classType === 'Class_2' || 
-           buildingClassification.classType === 'Class_4')) {
+        // Sort sections by displayOrder
+        applicableSections.sort((a, b) => a.displayOrder - b.displayOrder);
+
+        return applicableSections;
+    }
+
+    /**
+     * Checks if a given set of applicability rules match the project context.
+     * **SIMPLIFIED VERSION:** Needs expansion for floor area, custom conditions etc.
+     * @param {Object} rules - The applicability rules object (e.g., sectionDefinition.overallApplicability). Can be empty or null.
+     * @param {Object} context - Project context containing project, classification, zone.
+     * @returns {boolean} - True if the rules match, false otherwise.
+     */
+    checkApplicability(rules, context) {
+         if (!rules || Object.keys(rules).length === 0) {
+             return true; // No rules means it's always applicable (within its parent scope)
+         }
+
+        const { buildingClassification, climateZone, project } = context;
+
+        // Check Building Class
+        if (rules.buildingClasses && Array.isArray(rules.buildingClasses) && rules.buildingClasses.length > 0) {
+            if (!buildingClassification || !rules.buildingClasses.includes(buildingClassification.classType)) {
+                return false; // Class doesn't match
+            }
+        }
+
+        // Check Climate Zone
+        if (rules.climateZones && Array.isArray(rules.climateZones) && rules.climateZones.length > 0) {
+            if (climateZone === null || !rules.climateZones.includes(climateZone)) { // Use cached numeric zone
+                return false; // Zone doesn't match
+            }
+        }
+
+        // --- TODO: Add more checks here ---
+        // Check minFloorArea, maxFloorArea against project.floorArea
+        // Check customConditions array against project properties
+
+        return true; // All checks passed
+    }
+
+     /**
+      * Processes a single content block, handling variants and potentially table filtering.
+      * **SIMPLIFIED VERSION:** Needs expansion for variants, table filtering etc.
+      * @param {Object} block - The content block definition from JSON.
+      * @param {Object} context - Project context containing project, classification, zone.
+      * @returns {Object | null} - The processed block ready for frontend, or null if invalid.
+      */
+     processContentBlock(block, context) {
+         if (!block || !block.blockId || !block.contentType) {
+             console.warn('Skipping invalid content block:', block);
+             return null;
+         }
+
+         const processed = { ...block }; // Start with a copy
+
+         // --- TODO: Implement Variant Logic ---
+         // If block.variants exists:
+         //  - Iterate through variants
+         //  - Evaluate variant.condition against context (e.g., project.buildingClass, project.climateZone)
+         //  - If condition matches, replace relevant fields in 'processed' (e.g., processed.value = variant.value)
+         //  - Break after first match or handle multiple matches if needed
+         //  - If no variant matches, use defaultValue or original block content if appropriate
+
+         // --- TODO: Implement Table Row Filtering ---
+         // If block.contentType === 'table' && block.filterRowsBy:
+         //  - Get the property to filter by (e.g., 'climateZone') from block.filterRowsBy
+         //  - Get the project's value for that property (e.g., context.climateZone)
+         //  - Filter processed.rows to keep only rows where row[filterProperty] matches the project's value
+         //    (Requires rows to be objects or have a predictable structure, e.g., first element is the zone)
+
+         // Remove applicability rules before sending to frontend (optional)
+         // delete processed.blockApplicability;
+         // delete processed.variants;
+         // delete processed.filterRowsBy;
+
+         return processed;
+     }
+
+    // --- Keep Core/Static/Calculation Generator Methods ---
+
+    /**
+     * Generate project information section
+     * @returns {Object} - Project information
+     */
+    generateProjectInfo() {
+        // Basic info directly from the project model
         return {
-          title: j1p3energyusage.energy_usage[buildingClassification.classType].title,
-          description: j1p3energyusage.energy_usage[buildingClassification.classType].description
+            name: this.project.name,
+            description: this.project.description,
+            buildingType: this.project.buildingType,
+            location: this.project.location,
+            floorArea: this.project.floorArea,
+            totalAreaOfHabitableRooms: this.project.totalAreaOfHabitableRooms
         };
-      }
-      return null;
-    } catch (error) {
-      return {
-        error: `Error getting J1P3 energy usage information: ${error.message}`
-      };
     }
-  }
 
-  async generateJ1P4EVSEInfo() {
-    try {
-      return {
-        title: j1p4evse.evse.title,
-        description: j1p4evse.evse.description
-      };
-    } catch (error) {
-      return {
-        error: `Error getting J1P4 EVSE information: ${error.message}`
-      };
+     /**
+      * Generate building classification information
+      * (Assumes this.initialize() has been called)
+      * @returns {Promise<Object>} - Building classification information
+      */
+     async generateBuildingClassificationInfo() {
+         try {
+             if (!this.buildingClassification) {
+                 // Fallback if initialize wasn't called or failed
+                 this.buildingClassification = await getBuildingClassification(this.project.buildingType);
+             }
+             if (!this.buildingClassification) {
+                 return { error: `Building classification not found for type: ${this.project.buildingType}` };
+             }
+             // Return structure expected by frontend
+             return {
+                 buildingType: this.project.buildingType,
+                 classType: this.buildingClassification.classType,
+                 name: this.buildingClassification.name,
+                 description: this.buildingClassification.description,
+                 typicalUse: this.buildingClassification.typicalUse,
+                 commonFeatures: this.buildingClassification.commonFeatures,
+                 notes: this.buildingClassification.notes,
+                 technicalDetails: this.buildingClassification.technicalDetails
+             };
+         } catch (error) {
+             console.error('Error generating building classification info:', error);
+             return { error: `Error generating building classification info: ${error.message}` };
+         }
+     }
+
+
+    /**
+     * Generate climate zone information
+     * (Assumes this.initialize() has been called)
+     * @returns {Promise<Object>} - Climate zone information
+     */
+    async generateClimateZoneInfo() {
+        try {
+            if (this.climateZone === null) {
+                 // Fallback if initialize wasn't called or failed
+                 this.climateZone = await getClimateZoneByLocation(this.project.location);
+            }
+
+             if (this.climateZone === null) {
+                 return { error: `Could not determine climate zone for location: ${this.project.location}` };
+             }
+
+            const locationData = locationToClimateZone.locations.find(
+                loc => loc.id === this.project.location // Assumes loc.id matches project.location format
+            );
+
+            const isClass2OrClass4 = this.buildingClassification &&
+                                     (this.buildingClassification.classType === 'Class_2' ||
+                                      this.buildingClassification.classType === 'Class_4');
+
+            const climateInfo = {
+                 // Assuming climateZone variable holds the numeric zone (e.g., 5)
+                zone: this.climateZone,
+                // Construct name/description or retrieve from a zones definition file if needed
+                name: `Climate Zone ${this.climateZone}`,
+                description: `The building is located in Climate Zone ${this.climateZone}.`
+            };
+
+            // Add heating/cooling data specific to Class 2/4 if available
+            if (isClass2OrClass4 && locationData) {
+                climateInfo.annualHeatingDegreeHours = locationData['Annual heating degree hours'];
+                climateInfo.annualCoolingDegreeHours = locationData['Annual cooling degree hours'];
+                climateInfo.annualDehumidificationGramHours = locationData['Annual dehumidification gram hours'];
+            }
+
+            return climateInfo;
+        } catch (error) {
+            console.error('Error generating climate zone info:', error);
+            return { error: `Error getting climate zone info: ${error.message}` };
+        }
     }
-  }
 
-  /**
-   * Generate verification methods information
-   * @returns {Promise<Object>} - Verification methods information
-   */
-  async generateVerificationMethodsInfo() {
-    try {
-      const buildingClassification = await getBuildingClassification(this.project.buildingType);
-      const verificationMethods = await getVerificationMethods(buildingClassification.classType);
-      
-      // Convert the methods object to an array if it's not already
-      const methodsArray = Array.isArray(verificationMethods) 
-        ? verificationMethods 
-        : Object.entries(verificationMethods).map(([key, value]) => ({
-            condition: key,
-            description: Array.isArray(value) ? value : [value]
-          }));
-      
-      return {
-        methods: methodsArray,
-        description: 'The following verification methods apply to this building:'
-      };
-    } catch (error) {
-      return {
-        error: `Error getting verification methods: ${error.message}`
-      };
+
+    /**
+     * Generate J1P2 calculation information
+     * @returns {Promise<Object>} - J1P2 calculation information
+     */
+    async generateJ1P2CalcInfo() {
+        try {
+            const locationData = locationToClimateZone.locations.find(
+                loc => loc.id === this.project.location
+            );
+
+            // Provide defaults if locationData or specific values are missing
+            const annualHeatingDegreeHours = locationData?.['Annual heating degree hours'] ?? 15000;
+            const annualCoolingDegreeHours = locationData?.['Annual cooling degree hours'] ?? 5000;
+            const annualDehumidificationGramHours = locationData?.['Annual dehumidification gram hours'] ?? 1000;
+            const totalAreaOfHabitableRooms = this.project.totalAreaOfHabitableRooms || 100; // Default if not set
+
+            // Define getter functions for the calculation modules
+            const getHeatingDegreeHours = () => annualHeatingDegreeHours;
+            const getCoolingDegreeHours = () => annualCoolingDegreeHours;
+            const getDehumidificationGramHours = () => annualDehumidificationGramHours;
+            const getTotalAreaOfHabitableRooms = () => totalAreaOfHabitableRooms;
+
+            const heatingLoadResult = j1p2totalheatingload(getHeatingDegreeHours, getTotalAreaOfHabitableRooms);
+            const coolingLoadResult = j1p2totalcoolingload(getCoolingDegreeHours, getDehumidificationGramHours, getTotalAreaOfHabitableRooms);
+
+            // Prepare inputs for thermal load calculation
+            const getHeatingLoadLimit = () => parseFloat(heatingLoadResult.descriptionValue) || 30; // Default if parsing fails
+            const getCoolingLoadLimit = () => parseFloat(coolingLoadResult.descriptionValue) || 45; // Default if parsing fails
+
+            const thermalLoadResult = j1p2thermalenergyload(getHeatingLoadLimit, getCoolingLoadLimit);
+
+            // Structure the results
+            return {
+                totalheatingload: {
+                    description: heatingLoadResult.description,
+                    descriptionValue: heatingLoadResult.descriptionValue
+                },
+                totalcoolingload: {
+                    description: coolingLoadResult.description,
+                    descriptionValue: coolingLoadResult.descriptionValue
+                },
+                thermalenergyload: {
+                    description: thermalLoadResult.description,
+                    descriptionValue: thermalLoadResult.descriptionValue
+                }
+            };
+        } catch (error) {
+             console.error('Error generating J1P2 calculation info:', error);
+            return { error: `Error getting J1P2 calculation information: ${error.message}` };
+        }
     }
-  }
 
-  async generateJ3D3Requirements() {
-    try {
-      // Only generate J3D3 requirements for Class_2 and Class_4 buildings
-      if (this.project.buildingType !== 'Class_2' && this.project.buildingType !== 'Class_4') {
-        return null;
-      }
+    // --- Remove Old Generator Methods Now Handled Dynamically ---
+    // Remove generateExemptionsInfo()
+    // Remove generateEnergyUseInfo() - IF energy-use.json is standardized
+    // Remove generateEnergyMonitoringInfo() - IF energy-monitoring.json is standardized
+    // Remove generateElementalProvisionsJ3Info() - IF j3d4ceilingfan.json is standardized
+    // Remove generateJ1P3EnergyUsageInfo() - IF j1p3-energy-usage.json is standardized
+    // Remove generateJ1P4EVSEInfo() - IF j1p4-evse.json is standardized
+    // Remove generateVerificationMethodsInfo() - IF verification-methods.json is standardized
+    // Remove generateSpecialRequirementsInfo() - IF special-requirements.json is standardized
+    // Remove generateJ3D3Requirements() - IF j3d3energyratesw.json covers this and is standardized
+    // etc.
 
-      // Get climate zone from project location
-      const climateZone = await getClimateZoneByLocation(this.project.location);
-      
-      // Get habitable room area from project
-      const habitableRoomArea = this.project.habitableRoomArea || 0;
-
-      this.j3d3Requirements = await getJ3D3Requirements(climateZone, habitableRoomArea);
-
-      return {
-        general_requirements: this.j3d3Requirements.general_requirements,
-        specific_requirements: this.j3d3Requirements.specific_requirements,
-        thermal_breaks: this.j3d3Requirements.thermal_breaks,
-        floor_requirements: this.j3d3Requirements.floor_requirements,
-        building_sealing: this.j3d3Requirements.building_sealing
-      };
-    } catch (error) {
-      console.error('Error generating J3D3 requirements:', error);
-      return {
-        error: `Error generating J3D3 requirements: ${error.message}`
-      };
-    }
-  }
 }
 
-module.exports = ReportService; 
+module.exports = ReportService;

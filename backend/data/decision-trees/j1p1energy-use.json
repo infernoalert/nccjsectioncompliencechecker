@@ -1,12 +1,10 @@
 {
   "sectionId": "j1p1_energy_use",
   "title": "J1P1: Energy Use Requirements",
-  "displayOrder": 101,
+  "displayOrder": 2,
   "overallApplicability": {
-    "buildingClasses": [
-      "Class_2",
-      "Class_3",
-      "Class_4",
+    "buildingClasses": [      
+      "Class_3",      
       "Class_5",
       "Class_6",
       "Class_7a",
