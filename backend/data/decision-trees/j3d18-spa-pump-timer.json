@@ -1,37 +1,48 @@
 {
-  "version": "1.0",
-  "lastUpdated": "2024-03-19",
   "sectionId": "j3d18_spa_pump_timer",
   "title": "J3D18: Spa Pump Timer Requirements",
-  "displayOrder": 23,
-  "applicability": {
+  "displayOrder": 24,
+  "overallApplicability": {
     "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"],
-    "conditions": [
-      {
-        "type": "buildingClass",
-        "operator": "in",
-        "value": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"]
-      }
-    ]
+    "climateZones": null,
+    "minFloorArea": null,
+    "maxFloorArea": null
   },
-  "content": [
+  "contentBlocks": [
     {
-      "type": "header",
-      "level": 1,
-      "text": "J3D18: Spa Pump Timer Requirements"
+      "blockId": "j3d18_general_requirements",
+      "contentType": "paragraphList",
+      "title": "General Spa Pump Timer Requirements",
+      "blockApplicability": null,
+      "paragraphs": [
+        "Spa pump timers must be energy efficient and meet minimum efficiency requirements.",
+        "Spa pump timers must be installed in accordance with manufacturer's instructions.",
+        "Spa pump timers must be accessible for maintenance and replacement.",
+        "Spa pump timers must be suitable for the intended use of the spa."
+      ]
     },
     {
-      "type": "paragraph",
-      "text": "Spa pump timers must comply with the following requirements:"
+      "blockId": "j3d18_energy_efficiency",
+      "contentType": "paragraphList",
+      "title": "Energy Efficiency Requirements",
+      "blockApplicability": null,
+      "paragraphs": [
+        "Spa pump timers must meet minimum energy efficiency requirements as specified in the NCC.",
+        "Spa pump timers must be suitable for the intended use of the spa.",
+        "Spa pump timers must be installed in accordance with manufacturer's instructions.",
+        "Spa pump timers must be accessible for maintenance and replacement."
+      ]
     },
     {
-      "type": "list",
-      "style": "bullet",
-      "items": [
-        "Spa pump timers must be energy efficient and comply with the relevant energy efficiency requirements",
-        "Spa pump timers must be installed in accordance with the manufacturer's instructions",
-        "Spa pump timers must be controlled by switches that are readily accessible to the occupants",
-        "Spa pump timers must be designed to provide adequate control for the intended use of the spa"
+      "blockId": "j3d18_installation",
+      "contentType": "paragraphList",
+      "title": "Installation Requirements",
+      "blockApplicability": null,
+      "paragraphs": [
+        "Spa pump timers must be installed in accordance with manufacturer's instructions.",
+        "Spa pump timers must be accessible for maintenance and replacement.",
+        "Spa pump timers must be suitable for the intended use of the spa.",
+        "Spa pump timers must be installed by a qualified person."
       ]
     }
   ],

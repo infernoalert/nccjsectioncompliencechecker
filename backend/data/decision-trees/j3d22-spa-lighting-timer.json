@@ -1,37 +1,48 @@
 {
-  "version": "1.0",
-  "lastUpdated": "2024-03-19",
   "sectionId": "j3d22_spa_lighting_timer",
   "title": "J3D22: Spa Lighting Timer Requirements",
-  "displayOrder": 27,
-  "applicability": {
+  "displayOrder": 28,
+  "overallApplicability": {
     "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"],
-    "conditions": [
-      {
-        "type": "buildingClass",
-        "operator": "in",
-        "value": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"]
-      }
-    ]
+    "climateZones": null,
+    "minFloorArea": null,
+    "maxFloorArea": null
   },
-  "content": [
+  "contentBlocks": [
     {
-      "type": "header",
-      "level": 1,
-      "text": "J3D22: Spa Lighting Timer Requirements"
+      "blockId": "j3d22_general_requirements",
+      "contentType": "paragraphList",
+      "title": "General Spa Lighting Timer Requirements",
+      "blockApplicability": null,
+      "paragraphs": [
+        "Spa lighting timers must be energy efficient and meet minimum efficiency requirements.",
+        "Spa lighting timers must be installed in accordance with manufacturer's instructions.",
+        "Spa lighting timers must be accessible for maintenance and replacement.",
+        "Spa lighting timers must be suitable for the intended use of the spa."
+      ]
     },
     {
-      "type": "paragraph",
-      "text": "Spa lighting timers must comply with the following requirements:"
+      "blockId": "j3d22_energy_efficiency",
+      "contentType": "paragraphList",
+      "title": "Energy Efficiency Requirements",
+      "blockApplicability": null,
+      "paragraphs": [
+        "Spa lighting timers must meet minimum energy efficiency requirements as specified in the NCC.",
+        "Spa lighting timers must be suitable for the intended use of the spa.",
+        "Spa lighting timers must be installed in accordance with manufacturer's instructions.",
+        "Spa lighting timers must be accessible for maintenance and replacement."
+      ]
     },
     {
-      "type": "list",
-      "style": "bullet",
-      "items": [
-        "Spa lighting timers must be energy efficient and comply with the relevant energy efficiency requirements",
-        "Spa lighting timers must be installed in accordance with the manufacturer's instructions",
-        "Spa lighting timers must be controlled by switches that are readily accessible to the occupants",
-        "Spa lighting timers must be designed to provide adequate control for the intended use of the spa"
+      "blockId": "j3d22_installation",
+      "contentType": "paragraphList",
+      "title": "Installation Requirements",
+      "blockApplicability": null,
+      "paragraphs": [
+        "Spa lighting timers must be installed in accordance with manufacturer's instructions.",
+        "Spa lighting timers must be accessible for maintenance and replacement.",
+        "Spa lighting timers must be suitable for the intended use of the spa.",
+        "Spa lighting timers must be installed by a qualified person."
       ]
     }
   ],

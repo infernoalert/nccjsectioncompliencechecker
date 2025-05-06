@@ -1,37 +1,48 @@
 {
-  "version": "1.0",
-  "lastUpdated": "2024-03-19",
   "sectionId": "j3d12_spa_heater",
   "title": "J3D12: Spa Heater Requirements",
-  "displayOrder": 17,
-  "applicability": {
+  "displayOrder": 18,
+  "overallApplicability": {
     "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"],
-    "conditions": [
-      {
-        "type": "buildingClass",
-        "operator": "in",
-        "value": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"]
-      }
-    ]
+    "climateZones": null,
+    "minFloorArea": null,
+    "maxFloorArea": null
   },
-  "content": [
+  "contentBlocks": [
     {
-      "type": "header",
-      "level": 1,
-      "text": "J3D12: Spa Heater Requirements"
+      "blockId": "j3d12_general_requirements",
+      "contentType": "paragraphList",
+      "title": "General Spa Heater Requirements",
+      "blockApplicability": null,
+      "paragraphs": [
+        "Spa heaters must be energy efficient and meet minimum efficiency requirements.",
+        "Spa heaters must be installed in accordance with manufacturer's instructions.",
+        "Spa heaters must be accessible for maintenance and replacement.",
+        "Spa heaters must be suitable for the intended use of the spa."
+      ]
     },
     {
-      "type": "paragraph",
-      "text": "Spa heaters must comply with the following requirements:"
+      "blockId": "j3d12_energy_efficiency",
+      "contentType": "paragraphList",
+      "title": "Energy Efficiency Requirements",
+      "blockApplicability": null,
+      "paragraphs": [
+        "Spa heaters must meet minimum energy efficiency requirements as specified in the NCC.",
+        "Spa heaters must be suitable for the intended use of the spa.",
+        "Spa heaters must be installed in accordance with manufacturer's instructions.",
+        "Spa heaters must be accessible for maintenance and replacement."
+      ]
     },
     {
-      "type": "list",
-      "style": "bullet",
-      "items": [
-        "Spa heaters must be energy efficient and comply with the relevant energy efficiency requirements",
-        "Spa heaters must be installed in accordance with the manufacturer's instructions",
-        "Spa heaters must be controlled by switches that are readily accessible to the occupants",
-        "Spa heaters must be designed to provide adequate heating for the intended use of the spa"
+      "blockId": "j3d12_installation",
+      "contentType": "paragraphList",
+      "title": "Installation Requirements",
+      "blockApplicability": null,
+      "paragraphs": [
+        "Spa heaters must be installed in accordance with manufacturer's instructions.",
+        "Spa heaters must be accessible for maintenance and replacement.",
+        "Spa heaters must be suitable for the intended use of the spa.",
+        "Spa heaters must be installed by a qualified person."
       ]
     }
   ],

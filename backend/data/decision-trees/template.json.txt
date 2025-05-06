@@ -1,0 +1,73 @@
+{
+  "sectionId": "string", // REQUIRED: Unique identifier for this section (e.g., 'j3d4_ceiling_fans'). Derive from filename or content if possible.
+  "title": "string", // REQUIRED: User-friendly title for the report section (e.g., 'J3D4 Ceiling Fans').
+  "displayOrder": "number", // OPTIONAL: Integer for sorting sections in the final report. Assign sequentially or based on NCC structure if obvious.
+  "overallApplicability": { // REQUIRED: Rules for the entire section's relevance.
+    "buildingClasses": ["string" | null], // REQUIRED: Array of applicable NCC Building Classes (e.g., ["Class_2", "Class_4"]). Use null or empty array [] if applicable to all.
+    "climateZones": ["number" | null], // OPTIONAL: Array of applicable NCC Climate Zones (1-8). Use null or empty array [] if applicable to all. Default: null.
+    "minFloorArea": "number | null", // OPTIONAL: Minimum project floor area (m²). Default: null.
+    "maxFloorArea": "number | null", // OPTIONAL: Maximum project floor area (m²). Default: null.
+    "customConditions": [ // OPTIONAL: Array for complex conditions needing backend evaluation.
+      {
+        "property": "string", // e.g., "totalAreaOfHabitableRooms", "compliancePathway.pathway"
+        "operator": "string", // e.g., "===", "<=", ">", "in"
+        "value": "any", // The value to compare against
+        "comment": "string" // Optional explanation
+      }
+    ]
+  },
+  "contentBlocks": [ // REQUIRED: Array of content blocks composing the section.
+    {
+      "blockId": "string", // REQUIRED: Unique ID for this block within the section (e.g., 'j3d4_intro').
+      "contentType": "string", // REQUIRED: Type hint for frontend rendering (e.g., 'paragraph', 'list', 'table', 'keyValue', 'heading', 'paragraphList', 'note').
+      "blockApplicability": { // OPTIONAL: Rules specific to *this block*. If absent, block is always shown if overallApplicability passes. Same structure as overallApplicability.
+        "buildingClasses": ["string" | null],
+        "climateZones": ["number" | null],
+        "minFloorArea": "number | null",
+        "maxFloorArea": "number | null",
+        "customConditions": [ // Optional specific conditions for this block
+           // { "property": "...", "operator": "...", "value": ..., "comment": "..." }
+        ]
+      },
+
+      // --- Content fields (Use ONE appropriate set based on contentType) ---
+      "text": "string", // For 'paragraph', 'heading', 'note'
+      "level": "number", // For 'heading' (e.g., 5 for h5)
+
+      "label": "string", // For 'keyValue'
+      "value": "string", // For 'keyValue' (Can be overridden by variants)
+      "defaultValue": "string", // Optional fallback for 'keyValue' if variants used
+
+      "listType": "string", // For 'list' ('ordered' or 'unordered')
+      "items": ["string"], // For 'list'
+
+      "paragraphs": ["string"], // For 'paragraphList'
+      "defaultParagraphs": ["string"], // Optional fallback for 'paragraphList' if variants used
+
+      "tableTitle": "string", // For 'table' (Optional title above table)
+      "headers": ["string"], // For 'table'
+      "rows": [ // For 'table' (Array of arrays or array of objects)
+         // Example: ["cell1", "cell2"] or {"colHeader1": "val1", "colHeader2": "val2"}
+         // OR Example for filtering: { "climateZone": 1, "values": ["CZ1 data1", "CZ1 data2"]}
+      ],
+       "notes": "string", // For 'table' (Optional notes below table)
+       "filterRowsBy": "string | null", // For 'table'. Hint for backend (e.g., "climateZone") to filter rows based on project property.
+
+      "variants": [ // OPTIONAL: Use if block's content changes based on conditions within its applicability scope.
+        {
+          "condition": { // Condition for this variant (only one property condition usually needed here)
+            "property": "string", // e.g., "buildingClass", "climateZone"
+            "operator": "string", // e.g., "===", "in"
+            "value": "any"
+           },
+          // Provide the specific content field that changes:
+          "value": "string", // If contentType is 'keyValue'
+          "text": "string", // If contentType is 'paragraph', 'heading', 'note'
+          "paragraphs": ["string"] // If contentType is 'paragraphList'
+          // Add other content fields if needed for specific variants
+        }
+      ]
+      // --- End of Content fields ---
+    }
+  ]
+}

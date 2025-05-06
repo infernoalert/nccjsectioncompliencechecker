@@ -1,0 +1,126 @@
+{
+  "sectionId": "j1p1_energy_use",
+  "title": "J1P1: Energy Use Requirements",
+  "displayOrder": 101,
+  "overallApplicability": {
+    "buildingClasses": [
+      "Class_2",
+      "Class_3",
+      "Class_4",
+      "Class_5",
+      "Class_6",
+      "Class_7a",
+      "Class_7b",
+      "Class_8",
+      "Class_9a",
+      "Class_9b",
+      "Class_9c",
+      "Class_10a",
+      "Class_10b",
+      "Class_10c"
+    ],
+    "climateZones": null,
+    "minFloorArea": null,
+    "maxFloorArea": null
+  },
+  "contentBlocks": [
+    {
+      "blockId": "j1p1_limit",
+      "contentType": "keyValue",
+      "label": "Energy Use Limit (Conditioned Spaces)",
+      "blockApplicability": null,
+      "variants": [
+        {
+          "condition": { "property": "buildingClass", "operator": "===", "value": "Class_2" },
+          "value": "N/A (Single Occupancy Units Excluded)"
+        },
+        {
+          "condition": { "property": "buildingClass", "operator": "===", "value": "Class_4" },
+          "value": "N/A (Class 4 Part Excluded)"
+        },
+        {
+          "condition": { "property": "buildingClass", "operator": "===", "value": "Class_6" },
+          "value": "80 kJ/m²·hr"
+        },
+        {
+          "condition": { "property": "buildingClass", "operator": "in", "value": ["Class_9a", "Class_9b"] },
+          "value": "43 kJ/m²·hr"
+        },
+        {
+          "condition": { "property": "buildingClass", "operator": "in", "value": ["Class_3", "Class_5", "Class_7a", "Class_7b", "Class_8", "Class_9c", "Class_10a", "Class_10b", "Class_10c"] },
+          "value": "15 kJ/m²·hr"
+        }
+      ],
+      "defaultValue": "Not Specified"
+    },
+    {
+      "blockId": "j1p1_description",
+      "contentType": "paragraphList",
+      "blockApplicability": null,
+      "variants": [
+        {
+          "condition": { "property": "buildingClass", "operator": "===", "value": "Class_2" },
+          "paragraphs": [
+            "The building (excluding SOUs), including its services, must have features that facilitate the efficient use of energy appropriate to:",
+            "(a) the function and use of the building; and",
+            "(b) the level of human comfort required for the building use; and",
+            "(c) solar radiation being (i) utilised for heating; and (ii) controlled to minimise energy for cooling; and",
+            "(d) the energy source of the services; and",
+            "(e) the sealing of the building envelope against air leakage."
+          ]
+        },
+        {
+          "condition": { "property": "buildingClass", "operator": "===", "value": "Class_4" },
+           "paragraphs": [
+              "The building (excluding the Class 4 part), including its services, must have features that facilitate the efficient use of energy appropriate to:",
+              "(a) the function and use of the building; and",
+              "(b) the level of human comfort required for the building use; and",
+              "(c) solar radiation being (i) utilised for heating; and (ii) controlled to minimise energy for cooling; and",
+              "(d) the energy source of the services; and",
+              "(e) the sealing of the building envelope against air leakage."
+            ]
+        },
+        {
+          "condition": { "property": "buildingClass", "operator": "===", "value": "Class_6" },
+           "paragraphs": [
+              "Features must facilitate the efficient use of energy appropriate to:",
+              "(a) the function and use of the building; and",
+              "(b) the level of human comfort required for the building use; and",
+              "(c) solar radiation being (i) utilised for heating; and (ii) controlled to minimise energy for cooling; and",
+              "(d) the energy source of the services; and",
+              "(e) the sealing of the building envelope against air leakage.",
+              "Additionally, for conditioned spaces, Class 6 buildings must have an energy use limit of 80 kJ/m²·hr."
+            ]
+        },
+        {
+          "condition": { "property": "buildingClass", "operator": "in", "value": ["Class_9a", "Class_9b"] },
+          "paragraphs": [
+               "Features must facilitate the efficient use of energy appropriate to:",
+              "(a) the function and use of the building; and",
+              "(b) the level of human comfort required for the building use; and",
+              "(c) solar radiation being (i) utilised for heating; and (ii) controlled to minimise energy for cooling; and",
+              "(d) the energy source of the services; and",
+              "(e) the sealing of the building envelope against air leakage.",
+              "Additionally, for conditioned spaces, Class 9a/9b buildings must have an energy use limit of 43 kJ/m²·hr."
+            ]
+        },
+        {
+          "condition": { "property": "buildingClass", "operator": "in", "value": ["Class_3", "Class_5", "Class_7a", "Class_7b", "Class_8", "Class_9c", "Class_10a", "Class_10b", "Class_10c"] },
+          "paragraphs": [
+               "Features must facilitate the efficient use of energy appropriate to:",
+              "(a) the function and use of the building; and",
+              "(b) the level of human comfort required for the building use; and",
+              "(c) solar radiation being (i) utilised for heating; and (ii) controlled to minimise energy for cooling; and",
+              "(d) the energy source of the services; and",
+              "(e) the sealing of the building envelope against air leakage.",
+              "Additionally, for conditioned spaces, these building classes must have an energy use limit of 15 kJ/m²·hr."
+            ]
+        }
+      ],
+       "defaultParagraphs": [
+            "General energy efficiency principles apply.",
+            "Features must facilitate the efficient use of energy appropriate to the building function, comfort levels, solar radiation control, energy sources, and envelope sealing."
+        ]
+    }
+  ]
+}

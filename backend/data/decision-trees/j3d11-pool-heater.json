@@ -1,37 +1,48 @@
 {
-  "version": "1.0",
-  "lastUpdated": "2024-03-19",
   "sectionId": "j3d11_pool_heater",
   "title": "J3D11: Pool Heater Requirements",
-  "displayOrder": 16,
-  "applicability": {
+  "displayOrder": 17,
+  "overallApplicability": {
     "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"],
-    "conditions": [
-      {
-        "type": "buildingClass",
-        "operator": "in",
-        "value": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"]
-      }
-    ]
+    "climateZones": null,
+    "minFloorArea": null,
+    "maxFloorArea": null
   },
-  "content": [
+  "contentBlocks": [
     {
-      "type": "header",
-      "level": 1,
-      "text": "J3D11: Pool Heater Requirements"
+      "blockId": "j3d11_general_requirements",
+      "contentType": "paragraphList",
+      "title": "General Pool Heater Requirements",
+      "blockApplicability": null,
+      "paragraphs": [
+        "Pool heaters must be energy efficient and meet minimum efficiency requirements.",
+        "Pool heaters must be installed in accordance with manufacturer's instructions.",
+        "Pool heaters must be accessible for maintenance and replacement.",
+        "Pool heaters must be suitable for the intended use of the pool."
+      ]
     },
     {
-      "type": "paragraph",
-      "text": "Pool heaters must comply with the following requirements:"
+      "blockId": "j3d11_energy_efficiency",
+      "contentType": "paragraphList",
+      "title": "Energy Efficiency Requirements",
+      "blockApplicability": null,
+      "paragraphs": [
+        "Pool heaters must meet minimum energy efficiency requirements as specified in the NCC.",
+        "Pool heaters must be suitable for the intended use of the pool.",
+        "Pool heaters must be installed in accordance with manufacturer's instructions.",
+        "Pool heaters must be accessible for maintenance and replacement."
+      ]
     },
     {
-      "type": "list",
-      "style": "bullet",
-      "items": [
-        "Pool heaters must be energy efficient and comply with the relevant energy efficiency requirements",
-        "Pool heaters must be installed in accordance with the manufacturer's instructions",
-        "Pool heaters must be controlled by switches that are readily accessible to the occupants",
-        "Pool heaters must be designed to provide adequate heating for the intended use of the pool"
+      "blockId": "j3d11_installation",
+      "contentType": "paragraphList",
+      "title": "Installation Requirements",
+      "blockApplicability": null,
+      "paragraphs": [
+        "Pool heaters must be installed in accordance with manufacturer's instructions.",
+        "Pool heaters must be accessible for maintenance and replacement.",
+        "Pool heaters must be suitable for the intended use of the pool.",
+        "Pool heaters must be installed by a qualified person."
       ]
     }
   ],
