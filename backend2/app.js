@@ -12,6 +12,12 @@ const {
   RATE_LIMIT_WINDOW_MS,
   RATE_LIMIT_MAX_REQUESTS
 } = require('./config/env.config');
+const path = require('path');
+const dotenv = require('dotenv');
+const errorHandler = require('./middleware/errorHandler');
+
+// Load env vars
+dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 
 // Import routes
 const authRoutes = require('./routes/authRoutes');
@@ -36,11 +42,17 @@ const limiter = rateLimit({
 
 // Middleware
 app.use(cors({
-    origin: CORS_ORIGIN,
+    origin: process.env.NODE_ENV === 'production' 
+        ? ['https://nccjsectioncompliencechecker.vercel.app', 'https://api.payamamerian.com', 'https://ncc.payamamerian.com'] 
+        : 'http://localhost:3000',
     credentials: true
 }));
 app.use(express.json());
-app.use(morgan('dev'));
+
+// Dev logging middleware
+if (process.env.NODE_ENV === 'development') {
+    app.use(morgan('dev'));
+}
 app.use(limiter);
 
 // Swagger configuration
@@ -76,8 +88,12 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/users', require('./routes/userRoutes'));
 app.use('/api/projects', projectRoutes);
 app.use('/api/reports', reportRoutes);
+
+// Error handling middleware
+app.use(errorHandler);
 
 // Basic route
 app.get('/', (req, res) => {
@@ -87,17 +103,8 @@ app.get('/', (req, res) => {
     });
 });
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(err.statusCode || 500).json({
-        success: false,
-        error: err.message || 'Server Error'
-    });
-});
-
 // Handle unhandled promise rejections
-process.on('unhandledRejection', (err) => {
+process.on('unhandledRejection', (err, promise) => {
     console.error('Unhandled Promise Rejection:', err);
     // Close server & exit process
     process.exit(1);

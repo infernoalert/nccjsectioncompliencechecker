@@ -1,6 +1,6 @@
-const Project = require('../models/project.model');
-const Requirement = require('../models/requirement.model');
-const ClimateZone = require('../models/climateZone.model');
+const Project = require('../models/project');
+const Requirement = require('../models/requirement');
+const ClimateZone = require('../models/climate-zone');
 const asyncHandler = require('express-async-handler');
 
 // @desc    Generate compliance report for a project
