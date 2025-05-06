@@ -1,37 +1,48 @@
 {
-  "version": "1.0",
-  "lastUpdated": "2024-03-19",
   "sectionId": "j3d5_lighting",
   "title": "J3D5: Lighting Requirements",
-  "displayOrder": 10,
-  "applicability": {
+  "displayOrder": 11,
+  "overallApplicability": {
     "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"],
-    "conditions": [
-      {
-        "type": "buildingClass",
-        "operator": "in",
-        "value": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"]
-      }
-    ]
+    "climateZones": null,
+    "minFloorArea": null,
+    "maxFloorArea": null
   },
-  "content": [
+  "contentBlocks": [
     {
-      "type": "header",
-      "level": 1,
-      "text": "J3D5: Lighting Requirements"
+      "blockId": "j3d5_general_requirements",
+      "contentType": "paragraphList",
+      "title": "General Lighting Requirements",
+      "blockApplicability": null,
+      "paragraphs": [
+        "Lighting must be energy efficient and meet minimum efficacy requirements.",
+        "Lighting controls must be provided for all artificial lighting.",
+        "Lighting must be installed in accordance with manufacturer's instructions.",
+        "Lighting must be accessible for maintenance and replacement."
+      ]
     },
     {
-      "type": "paragraph",
-      "text": "Lighting must comply with the following requirements:"
+      "blockId": "j3d5_lighting_controls",
+      "contentType": "paragraphList",
+      "title": "Lighting Control Requirements",
+      "blockApplicability": null,
+      "paragraphs": [
+        "Lighting controls must be provided for all artificial lighting.",
+        "Lighting controls must be accessible and clearly labeled.",
+        "Lighting controls must be installed in accordance with manufacturer's instructions.",
+        "Lighting controls must be suitable for the intended use of the space."
+      ]
     },
     {
-      "type": "list",
-      "style": "bullet",
-      "items": [
-        "Lighting must be designed to provide adequate illumination for the intended use of the space",
-        "Lighting must be controlled by switches that are readily accessible to the occupants",
-        "Lighting must be energy efficient and comply with the relevant energy efficiency requirements",
-        "Lighting must be installed in accordance with the manufacturer's instructions"
+      "blockId": "j3d5_lighting_efficiency",
+      "contentType": "paragraphList",
+      "title": "Lighting Efficiency Requirements",
+      "blockApplicability": null,
+      "paragraphs": [
+        "Lighting must meet minimum efficacy requirements as specified in the NCC.",
+        "Lighting must be suitable for the intended use of the space.",
+        "Lighting must be installed in accordance with manufacturer's instructions.",
+        "Lighting must be accessible for maintenance and replacement."
       ]
     }
   ],

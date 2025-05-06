@@ -1,37 +1,48 @@
 {
-  "version": "1.0",
-  "lastUpdated": "2024-03-19",
   "sectionId": "j3d6_water_heating",
   "title": "J3D6: Water Heating Requirements",
-  "displayOrder": 11,
-  "applicability": {
+  "displayOrder": 12,
+  "overallApplicability": {
     "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"],
-    "conditions": [
-      {
-        "type": "buildingClass",
-        "operator": "in",
-        "value": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"]
-      }
-    ]
+    "climateZones": null,
+    "minFloorArea": null,
+    "maxFloorArea": null
   },
-  "content": [
+  "contentBlocks": [
     {
-      "type": "header",
-      "level": 1,
-      "text": "J3D6: Water Heating Requirements"
+      "blockId": "j3d6_general_requirements",
+      "contentType": "paragraphList",
+      "title": "General Water Heating Requirements",
+      "blockApplicability": null,
+      "paragraphs": [
+        "Water heating systems must be energy efficient and meet minimum efficiency requirements.",
+        "Water heating systems must be installed in accordance with manufacturer's instructions.",
+        "Water heating systems must be accessible for maintenance and replacement.",
+        "Water heating systems must be suitable for the intended use of the building."
+      ]
     },
     {
-      "type": "paragraph",
-      "text": "Water heating systems must comply with the following requirements:"
+      "blockId": "j3d6_energy_efficiency",
+      "contentType": "paragraphList",
+      "title": "Energy Efficiency Requirements",
+      "blockApplicability": null,
+      "paragraphs": [
+        "Water heating systems must meet minimum energy efficiency requirements as specified in the NCC.",
+        "Water heating systems must be suitable for the intended use of the building.",
+        "Water heating systems must be installed in accordance with manufacturer's instructions.",
+        "Water heating systems must be accessible for maintenance and replacement."
+      ]
     },
     {
-      "type": "list",
-      "style": "bullet",
-      "items": [
-        "Water heating systems must be energy efficient and comply with the relevant energy efficiency requirements",
-        "Water heating systems must be installed in accordance with the manufacturer's instructions",
-        "Water heating systems must be controlled by switches that are readily accessible to the occupants",
-        "Water heating systems must be designed to provide adequate hot water for the intended use of the building"
+      "blockId": "j3d6_installation",
+      "contentType": "paragraphList",
+      "title": "Installation Requirements",
+      "blockApplicability": null,
+      "paragraphs": [
+        "Water heating systems must be installed in accordance with manufacturer's instructions.",
+        "Water heating systems must be accessible for maintenance and replacement.",
+        "Water heating systems must be suitable for the intended use of the building.",
+        "Water heating systems must be installed by a qualified person."
       ]
     }
   ],

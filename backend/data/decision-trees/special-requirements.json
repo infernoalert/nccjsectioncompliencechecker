@@ -1,56 +1,75 @@
 {
-  "version": "1.0",
-  "last_updated": "2024-04-15",
-  "special_requirements": {
-    "renewable_energy": {
-      "name": "Renewable Energy Provisions",
-      "trigger": "roof_area > 55m²",
-      "requirements": {
-        "roof_allocation": "20% clear area",
-        "electrical": "switchboard provisions"
+  "sectionId": "special_requirements",
+  "title": "Special Requirements",
+  "displayOrder": 10,
+  "overallApplicability": {
+    "buildingClasses": null,
+    "climateZones": null,
+    "minFloorArea": null,
+    "maxFloorArea": null
+  },
+  "contentBlocks": [
+    {
+      "blockId": "renewable_energy",
+      "contentType": "paragraphList",
+      "title": "Renewable Energy Provisions",
+      "blockApplicability": {
+        "customConditions": [
+          {
+            "property": "roofArea",
+            "operator": ">",
+            "value": 55,
+            "comment": "Building has a roof area greater than 55m²"
+          }
+        ]
       },
-      "conditions": [
-        "Building has a roof area greater than 55m²",
-        "Not exempted by heritage or other special provisions"
-      ],
-      "exemptions": {
-        "heritage": "Heritage-listed buildings",
-        "technical": "Technical impossibility"
-      }
+      "paragraphs": [
+        "Building must allocate 20% clear area for renewable energy installations.",
+        "Electrical switchboard provisions must be made for renewable energy systems.",
+        "Exemptions apply for heritage-listed buildings and cases of technical impossibility."
+      ]
     },
-    "ev_charging": {
-      "name": "Electric Vehicle Charging",
-      "trigger": "carpark >= 10 spaces/storey",
-      "requirements": {
-        "distribution": "dedicated distribution boards",
-        "capacity": "Minimum 20% of spaces",
-        "future_proofing": "Infrastructure for future expansion"
+    {
+      "blockId": "ev_charging",
+      "contentType": "paragraphList",
+      "title": "Electric Vehicle Charging",
+      "blockApplicability": {
+        "customConditions": [
+          {
+            "property": "carparkSpacesPerStorey",
+            "operator": ">=",
+            "value": 10,
+            "comment": "Building has a carpark with 10 or more spaces per storey"
+          }
+        ]
       },
-      "conditions": [
-        "Building has a carpark with 10 or more spaces per storey",
-        "Not in a heritage-listed building"
-      ],
-      "exemptions": {
-        "heritage": "Heritage-listed buildings",
-        "remote": "Remote locations without grid connection"
-      }
+      "paragraphs": [
+        "Dedicated distribution boards must be provided for EV charging.",
+        "Minimum 20% of parking spaces must have EV charging infrastructure.",
+        "Infrastructure must be provided for future expansion.",
+        "Exemptions apply for heritage-listed buildings and remote locations without grid connection."
+      ]
     },
-    "water_efficiency": {
-      "name": "Water Efficiency Requirements",
-      "trigger": "floor_area > 1000m²",
-      "requirements": {
-        "fixtures": "WELS 4-star or better",
-        "recycling": "Greywater system",
-        "monitoring": "Water meters for major uses"
+    {
+      "blockId": "water_efficiency",
+      "contentType": "paragraphList",
+      "title": "Water Efficiency Requirements",
+      "blockApplicability": {
+        "customConditions": [
+          {
+            "property": "floorArea",
+            "operator": ">",
+            "value": 1000,
+            "comment": "Building floor area exceeds 1000m²"
+          }
+        ]
       },
-      "conditions": [
-        "Building floor area exceeds 1000m²",
-        "Located in water-stressed areas"
-      ],
-      "exemptions": {
-        "heritage": "Heritage-listed buildings",
-        "technical": "Technical impossibility"
-      }
+      "paragraphs": [
+        "All fixtures must be WELS 4-star or better rated.",
+        "Greywater system must be installed.",
+        "Water meters must be provided for major water uses.",
+        "Exemptions apply for heritage-listed buildings and cases of technical impossibility."
+      ]
     }
-  }
+  ]
 } 
