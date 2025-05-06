@@ -30,9 +30,10 @@ This project is a web application for checking compliance with the National Cons
   - complianceService.js: Checks compliance with NCC requirements
 
 - **Utils**:
-  - decisionTreeUtils.js: Provides functions to access data from Decision-Tree.json
-  - locationUtils.js: Provides functions to access location and climate zone data
-  - validation.js: Provides validation functions for project data
+  - **sectionLoader.js (New)**: Utility to load and cache all standardized report section JSON files from a designated directory (e.g., `data/decision-trees/` or `data/report-sections/`). Performs basic validation on file structure.
+  - decisionTreeUtils.js: Provides functions primarily for accessing core data not suitable for the dynamic JSON format (e.g., `getBuildingClassification`, `getClimateZoneByLocation`). Less emphasis on individual getters for simple JSON data sections.
+  - locationUtils.js: Provides functions to access location and detailed climate zone data.
+  - validation.js: Provides validation functions for project data.
 
 - **Data Files**:
   - Decision-Tree.json: Contains the decision tree structure for building classifications, climate zones, and compliance pathways
@@ -48,25 +49,9 @@ This project is a web application for checking compliance with the National Cons
   - NewProject.js: Form for creating new projects
   - ProjectList.js: Displays a list of user's projects
   - ProjectDetails.js: Displays details of a specific project
-  - ProjectReport.js: Displays a compliance report for a project with four main sections:
-    1. General
-       - Project Information
-       - Building Classification & Climate Zone
-       - Compliance Pathway
-    2. Performance Requirement
-       - Energy Use Requirements
-       - J1P2 Calculations (for Class_2 and Class_4 buildings)
-         - Total Heating Load
-         - Total Cooling Load
-         - Thermal Energy Load
-    3. DTS - Deemed-to-Satisfy
-       - Building Fabric Specifications
-       - Special Requirements & Exemptions
-       - Elemental Provisions J3
-    4. Other 2
-       - Exemptions
-       - Compliance Results
-       - Documentation
+  - **ProjectReport.js**: Displays the compliance report. Renders core sections (Project Info, Classification, Zone, J1P2 Calcs) directly from the report object and **dynamically renders sections from the `report.dynamicSections` array using the `DynamicSectionRenderer` component.**
+  - **DynamicSectionRenderer.js (New)**: Helper component responsible for rendering individual dynamic sections and their content blocks based on the `contentType` specified in the data.
+  - *Other UI components.*
 
 - **Redux**:
   - projectSlice.js: Manages project-related state
@@ -553,43 +538,47 @@ As an example of how we added J1P2 calculations for Class_2 and Class_4 building
 
 This approach allows for easy addition of new calculations to the report based on specific building classifications. 
 
-## Report Structure
+## Report Structure (Updated View)
 
-The compliance report is organized into four main sections:
+The report structure is now more flexible. While the frontend might still group sections visually, the backend generates:
 
-1. **General**
-   - Project Information
-   - Building Classification & Climate Zone
-   - Compliance Pathway
+1. **Core Sections**: Directly added to the report object (e.g., `projectInfo`, `buildingClassification`, `climateZone`, `j1p2calc`).
 
-2. **DTS - Deemed-to-Satisfy**
+2. **Dynamic Sections**: An array `dynamicSections` containing objects for each applicable, standardized JSON section, sorted by `displayOrder`. The frontend iterates through this array to render sections like:
+   - J1P1 Energy Use
+   - J1P3 Energy Usage
+   - J1P4 EVSE
    - J2 Energy Efficiency
-     - Displays energy efficiency requirements based on building class
-     - For Class_2 and Class_4 buildings, shows requirements based on Total Area of Habitable Rooms
-     - Includes J1P2, J1P3, and J1P4 requirements as applicable
-   - J3D3: Reducing heating and cooling loads of a sole-occupancy unit of a Class 2 building or a Class 4 part of a building using house energy rating software
-     - Only visible for Class_2 and Class_4 buildings
-     - Requirements based on climate zone and Total Area of Habitable Rooms
-     - Includes general requirements, climate zone specific requirements, and floor area requirements
-   - J3D7 Ceiling Insulation Table
-     - Displays ceiling insulation requirements based on climate zone
-     - Shows minimum R-values for different ceiling types
-   - Elemental Provisions J3 (J3D4 Ceiling Fan Requirements)
-     - Title and description of ceiling fan requirements
-     - General requirements for ceiling fan installation
-     - Climate zone specific requirements
-     - Table J3D4 showing minimum ceiling fan requirements based on room size
-   - Building Fabric Specifications
-   - Special Requirements & Exemptions
-
-3. **Performance Requirement**
-   - J1P1: Energy Use
-   - J1P2: Thermal Energy Load Assessment (for Class_2 and Class_4 buildings)
-   - J1P3: Energy Usage (for Class_2 and Class_4 buildings)
-   - J1P4: EVSE Requirements
+   - J3D3 Requirements (if converted)
+   - J3D4 Ceiling Fans
    - Verification Methods
-
-4. **Other 2**
+   - Energy Monitoring
    - Exemptions
-   - Compliance Results
-   - Documentation
+   - Special Requirements
+
+Each dynamic section follows a standardized JSON format:
+```json
+{
+  "sectionId": "unique_section_id",
+  "title": "Section Title",
+  "displayOrder": 1,
+  "overallApplicability": {
+    "buildingClasses": ["Class_2", "Class_4"],
+    "climateZones": ["Zone1", "Zone2"],
+    "minFloorArea": 100,
+    "maxFloorArea": 1000
+  },
+  "contentBlocks": [
+    {
+      "blockTitle": "Block Title",
+      "contentType": "text|table|list",
+      "content": "...",
+      "blockApplicability": {
+        // Similar to overallApplicability
+      }
+    }
+  ]
+}
+```
+
+The frontend uses the `DynamicSectionRenderer` component to handle different content types and render them appropriately.
