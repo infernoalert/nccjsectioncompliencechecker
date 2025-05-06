@@ -1,45 +1,134 @@
 {
   "version": "1.0",
-  "last_updated": "2024-04-15",
-  "exemptions": {
-    "minor_use_rule": {
-      "name": "Minor Use Rule",
-      "description": "Exemptions for minor uses within a building that don't significantly impact energy performance",
-      "threshold": "10% of floor area",
-      "conditions": "The exempted area must be less than 10% of the total floor area",
-      "excluded_classes": ["Class_9b_early_childhood_centre", "laboratories"],
-      "applicable_sections": ["J1", "J2", "J3", "J5", "J6"]
+  "lastUpdated": "2024-04-15",
+  "sectionId": "exemptions",
+  "title": "Exemptions",
+  "displayOrder": 10,
+  "applicability": {
+    "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"],
+    "conditions": [
+      {
+        "type": "buildingClass",
+        "operator": "in",
+        "value": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"]
+      }
+    ]
+  },
+  "content": [
+    {
+      "type": "header",
+      "level": 1,
+      "text": "Exemptions from Energy Efficiency Requirements"
     },
-    "heritage_buildings": {
-      "name": "Heritage Buildings",
-      "description": "Exemptions for buildings with heritage significance",
-      "conditions": "Building must have listed heritage status",
-      "limitations": "Only heritage-sensitive elements are exempt",
-      "applicable_sections": ["J1", "J2", "J3", "J5", "J6", "J7", "J8"],
-      "documentation_required": "Heritage listing documentation"
+    {
+      "type": "section",
+      "id": "minor_use_rule",
+      "title": "Minor Use Rule",
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "Exemptions for minor uses within a building that don't significantly impact energy performance"
+        },
+        {
+          "type": "list",
+          "style": "bullet",
+          "items": [
+            "Threshold: 10% of floor area",
+            "Conditions: The exempted area must be less than 10% of the total floor area",
+            "Excluded classes: Class_9b_early_childhood_centre, laboratories",
+            "Applicable sections: J1, J2, J3, J5, J6"
+          ]
+        }
+      ]
     },
-    "small_buildings": {
-      "name": "Small Buildings Exemption",
-      "description": "Exemptions for buildings with small floor areas",
-      "threshold": "Less than 500m² floor area",
-      "conditions": "Total floor area must be less than 500m²",
-      "applicable_sections": ["J1", "J2", "J3"],
-      "documentation_required": "Floor area calculations"
+    {
+      "type": "section",
+      "id": "heritage_buildings",
+      "title": "Heritage Buildings",
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "Exemptions for buildings with heritage significance"
+        },
+        {
+          "type": "list",
+          "style": "bullet",
+          "items": [
+            "Conditions: Building must have listed heritage status",
+            "Limitations: Only heritage-sensitive elements are exempt",
+            "Applicable sections: J1, J2, J3, J5, J6, J7, J8",
+            "Documentation required: Heritage listing documentation"
+          ]
+        }
+      ]
     },
-    "temporary_buildings": {
-      "name": "Temporary Buildings",
-      "description": "Exemptions for buildings intended for temporary use",
-      "conditions": "Building must be designed for temporary use (less than 2 years)",
-      "limitations": "Limited to specific building classes",
-      "applicable_sections": ["J1", "J2", "J3", "J5", "J6"],
-      "documentation_required": "Temporary use declaration"
+    {
+      "type": "section",
+      "id": "small_buildings",
+      "title": "Small Buildings Exemption",
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "Exemptions for buildings with small floor areas"
+        },
+        {
+          "type": "list",
+          "style": "bullet",
+          "items": [
+            "Threshold: Less than 500m² floor area",
+            "Conditions: Total floor area must be less than 500m²",
+            "Applicable sections: J1, J2, J3",
+            "Documentation required: Floor area calculations"
+          ]
+        }
+      ]
     },
-    "remote_locations": {
-      "name": "Remote Locations",
-      "description": "Exemptions for buildings in remote locations with limited access to services",
-      "conditions": "Building must be in a remote location as defined by the NCC",
-      "applicable_sections": ["J1", "J2", "J3", "J5", "J6", "J7", "J8"],
-      "documentation_required": "Location verification"
+    {
+      "type": "section",
+      "id": "temporary_buildings",
+      "title": "Temporary Buildings",
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "Exemptions for buildings intended for temporary use"
+        },
+        {
+          "type": "list",
+          "style": "bullet",
+          "items": [
+            "Conditions: Building must be designed for temporary use (less than 2 years)",
+            "Limitations: Limited to specific building classes",
+            "Applicable sections: J1, J2, J3, J5, J6",
+            "Documentation required: Temporary use declaration"
+          ]
+        }
+      ]
+    },
+    {
+      "type": "section",
+      "id": "remote_locations",
+      "title": "Remote Locations",
+      "content": [
+        {
+          "type": "paragraph",
+          "text": "Exemptions for buildings in remote locations with limited access to services"
+        },
+        {
+          "type": "list",
+          "style": "bullet",
+          "items": [
+            "Conditions: Building must be in a remote location as defined by the NCC",
+            "Applicable sections: J1, J2, J3, J5, J6, J7, J8",
+            "Documentation required: Location verification"
+          ]
+        }
+      ]
     }
+  ],
+  "metadata": {
+    "source": "NCC 2022",
+    "lastReviewed": "2024-04-15",
+    "reviewedBy": "System",
+    "status": "active"
   }
 } 

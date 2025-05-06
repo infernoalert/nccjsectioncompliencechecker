@@ -1,6 +1,60 @@
 {
   "version": "1.0",
-  "last_updated": "2024-03-19",
-  "description": "laterdescribtion",
-  "descriptionValue": "later describtionvalue"
+  "lastUpdated": "2024-03-19",
+  "sectionId": "j1p2_total_cooling_load",
+  "title": "J1P2: Total Cooling Load Assessment",
+  "displayOrder": 3,
+  "applicability": {
+    "buildingClasses": ["Class_2", "Class_4"],
+    "conditions": [
+      {
+        "type": "buildingClass",
+        "operator": "in",
+        "value": ["Class_2", "Class_4"]
+      }
+    ]
+  },
+  "content": [
+    {
+      "type": "header",
+      "level": 1,
+      "text": "J1P2: Total Cooling Load Assessment"
+    },
+    {
+      "type": "paragraph",
+      "text": "The total cooling load of the habitable rooms and conditioned spaces in a sole-occupancy unit of a Class 2 building or a Class 4 part of a building must not exceed the calculated limit."
+    },
+    {
+      "type": "calculation",
+      "id": "total_cooling_load",
+      "formula": "(5.4 + 0.00617 * (CDH + 1.85 * DGH)) * Fc",
+      "variables": {
+        "CDH": {
+          "type": "climateData",
+          "property": "cooling_degree_hours"
+        },
+        "DGH": {
+          "type": "climateData",
+          "property": "dehumidification_gram_hours"
+        },
+        "Fc": {
+          "type": "calculation",
+          "property": "area_adjustment_factor"
+        }
+      },
+      "unit": "MJ/m² per annum",
+      "description": "Total Cooling Load Limit calculation"
+    },
+    {
+      "type": "note",
+      "text": "The area adjustment factor (Fc) is calculated based on the total area of habitable rooms.",
+      "style": "info"
+    }
+  ],
+  "metadata": {
+    "source": "NCC 2022",
+    "lastReviewed": "2024-03-19",
+    "reviewedBy": "System",
+    "status": "active"
+  }
 } 

@@ -1,0 +1,44 @@
+{
+  "version": "1.0",
+  "lastUpdated": "2024-03-19",
+  "sectionId": "j3d18_spa_pump_timer",
+  "title": "J3D18: Spa Pump Timer Requirements",
+  "displayOrder": 23,
+  "applicability": {
+    "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"],
+    "conditions": [
+      {
+        "type": "buildingClass",
+        "operator": "in",
+        "value": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"]
+      }
+    ]
+  },
+  "content": [
+    {
+      "type": "header",
+      "level": 1,
+      "text": "J3D18: Spa Pump Timer Requirements"
+    },
+    {
+      "type": "paragraph",
+      "text": "Spa pump timers must comply with the following requirements:"
+    },
+    {
+      "type": "list",
+      "style": "bullet",
+      "items": [
+        "Spa pump timers must be energy efficient and comply with the relevant energy efficiency requirements",
+        "Spa pump timers must be installed in accordance with the manufacturer's instructions",
+        "Spa pump timers must be controlled by switches that are readily accessible to the occupants",
+        "Spa pump timers must be designed to provide adequate control for the intended use of the spa"
+      ]
+    }
+  ],
+  "metadata": {
+    "source": "NCC 2022",
+    "lastReviewed": "2024-03-19",
+    "reviewedBy": "System",
+    "status": "active"
+  }
+} 
