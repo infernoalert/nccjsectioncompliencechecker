@@ -57,6 +57,7 @@ const referenceDataRoutes = require('./routes/referenceDataRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const testRoutes = require('./routes/testRoutes');
 const healthRoutes = require('./routes/healthRoutes');
+const elecReportRoutes = require('./routes/elec_reportRoutes');
 
 const app = express();
 
@@ -110,6 +111,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/climate-zones', climateZoneRoutes);
 app.use('/api/compliance-pathways', compliancePathwayRoutes);
 app.use('/api/projects', projectRoutes);
+app.use('/api/electrical', elecReportRoutes);
 app.use('/api', complianceCalculatorRoutes);
 app.use('/api', referenceDataRoutes);
 app.use('/api/admin', adminRoutes);
