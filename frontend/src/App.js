@@ -9,6 +9,7 @@ import NewProject from './components/NewProject';
 import ProjectDetails from './components/ProjectDetails';
 import ProjectForm from './components/ProjectForm';
 import ProjectReport from './components/ProjectReport';
+import ElectricalReport from './components/ElectricalReport';
 import NotFound from './components/NotFound';
 import Navbar from './components/Navbar';
 import Presentation from './static/Presentation';
@@ -104,6 +105,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <ProjectReport />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/electrical/:id/report"
+            element={
+              <ProtectedRoute>
+                <ElectricalReport />
               </ProtectedRoute>
             }
           />

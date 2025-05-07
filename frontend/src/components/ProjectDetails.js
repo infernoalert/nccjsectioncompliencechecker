@@ -168,6 +168,14 @@ const ProjectDetails = () => {
           </Button>
           <Button
             variant="contained"
+            color="success"
+            startIcon={<AssessmentIcon />}
+            onClick={() => navigate(`/electrical/${id}/report`)}
+          >
+            Electrical
+          </Button>
+          <Button
+            variant="contained"
             color="info"
             startIcon={<AssessmentIcon />}
             onClick={() => navigate(`/projects/${id}/report?section=exemptions`)}
