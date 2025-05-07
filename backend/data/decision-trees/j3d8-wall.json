@@ -1,0 +1,109 @@
+{
+  "sectionId": "j3d8_external_walls",
+  "title": "J3D8: External Walls of a Sole-Occupancy Unit of a Class 2 Building or a Class 4 Part of a Building",
+  "displayOrder": 14,
+  "overallApplicability": {
+    "buildingClasses": ["Class_2", "Class_4"],
+    "climateZones": ["1", "2", "3", "4", "5", "6", "7", "8"],
+    "minFloorArea": null,
+    "maxFloorArea": null
+  },
+  "contentBlocks": [
+    {
+      "blockId": "j3d8_requirements",
+      "contentType": "list",
+      "title": "General Requirements",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_4"],
+        "climateZones": ["1", "2", "3", "4", "5", "6", "7", "8"]
+      },
+      "listType": "unordered",
+      "items": [
+        "The Total R-Value of an external wall— in climate zones 1, 2, 3, 5 and 6— (a) where the ratio of the area of opaque external walls to the floor area of the sole-occupancy unit is less than 20%, must be at least R1.15; and (b) where the ratio of the area of opaque external walls to the floor area of the sole-occupancy unit is greater than or equal to 20% but less than 35%, must be at least R2.04; and (c) where the ratio of the area of opaque external walls to the floor area of the sole-occupancy unit is greater than or equal to 35%, must be at least R2.24; and in climate zones 4, 7 and 8, must be at least R2.24.",
+        "The Total R-Value of an external wall must be determined in accordance with— (a) for a spandrel panel in a curtain wall system, in accordance with Specification 38; and (b) for all other walls, in accordance with AS/NZS 4859.2.",
+        "The solar absorptance of an external wall must— (a) in climate zones 1 to 6, be in accordance with the applicable list below; and (b) in climate zones 7 and 8, be in accordance with Table J3D8b."
+      ]
+    },
+    {
+      "blockId": "j3d8_zone_1_3",
+      "contentType": "list",
+      "title": "Solar Absorptance – Climate Zones 1 and 3",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_4"],
+        "climateZones": ["1", "3"]
+      },
+      "listType": "unordered",
+      "items": [
+        "If opaque external wall to net floor area ratio < 45%, Permitted solar absorptance ≤ 0.8",
+        "If opaque external wall to net floor area ratio ≥ 45%, solar Permitted solar absorptance ≤ 0.35"
+      ]
+    },
+    {
+      "blockId": "j3d8_zone_2",
+      "contentType": "list",
+      "title": "Solar Absorptance – Climate Zone 2",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_4"],
+        "climateZones": ["2"]
+      },
+      "listType": "unordered",
+      "items": [
+        "If opaque external wall to net floor area ratio < 35%, Permitted solar absorptance = any",
+        "If opaque external wall to net floor area ratio ≥ 35%, Permitted solar absorptance = any, or ≤ 0.35 if shading device overhang is < 300 mm"
+      ]
+    },
+    {
+      "blockId": "j3d8_zone_4_5",
+      "contentType": "list",
+      "title": "Solar Absorptance – Climate Zones 4 and 5",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_4"],
+        "climateZones": ["4", "5"]
+      },
+      "listType": "unordered",
+      "items": [
+        "If opaque external wall to net floor area ratio < 45%, Permitted solar absorptance = any",
+        "If opaque external wall to net floor area ratio ≥ 45%, Permitted solar absorptance ≤ 0.35 if shading device overhang is < 1500 mm"
+      ]
+    },
+    {
+      "blockId": "j3d8_zone_6",
+      "contentType": "list",
+      "title": "Solar Absorptance – Climate Zone 6",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_4"],
+        "climateZones": ["6"]
+      },
+      "listType": "unordered",
+      "items": [
+        "Opaque external wall to net floor area ratio: solar absorptance = any"
+      ]
+    },
+    {
+      "blockId": "j3d8b",
+      "contentType": "table",
+      "title": "Solar absorptance – climate zones 7 and 8 (Table J3D8b)",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_4"],
+        "climateZones": ["7", "8"]
+      },
+      "headers": [
+        "Opaque external wall to net floor area ratio",
+        "Shading device overhang (mm)",
+        "≥ 0 to < 600",
+        "≥ 600 to < 900",
+        "≥ 900 to < 1200",
+        "≥ 1200"
+      ],
+      "rows": [
+        ["< 20%", "Any", "Any", "≥ 0.4", "X"],
+        ["≥ 20% to < 35%", "Any", "Any", "X", "X"],
+        ["≥ 35% to < 45%", "Any", "≥ 0.4", "X", "X"],
+        ["≥ 45%", "Any", "≥ 0.6", "X", "X"]
+      ],
+      "notes": [
+        "X = not permitted"
+      ]
+    }
+  ]
+}
