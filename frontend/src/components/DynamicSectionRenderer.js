@@ -47,14 +47,20 @@ const renderContentBlock = (block, index) => {
 
         case 'list':
             return (
-                <List key={index} dense sx={{ mb: 1 }}>
-                    {block.items && block.items.map((item, itemIndex) => (
-                        // Basic list item rendering
-                        <ListItem key={itemIndex} sx={{ py: 0.5 }}>
-                            <ListItemText primary={item} />
-                        </ListItem>
-                    ))}
-                </List>
+                <Box key={index}>
+                    {block.title && (
+                        <Typography variant="subtitle1" gutterBottom sx={{ mt: 2, mb: 1 }}>
+                            {block.title}
+                        </Typography>
+                    )}
+                    <List dense sx={{ mb: 1 }}>
+                        {block.items && block.items.map((item, itemIndex) => (
+                            <ListItem key={itemIndex} sx={{ py: 0.5 }}>
+                                <ListItemText primary={item} />
+                            </ListItem>
+                        ))}
+                    </List>
+                </Box>
             );
 
         case 'paragraphList':
@@ -79,12 +85,12 @@ const renderContentBlock = (block, index) => {
         case 'table':
             return (
                 <Box key={index} sx={{ my: 2 }}>
-                     {block.tableTitle && (
-                         <Typography variant="h6" gutterBottom sx={{ mb: 1 }}>
-                             {block.tableTitle}
-                         </Typography>
-                     )}
-                     <TableContainer component={Paper} elevation={2}>
+                    {(block.tableTitle || block.title) && (
+                        <Typography variant="h6" gutterBottom sx={{ mb: 1 }}>
+                            {block.tableTitle || block.title}
+                        </Typography>
+                    )}
+                    <TableContainer component={Paper} elevation={2}>
                         <Table size="small">
                             {block.headers && (
                                 <TableHead sx={{ backgroundColor: 'grey.200' }}>

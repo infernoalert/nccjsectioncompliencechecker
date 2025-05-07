@@ -4,7 +4,9 @@
   "displayOrder": 2,
   "overallApplicability": {
     "buildingClasses": [      
-      "Class_3",      
+      "Class_2", 
+      "Class_3",
+      "Class_4",      
       "Class_5",
       "Class_6",
       "Class_7a",

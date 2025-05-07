@@ -1,0 +1,54 @@
+{
+  "sectionId": "j3d6_wallthermal",
+  "title": "J3D6: Wall thermal breaks of a sole-occupancy unit of a Class 2 building or a Class 4 part of a building",
+  "displayOrder": 12,
+  "overallApplicability": {
+    "buildingClasses": ["Class_2", "Class_4"],
+    "climateZones": null,
+    "minFloorArea": null,
+    "maxFloorArea": null
+  },
+  "contentBlocks": [
+    {
+      "blockId": "j3d6_wall_requirements",
+      "contentType": "list",
+      "title": "Wall Thermal Break Requirements",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_4"]
+      },
+      "listType": "unordered",
+      "items": [
+        "A metal-framed wall that forms part of the building envelope must have a thermal break, consisting of a material with an R-Value of not less than R0.2, installed at all points of contact between the external cladding and the metal frame if the wall:",
+        "(a) does not have a wall lining or has a wall lining that is fixed directly to the same metal frame; and",
+        "(b) is clad with weatherboards, fibre-cement or the like, or metal sheeting fixed to a metal frame."
+      ]
+    },
+    {
+      "blockId": "j3d6_exceptions",
+      "contentType": "list",
+      "title": "Exceptions",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_4"]
+      },
+      "listType": "unordered",
+      "items": [
+        "The requirements above do not apply to walls constructed using insulated sandwich panels."
+      ]
+    },
+    {
+      "blockId": "j3d6_definition",
+      "contentType": "note",
+      "title": "Definition",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_4"]
+      },
+      "text": "R-Value: The thermal resistance of a component calculated by dividing its thickness by its thermal conductivity, expressed in m².K/W."
+    }
+  ],
+  "metadata": {
+    "source": "NCC 2022",
+    "lastReviewed": "2024-03-19",
+    "reviewedBy": "System",
+    "status": "active"
+  }
+} 

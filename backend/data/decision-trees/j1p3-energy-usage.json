@@ -1,33 +1,24 @@
 {
-  "version": "1.0",
-  "lastUpdated": "2024-03-19",
   "sectionId": "j1p3_energy_usage",
   "title": "J1P3: Energy Usage of a Sole-occupancy Unit",
   "displayOrder": 5,
-  "applicability": {
+  "overallApplicability": {
     "buildingClasses": ["Class_2", "Class_4"],
-    "conditions": [
-      {
-        "type": "buildingClass",
-        "operator": "in",
-        "value": ["Class_2", "Class_4"]
-      }
-    ]
+    "climateZones": null,
+    "minFloorArea": null,
+    "maxFloorArea": null
   },
-  "content": [
+  "contentBlocks": [
     {
-      "type": "header",
-      "level": 1,
-      "text": "J1P3: Energy Usage of a Sole-occupancy Unit"
-    },
-    {
-      "type": "paragraph",
-      "text": "The energy value of the domestic services of a sole-occupancy unit of a Class 2 building or Class 4 part of a building must not exceed the energy value with:"
-    },
-    {
-      "type": "list",
-      "style": "bullet",
+      "blockId": "j1p3_energy_value",
+      "contentType": "list",
+      "title": "Energy Value Requirements for Class 2 and Class 4 Buildings",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_4"]
+      },
+      "listType": "unordered",
       "items": [
+        "The energy value of the domestic services of a sole-occupancy unit of a Class 2 building or Class 4 part of a building must not exceed the energy value with:",
         "a 3-star ducted heat pump, rated under the 2019 GEMS determination, heating all spaces that are provided with heating; and",
         "a 3-star ducted heat pump, rated under the 2019 GEMS determination, cooling all spaces that are provided with cooling; and",
         "a 5-star instantaneous gas water heater, rated under the 2017 GEMS determination, providing all domestic hot water; and",
@@ -35,13 +26,15 @@
       ]
     },
     {
-      "type": "paragraph",
-      "text": "Domestic services, including any associated distribution system and components must, to the degree necessary, have features that facilitate the efficient use of energy appropriate to:"
-    },
-    {
-      "type": "list",
-      "style": "bullet",
+      "blockId": "j1p3_domestic_services",
+      "contentType": "list",
+      "title": "Domestic Services Requirements",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_4"]
+      },
+      "listType": "unordered",
       "items": [
+        "Domestic services, including any associated distribution system and components must, to the degree necessary, have features that facilitate the efficient use of energy appropriate to:",
         "the domestic service and its usage; and",
         "the geographic location of the building; and",
         "the location of the domestic service; and",

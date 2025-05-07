@@ -1,0 +1,175 @@
+{
+  "sectionId": "j1vx",
+  "title": "J1V: Verification Methods for Energy Efficiency",
+  "displayOrder": 7,
+  "overallApplicability": {
+    "buildingClasses": ["Class_2", "Class_3", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"],
+    "climateZones": null,
+    "minFloorArea": null,
+    "maxFloorArea": null
+  },
+  "contentBlocks": [
+    {
+      "blockId": "j1vx_class2_nabers",
+      "contentType": "list",
+      "title": "Class 2 Buildings - NABERS Energy Verification",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2"]
+      },
+      "listType": "unordered",
+      "items": [
+        "J1V1-minimum 4-star NABERS Energy for Apartment Buildings:",
+        "(a) obtain commitment agreement; and",
+        "(b) AC ≥18 hrs/day in common lift lobbies/corridors; and",
+        "(c) energy model shows:",
+        "   (i) emissions <90% of 5-star level; and",
+        "(ii) PMV -1 to +1 in ≥95% common areas (excl. pools) for ≥98% hours; and",
+        "(iii) pool chambers +2°C above pool temp for ≥12 hrs/day; and",
+        "(d) complies with Specification 33",
+        "(5)The calculation method for must comply with ANSI/ASHRAE Standard 140"
+      ]
+    },
+    {
+      "blockId": "j1vx_class2_greenstar",
+      "contentType": "list",
+      "title": "Class 2 Buildings - Green Star Alternative",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2"]
+      },
+      "listType": "unordered",
+      "items": [
+        "J1V2-Green Star alternative compliance:",
+        "(a) registered for Green Star Design & As-Built or Buildings rating; and",
+        "(b) emissions <90% of reference building; and",
+        "(c) PMV -1 to +1 in ≥95% areas for ≥98% hours; and",
+        "(d) complies with Specification 33"
+      ]
+    },
+    {
+      "blockId": "j1vx_class3_nabers",
+      "contentType": "list",
+      "title": "Class 3 Buildings - NABERS Energy Verification",
+      "blockApplicability": {
+        "buildingClasses": ["Class_3"]
+      },
+      "listType": "unordered",
+      "items": [
+        "J1V1-minimum 4-star NABERS Energy for Hotels:",
+        "(a) obtain commitment agreement; and",
+        "(b) operating hours:",
+        "   - ≥12 hrs/day (bedrooms/dining/conference)",
+        "   - 24 hrs/day (corridors/foyers)",
+        "   - ≥18 hrs/day (back-of-house); and",
+        "(c) energy model shows:",
+        "   (i) emissions <70% of 5-star level; and",
+        "(ii) PMV -1 to +1 in ≥95% areas (excl. pools) for ≥98% hours; and",
+        "(iii) pool chambers +2°C above pool temp for ≥12 hrs/day; and",
+        "(d) complies with Specification 33",
+        "(5)The calculation method for must comply with ANSI/ASHRAE Standard 140"
+      ]
+    },
+    {
+      "blockId": "j1vx_class3_greenstar",
+      "contentType": "list",
+      "title": "Class 3 Buildings - Green Star Alternative",
+      "blockApplicability": {
+        "buildingClasses": ["Class_3"]
+      },
+      "listType": "unordered",
+      "items": [
+        "J1V2-Green Star alternative compliance:",
+        "(a) registered for Green Star Design & As-Built or Buildings rating; and",
+        "(b) emissions <90% of reference building; and",
+        "(c) PMV -1 to +1 in ≥95% areas for ≥98% hours; and",
+        "(d) complies with Specification 33"
+      ]
+    },
+    {
+      "blockId": "j1vx_class5_nabers",
+      "contentType": "list",
+      "title": "Class 5 Buildings - NABERS Energy Verification",
+      "blockApplicability": {
+        "buildingClasses": ["Class_5"]
+      },
+      "listType": "unordered",
+      "items": [
+        "J1V1-minimum 5.5-star NABERS Energy base building:",
+        "(a) the energy model required demonstrates—",
+        "(b) emissions ≤67% of 5.5-star level excluding—",
+        "   (i) tenant systems; and",
+        "   (A) external lighting; and",
+        "   (B) carpark services; and",
+        "   (C) PMV -1 to +1 across ≥95% floor area for ≥98% hours; and",
+        "(c) complies with Specification 33"
+      ]
+    },
+    {
+      "blockId": "j1vx_class5_greenstar",
+      "contentType": "list",
+      "title": "Class 5 Buildings - Green Star Alternative",
+      "blockApplicability": {
+        "buildingClasses": ["Class_5"]
+      },
+      "listType": "unordered",
+      "items": [
+        "J1V2-Green Star alternative compliance:",
+        "(a) registered for Green Star Design & As-Built or Buildings rating; and",
+        "(b) emissions <90% of reference building; and",
+        "(c) PMV -1 to +1 in ≥95% areas for ≥98% hours; and",
+        "(d) complies with Specification 33"
+      ]
+    },
+    {
+      "blockId": "j1vx_class6_nabers",
+      "contentType": "list",
+      "title": "Class 6 Buildings - NABERS Energy Verification",
+      "blockApplicability": {
+        "buildingClasses": ["Class_6"]
+      },
+      "listType": "unordered",
+      "items": [
+        "J1V1-minimum 4.5-star NABERS Energy for Shopping Centres:",
+        "(a) obtain commitment agreement; and",
+        "(b) building must have:",
+        "   (i) ≥20% AC common area of GLA; and",
+        "   (ii) GLA >15,000 m²; and",
+        "(c) energy model shows:",
+        "   (i) emissions <80% of 4.5-star level; and",
+        "   (ii) PMV -1 to +1 in ≥95% AC spaces for ≥98% hours; and",
+        "(d) complies with Specification 33"
+      ]
+    },
+    {
+      "blockId": "j1vx_class6_greenstar",
+      "contentType": "list",
+      "title": "Class 6 Buildings - Green Star Alternative",
+      "blockApplicability": {
+        "buildingClasses": ["Class_6"]
+      },
+      "listType": "unordered",
+      "items": [
+        "J1V2-Green Star alternative compliance:",
+        "(a) registered for Green Star Design & As-Built or Buildings rating; and",
+        "(b) emissions <90% of reference building; and",
+        "(c) PMV -1 to +1 in ≥95% areas for ≥98% hours; and",
+        "(d) complies with Specification 33"
+      ]
+    },
+    {
+      "blockId": "j1vx_other_classes_greenstar",
+      "contentType": "list",
+      "title": "Other Building Classes - Green Star Alternative",
+      "blockApplicability": {
+        "buildingClasses": ["Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"]
+      },
+      "listType": "unordered",
+      "items": [
+        "J1V2-Green Star alternative compliance:",
+        "(a) registered for Green Star Design & As-Built or Buildings rating; and",
+        "(b) emissions <90% of reference building; and",
+        "(c) PMV -1 to +1 in ≥95% areas for ≥98% hours; and",
+        "(d) complies with Specification 33"
+      ]
+    }
+  ]
+} 
