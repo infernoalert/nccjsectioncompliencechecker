@@ -1,28 +1,27 @@
 {
-  "version": "1.0",
-  "lastUpdated": "2024-03-19",
   "sectionId": "j1p4_evse",
   "title": "J1P4: Renewable Energy and Electric Vehicle Charging",
   "displayOrder": 6,
-  "applicability": {
+  "overallApplicability": {
     "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"],
-    "conditions": [
-      {
-        "type": "buildingClass",
-        "operator": "in",
-        "value": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"]
-      }
-    ]
+    "climateZones": null,
+    "minFloorArea": null,
+    "maxFloorArea": null
   },
-  "content": [
+  "contentBlocks": [
     {
-      "type": "header",
-      "level": 1,
-      "text": "J1P4: Renewable Energy and Electric Vehicle Charging"
-    },
-    {
-      "type": "paragraph",
-      "text": "A building must have features that facilitate the future installation of on-site renewable energy generation and storage and electric vehicle charging equipment."
+      "blockId": "j1p4_renewable_energy",
+      "contentType": "list",
+      "title": "Renewable Energy and Electric Vehicle Charging Requirements",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"]
+      },
+      "listType": "unordered",
+      "items": [
+        "A building must have features that facilitate the future installation of:",
+        "on-site renewable energy generation and storage; and",
+        "electric vehicle charging equipment."
+      ]
     }
   ],
   "metadata": {

@@ -1,0 +1,953 @@
+{
+  "sectionId": "j3d7_roof_zone1",
+  "title": "J3D7: Roofs and Ceilings of a Sole-Occupancy Unit of a Class 2 Building or a Class 4 Part of a Building",
+  "displayOrder": 13,
+  "overallApplicability": {
+    "buildingClasses": ["Class_2", "Class_4"],
+    "climateZones": ["1","2","3","4","5","6","7","8"],
+    "minFloorArea": null,
+    "maxFloorArea": null
+  },
+  "contentBlocks": [
+    {
+      "blockId": "j3d7_zone1_requirements",
+      "contentType": "list",
+      "title": "Requirements for Climate Zone 1",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_4"],
+        "climateZones": ["1"]
+      },
+      "listType": "unordered",
+      "items": [
+        "Roof and ceiling insulation must achieve the minimum R-Value in climate zone 1, in accordance with Tables J3D7a, J3D7b and J3D7c as applicable.",
+        "Reflective insulation installed to comply with (1) must: have a surface emittance of not more than 0.05; and be adjacent to a roof space of not less than 20 mm.",
+        "The thermal bridging in a metal-framed roof must be addressed as follows:",
+        "For a pitched roof with a horizontal ceiling: (a) achieving the Total R-Value in Table J3D7s, calculated using a method that accounts for the effects of thermal bridging; or (b) increasing the R-Value of the insulation between the ceiling frames by R0.5 more than the R-Value derived from (1); or (c) adding a continuous ceiling insulation layer with a minimum R-Value of R0.13 above or below the ceiling joists or the bottom chords of the trusses; or (d) achieving the required ceiling R-Value derived from (1) by stacking two layers of insulation immediately on top of each other, such that the top layer is orientated to cover the ceiling joists or bottom chord of the trusses and has an R-Value of at least R0.5.",
+        "For a flat, skillion or cathedral roof: (a) achieving the Total R-Value in Table J3D7t, calculated using a method that accounts for the effects of thermal bridging; or (b) complying with Table J3D7u.",
+        "Where F8D5(1) applies, continuous insulation placed above the primary insulation layer to mitigate thermal bridging must have a vapour permeance of not less than that of the primary insulation layer.",
+        "Where, for operational or safety reasons, the area of ceiling insulation required is reduced, the loss of insulation must be compensated for in accordance with Table J3D7w.",
+        "Where the ceiling insulation required by (1) to (5) has an R-Value: (a) greater than R3.0 and less than or equal to R4.5, it may be reduced to R3.0 within 450 mm of an external wall; or (b) greater than R4.5, it may be reduced to R3.0 within 450 mm of an external wall, provided all other required ceiling insulation is increased by R0.5.",
+        "The requirements of (1) to (6) do not apply to roofs constructed using insulated sandwich panels.",
+        "Roofs constructed using insulated sandwich panels must achieve the minimum Total R-Value in Table J3D7x.",
+        "In climate zones 1 to 5, the solar absorptance of the upper surface of a roof must not be more than 0.64.",
+        "Direction of heat flow is Down"
+      ]
+    },
+    {
+      "blockId": "j3d7a",
+      "contentType": "table",
+      "title": "Flat Concrete Roof — Minimum R-Value for Ceiling Insulation: Climate Zone 1 (Table J3D7a)",
+      "blockApplicability": {
+        "roofType": "flat_concrete",
+        "climateZones": ["1"]
+      },
+      "headers": [
+        "Reflective Insulation Under-Roof",
+        "SA ≤ 0.23",
+        "SA > 0.23 to ≤ 0.32",
+        "SA > 0.32 to ≤ 0.42",
+        "SA > 0.42 to ≤ 0.53",
+        "SA > 0.53 to ≤ 0.64"
+      ],
+      "rows": [
+        ["Yes", "1.0", "1.5", "2.0", "2.5", "3.0"],
+        ["No", "1.5", "2.0", "2.5", "3.0", "4.0"]
+      ],
+      "notes": [
+        "SA = solar absorptance.",
+        "Reflective insulation R-Value is not included in under-roof or ceiling insulation values.",
+        "R-Values listed are labelled, declared R-Values."
+      ]
+    },
+    {
+      "blockId": "j3d7b",
+      "contentType": "table",
+      "title": "Timber-Framed Pitched Roof with Horizontal Ceiling — Minimum R-Value: Climate Zone 1 (Table J3D7b)",
+      "blockApplicability": {
+        "roofType": "timber_pitched_horizontal_ceiling",
+        "climateZones": ["1"]
+      },
+      "headers": [
+        "Roof Ventilation",
+        "Reflective Insulation Under-Roof",
+        "Under-Roof Insulation R-Value",
+        "SA ≤ 0.23",
+        "SA > 0.23 to ≤ 0.32",
+        "SA > 0.32 to ≤ 0.42",
+        "SA > 0.42 to ≤ 0.53",
+        "SA > 0.53 to ≤ 0.64"
+      ],
+      "rows": [
+        ["Vented", "Yes", "< 1.0", "1.5", "1.5", "1.5", "1.5", "2.0"],
+        ["Vented", "Yes", "≥ 1.0 to < 1.5", "1.5", "1.5", "1.5", "1.5", "1.5"],
+        ["Vented", "Yes", "≥ 1.5 to < 2.0", "1.5", "1.5", "1.5", "1.5", "1.5"],
+        ["Vented", "Yes", "≥ 2.0", "1.5", "1.5", "1.5", "2.0", "2.0"],
+        ["Vented", "No", "< 1.0", "2.0", "2.5", "4.0", "5.0", "X"],
+        ["Vented", "No", "≥ 1.0 to < 1.5", "1.5", "1.5", "1.5", "1.5", "2.5"],
+        ["Vented", "No", "≥ 1.5 to < 2.0", "1.5", "1.5", "1.5", "2.0", "2.0"],
+        ["Vented", "No", "≥ 2.0", "1.5", "1.5", "1.5", "1.5", "1.5"],
+        ["Standard", "Yes", "< 1.0", "1.5", "1.5", "2.0", "3.0", "4.0"],
+        ["Standard", "Yes", "≥ 1.0 to < 1.5", "1.5", "1.5", "1.5", "1.5", "2.5"],
+        ["Standard", "Yes", "≥ 1.5 to < 2.0", "1.5", "1.5", "1.5", "1.5", "2.0"],
+        ["Standard", "Yes", "≥ 2.0", "1.5", "1.5", "1.5", "1.5", "1.5"],
+        ["Standard", "No", "< 1.0", "2.5", "4.0", "6.0", "X", "X"],
+        ["Standard", "No", "≥ 1.0 to < 1.5", "1.5", "1.5", "1.5", "1.5", "4.0"],
+        ["Standard", "No", "≥ 1.5 to < 2.0", "1.5", "1.5", "2.0", "2.0", "2.5"],
+        ["Standard", "No", "≥ 2.0", "1.5", "1.5", "1.5", "2.0", "2.5"]
+      ],
+      "notes": [
+        "SA = solar absorptance.",
+        "Roof is 'vented' if: (a) 1 wind-driven ventilator/50m² + gable/eave/ridge vents, OR (b) 1 powered ventilator/200m² + vents, OR (c) tiled roof without sarking.",
+        "'Standard' roof = not vented.",
+        "Reflective insulation R-Value not included.",
+        "X = not permitted."
+      ]
+    },
+    {
+      "blockId": "j3d7c",
+      "contentType": "table",
+      "title": "Timber-Framed Flat, Skillion, or Cathedral Roof — Minimum R-Value: Climate Zone 1 (Table J3D7c)",
+      "blockApplicability": {
+        "roofType": "timber_flat_skillion_cathedral",
+        "climateZones": ["1"]
+      },
+      "headers": [
+        "Reflective Insulation Under-Roof",
+        "SA ≤ 0.23",
+        "SA > 0.23 to ≤ 0.32",
+        "SA > 0.32 to ≤ 0.42",
+        "SA > 0.42 to ≤ 0.53",
+        "SA > 0.53 to ≤ 0.64"
+      ],
+      "rows": [
+        ["Yes", "1.5", "1.5", "2.0", "3.0", "4.0"],
+        ["No", "1.5", "3.5", "5.0", "X", "X"]
+      ],
+      "notes": [
+        "SA = solar absorptance.",
+        "R-Value can be achieved by insulation under roof, on top of ceiling, or both.",
+        "Reflective insulation R-Value not included.",
+        "X = not permitted."
+      ]
+    },
+    {
+      "blockId": "j3d7_zone2_requirements",
+      "contentType": "list",
+      "title": "Requirements for Climate Zone 2",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_4"],
+        "climateZones": ["2"]
+      },
+      "listType": "unordered",
+      "items": [
+        "Roof and ceiling insulation must achieve the minimum R-Value—",
+        "in climate zone 2, in accordance with Tables J3D7d, J3D7e and J3D7f as applicable; and",
+        "(2)Reflective insulation installed to comply with (1) must—",
+        "have a surface emittance of not more than 0.05; and",
+        "be adjacent to a roof space of not less than 20 mm; and",
+        "(3)The thermal bridging in a metal-framed roof must be addressed as follows—",
+        "for a pitched roof with a horizontal ceiling—",
+        "(a) achieving the Total R-Value in Table J3D7s, calculated using a method that accounts for the effects of (i)thermal bridging; or",
+        "increasing the R-Value of the insulation between the ceiling frames by R0.5 more than the R-Value derived (ii)from (1); or",
+        "adding a continuous ceiling insulation layer with a minimum R-Value of R0.13 above or below the ceiling (iii)joists or the bottom chords of the trusses; or",
+        "achieving the required ceiling R-Value derived from (1) by stacking two layers of insulation immediately on (iv)top of each other, such that the top layer is orientated to cover the ceiling joists or bottom chord of the trusses and has an R-Value of at least R0.5; or",
+        "for a flat, skillion or cathedral roof—",
+        "(b) achieving the Total R-Value in Table J3D7t, calculated using a method that accounts for the effects of (i)thermal bridging; or",
+        "complying with Table J3D7u. (ii)",
+        "(4)Where F8D5(1) applies, continuous insulation placed above the primary insulation layer to mitigate thermal bridging must have a vapour permeance of not less than that of the primary insulation layer.",
+        "(5)Where, for operational or safety reasons, the area of ceiling insulation required is reduced, the loss of insulation must be compensated for in accordance with Table J3D7w.",
+        "(6)Where the ceiling insulation required by (1) to (5) has an R-Value—",
+        "greater than R3.0 and less than or equal to R4.5, it may be reduced to R3.0 within 450 mm of an external wall; (a)or",
+        "greater than R4.5, it may be reduced to R3.0 within 450 mm of an external wall, provided all other required (b)ceiling insulation is increased by R0.5.",
+        "(7)The requirements of (1) to (6) do not apply to roofs constructed using insulated sandwich panels.",
+        "(8)Roofs constructed using insulated sandwich panels must achieve the minimum Total R-Value in Table J3D7x.",
+        "(9)In climate zones 1 to 5, the solar absorptance of the upper surface of a roof must not be more than 0.64.",
+        "altitude less than 300m Direction of heat flow is Down",
+        "altitude 300m or more Direction of heat flow is Down and Up"
+      ]
+    },
+    {
+      "blockId": "j3d7d",
+      "contentType": "table",
+      "title": "Flat Concrete Roof — Minimum R-Value for Ceiling Insulation: Climate Zone 2 (Table J3D7d)",
+      "blockApplicability": {
+        "roofType": "flat_concrete",
+        "climateZones": ["2"]
+      },
+      "headers": [
+        "Reflective Insulation Under-Roof",
+        "SA ≤ 0.23",
+        "SA > 0.23 to ≤ 0.32",
+        "SA > 0.32 to ≤ 0.42",
+        "SA > 0.42 to ≤ 0.53",
+        "SA > 0.53 to ≤ 0.64"
+      ],
+      "rows": [
+        ["Yes", "2.0", "2.5", "2.5", "3.0", "3.5"],
+        ["No", "3.0", "3.0", "3.5", "4.0", "4.5"]
+      ],
+      "notes": [
+        "SA = solar absorptance",
+        "Reflective insulation R-Value is not included in under-roof or ceiling insulation values",
+        "R-Values listed are labelled, declared R-Values"
+      ]
+    },
+    {
+      "blockId": "j3d7e",
+      "contentType": "table",
+      "title": "Timber-Framed Pitched Roof with Horizontal Ceiling — Minimum R-Value: Climate Zone 2 (Table J3D7e)",
+      "blockApplicability": {
+        "roofType": "timber_pitched_horizontal_ceiling",
+        "climateZones": ["2"]
+      },
+      "headers": [
+        "Roof Ventilation",
+        "Reflective Insulation Under-Roof",
+        "Under-Roof Insulation R-Value",
+        "SA ≤ 0.23",
+        "SA > 0.23 to ≤ 0.32",
+        "SA > 0.32 to ≤ 0.42",
+        "SA > 0.42 to ≤ 0.53",
+        "SA > 0.53 to ≤ 0.64"
+      ],
+      "rows": [
+        ["Vented", "Yes", "Any", "2.5", "", "", "", ""],
+        ["Vented", "No", "0 to < 0.5", "2.5", "3.0", "3.0", "3.5", "3.5"],
+        ["Vented", "No", "≥ 0.5", "2.5", "", "", "", ""],
+        ["Standard", "Yes", "Any", "2.5", "", "", "", ""],
+        ["Standard", "No", "0 to < 0.5", "3.0", "3.0", "3.5", "4.0", "4.0"],
+        ["Standard", "No", "≥ 0.5 to < 1.0", "2.5", "2.5", "2.5", "3.0", "3.0"],
+        ["Standard", "No", "≥ 1.0", "2.5", "", "", "", ""]
+      ],
+      "notes": [
+        "SA = solar absorptance",
+        "Roof is 'vented' if: (a) 1 wind-driven ventilator/50m² + gable/eave/ridge vents, OR (b) 1 powered ventilator/200m² + vents, OR (c) tiled roof without sarking",
+        "'Standard' roof = not vented",
+        "Reflective insulation R-Value not included",
+        "Blank cells indicate no additional requirements beyond the first column value"
+      ]
+    },
+    {
+      "blockId": "j3d7f",
+      "contentType": "table",
+      "title": "Timber-Framed Flat, Skillion, or Cathedral Roof — Minimum R-Value: Climate Zone 2 (Table J3D7f)",
+      "blockApplicability": {
+        "roofType": "timber_flat_skillion_cathedral",
+        "climateZones": ["2"]
+      },
+      "headers": [
+        "Reflective Insulation Under-Roof",
+        "SA ≤ 0.23",
+        "SA > 0.23 to ≤ 0.32",
+        "SA > 0.32 to ≤ 0.42",
+        "SA > 0.42 to ≤ 0.53",
+        "SA > 0.53 to ≤ 0.64"
+      ],
+      "rows": [
+        ["Yes", "2.5", "2.5", "2.5", "2.5", "2.5"],
+        ["No", "3.0", "3.0", "3.5", "4.0", "4.0"]
+      ],
+      "notes": [
+        "SA = solar absorptance",
+        "R-Value can be achieved by insulation under roof, on top of ceiling, or both",
+        "Reflective insulation R-Value not included"
+      ]
+    },
+    {
+      "blockId": "j3d7_zone3_requirements",
+      "contentType": "list",
+      "title": "Requirements for Climate Zone 3",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_4"],
+        "climateZones": ["3"]
+      },
+      "listType": "unordered",
+      "items": [
+        "Roof and ceiling insulation must achieve the minimum R-Value— in climate zone 3, in accordance with Tables J3D7g, J3D7h and J3D7i as applicable; and",
+        "(2)Reflective insulation installed to comply with (1) must—",
+        "have a surface emittance of not more than 0.05; and",
+        "be adjacent to a roof space of not less than 20 mm; and",
+        "in climate zones 3 to 8, be downward facing.",
+        "(3)The thermal bridging in a metal-framed roof must be addressed as follows—",
+        "for a pitched roof with a horizontal ceiling—",
+        "(a) achieving the Total R-Value in Table J3D7s, calculated using a method that accounts for the effects of (i)thermal bridging; or",
+        "increasing the R-Value of the insulation between the ceiling frames by R0.5 more than the R-Value derived (ii)from (1); or",
+        "adding a continuous ceiling insulation layer with a minimum R-Value of R0.13 above or below the ceiling (iii)joists or the bottom chords of the trusses; or",
+        "achieving the required ceiling R-Value derived from (1) by stacking two layers of insulation immediately on (iv)top of each other, such that the top layer is orientated to cover the ceiling joists or bottom chord of the trusses and has an R-Value of at least R0.5; or",
+        "for a flat, skillion or cathedral roof—",
+        "(b) achieving the Total R-Value in Table J3D7t, calculated using a method that accounts for the effects of (i)thermal bridging; or",
+        "complying with Table J3D7u. (ii)",
+        "(4)Where F8D5(1) applies, continuous insulation placed above the primary insulation layer to mitigate thermal bridging must have a vapour permeance of not less than that of the primary insulation layer.",
+        "(5)Where, for operational or safety reasons, the area of ceiling insulation required is reduced, the loss of insulation must be compensated for in accordance with Table J3D7w.",
+        "(6)Where the ceiling insulation required by (1) to (5) has an R-Value—",
+        "greater than R3.0 and less than or equal to R4.5, it may be reduced to R3.0 within 450 mm of an external wall; (a)or",
+        "greater than R4.5, it may be reduced to R3.0 within 450 mm of an external wall, provided all other required (b)ceiling insulation is increased by R0.5.",
+        "(7)The requirements of (1) to (6) do not apply to roofs constructed using insulated sandwich panels.",
+        "(8)Roofs constructed using insulated sandwich panels must achieve the minimum Total R-Value in Table J3D7x.",
+        "(9)In climate zones 1 to 5, the solar absorptance of the upper surface of a roof must not be more than 0.64.",
+        "Direction of heat flow is Down and Up"
+      ]
+    },
+    {
+      "blockId": "j3d7g",
+      "contentType": "table",
+      "title": "Flat Concrete Roof — Minimum R-Value for Ceiling Insulation: Climate Zone 3 (Table J3D7g)",
+      "blockApplicability": {
+        "roofType": "flat_concrete",
+        "climateZones": ["3"]
+      },
+      "headers": [
+        "Reflective Insulation Under-Roof",
+        "SA ≤ 0.23",
+        "SA > 0.23 to ≤ 0.32",
+        "SA > 0.32 to ≤ 0.42",
+        "SA > 0.42 to ≤ 0.53",
+        "SA > 0.53 to ≤ 0.64"
+      ],
+      "rows": [
+        ["Yes", "2.0", "2.0", "2.5", "2.5", "3.0"],
+        ["No", "3.0", "3.5", "4.0", "4.5", "5.0"]
+      ],
+      "notes": [
+        "SA = solar absorptance",
+        "The R-Value of reflective insulation is not to be included in the R-Value of any under-roof or ceiling insulation",
+        "R-Values listed are for the labelled, declared R-Value of insulation"
+      ]
+    },
+    {
+      "blockId": "j3d7h",
+      "contentType": "table",
+      "title": "Timber-Framed Pitched Roof with Horizontal Ceiling — Minimum R-Value for Ceiling Insulation: Climate Zone 3 (Table J3D7h)",
+      "blockApplicability": {
+        "roofType": "timber_pitched_horizontal_ceiling",
+        "climateZones": ["3"]
+      },
+      "headers": [
+        "Roof Ventilation",
+        "Reflective Insulation Under-Roof",
+        "Under-Roof Insulation R-Value",
+        "SA ≤ 0.23",
+        "SA > 0.23 to ≤ 0.32",
+        "SA > 0.32 to ≤ 0.42",
+        "SA > 0.42 to ≤ 0.53",
+        "SA > 0.53 to ≤ 0.64"
+      ],
+      "rows": [
+        ["Vented", "Yes", "< 0.5", "2.5", "2.5", "2.5", "2.5", "2.5"],
+        ["Vented", "Yes", "≥ 0.5 to < 1.0", "2.0", "2.0", "2.0", "2.0", "2.0"],
+        ["Vented", "Yes", "≥ 1.0 to < 1.5", "2.5", "2.0", "2.0", "2.0", "2.0"],
+        ["Vented", "Yes", "≥ 1.5 to < 2.0", "2.0", "2.0", "2.5", "2.5", "2.5"],
+        ["Vented", "Yes", "≥ 2.0", "2.5", "2.5", "3.0", "3.0", "3.0"],
+        ["Vented", "No", "< 0.5", "3.5", "4.0", "4.5", "5.0", "X"],
+        ["Vented", "No", "≥ 0.5 to < 1.0", "3.0", "3.5", "3.5", "4.0", "4.5"],
+        ["Vented", "No", "≥ 1.0 to < 1.5", "2.5", "3.0", "3.0", "3.0", "3.5"],
+        ["Vented", "No", "≥ 1.5 to < 2.0", "2.5", "3.0", "3.0", "3.0", "3.0"],
+        ["Vented", "No", "≥ 2.0", "2.5", "2.5", "3.0", "3.0", "3.0"],
+        ["Standard", "Yes", "< 0.5", "2.0", "2.0", "2.5", "2.5", "2.5"],
+        ["Standard", "Yes", "≥ 0.5 to < 1.0", "2.0", "2.0", "2.5", "2.5", "2.5"],
+        ["Standard", "Yes", "≥ 1.0 to < 1.5", "2.0", "2.0", "2.0", "2.0", "2.5"],
+        ["Standard", "Yes", "≥ 1.5 to < 2.0", "2.0", "2.5", "2.5", "2.5", "3.0"],
+        ["Standard", "Yes", "≥ 2.0", "2.0", "2.0", "2.5", "2.5", "2.5"],
+        ["Standard", "No", "< 0.5", "3.5", "4.0", "5.0", "X", "X"],
+        ["Standard", "No", "≥ 0.5 to < 1.0", "3.0", "3.0", "3.5", "4.0", "5.0"],
+        ["Standard", "No", "≥ 1.0 to < 1.5", "2.5", "2.5", "3.0", "3.0", "3.5"],
+        ["Standard", "No", "≥ 1.5 to < 2.0", "2.0", "2.0", "2.5", "2.5", "2.5"],
+        ["Standard", "No", "≥ 2.0", "2.0", "2.0", "2.5", "2.5", "2.5"]
+      ],
+      "notes": [
+        "SA = solar absorptance",
+        "A roof is considered 'vented' if it has one wind-driven ventilator per 50 m² of ceiling area with gable, eave or ridge vents; OR one powered ventilator per 200 m² + vents; OR a tiled roof without sarking-type material at roof level.",
+        "If a roof is not 'vented', it is a 'standard' roof",
+        "The R-Value of reflective insulation is not to be included in the R-Value of any under-roof or ceiling insulation",
+        "R-Values listed are for the labelled, declared R-Value of insulation",
+        "X = not permitted"
+      ]
+    },
+    {
+      "blockId": "j3d7i",
+      "contentType": "table",
+      "title": "Timber-Framed Flat, Skillion, or Cathedral Roof — Minimum R-Value for Ceiling Insulation: Climate Zone 3 (Table J3D7i)",
+      "blockApplicability": {
+        "roofType": "timber_flat_skillion_cathedral",
+        "climateZones": ["3"]
+      },
+      "headers": [
+        "Reflective Insulation Under-Roof",
+        "SA ≤ 0.23",
+        "SA > 0.23 to ≤ 0.32",
+        "SA > 0.32 to ≤ 0.42",
+        "SA > 0.42 to ≤ 0.53",
+        "SA > 0.53 to ≤ 0.64"
+      ],
+      "rows": [
+        ["Yes", "2.0", "2.0", "2.5", "2.5", "2.5"],
+        ["No", "3.5", "4.0", "5.0", "X", "X"]
+      ],
+      "notes": [
+        "SA = solar absorptance",
+        "The R-Value can be achieved by installing insulation under the roof or on top of the ceiling or a combination of both",
+        "The R-Value of reflective insulation is not to be included in the R-Value of any under-roof or ceiling insulation",
+        "R-Values listed are for the labelled, declared R-Value of insulation",
+        "X = not permitted"
+      ]
+    },
+    {
+      "blockId": "j3d7_zone4_requirements",
+      "contentType": "list",
+      "title": "Requirements for Climate Zone 4",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_4"],
+        "climateZones": ["4"]
+      },
+      "listType": "unordered",
+      "items": [
+        "in climate zone 4, in accordance with Tables J3D7j, J3D7k and J3D7l as applicable; and",
+        "(2)Reflective insulation installed to comply with (1) must—",
+        "have a surface emittance of not more than 0.05; and",
+        "be adjacent to a roof space of not less than 20 mm; and",
+        "in climate zones 3 to 8, be downward facing.",
+        "(3)The thermal bridging in a metal-framed roof must be addressed as follows—",
+        "for a pitched roof with a horizontal ceiling—",
+        "(a) achieving the Total R-Value in Table J3D7s, calculated using a method that accounts for the effects of (i)thermal bridging; or",
+        "increasing the R-Value of the insulation between the ceiling frames by R0.5 more than the R-Value derived (ii)from (1); or",
+        "adding a continuous ceiling insulation layer with a minimum R-Value of R0.13 above or below the ceiling (iii)joists or the bottom chords of the trusses; or",
+        "achieving the required ceiling R-Value derived from (1) by stacking two layers of insulation immediately on (iv)top of each other, such that the top layer is orientated to cover the ceiling joists or bottom chord of the trusses and has an R-Value of at least R0.5; or",
+        "for a flat, skillion or cathedral roof—",
+        "(b) achieving the Total R-Value in Table J3D7t, calculated using a method that accounts for the effects of (i)thermal bridging; or",
+        "complying with Table J3D7u. (ii)",
+        "(4)Where F8D5(1) applies, continuous insulation placed above the primary insulation layer to mitigate thermal bridging must have a vapour permeance of not less than that of the primary insulation layer.",
+        "(5)Where, for operational or safety reasons, the area of ceiling insulation required is reduced, the loss of insulation must be compensated for in accordance with Table J3D7w.",
+        "(6)Where the ceiling insulation required by (1) to (5) has an R-Value—",
+        "greater than R3.0 and less than or equal to R4.5, it may be reduced to R3.0 within 450 mm of an external wall; (a)or",
+        "greater than R4.5, it may be reduced to R3.0 within 450 mm of an external wall, provided all other required (b)ceiling insulation is increased by R0.5.",
+        "(7)The requirements of (1) to (6) do not apply to roofs constructed using insulated sandwich panels.",
+        "(8)Roofs constructed using insulated sandwich panels must achieve the minimum Total R-Value in Table J3D7x.",
+        "(9)In climate zones 1 to 5, the solar absorptance of the upper surface of a roof must not be more than 0.64.",
+        "Direction of heat flow is Up"
+      ]
+    },
+    {
+      "blockId": "j3d7j",
+      "contentType": "table",
+      "title": "j3d7j Flat Concrete Roof — Minimum R-Value for Ceiling Insulation: Climate Zone 4",
+      "blockApplicability": {
+        "roofType": "flat_concrete",
+        "climateZones": ["4"]
+      },
+      "headers": [
+        "Reflective Insulation Under-Roof",
+        "SA ≤ 0.23",
+        "SA > 0.23 to ≤ 0.32",
+        "SA > 0.32 to ≤ 0.42",
+        "SA > 0.42 to ≤ 0.53",
+        "SA > 0.53 to ≤ 0.64"
+      ],
+      "rows": [
+        ["Yes", "2.0", "2.0", "2.5", "2.5", "2.5"],
+        ["No", "3.5", "4.0", "5.0", "X", "X"]
+      ],
+      "notes": [
+        "SA = solar absorptance.",
+        "The R-Value of reflective insulation is not to be included in the R-Value of any under-roof or ceiling insulation.",
+        "R-Values listed are for the labelled, declared R-Value of insulation."
+      ]
+    },
+    {
+      "blockId": "j3d7k",
+      "contentType": "table",
+      "title": "J3D7k: Timber-Framed Pitched Roof with Horizontal Ceiling — Minimum R-Value for Ceiling Insulation: Climate Zone 4",
+      "blockApplicability": {
+        "roofType": "timber_pitched_horizontal_ceiling",
+        "climateZones": ["4"]
+      },
+      "headers": [
+        "Roof Ventilation",
+        "Reflective Insulation Under-Roof",
+        "Under-Roof Insulation R-Value",
+        "SA ≤ 0.23",
+        "SA > 0.23 to ≤ 0.64"
+      ],
+      "rows": [
+        ["Vented", "Yes", "< 0.5", "3.0", "3.5"],
+        ["Vented", "Yes", "≥ 0.5", "3.0", "3.0"],
+        ["Vented", "No", "Any", "3.5", "3.5"],
+        ["Standard", "Yes", "Any", "3.0", "3.0"],
+        ["Standard", "No", "< 0.5", "3.5", "3.5"],
+        ["Standard", "No", "≥ 0.5", "3.0", "3.0"]
+      ],
+      "notes": [
+        "SA = solar absorptance.",
+        "A roof is considered 'vented' if it has one wind-driven ventilator per 50 m² of ceiling area with gable, eave or ridge vents; OR one powered ventilator per 200 m² + vents; OR a tiled roof without sarking-type material at roof level.",
+        "If a roof is not 'vented', it is a 'standard' roof.",
+        "The R-Value of reflective insulation is not to be included in the R-Value of any under-roof or ceiling insulation.",
+        "R-Values listed are for the labelled, declared R-Value of insulation.",
+        "X = not permitted."
+      ]
+    },
+    {
+      "blockId": "j3d7l",
+      "contentType": "table",
+      "title": "J3D7l: Timber-Framed Flat, Skillion or Cathedral Roof — Minimum R-Value for Ceiling Insulation: Climate Zone 4",
+      "blockApplicability": {
+        "roofType": "timber_flat_skillion_cathedral",
+        "climateZones": ["4"]
+      },
+      "headers": [
+        "Reflective Insulation Under-Roof",
+        "SA ≤ 0.64"
+      ],
+      "rows": [
+        ["Yes", "3.0"],
+        ["No", "3.5"]
+      ],
+      "notes": [
+        "SA = solar absorptance.",
+        "The R-Value can be achieved by installing insulation under the roof or on top of the ceiling or a combination of both.",
+        "The R-Value of reflective insulation is not to be included in the R-Value of any under-roof or ceiling insulation.",
+        "R-Values listed are for the labelled, declared R-Value of insulation.",
+        "X = not permitted."
+      ]
+    },
+    {
+      "blockId": "j3d7_zone5_requirements",
+      "contentType": "list",
+      "title": "Requirements for Climate Zone 5",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_4"],
+        "climateZones": ["5"]
+      },
+      "listType": "unordered",
+      "items": [
+        "Roof and ceiling insulation must achieve the minimum R-Value— in climate zone 5, in accordance with Tables J3D7m, J3D7n and J3D7o as applicable; and",
+        "(2)Reflective insulation installed to comply with (1) must—",
+        "have a surface emittance of not more than 0.05; and",
+        "be adjacent to a roof space of not less than 20 mm; and",
+        "in climate zones 3 to 8, be downward facing.",
+        "(3)The thermal bridging in a metal-framed roof must be addressed as follows—",
+        "for a pitched roof with a horizontal ceiling—",
+        "(a) achieving the Total R-Value in Table J3D7s, calculated using a method that accounts for the effects of (i)thermal bridging; or",
+        "increasing the R-Value of the insulation between the ceiling frames by R0.5 more than the R-Value derived (ii)from (1); or",
+        "adding a continuous ceiling insulation layer with a minimum R-Value of R0.13 above or below the ceiling (iii)joists or the bottom chords of the trusses; or",
+        "achieving the required ceiling R-Value derived from (1) by stacking two layers of insulation immediately on (iv)top of each other, such that the top layer is orientated to cover the ceiling joists or bottom chord of the trusses and has an R-Value of at least R0.5; or",
+        "for a flat, skillion or cathedral roof—",
+        "(b) achieving the Total R-Value in Table J3D7t, calculated using a method that accounts for the effects of (i)thermal bridging; or",
+        "complying with Table J3D7u. (ii)",
+        "(4)Where F8D5(1) applies, continuous insulation placed above the primary insulation layer to mitigate thermal bridging must have a vapour permeance of not less than that of the primary insulation layer.",
+        "(5)Where, for operational or safety reasons, the area of ceiling insulation required is reduced, the loss of insulation must be compensated for in accordance with Table J3D7w.",
+        "(6)Where the ceiling insulation required by (1) to (5) has an R-Value—",
+        "greater than R3.0 and less than or equal to R4.5, it may be reduced to R3.0 within 450 mm of an external wall; (a)or",
+        "greater than R4.5, it may be reduced to R3.0 within 450 mm of an external wall, provided all other required (b)ceiling insulation is increased by R0.5.",
+        "(7)The requirements of (1) to (6) do not apply to roofs constructed using insulated sandwich panels.",
+        "(8)Roofs constructed using insulated sandwich panels must achieve the minimum Total R-Value in Table J3D7x.",
+        "(9)In climate zones 1 to 5, the solar absorptance of the upper surface of a roof must not be more than 0.64.",
+        "Direction of heat flow is Up"
+      ]
+    },
+    {
+      "blockId": "j3d7m",
+      "contentType": "table",
+      "title": "j3d7m: Flat Concrete Roof — Minimum R-Value for Ceiling Insulation: Climate Zone 5",
+      "blockApplicability": {
+        "roofType": "flat_concrete",
+        "climateZones": ["5"]
+      },
+      "headers": [
+        "Reflective Insulation Under-Roof",
+        "SA ≤ 0.42",
+        "SA > 0.42 to ≤ 0.64"
+      ],
+      "rows": [
+        ["Yes", "3.0", "3.5"],
+        ["No", "4.0", "4.0"]
+      ],
+      "notes": [
+        "SA = solar absorptance.",
+        "The R-Value of reflective insulation is not to be included in the R-Value of any under-roof or ceiling insulation.",
+        "R-Values listed are for the labelled, declared R-Value of insulation."
+      ]
+    },
+    {
+      "blockId": "j3d7n",
+      "contentType": "table",
+      "title": "j3d7n: Timber-Framed Pitched Roof with Horizontal Ceiling — Minimum R-Value for Ceiling Insulation: Climate Zone 5",
+      "blockApplicability": {
+        "roofType": "timber_pitched_horizontal_ceiling",
+        "climateZones": ["5"]
+      },
+      "headers": [
+        "Roof Ventilation",
+        "Reflective Insulation Under-Roof",
+        "Under-Roof Insulation R-Value",
+        "SA ≤ 0.42",
+        "SA > 0.42 to ≤ 0.64"
+      ],
+      "rows": [
+        ["Vented", "Yes", "< 0.5", "3.0", "2.5"],
+        ["Vented", "Yes", "≥ 0.5", "2.5", "2.5"],
+        ["Vented", "No", "0 to < 2.0", "3.0", "3.0"],
+        ["Vented", "No", "≥ 2.0", "2.5", "2.5"],
+        ["Standard", "Yes", "Any", "2.5", "2.5"],
+        ["Standard", "No", "0 to < 1.0", "3.0", "3.0"],
+        ["Standard", "No", "≥ 1.0 to < 2.0", "2.5", "2.5"],
+        ["Standard", "No", "≥ 2.0", "3.0", "3.0"]
+      ],
+      "notes": [
+        "SA = solar absorptance.",
+        "A roof is considered 'vented' if it— (a) has one wind-driven ventilator per 50 m² of ceiling area with gable, eave or ridge vents; OR (b) has one powered ventilator per 200 m² + vents; OR (c) is a tiled roof without sarking-type material at roof level.",
+        "If a roof is not 'vented', it is a 'standard' roof.",
+        "The R-Value of reflective insulation is not to be included in the R-Value of any under-roof or ceiling insulation.",
+        "R-Values listed are for the labelled, declared R-Value of insulation."
+      ]
+    },
+    {
+      "blockId": "j3d7o",
+      "contentType": "table",
+      "title": "j3d7o Timber-Framed Flat, Skillion or Cathedral Roof — Minimum R-Value for Ceiling Insulation: Climate Zone 5",
+      "blockApplicability": {
+        "roofType": "timber_flat_skillion_cathedral",
+        "climateZones": ["5"]
+      },
+      "headers": [
+        "Reflective Insulation Under-Roof",
+        "SA ≤ 0.42",
+        "SA > 0.42 to ≤ 0.64"
+      ],
+      "rows": [
+        ["Yes", "3.5", "3.0"],
+        ["No", "4.0", "4.0"]
+      ],
+      "notes": [
+        "The R-Value can be achieved by installing insulation under the roof or on top of the ceiling or a combination of both.",
+        "The R-Value of reflective insulation is not to be included in the R-Value of any under-roof or ceiling insulation.",
+        "R-Values listed are for the labelled, declared R-Value of insulation."
+      ]
+    },
+    {
+      "blockId": "j3d7_zone6_requirements",
+      "contentType": "list",
+      "title": "Requirements for Climate Zone 6",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_4"],
+        "climateZones": ["6"]
+      },
+      "listType": "unordered",
+      "items": [
+        "Roof and ceiling insulation must achieve the minimum R-Value— in climate zone 6— R3.5; or",
+        "if the roof contains reflective insulation, R3.0; and",
+        "(2)Reflective insulation installed to comply with (1) must—",
+        "have a surface emittance of not more than 0.05; and",
+        "be adjacent to a roof space of not less than 20 mm; and",
+        "in climate zones 3 to 8, be downward facing.",
+        "(3)The thermal bridging in a metal-framed roof must be addressed as follows—",
+        "for a pitched roof with a horizontal ceiling—",
+        "(a) achieving the Total R-Value in Table J3D7s, calculated using a method that accounts for the effects of (i)thermal bridging; or",
+        "increasing the R-Value of the insulation between the ceiling frames by R0.5 more than the R-Value derived (ii)from (1); or",
+        "adding a continuous ceiling insulation layer with a minimum R-Value of R0.13 above or below the ceiling (iii)joists or the bottom chords of the trusses; or",
+        "achieving the required ceiling R-Value derived from (1) by stacking two layers of insulation immediately on (iv)top of each other, such that the top layer is orientated to cover the ceiling joists or bottom chord of the trusses and has an R-Value of at least R0.5; or",
+        "for a flat, skillion or cathedral roof—",
+        "(b) achieving the Total R-Value in Table J3D7t, calculated using a method that accounts for the effects of (i)thermal bridging; or",
+        "complying with Table J3D7u. (ii)",
+        "(4)Where F8D5(1) applies, continuous insulation placed above the primary insulation layer to mitigate thermal bridging must have a vapour permeance of not less than that of the primary insulation layer.",
+        "(5)Where, for operational or safety reasons, the area of ceiling insulation required is reduced, the loss of insulation must be compensated for in accordance with Table J3D7w.",
+        "(6)Where the ceiling insulation required by (1) to (5) has an R-Value—",
+        "greater than R3.0 and less than or equal to R4.5, it may be reduced to R3.0 within 450 mm of an external wall; (a)or",
+        "greater than R4.5, it may be reduced to R3.0 within 450 mm of an external wall, provided all other required (b)ceiling insulation is increased by R0.5.",
+        "(7)The requirements of (1) to (6) do not apply to roofs constructed using insulated sandwich panels.",
+        "(8)Roofs constructed using insulated sandwich panels must achieve the minimum Total R-Value in Table J3D7x.",
+        "Direction of heat flow is Up"
+      ]
+    },
+    {
+      "blockId": "j3d7_zone7_8_requirements",
+      "contentType": "list",
+      "title": "Requirements for Climate Zones 7 and 8",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_4"],
+        "climateZones": ["7", "8"]
+      },
+      "listType": "unordered",
+      "items": [
+        "Roof and ceiling insulation must achieve the minimum R-Value—in climate zones 7 and 8, in accordance with Tables J3D7p, J3D7q and J3D7r as applicable.",
+        "Reflective insulation installed to comply with (1) must—",
+        "have a surface emittance of not more than 0.05; and",
+        "be adjacent to a roof space of not less than 20 mm; and",
+        "in climate zones 3 to 8, be downward facing.",
+        "(3)The thermal bridging in a metal-framed roof must be addressed as follows—",
+        "for a pitched roof with a horizontal ceiling—",
+        "(a) achieving the Total R-Value in Table J3D7s, calculated using a method that accounts for the effects of (i)thermal bridging; or",
+        "increasing the R-Value of the insulation between the ceiling frames by R0.5 more than the R-Value derived (ii)from (1); or",
+        "adding a continuous ceiling insulation layer with a minimum R-Value of R0.13 above or below the ceiling (iii)joists or the bottom chords of the trusses; or",
+        "achieving the required ceiling R-Value derived from (1) by stacking two layers of insulation immediately on (iv)top of each other, such that the top layer is orientated to cover the ceiling joists or bottom chord of the trusses and has an R-Value of at least R0.5; or",
+        "for a flat, skillion or cathedral roof—",
+        "(b) achieving the Total R-Value in Table J3D7t, calculated using a method that accounts for the effects of (i)thermal bridging; or",
+        "complying with Table J3D7u. (ii)",
+        "(4)Where F8D5(1) applies, continuous insulation placed above the primary insulation layer to mitigate thermal bridging must have a vapour permeance of not less than that of the primary insulation layer.",
+        "(5)Where, for operational or safety reasons, the area of ceiling insulation required is reduced, the loss of insulation must be compensated for in accordance with Table J3D7w.",
+        "(6)Where the ceiling insulation required by (1) to (5) has an R-Value—",
+        "greater than R3.0 and less than or equal to R4.5, it may be reduced to R3.0 within 450 mm of an external wall; (a)or",
+        "greater than R4.5, it may be reduced to R3.0 within 450 mm of an external wall, provided all other required (b)ceiling insulation is increased by R0.5.",
+        "(7)The requirements of (1) to (6) do not apply to roofs constructed using insulated sandwich panels.",
+        "(8)Roofs constructed using insulated sandwich panels must achieve the minimum Total R-Value in Table J3D7x.",
+        "Direction of heat flow is Up"
+      ]
+    },
+    {
+      "blockId": "j3d7p",
+      "contentType": "table",
+      "title": "j3d7p: Flat Concrete Roof — Minimum R-Value for Ceiling Insulation: Climate Zones 7 and 8",
+      "blockApplicability": {
+        "roofType": "flat_concrete",
+        "climateZones": ["7", "8"]
+      },
+      "headers": [
+        "Reflective Insulation Under-Roof",
+        "SA ≤ 0.23",
+        "SA > 0.23 to ≤ 0.32",
+        "SA > 0.32 to ≤ 0.42",
+        "SA > 0.42 to ≤ 0.53",
+        "SA > 0.53 to ≤ 0.64",
+        "SA > 0.64 to ≤ 0.73",
+        "SA > 0.73"
+      ],
+      "rows": [
+        ["Yes", "3.5", "3.5", "3.5", "3.0", "3.0", "3.0", "2.5"],
+        ["No", "4.0", "3.0", "3.0", "2.5", "2.5", "2.5", "2.0"]
+      ],
+      "notes": [
+        "SA = solar absorptance.",
+        "The R-Value of reflective insulation is not to be included in the R-Value of any under-roof or ceiling insulation.",
+        "R-Values listed are for the labelled, declared R-Value of insulation."
+      ]
+    },
+    {
+      "blockId": "j3d7q",
+      "contentType": "table",
+      "title": "j3d7q: Timber-Framed Pitched Roof with Horizontal Ceiling — Minimum R-Value for Ceiling Insulation: Climate Zones 7 and 8",
+      "blockApplicability": {
+        "roofType": "timber_pitched_horizontal_ceiling",
+        "climateZones": ["7", "8"]
+      },
+      "headers": [
+        "Roof Ventilation",
+        "Reflective Insulation Under-Roof",
+        "Under-Roof Insulation R-Value",
+        "SA ≤ 0.23",
+        "SA > 0.23 to ≤ 0.32",
+        "SA > 0.32 to ≤ 0.42",
+        "SA > 0.42 to ≤ 0.53",
+        "SA > 0.53 to ≤ 0.64",
+        "SA > 0.64 to ≤ 0.73",
+        "SA > 0.73 to ≤ 0.85",
+        "SA > 0.85"
+      ],
+      "rows": [
+        ["Standard", "Yes", "0 to < 1.0", "4.5", "4.5", "4.5", "4.0", "4.0", "4.0", "4.0", "4.0"],
+        ["Standard", "Yes", "≥ 1.0", "4.0", "4.0", "4.0", "4.0", "4.0", "4.0", "4.0", "4.0"],
+        ["Standard", "No", "0 to < 1.0", "5.0", "4.5", "4.5", "4.0", "4.0", "3.5", "3.5", "3.5"],
+        ["Standard", "No", "≥ 1.0 to < 1.5", "4.5", "4.5", "4.0", "4.0", "4.0", "4.0", "3.5", "3.5"],
+        ["Standard", "No", "≥ 1.5", "4.0", "4.0", "4.0", "4.0", "4.0", "4.0", "4.0", "4.0"],
+        ["Vented", "Yes", "0 to < 1.0", "4.5", "4.5", "4.5", "4.5", "4.5", "4.0", "4.0", "4.0"],
+        ["Vented", "Yes", "≥ 1.0", "4.5", "4.5", "4.5", "4.5", "4.0", "4.0", "4.0", "4.0"],
+        ["Vented", "No", "0 to < 1.0", "5.0", "4.5", "4.5", "4.5", "4.0", "4.0", "3.5", "3.5"],
+        ["Vented", "No", "≥ 1.0 to < 1.5", "4.5", "4.5", "4.5", "4.5", "4.0", "4.0", "4.0", "4.0"],
+        ["Vented", "No", "≥ 1.5", "4.5", "4.5", "4.5", "4.5", "4.5", "4.0", "4.0", "4.0"]
+      ],
+      "notes": [
+        "SA = solar absorptance.",
+        "A roof is considered 'vented' if it— (a) has one wind-driven ventilator per 50 m² of ceiling area with gable, eave or ridge vents; OR (b) has one powered ventilator per 200 m² + vents; OR (c) is a tiled roof without sarking-type material at roof level.",
+        "If a roof is not 'vented', it is a 'standard' roof.",
+        "The R-Value of reflective insulation is not to be included in the R-Value of any under-roof or ceiling insulation.",
+        "R-Values listed are for the labelled, declared R-Value of insulation.",
+        "X = not permitted."
+      ]
+    },
+    {
+      "blockId": "j3d7r",
+      "contentType": "table",
+      "title": "j3d7r: Timber-Framed Flat, Skillion or Cathedral Roof — Minimum R-Value for Ceiling Insulation: Climate Zones 7 and 8",
+      "blockApplicability": {
+        "roofType": "timber_flat_skillion_cathedral",
+        "climateZones": ["7", "8"]
+      },
+      "headers": [
+        "Reflective Insulation Under-Roof",
+        "SA ≤ 0.23",
+        "SA > 0.23 to ≤ 0.32",
+        "SA > 0.32 to ≤ 0.42",
+        "SA > 0.42 to ≤ 0.53",
+        "SA > 0.53 to ≤ 0.64",
+        "SA > 0.64 to ≤ 0.73",
+        "SA > 0.73 to ≤ 0.85",
+        "SA > 0.85"
+      ],
+      "rows": [
+        ["Yes", "4.5", "4.5", "4.5", "4.0", "4.0", "4.0", "4.0", "4.0"],
+        ["No", "5.0", "4.5", "4.5", "4.0", "4.0", "3.5", "3.5", "3.5"]
+      ],
+      "notes": [
+        "SA = solar absorptance.",
+        "The R-Value can be achieved by installing insulation under the roof or on top of the ceiling or a combination of both.",
+        "The R-Value of reflective insulation is not to be included in the R-Value of any under-roof or ceiling insulation.",
+        "R-Values listed are for the labelled, declared R-Value of insulation."
+      ]
+    },
+    {
+      "blockId": "j3d7s",
+      "contentType": "table",
+      "title": "j3d7s Metal-Framed Pitched Roof with Horizontal Ceiling — Minimum Total R-Value of Ceiling to Account for Thermal Bridging",
+      "blockApplicability": {
+        "roofType": "metal_pitched_horizontal_ceiling"
+      },
+      "headers": [
+        "Ceiling Insulation R-Value from Tables J3D7a to J3D7r and J3D7(1)(f) as applicable",
+        "Minimum Total R-Value to account for thermal bridging"
+      ],
+      "rows": [
+        ["1.5", "1.38"],
+        ["2.0", "1.74"],
+        ["2.5", "2.09"],
+        ["3.0", "2.43"],
+        ["3.5", "2.63"],
+        ["4.0", "2.95"],
+        ["4.5", "3.27"],
+        ["5.0", "3.59"],
+        ["5.5", "3.91"],
+        ["6.0", "4.23"]
+      ],
+      "notes": [
+        "The Total R-Value calculation only includes the ceiling frame, insulation and ceiling lining. It is not to include the internal air films, roof space or roof lining.",
+        "Minimum ceiling Total R-Values are in-situ values. They account for compression of insulation."
+      ]
+    },
+    {
+      "blockId": "j3d7t",
+      "contentType": "table",
+      "title": "j3d7t: Metal-Framed Flat, Skillion or Cathedral Roof — Minimum Total R-Value to Account for Thermal Bridging",
+      "blockApplicability": {
+        "roofType": "metal_flat_skillion_cathedral"
+      },
+      "headers": [
+        "Ceiling Insulation R-Value from Tables J3D7a to J3D7r, and J3D7(1)(f) as applicable",
+        "Minimum Total R-Value to account for thermal bridging: heat flow down",
+        "Minimum Total R-Value to account for thermal bridging: heat flow up"
+      ],
+      "rows": [
+        ["1.0", "1.40", "1.32"],
+        ["1.5", "1.86", "1.78"],
+        ["2.0", "2.29", "2.21"],
+        ["2.5", "2.71", "2.63"],
+        ["3.0", "3.11", "3.02"],
+        ["3.5", "3.31", "3.22"],
+        ["4.0", "3.66", "3.57"],
+        ["4.5", "3.98", "3.90"],
+        ["5.0", "4.32", "4.22"],
+        ["5.5", "4.63", "4.53"],
+        ["6.0", "4.93", "4.82"]
+      ],
+      "notes": [
+        "Minimum Total R-Values are in-situ values. They account for compression of insulation.",
+        "Direction of heat flow must be determined in accordance with Table J3D7v."
+      ]
+    },
+    {
+      "blockId": "j3d7u",
+      "contentType": "table",
+      "title": "j3d7u: Metal-Framed Flat, Skillion or Cathedral Roof – Thermal Bridging Mitigation",
+      "blockApplicability": {
+        "roofType": "metal_flat_skillion_cathedral_thermal_mitigation"
+      },
+      "headers": [
+        "Minimum ceiling R-Value from Tables J3D7a to J3D7r, and J3D7(1)(f) as applicable",
+        "Option 1 – increase insulation between roof frame members to specified minimum R-Value",
+        "Option 2 – add a layer of continuous insulation with specified minimum R-Value above or below the roof frame members"
+      ],
+      "rows": [
+        ["1.0", "1.5", "0.13"],
+        ["1.5", "2.5", "0.30"],
+        ["2.0", "3.5", "0.30"],
+        ["2.5", "5.0", "0.40"],
+        ["3.0", "6.0", "0.60"],
+        ["3.5", "X", "0.60"],
+        ["4.0", "X", "0.60"],
+        ["4.5", "X", "0.60"],
+        ["5.0", "X", "0.60"],
+        ["5.5", "X", "0.60"],
+        ["6.0", "X", "0.60"]
+      ],
+      "notes": [
+        "Minimum R-Values are in-situ values. They account for compression of insulation.",
+        "X = not permitted."
+      ]
+    },
+    {
+      "blockId": "j3d7w",
+      "contentType": "table",
+      "title": "Adjusted Minimum R-Value of Ceiling Insulation Required to Compensate for Loss of Ceiling Insulation Area",
+      "blockApplicability": {
+        "appliesTo": "Ceiling insulation compensation due to operational or safety-related reduction in coverage"
+      },
+      "headers": [
+        "Percentage of ceiling area uninsulated",
+        "1.0",
+        "1.5",
+        "2.0",
+        "2.5",
+        "3.0",
+        "3.5",
+        "4.0",
+        "4.5",
+        "5.0",
+        "5.5"
+      ],
+      "rows": [
+        ["0.5% to < 1.0%", "1.0", "1.6", "2.2", "2.8", "3.4", "4.0", "4.7", "5.4", "6.2", "6.9"],
+        ["1.0% to < 1.5%", "1.1", "1.7", "2.3", "2.9", "3.6", "4.4", "5.2", "6.1", "7.0", "X"],
+        ["1.5% to < 2.0%", "1.1", "1.7", "2.4", "3.1", "3.9", "4.8", "5.8", "6.8", "X", "X"],
+        ["2.0% to < 2.5%", "1.1", "1.8", "2.5", "3.3", "4.2", "5.3", "6.5", "X", "X", "X"],
+        ["2.5% to < 3.0%", "1.2", "1.9", "2.6", "3.6", "4.6", "5.9", "X", "X", "X", "X"],
+        ["3.0% to < 4.0%", "1.2", "2.0", "3.0", "4.2", "5.7", "X", "X", "X", "X", "X"],
+        ["4.0% to < 5.0%", "1.3", "2.2", "3.4", "5.0", "X", "X", "X", "X", "X", "X"]
+      ],
+      "notes": [
+        "Interpolation is allowed for values between those shown.",
+        "X = not permitted."
+      ]
+    },
+    {
+      "blockId": "j3d7x",
+      "contentType": "table",
+      "title": "Total R-Values for Roofs Constructed with Insulated Sandwich Panels",
+      "blockApplicability": {
+        "constructionType": "insulated_sandwich_panels"
+      },
+      "headers": [
+        "Climate zone",
+        "SA ≤ 0.23",
+        "SA > 0.23 to ≤ 0.32",
+        "SA > 0.32 to ≤ 0.42",
+        "SA > 0.42 to ≤ 0.53",
+        "SA > 0.53 to ≤ 0.64",
+        "SA > 0.64 to ≤ 0.73",
+        "SA > 0.73 to ≤ 0.85",
+        "SA > 0.85"
+      ],
+      "rows": [
+        ["1", "1.86", "3.11", "4.32", "X", "X", "X", "X", "X"],
+        ["2 – heat flow down", "3.11", "3.11", "3.31", "3.66", "3.66", "X", "X", "X"],
+        ["2 – heat flow up", "3.02", "3.02", "3.22", "3.57", "3.57", "X", "X", "X"],
+        ["3 – heat flow down", "3.31", "3.66", "4.32", "X", "X", "X", "X", "X"],
+        ["3 – heat flow up", "3.22", "3.57", "4.22", "X", "X", "X", "X", "X"],
+        ["4", "3.22", "3.22", "3.22", "3.22", "3.22", "X", "X", "X"],
+        ["5", "3.02", "3.02", "3.02", "3.02", "3.02", "X", "X", "X"],
+        ["6", "3.57", "3.57", "3.57", "3.57", "3.57", "3.57", "3.57", "3.57"],
+        ["7", "4.22", "3.90", "3.90", "3.57", "3.57", "3.22", "3.22", "3.22"],
+        ["8", "3.90", "3.57", "3.57", "3.22", "3.22", "3.02", "3.02", "3.02"]
+      ],
+      "notes": [
+        "SA = solar absorptance.",
+        "Direction of heat flow must be determined in accordance with Table J3D7v.",
+        "X = not permitted."
+      ]
+    }
+  ]
+} 
