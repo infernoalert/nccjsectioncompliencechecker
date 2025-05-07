@@ -106,25 +106,15 @@ const ElectricalReport = () => {
 
             <Divider sx={{ my: 3 }} />
 
-            {/* Electrical Report Sections */}
+            {/* Electrical Report Status */}
             <Box>
               <Typography variant="h5" gutterBottom>Electrical Compliance</Typography>
               <Typography variant="body1" color="text.secondary">
                 {report.electricalReport.message}
               </Typography>
-              
-              {/* Sections will be added here */}
-              {Object.entries(report.electricalReport.sections).map(([section, data]) => (
-                <Box key={section} sx={{ mt: 3 }}>
-                  <Typography variant="h6" sx={{ textTransform: 'capitalize' }}>
-                    {section}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Status: {data.status}
-                  </Typography>
-                  {/* Requirements will be listed here */}
-                </Box>
-              ))}
+              <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                Status: {report.electricalReport.status}
+              </Typography>
             </Box>
           </Box>
         ) : (

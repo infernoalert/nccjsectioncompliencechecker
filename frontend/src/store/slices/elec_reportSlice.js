@@ -1,5 +1,21 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axiosWithAuth from '../../utils/axiosWithAuth';
+import axios from 'axios';
+import { API_URL } from '../../config';
+
+const ELECTRICAL_API_URL = `${API_URL}/api/electrical`;
+
+// Create axios instance with auth token
+const axiosWithAuth = (token) => {
+  if (!token) {
+    throw new Error('No authentication token available');
+  }
+  return axios.create({
+    baseURL: ELECTRICAL_API_URL,
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+};
 
 // Generate electrical report
 export const generateElectricalReport = createAsyncThunk(
@@ -10,7 +26,7 @@ export const generateElectricalReport = createAsyncThunk(
       if (!auth.token) {
         return rejectWithValue('No authentication token available');
       }
-      const response = await axiosWithAuth(auth.token).get(`/api/electrical/${id}/report`);
+      const response = await axiosWithAuth(auth.token).get(`/${id}/report`);
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.error || error.message);
