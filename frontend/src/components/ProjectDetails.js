@@ -164,15 +164,15 @@ const ProjectDetails = () => {
             startIcon={<AssessmentIcon />}
             onClick={() => navigate(`/projects/${id}/report`)}
           >
-            Generate Report
+            Elemental Provisions
           </Button>
           <Button
             variant="contained"
             color="success"
             startIcon={<AssessmentIcon />}
-            onClick={() => navigate(`/electrical/${id}/report`)}
+            onClick={() => navigate(`/lighting-power/${id}/report`)}
           >
-            Electrical
+            Lighting & Power
           </Button>
           <Button
             variant="contained"

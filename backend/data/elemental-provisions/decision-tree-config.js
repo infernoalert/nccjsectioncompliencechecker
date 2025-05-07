@@ -6,7 +6,7 @@
 
 module.exports = {
   // Base path for decision tree files
-  basePath: 'data/decision-trees',
+  basePath: 'data/elemental-provisions',
   
   // File extension for decision tree files
   fileExtension: '.json',

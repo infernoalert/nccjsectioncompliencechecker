@@ -5,7 +5,7 @@ const path = require('path');
 // Define the directory containing the standardized JSON report sections
 // Using the user-specified directory. Consider moving standardized JSONs
 // to a dedicated 'report-sections' subdir for clarity.
-const sectionsDirectory = path.join(__dirname, '../data/decision-trees');
+const sectionsDirectory = path.join(__dirname, '../data/elemental-provisions');
 
 let cachedSections = null; // Simple in-memory cache
 

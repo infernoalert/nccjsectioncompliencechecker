@@ -12,7 +12,7 @@ const decisionTree = JSON.parse(fs.readFileSync(decisionTreePath, 'utf8'));
 
 // Load mapping data
 const buildingTypeMapping = require('../data/mappings/buildingTypeToClassification.json');
-const buildingClassifications = require('../data/decision-trees/building-classifications.json');
+const buildingClassifications = require('../data/elemental-provisions/building-classifications.json');
 
 // Valid building class types
 const VALID_BUILDING_CLASSES = [
@@ -290,7 +290,7 @@ const getExemptions = async (classType) => {
  */
 const getVerificationMethods = async (classType) => {
   try {
-    const verificationMethods = require('../data/decision-trees/verification-methods.json');
+    const verificationMethods = require('../data/elemental-provisions/verification-methods.json');
     const methods = verificationMethods.verification_methods[classType];
     
     if (!methods) {

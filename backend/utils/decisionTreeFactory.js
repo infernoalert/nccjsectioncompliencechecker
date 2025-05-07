@@ -7,7 +7,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const config = require('../data/decision-trees/decision-tree-config');
+const config = require('../data/elemental-provisions/decision-tree-config');
 
 // Use relative paths consistently
 const treePath = path.join(__dirname, '..', 'data', 'Decision-Tree.json');
