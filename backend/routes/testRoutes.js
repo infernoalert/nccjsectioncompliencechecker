@@ -58,7 +58,7 @@ router.get('/section/:sectionName', async (req, res) => {
 // Test endpoint for exemptions
 router.get('/exemptions', async (req, res) => {
   try {
-    const exemptionsPath = path.join(__dirname, '..', 'data', 'decision-trees', 'exemptions.json');
+    const exemptionsPath = path.join(__dirname, '..', 'data', 'elemental-provisions', 'exemptions.json');
     const exemptionsData = await fs.readFile(exemptionsPath, 'utf8');
     const exemptions = JSON.parse(exemptionsData);
     res.json(exemptions);

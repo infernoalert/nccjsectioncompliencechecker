@@ -5,9 +5,9 @@ const { getBuildingClassification, getClimateZoneByLocation } = require('../util
 const locationToClimateZone = require('../data/mappings/locationToClimateZone.json'); // Keep if needed for climate zone details
 
 // --- Retain JS Calculation Imports ---
-const j1p2totalheatingload = require('../data/decision-trees/j1p2totalheatingload.js');
-const j1p2totalcoolingload = require('../data/decision-trees/j1p2totalcoolingload.js');
-const j1p2thermalenergyload = require('../data/decision-trees/j1p2thermalenergyload.js');
+const j1p2totalheatingload = require('../data/elemental-provisions/j1p2totalheatingload.js');
+const j1p2totalcoolingload = require('../data/elemental-provisions/j1p2totalcoolingload.js');
+const j1p2thermalenergyload = require('../data/elemental-provisions/j1p2thermalenergyload.js');
 // --- End JS Calculation Imports ---
 
 

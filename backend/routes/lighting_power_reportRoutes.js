@@ -1,14 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const { protect } = require('../middleware/authMiddleware');
-const { generateElectricalReport } = require('../controllers/elec_reportController');
+const { generateLightingPowerReport } = require('../controllers/lighting_power_reportController');
 
 /**
  * @swagger
- * /api/electrical/{id}/report:
+ * /api/lighting-power/{id}/report:
  *   get:
- *     summary: Generate electrical compliance report for a project
- *     tags: [Electrical]
+ *     summary: Generate lighting & power compliance report for a project
+ *     tags: [Lighting & Power]
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -23,15 +23,13 @@ const { generateElectricalReport } = require('../controllers/elec_reportControll
  *         description: Report generated successfully
  *       401:
  *         description: Not authorized
- *       403:
- *         description: Forbidden - User does not have access to this project
  *       404:
  *         description: Project not found
  *       500:
- *         description: Server error during report generation
+ *         description: Server error
  */
 
-// Generate electrical report
-router.get('/:id/report', protect, generateElectricalReport);
+// Generate lighting & power report
+router.get('/:id/report', protect, generateLightingPowerReport);
 
 module.exports = router; 
