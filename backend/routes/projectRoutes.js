@@ -11,7 +11,7 @@ const {
   getBuildingTypes,
   getLocations,
   generateReport
-} = require('../controllers/projectController');
+} = require('../controllers/elemental_provision_controller');
 const { getAllBuildingTypes } = require('../utils/mappingUtils');
 
 /**

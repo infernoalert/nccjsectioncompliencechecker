@@ -18,6 +18,13 @@ const { generateLightingPowerReport } = require('../controllers/lighting_power_r
  *         schema:
  *           type: string
  *         description: Project ID
+ *       - in: query
+ *         name: sectionType
+ *         required: false
+ *         schema:
+ *           type: string
+ *           enum: [lighting-power, elemental-provisions, energy-efficiency, fire-safety]
+ *         description: Type of section to generate report for
  *     responses:
  *       200:
  *         description: Report generated successfully

@@ -1,7 +1,7 @@
 // backend/services/reportService.js
-const Project = require('../models/Project'); // Assuming still needed for project data access
-const { loadReportSections } = require('../utils/sectionLoader'); // Import the new loader
-const { getBuildingClassification, getClimateZoneByLocation } = require('../utils/decisionTreeUtils'); // Keep necessary utils
+const Project = require('../models/Project.js'); // Assuming still needed for project data access
+const { loadSections } = require('../utils/sectionLoader.js'); // Import the new loader
+const { getBuildingClassification, getClimateZoneByLocation } = require('../utils/decisionTreeUtils.js'); // Keep necessary utils
 const locationToClimateZone = require('../data/mappings/locationToClimateZone.json'); // Keep if needed for climate zone details
 
 // --- Retain JS Calculation Imports ---
@@ -97,55 +97,63 @@ class ReportService {
      * @returns {Promise<Array<Object>>} - Array of applicable, processed dynamic sections.
      */
     async generateDynamicSections() {
-        const allSections = loadReportSections(); // Load all defined sections from JSON
-        const applicableSections = [];
+        try {
+            const allSections = await loadSections('elemental-provisions'); // Load sections for elemental-provisions
+            const applicableSections = [];
 
-        // Use cached classification and zone
-        const projectContext = {
-            project: this.project,
-            buildingClassification: this.buildingClassification,
-            climateZone: this.climateZone,
-        };
+            // Use cached classification and zone
+            const projectContext = {
+                project: this.project,
+                buildingClassification: this.buildingClassification,
+                climateZone: this.climateZone,
+            };
 
-        for (const sectionDefinition of allSections) {
-            // Check if section matches the requested sectionParam OR if 'full' report is requested
-             if (this.sectionParam !== 'full' && this.sectionParam !== sectionDefinition.sectionId.toLowerCase()) {
-                 continue; // Skip if a specific section is requested and this isn't it
-             }
+            // Process each section in the loaded data
+            for (const [sectionId, sectionData] of Object.entries(allSections)) {
+                // Check if section matches the requested sectionParam OR if 'full' report is requested
+                if (this.sectionParam !== 'full' && this.sectionParam !== sectionId.toLowerCase()) {
+                    continue; // Skip if a specific section is requested and this isn't it
+                }
 
-            // Check overall applicability
-            if (this.checkApplicability(sectionDefinition.overallApplicability, projectContext)) {
-                const processedSection = {
-                    sectionId: sectionDefinition.sectionId,
-                    title: sectionDefinition.title,
-                    displayOrder: sectionDefinition.displayOrder || 999, // Default order
-                    contentBlocks: [],
-                     _sourceFile: sectionDefinition._sourceFile // Keep for debugging
-                };
+                // Check overall applicability
+                if (this.checkApplicability(sectionData.overallApplicability || {}, projectContext)) {
+                    const processedSection = {
+                        sectionId: sectionId,
+                        title: sectionData.title || sectionId,
+                        displayOrder: sectionData.displayOrder || 999, // Default order
+                        contentBlocks: [],
+                        _sourceFile: sectionData._sourceFile // Keep for debugging
+                    };
 
-                // Process content blocks within the applicable section
-                for (const block of sectionDefinition.contentBlocks) {
-                    // Check block-specific applicability (if defined)
-                    if (this.checkApplicability(block.blockApplicability || {}, projectContext)) { // Pass empty obj if null/undefined
-                        // Process content (handle variants, table filtering etc.)
-                        const processedBlock = this.processContentBlock(block, projectContext);
-                        if (processedBlock) { // Ensure processing didn't return null
-                            processedSection.contentBlocks.push(processedBlock);
+                    // Process content blocks if they exist
+                    if (sectionData.contentBlocks && Array.isArray(sectionData.contentBlocks)) {
+                        for (const block of sectionData.contentBlocks) {
+                            // Check block-specific applicability (if defined)
+                            if (this.checkApplicability(block.blockApplicability || {}, projectContext)) {
+                                // Process content (handle variants, table filtering etc.)
+                                const processedBlock = this.processContentBlock(block, projectContext);
+                                if (processedBlock) { // Ensure processing didn't return null
+                                    processedSection.contentBlocks.push(processedBlock);
+                                }
+                            }
                         }
                     }
-                }
 
-                // Only add the section if it has any applicable content blocks
-                if (processedSection.contentBlocks.length > 0) {
-                     applicableSections.push(processedSection);
+                    // Only add the section if it has any applicable content blocks
+                    if (processedSection.contentBlocks.length > 0) {
+                        applicableSections.push(processedSection);
+                    }
                 }
             }
+
+            // Sort sections by displayOrder
+            applicableSections.sort((a, b) => a.displayOrder - b.displayOrder);
+
+            return applicableSections;
+        } catch (error) {
+            console.error('Error in generateDynamicSections:', error);
+            throw new Error(`Failed to generate dynamic sections: ${error.message}`);
         }
-
-        // Sort sections by displayOrder
-        applicableSections.sort((a, b) => a.displayOrder - b.displayOrder);
-
-        return applicableSections;
     }
 
     /**

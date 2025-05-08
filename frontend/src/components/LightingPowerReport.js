@@ -49,10 +49,10 @@ const LightingPowerReport = () => {
             <Box sx={{ mb: 4 }}>
               <Typography variant="h5" gutterBottom>Lighting & Power Compliance</Typography>
               <Typography variant="body1" paragraph>
-                {report.lightingPowerReport.message}
+                {report?.lightingPowerReport?.message || 'No message available'}
               </Typography>
               <Typography variant="body1">
-                Status: {report.lightingPowerReport.status}
+                Status: {report?.lightingPowerReport?.status || 'Unknown'}
               </Typography>
             </Box>
           </Box>

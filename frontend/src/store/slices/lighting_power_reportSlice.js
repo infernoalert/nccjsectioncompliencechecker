@@ -12,15 +12,30 @@ const api = axios.create({
   },
 });
 
+// Add request interceptor to add auth token
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 // Generate lighting & power report
 export const generateLightingPowerReport = createAsyncThunk(
   'lightingPower/generateReport',
   async (projectId, { rejectWithValue }) => {
     try {
       const response = await api.get(`/${projectId}/report`);
-      return response.data;
+      return response.data.data;
     } catch (error) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to generate report');
+      const errorMessage = error.response?.data?.message || error.response?.data?.error || error.message || 'Failed to generate report';
+      return rejectWithValue(errorMessage);
     }
   }
 );
@@ -42,14 +57,17 @@ const lightingPowerSlice = createSlice({
       .addCase(generateLightingPowerReport.pending, (state) => {
         state.loading = true;
         state.error = null;
+        state.report = null;
       })
       .addCase(generateLightingPowerReport.fulfilled, (state, action) => {
         state.loading = false;
         state.report = action.payload;
+        state.error = null;
       })
       .addCase(generateLightingPowerReport.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+        state.report = null;
       });
   },
 });
