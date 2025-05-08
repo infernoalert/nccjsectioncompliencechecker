@@ -1,3 +1,5 @@
+const express = require('express');
+const router = express.Router();
 const Project = require('../models/Project');
 const ClimateZone = require('../models/ClimateZone');
 const BuildingFabric = require('../models/BuildingFabric');
@@ -7,7 +9,7 @@ const { validateProject } = require('../utils/validation');
 const { getBuildingClassification, getClimateZoneByLocation } = require('../utils/decisionTreeUtils');
 const asyncHandler = require('express-async-handler');
 const complianceService = require('../services/complianceService');
-const ReportService = require('../services/reportService');
+const ReportService = require('../services/elemental_provision_reportService');
 const { getAllLocations } = require('../utils/locationUtils');
 const { getSection } = require('../utils/decisionTreeFactory');
 const buildingTypeMapping = require('../data/mappings/buildingTypeToClassification.json');

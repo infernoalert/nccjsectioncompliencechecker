@@ -1,74 +1,81 @@
 // backend/utils/sectionLoader.js
-const fs = require('fs');
 const path = require('path');
+const fs = require('fs').promises;
 
-// Define the directory containing the standardized JSON report sections
-// Using the user-specified directory. Consider moving standardized JSONs
-// to a dedicated 'report-sections' subdir for clarity.
-const sectionsDirectory = path.join(__dirname, '../data/elemental-provisions');
+// Define the base directory containing all report sections
+const baseDirectory = path.join(__dirname, '../data');
 
-let cachedSections = null; // Simple in-memory cache
+// Cache for different section types
+const sectionCache = {
+  'elemental-provisions': null,
+  'lighting-power': null,
+  'energy-efficiency': null,
+  'fire-safety': null,
+  // Add more section types as needed
+};
 
 /**
- * Loads and parses all standardized JSON files from the sections directory.
- * Includes basic validation for required fields in the standard format.
- * Caches the result to avoid repeated file reads.
- * @returns {Array<Object>} An array of valid report section definition objects.
+ * Load sections based on the selected type
+ * @param {string} sectionType - The type of section to load (e.g., 'elemental-provisions', 'lighting-power')
+ * @returns {Promise<Object>} The loaded sections
  */
-const loadReportSections = () => {
-    // Return cached data if available
-    if (cachedSections !== null) {
-        return cachedSections;
+async function loadSections(sectionType) {
+  try {
+    // Check if we have cached data for this section type
+    if (sectionCache[sectionType]) {
+      return sectionCache[sectionType];
     }
 
-    const loadedSections = [];
+    // Validate section type
+    if (!sectionType || !sectionCache.hasOwnProperty(sectionType)) {
+      throw new Error(`Invalid section type: ${sectionType}`);
+    }
+
+    const sectionDirectory = path.join(baseDirectory, sectionType);
+    
+    // Check if directory exists
     try {
-        const files = fs.readdirSync(sectionsDirectory);
+      await fs.access(sectionDirectory);
+    } catch (error) {
+      throw new Error(`Section directory not found: ${sectionType}`);
+    }
 
-        files.forEach(file => {
-            // Process only JSON files
-            if (path.extname(file).toLowerCase() === '.json') {
-                const filePath = path.join(sectionsDirectory, file);
-                try {
-                    const fileContent = fs.readFileSync(filePath, 'utf8');
-                    const sectionData = JSON.parse(fileContent);
+    // Read all JSON files in the directory
+    const files = await fs.readdir(sectionDirectory);
+    const jsonFiles = files.filter(file => file.endsWith('.json'));
 
-                    // Basic validation for standard format structure
-                    if (sectionData && sectionData.sectionId && sectionData.title && sectionData.overallApplicability && Array.isArray(sectionData.contentBlocks)) {
-                         // Add filePath for potential debugging
-                         sectionData._sourceFile = file;
-                         loadedSections.push(sectionData);
-                    } else {
-                        // Optionally log files that don't match the expected base structure
-                        // console.warn(`Skipping file ${file}: Does not appear to be a valid standard report section JSON.`);
-                    }
-                } catch (parseError) {
-                    console.error(`Error parsing JSON file ${file}:`, parseError.message);
-                    // Skip files that fail to parse
-                }
-            }
-        });
-    } catch (readDirError) {
-        console.error(`Error reading sections directory ${sectionsDirectory}:`, readDirError);
-        // Depending on requirements, might want to throw error or return empty array
-        return [];
+    const sections = {};
+    for (const file of jsonFiles) {
+      const filePath = path.join(sectionDirectory, file);
+      const content = await fs.readFile(filePath, 'utf8');
+      const sectionName = path.basename(file, '.json');
+      sections[sectionName] = JSON.parse(content);
     }
 
     // Cache the loaded sections
-    cachedSections = loadedSections;
-    // console.log(`Loaded ${cachedSections.length} report sections from JSON.`);
-    return cachedSections;
-};
+    sectionCache[sectionType] = sections;
+    return sections;
+  } catch (error) {
+    console.error(`Error loading sections for ${sectionType}:`, error);
+    throw error;
+  }
+}
 
 /**
- * Clears the section cache. Useful for development environments
- * where JSON files might change without restarting the server.
+ * Clear the cache for a specific section type or all sections
+ * @param {string} [sectionType] - Optional section type to clear. If not provided, clears all caches
  */
-const clearSectionCache = () => {
-    cachedSections = null;
-};
+function clearCache(sectionType) {
+  if (sectionType) {
+    sectionCache[sectionType] = null;
+  } else {
+    Object.keys(sectionCache).forEach(key => {
+      sectionCache[key] = null;
+    });
+  }
+}
 
 module.exports = {
-    loadReportSections,
-    clearSectionCache, // Export if needed for development/testing
+  loadSections,
+  clearCache
 };

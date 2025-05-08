@@ -1,0 +1,86 @@
+{
+  "version": "1.0",
+  "lastUpdated": "2024-03-19",
+  "sectionId": "energy_monitoring",
+  "title": "Energy Monitoring Requirements",
+  "displayOrder": 9,
+  "applicability": {
+    "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"],
+    "floorArea": {
+      "min": 0,
+      "max": null
+    },
+    "conditions": [
+      {
+        "type": "floorArea",
+        "operator": ">",
+        "value": 2500
+      },
+      {
+        "type": "floorArea",
+        "operator": ">",
+        "value": 500
+      }
+    ]
+  },
+  "content": [
+    {
+      "type": "header",
+      "level": 1,
+      "text": "J9D3: Facilities for Energy Monitoring"
+    },
+    {
+      "type": "conditionalParagraph",
+      "condition": {
+        "type": "floorArea",
+        "operator": ">",
+        "value": 2500
+      },
+      "text": "Energy meters must be interlinked by a communication system that collates time-of-use energy data to a single interface monitoring system for storage, analysis, and review. [Translation: Energy Management System EMS Required]"
+    },
+    {
+      "type": "conditionalList",
+      "condition": {
+        "type": "floorArea",
+        "operator": ">",
+        "value": 2500
+      },
+      "style": "bullet",
+      "items": [
+        "Air-conditioning plant (including heating, cooling, and air handling fans)",
+        "Artificial lighting",
+        "Appliance power",
+        "Central hot water supply",
+        "Internal transport devices (e.g., lifts, escalators, moving walkways if more than one serves the building)",
+        "On-site renewable energy equipment",
+        "On-site electric vehicle charging equipment",
+        "On-site battery systems",
+        "Other ancillary plant"
+      ]
+    },
+    {
+      "type": "conditionalParagraph",
+      "condition": {
+        "type": "floorArea",
+        "operator": ">",
+        "value": 500
+      },
+      "text": "Energy meters must be configured to record the time-of-use consumption of gas and electricity. [Translation: Smart Meter with Data Logger/Memory is Required]"
+    },
+    {
+      "type": "conditionalParagraph",
+      "condition": {
+        "type": "floorArea",
+        "operator": "<=",
+        "value": 500
+      },
+      "text": "No specific energy metering requirements based on the provided rules."
+    }
+  ],
+  "metadata": {
+    "source": "NCC 2022",
+    "lastReviewed": "2024-03-19",
+    "reviewedBy": "System",
+    "status": "active"
+  }
+} 

@@ -1,0 +1,134 @@
+{
+  "version": "1.0",
+  "last_updated": "2024-04-15",
+  "climate_zones": {
+    "1": {
+      "name": "Tropical Zone",
+      "description": "Hot humid summer, warm winter",
+      "requirements": {
+        "cooling": {
+          "primary": "Air conditioning",
+          "secondary": "Natural ventilation"
+        },
+        "thermal_performance": {
+          "walls": "R2.0",
+          "roof": "R4.0",
+          "floor": "R1.5"
+        }
+      }
+    },
+    "2": {
+      "name": "Subtropical Zone",
+      "description": "Warm humid summer, mild winter",
+      "requirements": {
+        "cooling": {
+          "primary": "Air conditioning",
+          "secondary": "Natural ventilation"
+        },
+        "thermal_performance": {
+          "walls": "R2.0",
+          "roof": "R4.0",
+          "floor": "R1.5"
+        }
+      }
+    },
+    "3": {
+      "name": "Hot Arid Zone",
+      "description": "Hot dry summer, mild winter",
+      "requirements": {
+        "cooling": {
+          "primary": "Air conditioning",
+          "secondary": "Natural ventilation"
+        },
+        "thermal_performance": {
+          "walls": "R2.0",
+          "roof": "R4.0",
+          "floor": "R1.5"
+        }
+      }
+    },
+    "4": {
+      "name": "Mixed Zone",
+      "description": "Mild to warm summer, cool winter",
+      "requirements": {
+        "heating": {
+          "primary": "Space heating",
+          "secondary": "Passive solar design"
+        },
+        "cooling": {
+          "primary": "Natural ventilation",
+          "secondary": "Air conditioning"
+        },
+        "thermal_performance": {
+          "walls": "R2.8",
+          "roof": "R4.0",
+          "floor": "R1.5"
+        }
+      }
+    },
+    "5": {
+      "name": "Temperate Zone",
+      "description": "Mild summer, cool winter",
+      "requirements": {
+        "heating": {
+          "primary": "Space heating",
+          "secondary": "Passive solar design"
+        },
+        "cooling": {
+          "primary": "Natural ventilation",
+          "secondary": "Air conditioning"
+        },
+        "thermal_performance": {
+          "walls": "R2.8",
+          "roof": "R4.0",
+          "floor": "R1.5"
+        }
+      }
+    },
+    "6": {
+      "name": "Cool Temperate Zone",
+      "description": "Cool summer, cold winter",
+      "requirements": {
+        "heating": {
+          "primary": "Space heating",
+          "secondary": "Passive solar design"
+        },
+        "thermal_performance": {
+          "walls": "R2.8",
+          "roof": "R4.0",
+          "floor": "R1.5"
+        }
+      }
+    },
+    "7": {
+      "name": "Cold Zone",
+      "description": "Cool to cold winter, mild summer",
+      "requirements": {
+        "heating": {
+          "primary": "Space heating",
+          "secondary": "Passive solar design"
+        },
+        "thermal_performance": {
+          "walls": "R3.0",
+          "roof": "R4.0",
+          "floor": "R1.5"
+        }
+      }
+    },
+    "8": {
+      "name": "Alpine Zone",
+      "description": "Very cold winter, cool summer",
+      "requirements": {
+        "heating": {
+          "primary": "Space heating",
+          "secondary": "Passive solar design"
+        },
+        "thermal_performance": {
+          "walls": "R3.0",
+          "roof": "R4.0",
+          "floor": "R1.5"
+        }
+      }
+    }
+  }
+} 
