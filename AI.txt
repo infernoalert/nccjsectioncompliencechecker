@@ -582,3 +582,159 @@ Each dynamic section follows a standardized JSON format:
 ```
 
 The frontend uses the `DynamicSectionRenderer` component to handle different content types and render them appropriately.
+
+## Lighting & Power Report Implementation
+
+### Backend Structure
+The lighting and power report is implemented through two main components:
+
+1. **LightingPowerReportService** (`backend/services/lighting_power_reportService.js`):
+   - Handles report generation for lighting and power compliance
+   - Structure:
+     ```javascript
+     {
+       projectInfo: {
+         name: string,
+         buildingType: string,
+         location: string,
+         floorArea: number,
+         totalAreaOfHabitableRooms: number
+       },
+       buildingClassification: {
+         buildingType: string,
+         classType: string,
+         name: string,
+         description: string,
+         typicalUse: string,
+         commonFeatures: string[],
+         notes: string,
+         technicalDetails: object
+       },
+       climateZone: {
+         zone: number,
+         name: string,
+         description: string,
+         annualHeatingDegreeHours: number,
+         annualCoolingDegreeHours: number,
+         annualDehumidificationGramHours: number
+       },
+       lightingPowerReport: {
+         sections: Array<{
+           sectionId: string,
+           title: string,
+           displayOrder: number,
+           contentBlocks: Array<{
+             blockId: string,
+             contentType: string,
+             content: string | object
+           }>
+         }>
+       }
+     }
+     ```
+
+2. **JSON Data Structure** (`backend/data/lighting-power/`):
+   - All lighting and power related JSON files should be placed in this directory
+   - Each JSON file must include:
+     ```json
+     {
+       "category": "lighting-power",
+       "sectionId": "unique_section_id",
+       "title": "Section Title",
+       "displayOrder": number,
+       "overallApplicability": {
+         "buildingClasses": ["Class_2", "Class_4"],
+         "climateZones": [1, 2, 3],
+         "minFloorArea": number,
+         "maxFloorArea": number
+       },
+       "contentBlocks": [
+         {
+           "blockId": "unique_block_id",
+           "contentType": "text|table|list",
+           "content": "content or data",
+           "blockApplicability": {
+             "buildingClasses": ["Class_2", "Class_4"],
+             "climateZones": [1, 2, 3]
+           }
+         }
+       ]
+     }
+     ```
+
+### Frontend Implementation
+The lighting and power report is displayed using the `LightingPowerReport` component (`frontend/src/components/LightingPowerReport.js`):
+
+1. **Component Structure**:
+   ```jsx
+   <Container>
+     <Paper>
+       <Typography>Lighting & Power Compliance Report</Typography>
+       <Box>
+         {/* Project Information */}
+         <Box>
+           <Typography>Project Information</Typography>
+           <Grid>
+             {/* Project details */}
+           </Grid>
+         </Box>
+
+         {/* Building Classification & Climate Zone */}
+         <Box>
+           <Typography>Building Classification & Climate Zone</Typography>
+           <Grid>
+             {/* Classification and climate details */}
+           </Grid>
+         </Box>
+
+         {/* Dynamic Sections */}
+         <Box>
+           <Typography>Report Sections</Typography>
+           {/* Render dynamic sections */}
+         </Box>
+       </Box>
+     </Paper>
+   </Container>
+   ```
+
+2. **Redux Integration**:
+   - Uses `lighting_power_reportSlice.js` for state management
+   - Handles loading, error states, and report data
+   - Provides `generateLightingPowerReport` action for report generation
+
+### Important Notes
+
+1. **JSON File Location**:
+   - All lighting and power related JSON files must be in `backend/data/lighting-power/`
+   - Each file must have the `category: "lighting-power"` field
+   - File naming should be descriptive and follow a consistent pattern
+
+2. **Section Loading**:
+   - The `sectionLoader.js` utility loads all JSON files from the lighting-power directory
+   - Files are filtered based on the `category` field
+   - Sections are processed based on their applicability rules
+
+3. **Applicability Rules**:
+   - Each section and content block can have applicability rules
+   - Rules are checked against project data (building class, climate zone, etc.)
+   - Only applicable sections and blocks are included in the report
+
+4. **Content Types**:
+   - Text content: Simple text display
+   - Table content: Structured data in tabular format
+   - List content: Ordered or unordered lists
+
+5. **Error Handling**:
+   - The service includes comprehensive error handling
+   - Missing or invalid JSON files are logged
+   - Invalid sections or blocks are skipped with warnings
+
+6. **Performance Considerations**:
+   - JSON files are loaded and cached on service initialization
+   - Applicability checks are performed efficiently
+   - Dynamic sections are generated only when needed
+
+7. **Maintenance**:
+   - New sections can be added by creating new JSON files
+   - Existing sections can be modified by updating JSON files
+   - The structure allows for easy addition of new content types
