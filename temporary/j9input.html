@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NCC J9 Compliance Checker</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9fafb;
+            color: #333;
+        }
+        .form-section {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            padding: 20px;
+            border-left: 5px solid #3b82f6;
+        }
+        .form-section:nth-child(odd) {
+            border-left-color: #10b981;
+        }
+        .form-section:nth-child(3n) {
+            border-left-color: #8b5cf6;
+        }
+        .result-box {
+            border: 2px solid;
+            border-radius: 8px;
+            margin: 15px 0;
+            padding: 15px;
+        }
+        .compliant {
+            border-color: #10b981;
+            background-color: #d1fae5;
+        }
+        .non-compliant {
+            border-color: #ef4444;
+            background-color: #fee2e2;
+        }
+        .na {
+            border-color: #9ca3af;
+            background-color: #f3f4f6;
+        }
+        .info-icon {
+            color: #3b82f6;
+            cursor: help;
+            margin-left: 4px;
+        }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 300px;
+            background-color: #333;
+            color: #fff;
+            text-align: left;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -150px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        input[type="text"], input[type="number"], select {
+            border: 1px solid #d1d5db;
+            padding: 8px;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+        input[type="text"]:focus, input[type="number"]:focus, select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+        button {
+            transition: all 0.3s;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body class="py-8 px-4 md:px-8 max-w-5xl mx-auto">
+    <header class="mb-8 text-center">
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">NCC J9 Compliance Checker</h1>
+        <p class="text-gray-600">Verify if your project meets the NCC 2022 Part J9 requirements for energy monitoring and on-site distributed energy resources</p>
+    </header>
+
+    <form id="complianceForm" class="space-y-8">
+        <!-- 1. BUILDING INFORMATION -->
+        <div class="form-section" id="buildingInfoSection">
+            <h2 class="text-xl font-bold mb-4 flex items-center">
+                <i class="bi bi-building mr-2"></i>Building Information
+            </h2>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-medium mb-1" for="buildingClass">
+                        Building Classification
+                        <span class="tooltip">
+                            <i class="bi bi-info-circle info-icon"></i>
+                            <span class="tooltiptext">Different building classes have different requirements under NCC J9.</span>
+                        </span>
+                    </label>
+                    <select id="buildingClass" class="w-full" required>
+                        <option value="">Select Building Class</option>
+                        <option value="class2">Class 2 (Residential apartments)</option>
+                        <option value="class3">Class 3 (Hotels, motels, etc.)</option>
+                        <option value="class4">Class 4 (Dwelling in non-residential)</option>
+                        <option value="class5">Class 5 (Office buildings)</option>
+                        <option value="class6">Class 6 (Retail buildings)</option>
+                        <option value="class7a">Class 7a (Carparks)</option>
+                        <option value="class7b">Class 7b (Warehouses, storage)</option>
+                        <option value="class8">Class 8 (Factory/production)</option>
+                        <option value="class8-sub">Class 8 Electricity Network Substation</option>
+                        <option value="class9">Class 9 (Healthcare, assembly, etc.)</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium mb-1" for="totalFloorArea">
+                        Total Floor Area (m²)
+                        <span class="tooltip">
+                            <i class="bi bi-info-circle info-icon"></i>
+                            <span class="tooltiptext">The floor area determines which monitoring requirements apply to your building.</span>
+                        </span>
+                    </label>
+                    <input type="number" id="totalFloorArea" class="w-full" min="0" required>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium mb-1" for="commonAreaSize">Common Area Size (m²) - For Class 2 buildings</label>
+                    <input type="number" id="commonAreaSize" class="w-full" min="0">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium mb-1" for="isSoleOccupancy">Is this a sole-occupancy unit?</label>
+                    <select id="isSoleOccupancy" class="w-full">
+                        <option value="no">No</option>
+                        <option value="yes">Yes</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. ENERGY MONITORING - J9D3 -->
+        <div class="form-section" id="energyMonitoringSection">
+            <h2 class="text-xl font-bold mb-4 flex items-center">
+                <i class="bi bi-lightning-charge mr-2"></i>Energy Monitoring Systems (J9D3)
+                <span class="tooltip">
+                    <i class="bi bi-info-circle info-icon"></i>
+                    <span class="tooltiptext">Buildings over 500m² require time-of-use energy meters. Buildings over 2,500m² require additional monitoring capabilities.</span>
+                </span>
+            </h2>
+            
+            <div class="space-y-6">
+                <div class="bg-blue-50 p-4 rounded-md">
+                    <p class="text-sm text-blue-700">
+                        <i class="bi bi-info-circle mr-1"></i>
+                        For buildings >500m², time-of-use energy meters are required. For buildings >2,500m², additional separate monitoring systems are required.
+                    </p>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-1">Does the building have energy meters configured to record time-of-use consumption of gas and electricity?</label>
+                    <div class="flex space-x-4">
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="timeOfUseMeters" value="yes" class="form-radio h-5 w-5 text-blue-600">
+                            <span class="ml-2">Yes</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="timeOfUseMeters" value="no" class="form-radio h-5 w-5 text-blue-600">
+                            <span class="ml-2">No</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Additional monitoring for buildings >2,500m² -->
+                <div id="advancedMonitoring" class="space-y-4 bg-gray-50 p-4 rounded-md">
+                    <h3 class="font-medium text-md">For buildings >2,500m² - Does the building have individual time-of-use energy data recording for:</h3>
+                    
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="flex items-center">
+                            <input type="checkbox" id="monitor_aircon" class="h-5 w-5 text-blue-600 mr-2">
+                            <label for="monitor_aircon">Air-conditioning plant (heating, cooling, fans)</label>
+                        </div>
+                        
+                        <div class="flex items-center">
+                            <input type="checkbox" id="monitor_lighting" class="h-5 w-5 text-blue-600 mr-2">
+                            <label for="monitor_lighting">Artificial lighting</label>
+                        </div>
+                        
+                        <div class="flex items-center">
+                            <input type="checkbox" id="monitor_appliances" class="h-5 w-5 text-blue-600 mr-2">
+                            <label for="monitor_appliances">Appliance power</label>
+                        </div>
+                        
+                        <div class="flex items-center">
+                            <input type="checkbox" id="monitor_hotwater" class="h-5 w-5 text-blue-600 mr-2">
+                            <label for="monitor_hotwater">Central hot water supply</label>
+                        </div>
+                        
+                        <div class="flex items-center">
+                            <input type="checkbox" id="monitor_transport" class="h-5 w-5 text-blue-600 mr-2">
+                            <label for="monitor_transport">Internal transport devices (lifts, escalators, moving walkways)</label>
+                        </div>
+                        
+                        <div class="flex items-center">
+                            <input type="checkbox" id="monitor_renewable" class="h-5 w-5 text-blue-600 mr-2">
+                            <label for="monitor_renewable">On-site renewable energy equipment</label>
+                        </div>
+                        
+                        <div class="flex items-center">
+                            <input type="checkbox" id="monitor_evcharging" class="h-5 w-5 text-blue-600 mr-2">
+                            <label for="monitor_evcharging">On-site electric vehicle charging equipment</label>
+                        </div>
+                        
+                        <div class="flex items-center">
+                            <input type="checkbox" id="monitor_battery" class="h-5 w-5 text-blue-600 mr-2">
+                            <label for="monitor_battery">On-site battery systems</label>
+                        </div>
+                        
+                        <div class="flex items-center">
+                            <input type="checkbox" id="monitor_ancillary" class="h-5 w-5 text-blue-600 mr-2">
+                            <label for="monitor_ancillary">Other ancillary plant</label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Are energy meters interlinked by a communication system that collates the data to a single interface monitoring system?</label>
+                        <div class="flex space-x-4">
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="interlinkMeters" value="yes" class="form-radio h-5 w-5 text-blue-600">
+                                <span class="ml-2">Yes</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="interlinkMeters" value="no" class="form-radio h-5 w-5 text-blue-600">
+                                <span class="ml-2">No</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. EV CHARGING INFRASTRUCTURE - J9D4 -->
+        <div class="form-section" id="evChargingSection">
+            <h2 class="text-xl font-bold mb-4 flex items-center">
+                <i class="bi bi-ev-station mr-2"></i>Electric Vehicle Charging Infrastructure (J9D4)
+                <span class="tooltip">
+                    <i class="bi bi-info-circle info-icon"></i>
+                    <span class="tooltiptext">Carparks for eligible buildings must provide electrical infrastructure for future EV charging. Requirements vary by building class.</span>
+                </span>
+            </h2>
+
+            <div class="space-y-6">
+                <div class="bg-blue-50 p-4 rounded-md">
+                    <p class="text-sm text-blue-700">
+                        <i class="bi bi-info-circle mr-1"></i>
+                        This section applies to carparks associated with Class 2, 3, 5, 6, 7b, 8 or 9 buildings. It does not apply to stand-alone Class 7a buildings.
+                    </p>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-1" for="hasCarpark">Does the building have an associated carpark?</label>
+                    <select id="hasCarpark" class="w-full">
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                    </select>
+                </div>
+
+                <div id="carparkDetails" class="space-y-4">
+                    <h3 class="font-medium">Carpark Details (for evaluation against Table J9D4)</h3>
+                    
+                    <div id="carparkStoreyContainer" class="space-y-4">
+                        <div class="bg-gray-50 p-4 rounded-md mb-2">
+                            <div class="flex flex-wrap gap-4">
+                                <div class="w-full md:w-40">
+                                    <label class="block text-sm font-medium mb-1">Storey</label>
+                                    <input type="text" value="Ground Floor" class="w-full" readonly>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-1"># of Carpark Spaces</label>
+                                    <input type="number" class="carpark-spaces w-40" min="0">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-1"># of Distribution Boards</label>
+                                    <input type="number" class="distribution-boards w-40" min="0">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="button" id="addStoreyBtn" class="text-blue-600 flex items-center text-sm">
+                        <i class="bi bi-plus-circle mr-1"></i> Add Additional Storey
+                    </button>
+
+                    <h3 class="font-medium mt-4">Distribution Board Requirements</h3>
+                    
+                    <div class="space-y-4 bg-gray-50 p-4 rounded-md">
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Do the electrical distribution boards have a charging control system to manage EV charging in response to total building demand?</label>
+                            <div class="flex space-x-4">
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="chargingControlSystem" value="yes" class="form-radio h-5 w-5 text-blue-600">
+                                    <span class="ml-2">Yes</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="chargingControlSystem" value="no" class="form-radio h-5 w-5 text-blue-600">
+                                    <span class="ml-2">No</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Do the circuits support the minimum daily charging capacity for the building class?</label>
+                            <div class="text-sm text-gray-600 mb-2">
+                                <ul class="list-disc ml-5">
+                                    <li>Class 2: 12 kWh from 11:00 pm to 7:00 am</li>
+                                    <li>Class 3: 48 kWh from 11:00 pm to 7:00 am</li>
+                                    <li>Class 5-9: 12 kWh from 9:00 am to 5:00 pm</li>
+                                </ul>
+                            </div>
+                            <div class="flex space-x-4">
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="chargingCapacity" value="yes" class="form-radio h-5 w-5 text-blue-600">
+                                    <span class="ml-2">Yes</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="chargingCapacity" value="no" class="form-radio h-5 w-5 text-blue-600">
+                                    <span class="ml-2">No</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Are the distribution boards sized to support future installation of a 7 kW (32 A) type 2 EV charger for the required percentage of spaces?</label>
+                            <div class="text-sm text-gray-600 mb-2">
+                                <ul class="list-disc ml-5">
+                                    <li>Class 2: 100% of spaces</li>
+                                    <li>Class 5 or 6: 10% of spaces</li>
+                                    <li>Class 3, 7b, 8 or 9: 20% of spaces</li>
+                                </ul>
+                            </div>
+                            <div class="flex space-x-4">
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="evBoardSize" value="yes" class="form-radio h-5 w-5 text-blue-600">
+                                    <span class="ml-2">Yes</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="evBoardSize" value="no" class="form-radio h-5 w-5 text-blue-600">
+                                    <span class="ml-2">No</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Do the boards contain space of at least 36 mm width of DIN rail per outgoing circuit for individual sub-circuit metering?</label>
+                            <div class="flex space-x-4">
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="dinRailSpace" value="yes" class="form-radio h-5 w-5 text-blue-600">
+                                    <span class="ml-2">Yes</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="dinRailSpace" value="no" class="form-radio h-5 w-5 text-blue-600">
+                                    <span class="ml-2">No</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium mb-1">Are the boards properly labeled for EV charging use and future metering equipment installation?</label>
+                            <div class="flex space-x-4">
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="boardLabeling" value="yes" class="form-radio h-5 w-5 text-blue-600">
+                                    <span class="ml-2">Yes</span>
+                                </label>
+                                <label class="inline-flex items-center">
+                                    <input type="radio" name="boardLabeling" value="no" class="form-radio h-5 w-5 text-blue-600">
+                                    <span class="ml-2">No</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. SOLAR PHOTOVOLTAIC AND BATTERY SYSTEMS - J9D5 -->
+        <div class="form-section" id="solarBatterySection">
+            <h2 class="text-xl font-bold mb-4 flex items-center">
+                <i class="bi bi-sun mr-2"></i>Solar PV and Battery Systems (J9D5)
+                <span class="tooltip">
+                    <i class="bi bi-info-circle info-icon"></i>
+                    <span class="tooltiptext">Buildings must provide infrastructure for future installation of solar PV and battery systems, unless exemptions apply.</span>
+                </span>
+            </h2>
+            
+            <div class="space-y-6">
+                <!-- Switchboard Requirements -->
+                <div class="space-y-4">
+                    <h3 class="font-medium">Main Electrical Switchboard Requirements</h3>
+                    
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Does the main electrical switchboard contain at least two empty three-phase circuit breaker slots and four DIN rail spaces?</label>
+                        <div class="flex space-x-4">
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="switchboardSlots" value="yes" class="form-radio h-5 w-5 text-blue-600">
+                                <span class="ml-2">Yes</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="switchboardSlots" value="no" class="form-radio h-5 w-5 text-blue-600">
+                                <span class="ml-2">No</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Are these slots and spaces properly labeled for solar photovoltaic system and battery system use?</label>
+                        <div class="flex space-x-4">
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="slotsLabeled" value="yes" class="form-radio h-5 w-5 text-blue-600">
+                                <span class="ml-2">Yes</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="slotsLabeled" value="no" class="form-radio h-5 w-5 text-blue-600">
+                                <span class="ml-2">No</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium mb-1">Is the main switchboard sized to accommodate the installation of solar photovoltaic panels producing their maximum electrical output on at least 20% of the building roof area?</label>
+                        <div class="flex space-x-4">
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="switchboardCapacity" value="yes" class="form-radio h-5 w-5 text-blue-600">
+                                <span class="ml-2">Yes</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="switchboardCapacity" value="no" class="form-radio h-5 w-5 text-blue-600">
+                                <span class="ml-2">No</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Roof Area Requirements -->
+                <div class="space-y-4">
+                    <h3 class="font-medium">Roof Area Requirements</h3>
+
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-1" for="totalRoofArea">Total Roof Area (m²)</label>
+                            <input type="number" id="totalRoofArea" class="w-full" min="0">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium mb-1" for="clearRoofArea">Clear Area Available for PV Installation (m²)</label>
+                            <input type="number" id="clearRoofArea" class="w-full" min="0">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium mb-1" for="existingPVArea">Area with Existing PV Panels (m²)</label>
+                            <input type="number" id="existingPVArea" class="w-full" min="0">
+                        </div>
+                    </div>
+
+                    <div>
+                        <p class="text-sm font-medium mb-1">Do any exemptions apply?</p>
+                        
+                        <div class="space-y-2 ml-2">
+                            <div class="flex items-start">
+                                <input type="checkbox" id="exemption1" class="h-5 w-5 text-blue-600 mr-2 mt-0.5">
+                                <label for="exemption1" class="text-sm">Building has PV panels installed on at least 20% of the roof area</label>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <input type="checkbox" id="exemption2" class="h-5 w-5 text-blue-600 mr-2 mt-0.5">
+                                <label for="exemption2" class="text-sm">Building has equivalent PV generation capacity elsewhere on-site</label>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <input type="checkbox" id="exemption3" class="h-5 w-5 text-blue-600 mr-2 mt-0.5">
+                                <label for="exemption3" class="text-sm">100% of the roof area is shaded for more than 70% of daylight hours</label>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <input type="checkbox" id="exemption4" class="h-5 w-5 text-blue-600 mr-2 mt-0.5">
+                                <label for="exemption4" class="text-sm">Roof area is not more than 55 m²</label>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <input type="checkbox" id="exemption5" class="h-5 w-5 text-blue-600 mr-2 mt-0.5">
+                                <label for="exemption5" class="text-sm">More than 50% of the roof area is used as terrace, carpark, roof garden, roof light, etc.</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Battery System -->
+                <div>
+                    <label class="block text-sm font-medium mb-1">Is there already a battery system installed in the building?</label>
+                    <div class="flex space-x-4">
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="existingBattery" value="yes" class="form-radio h-5 w-5 text-blue-600">
+                            <span class="ml-2">Yes</span>
+                        </label>
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="existingBattery" value="no" class="form-radio h-5 w-5 text-blue-600">
+                            <span class="ml-2">No</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACTIONS -->
+        <div class="flex justify-between items-center">
+            <button type="button" id="checkComplianceBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                Check Compliance
+            </button>
+            <button type="reset" class="text-gray-600 hover:text-gray-800 font-medium">
+                Reset Form
+            </button>
+        </div>
+
+        <!-- RESULTS SECTION (Initially Hidden) -->
+        <div id="resultsSection" class="form-section hidden">
+            <h2 class="text-xl font-bold mb-4">Compliance Results</h2>
+            
+            <div class="space-y-6">
+                <!-- Overall Compliance -->
+                <div id="overallCompliance" class="result-box">
+                    <h3 class="text-lg font-bold mb-2">Overall Compliance Status</h3>
+                    <p id="overallStatus"></p>
+                </div>
+
+                <!-- Section-by-section Results -->
+                <div class="space-y-4">
+                    <div id="energyMonitoringResult" class="result-box">
+                        <h3 class="font-medium">J9D3: Energy Monitoring</h3>
+                        <p id="energyMonitoringStatus"></p>
+                        <div id="energyMonitoringDetails" class="mt-2 text-sm"></div>
+                    </div>
+                    
+                    <div id="evChargingResult" class="result-box">
+                        <h3 class="font-medium">J9D4: Electric Vehicle Charging Facilities</h3>
+                        <p id="evChargingStatus"></p>
+                        <div id="evChargingDetails" class="mt-2 text-sm"></div>
+                    </div>
+                    
+                    <div id="solarBatteryResult" class="result-box">
+                        <h3 class="font-medium">J9D5: Solar PV and Battery Systems</h3>
+                        <p id="solarBatteryStatus"></p>
+                        <div id="solarBatteryDetails" class="mt-2 text-sm"></div>
+                    </div>
+                </div>
+
+                <!-- Remediation Suggestions -->
+                <div id="remediationSection" class="bg-yellow-50 p-4 rounded-md">
+                    <h3 class="font-medium text-yellow-800 mb-2">Suggested Improvements</h3>
+                    <ul id="remediationList" class="list-disc ml-5 text-yellow-700"></ul>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <footer class="mt-12 pt-4 border-t border-gray-200 text-center text-sm text-gray-500">
+        <p>NCC J9 Compliance Checker - Based on NCC 2022 Part J9 Requirements</p>
+        <p class="mt-1">This is a prototype tool for educational purposes only. Always consult with a qualified professional for final compliance assessment.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add Storey Button
+            document.getElementById('addStoreyBtn').addEventListener('click', function() {
+                const container = document.getElementById('carparkStoreyContainer');
+                const storeyCount = container.children.length;
+                
+                const newStorey = document.createElement('div');
+                newStorey.className = 'bg-gray-50 p-4 rounded-md mb-2';
+                newStorey.innerHTML = `
+                    <div class="flex flex-wrap gap-4">
+                        <div class="w-full md:w-40">
+                            <label class="block text-sm font-medium mb-1">Storey</label>
+                            <input type="text" value="Level ${storeyCount}" class="w-full" readonly>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1"># of Carpark Spaces</label>
+                            <input type="number" class="carpark-spaces w-40" min="0">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-1"># of Distribution Boards</label>
+                            <input type="number" class="distribution-boards w-40" min="0">
+                        </div>
+                        <button type="button" class="remove-storey text-red-600 flex items-center self-end mb-1">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                `;
+                
+                container.appendChild(newStorey);
+                
+                // Add event listener for removal
+                newStorey.querySelector('.remove-storey').addEventListener('click', function() {
+                    container.removeChild(newStorey);
+                });
+            });
+            
+            // Check if building is Class 2 for common area field visibility
+            document.getElementById('buildingClass').addEventListener('change', function() {
+                const commonAreaField = document.getElementById('commonAreaSize');
+                const parentElement = commonAreaField.parentElement;
+                
+                if (this.value === 'class2') {
+                    parentElement.classList.remove('hidden');
+                } else {
+                    parentElement.classList.add('hidden');
+                }
+            });
+            
+            // Floor area change to show/hide advanced monitoring
+            document.getElementById('totalFloorArea').addEventListener('input', function() {
+                const advancedMonitoring = document.getElementById('advancedMonitoring');
+                const floorArea = parseFloat(this.value) || 0;
+                
+                if (floorArea > 2500) {
+                    advancedMonitoring.classList.remove('hidden');
+                } else {
+                    advancedMonitoring.classList.add('hidden');
+                }
+            });
+            
+            // Check Compliance Button
+            document.getElementById('checkComplianceBtn').addEventListener('click', function() {
+                // In a real app, this would validate all inputs and calculate compliance
+                // For this prototype, we'll just show the results section with sample data
+                
+                const resultsSection = document.getElementById('resultsSection');
+                resultsSection.classList.remove('hidden');
+                
+                // Scroll to results
+                resultsSection.scrollIntoView({ behavior: 'smooth' });
+                
+                // Example of setting result data (in a real app, this would be calculated)
+                document.getElementById('overallStatus').textContent = 'Your project is NOT fully compliant with NCC J9 requirements.';
+                document.getElementById('overallCompliance').className = 'result-box non-compliant';
+                
+                document.getElementById('energyMonitoringStatus').textContent = 'Compliant';
+                document.getElementById('energyMonitoringResult').className = 'result-box compliant';
+                document.getElementById('energyMonitoringDetails').textContent = 'All required energy monitoring systems are in place.';
+                
+                document.getElementById('evChargingStatus').textContent = 'Non-Compliant';
+                document.getElementById('evChargingResult').className = 'result-box non-compliant';
+                document.getElementById('evChargingDetails').textContent = 'The distribution boards are not properly sized for the required percentage of spaces.';
+                
+                document.getElementById('solarBatteryStatus').textContent = 'Non-Compliant';
+                document.getElementById('solarBatteryResult').className = 'result-box non-compliant';
+                document.getElementById('solarBatteryDetails').textContent = 'Insufficient clear roof area available for future solar PV installation.';
+                
+                // Example remediation suggestions
+                const remediationList = document.getElementById('remediationList');
+                remediationList.innerHTML = '';
+                
+                const suggestions = [
+                    'Increase distribution board capacity to support 7 kW chargers in the required percentage of car spaces.',
+                    'Ensure at least 20% of roof area is left clear for future PV installation or demonstrate that one of the exemptions applies.',
+                    'Add proper labeling to the main switchboard for solar PV and battery system connections.'
+                ];
+                
+                suggestions.forEach(function(suggestion) {
+                    const li = document.createElement('li');
+                    li.textContent = suggestion;
+                    remediationList.appendChild(li);
+                });
+            });
+            
+            // Reset form
+            document.querySelector('button[type="reset"]').addEventListener('click', function() {
+                document.getElementById('resultsSection').classList.add('hidden');
+                
+                // Reset carpark storeys to just the ground floor
+                const container = document.getElementById('carparkStoreyContainer');
+                while (container.children.length > 1) {
+                    container.removeChild(container.lastChild);
+                }
+                
+                // Reset any inputs in the first storey
+                const inputs = container.querySelector('div').querySelectorAll('input[type="number"]');
+                inputs.forEach(input => input.value = '');
+            });
+        });
+    </script>
+</body>
+</html>
