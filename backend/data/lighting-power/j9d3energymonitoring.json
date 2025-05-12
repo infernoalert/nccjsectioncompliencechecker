@@ -1,0 +1,93 @@
+{
+  "version": "1.0",
+  "lastUpdated": "2024-03-19",
+  "sectionId": "j9d3-energy-monitoring",
+  "title": "J9D3 Facilities for energy monitoring",
+  "displayOrder": 1,
+  "overallApplicability": {
+    "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"],
+    "climateZones": null,
+    "minFloorArea": 0,
+    "maxFloorArea": null
+  },
+  "contentBlocks": [
+    {
+      "blockId": "j9d3-small-buildings",
+      "contentType": "list",
+      "title": "Small Buildings Requirements",
+      "blockApplicability": {
+        "maxFloorArea": 500
+      },
+      "listType": "unordered",
+      "items": [
+        "For buildings or sole-occupancy units with a floor area of less than 500 m², no specific energy monitoring requirements apply under J9D3."
+      ]
+    },
+    {
+      "blockId": "j9d3-medium-buildings",
+      "contentType": "list",
+      "title": "Medium Buildings Requirements",
+      "blockApplicability": {
+        "minFloorArea": 500,
+        "maxFloorArea": 2500
+      },
+      "listType": "unordered",
+      "items": [
+        "A building or sole-occupancy unit with a floor area of more than 500 m² must have energy meters configured to record the time-of-use consumption of gas and electricity."
+      ]
+    },
+    {
+      "blockId": "j9d3-large-buildings",
+      "contentType": "list",
+      "title": "Large Buildings Requirements",
+      "blockApplicability": {
+        "minFloorArea": 2500
+      },
+      "listType": "unordered",
+      "items": [
+        "A building with a floor area of more than 2 500 m² must have energy meters configured to enable individual time-of-use energy data recording, in accordance with (3), of:",
+        "air-conditioning plant including, where appropriate, heating plant, cooling plant and air handling fans",
+        "artificial lighting",
+        "appliance power",
+        "central hot water supply",
+        "internal transport devices including lifts, escalators and moving walkways where there is more than one serving the building",
+        "on-site renewable energy equipment",
+        "on-site electric vehicle charging equipment",
+        "on-site battery systems",
+        "other ancillary plant"
+      ]
+    },
+    {
+      "blockId": "j9d3-communication-system",
+      "contentType": "list",
+      "title": "Communication System Requirements",
+      "blockApplicability": {
+        "minFloorArea": 2500
+      },
+      "listType": "unordered",
+      "items": [
+        "Energy meters required by (2) must be interlinked by a communication system that collates the time-of-use energy data to a single interface monitoring system where it can be stored, analysed and reviewed."
+      ]
+    },
+    {
+      "blockId": "j9d3-exemptions",
+      "contentType": "list",
+      "title": "Exemptions",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2"]
+      },
+      "listType": "unordered",
+      "items": [
+        "The provisions of (2) do not apply to energy meters serving:",
+        "a Class 2 building where the total floor area of the common areas is less than 500 m²",
+        "individual sole-occupancy units with a floor area of less than 2 500 m²"
+      ]
+    }
+  ],
+  "metadata": {
+    "source": "NCC 2022",
+    "lastReviewed": "2024-03-19",
+    "reviewedBy": "System",
+    "status": "active"
+  }
+} 

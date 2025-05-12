@@ -91,30 +91,34 @@ const LightingPowerReport = () => {
             )}
 
             {/* Dynamic Sections */}
-            {report.lightingPowerReport.sections && report.lightingPowerReport.sections.length > 0 && (
-              <Box sx={{ mt: 4 }}>
+            <Box sx={{ mt: 4 }}>
                 <Typography variant="h5" gutterBottom>Report Sections</Typography>
-                {report.lightingPowerReport.sections.map((section, index) => (
-                  <Box key={section.sectionId || index} sx={{ mb: 3 }}>
-                    <Typography variant="h6">{section.title}</Typography>
-                    {section.contentBlocks && section.contentBlocks.map((block, blockIndex) => (
-                      <Box key={block.blockId || blockIndex} sx={{ mt: 2 }}>
-                        {/* Render different content types */}
-                        {block.contentType === 'text' && (
-                          <Typography variant="body1">{block.content}</Typography>
-                        )}
-                        {block.contentType === 'table' && block.rows && (
-                          <Box sx={{ mt: 2 }}>
-                            {/* Add table rendering logic here */}
-                            <Typography variant="body2">Table content will be rendered here</Typography>
-                          </Box>
-                        )}
-                      </Box>
-                    ))}
-                  </Box>
-                ))}
-              </Box>
-            )}
+                {report.dynamicSections && report.dynamicSections.length > 0 ? (
+                    report.dynamicSections.map((section, index) => (
+                        <Box key={section.sectionId || index} sx={{ mb: 3 }}>
+                            <Typography variant="h6">{section.title}</Typography>
+                            {section.contentBlocks && section.contentBlocks.map((block, blockIndex) => (
+                                <Box key={block.blockId || blockIndex} sx={{ mt: 2 }}>
+                                    {/* Render different content types */}
+                                    {block.contentType === 'text' && (
+                                        <Typography variant="body1">{block.content}</Typography>
+                                    )}
+                                    {block.contentType === 'table' && block.rows && (
+                                        <Box sx={{ mt: 2 }}>
+                                            {/* Add table rendering logic here */}
+                                            <Typography variant="body2">Table content will be rendered here</Typography>
+                                        </Box>
+                                    )}
+                                </Box>
+                            ))}
+                        </Box>
+                    ))
+                ) : (
+                    <Typography variant="body1" color="text.secondary">
+                        No applicable sections found for this project.
+                    </Typography>
+                )}
+            </Box>
           </Box>
         )}
       </Paper>
