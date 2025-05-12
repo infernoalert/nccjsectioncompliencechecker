@@ -3,6 +3,7 @@ const Project = require('../models/Project.js'); // Assuming still needed for pr
 const { loadSections } = require('../utils/sectionLoader.js'); // Import the new loader
 const { getBuildingClassification, getClimateZoneByLocation } = require('../utils/decisionTreeUtils.js'); // Keep necessary utils
 const locationToClimateZone = require('../data/mappings/locationToClimateZone.json'); // Keep if needed for climate zone details
+const DynamicSectionsGenerator = require('./generateDynamicSections.js');
 
 // --- Retain JS Calculation Imports ---
 const j1p2totalheatingload = require('../data/elemental-provisions/j1p2totalheatingload.js');
@@ -68,8 +69,15 @@ class ReportService {
                  }
             }
 
-            // --- Dynamic JSON Sections ---
-            report.dynamicSections = await this.generateDynamicSections();
+            // Use the new DynamicSectionsGenerator
+            const dynamicSectionsGenerator = new DynamicSectionsGenerator(
+                this.project,
+                this.sectionParam,
+                this.buildingClassification,
+                this.climateZone,
+                'elemental-provisions'  // Explicitly pass the section type
+            );
+            report.dynamicSections = await dynamicSectionsGenerator.generateDynamicSections();
 
             return report;
         } catch (error) {

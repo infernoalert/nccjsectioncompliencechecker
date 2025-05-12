@@ -1,0 +1,34 @@
+{
+  "version": "1.0",
+  "lastUpdated": "YYYY-MM-DD",
+  "sectionId": "section_id",
+  "title": "Section Title",
+  "displayOrder": 0,
+  "overallApplicability": {
+    "buildingClasses": ["Class_X"],
+    "climateZones": null,
+    "minFloorArea": null,
+    "maxFloorArea": null
+  },
+  "contentBlocks": [
+    {
+      "blockId": "block_id",
+      "contentType": "list",
+      "title": "Block Title",
+      "blockApplicability": {
+        "buildingClasses": ["Class_X"]
+      },
+      "listType": "unordered",
+      "items": [
+        "Item 1",
+        "Item 2"
+      ]
+    }
+  ],
+  "metadata": {
+    "source": "NCC YYYY",
+    "lastReviewed": "YYYY-MM-DD",
+    "reviewedBy": "Reviewer",
+    "status": "active"
+  }
+} 
