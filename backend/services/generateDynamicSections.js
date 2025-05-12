@@ -71,8 +71,16 @@ class DynamicSectionsGenerator {
                 return false;
             }
 
+            console.log('Checking floor area:', {
+                floorArea,
+                rules: {
+                    minFloorArea: rules.minFloorArea,
+                    maxFloorArea: rules.maxFloorArea
+                }
+            });
+
             // Handle floor area ranges
-            if (rules.minFloorArea !== null && rules.maxFloorArea !== null) {
+            if (rules.minFloorArea !== undefined && rules.maxFloorArea !== undefined && rules.maxFloorArea !== null) {
                 // Handles a defined range: min <= area < max
                 const minArea = parseFloat(rules.minFloorArea);
                 const maxArea = parseFloat(rules.maxFloorArea);
@@ -80,34 +88,37 @@ class DynamicSectionsGenerator {
                     console.log('Invalid min/max floor area values');
                     return false;
                 }
-                if (!(floorArea >= minArea && floorArea < maxArea)) {
-                    console.log(`Floor area ${floorArea} not in range [${minArea}, ${maxArea})`);
+                const isInRange = floorArea >= minArea && floorArea < maxArea;
+                console.log(`Floor area range check: ${floorArea} >= ${minArea} && ${floorArea} < ${maxArea} = ${isInRange}`);
+                if (!isInRange) {
                     return false;
                 }
-            } else if (rules.minFloorArea !== null) {
+            } else if (rules.minFloorArea !== undefined) {
                 // Handles only a minimum: area >= min
                 const minArea = parseFloat(rules.minFloorArea);
                 if (isNaN(minArea)) {
                     console.log('Invalid min floor area value');
                     return false;
                 }
-                if (floorArea < minArea) {
-                    console.log(`Floor area ${floorArea} less than minimum ${minArea}`);
+                const meetsMin = floorArea >= minArea;
+                console.log(`Floor area minimum check: ${floorArea} >= ${minArea} = ${meetsMin}`);
+                if (!meetsMin) {
                     return false;
                 }
-            } else if (rules.maxFloorArea !== null) {
+            } else if (rules.maxFloorArea !== undefined && rules.maxFloorArea !== null) {
                 // Handles only a maximum: area < max
                 const maxArea = parseFloat(rules.maxFloorArea);
                 if (isNaN(maxArea)) {
                     console.log('Invalid max floor area value');
                     return false;
                 }
-                if (floorArea >= maxArea) {
-                    console.log(`Floor area ${floorArea} greater than or equal to maximum ${maxArea}`);
+                const meetsMax = floorArea < maxArea;
+                console.log(`Floor area maximum check: ${floorArea} < ${maxArea} = ${meetsMax}`);
+                if (!meetsMax) {
                     return false;
                 }
             }
-        } else if (rules.minFloorArea !== null || rules.maxFloorArea !== null) {
+        } else if (rules.minFloorArea !== undefined || rules.maxFloorArea !== undefined) {
             console.log('Floor area rules exist but project floor area is not defined');
             return false;
         }
@@ -184,7 +195,42 @@ class DynamicSectionsGenerator {
 
                     if (sectionData.contentBlocks && Array.isArray(sectionData.contentBlocks)) {
                         console.log(`Processing ${sectionData.contentBlocks.length} content blocks for section ${sectionId}`);
-                        for (const block of sectionData.contentBlocks) {
+                        
+                        // First, check if there are any exemption blocks
+                        const exemptionBlocks = sectionData.contentBlocks.filter(block => 
+                            block.blockId.toLowerCase().includes('exemption')
+                        );
+                        
+                        // Process non-exemption blocks first
+                        const regularBlocks = sectionData.contentBlocks.filter(block => 
+                            !block.blockId.toLowerCase().includes('exemption')
+                        );
+
+                        // Process regular blocks
+                        for (const block of regularBlocks) {
+                            console.log(`Processing regular block ${block.blockId}:`, {
+                                blockApplicability: block.blockApplicability,
+                                floorArea: this.project?.floorArea
+                            });
+                            
+                            const blockApplicable = this.checkApplicability(block.blockApplicability || {}, projectContext);
+                            console.log(`Block ${block.blockId} applicability:`, blockApplicable);
+                            
+                            if (blockApplicable) {
+                                const processedBlock = this.processContentBlock(block, projectContext);
+                                if (processedBlock) {
+                                    processedSection.contentBlocks.push(processedBlock);
+                                }
+                            }
+                        }
+
+                        // Process exemption blocks last
+                        for (const block of exemptionBlocks) {
+                            console.log(`Processing exemption block ${block.blockId}:`, {
+                                blockApplicability: block.blockApplicability,
+                                floorArea: this.project?.floorArea
+                            });
+                            
                             const blockApplicable = this.checkApplicability(block.blockApplicability || {}, projectContext);
                             console.log(`Block ${block.blockId} applicability:`, blockApplicable);
                             
