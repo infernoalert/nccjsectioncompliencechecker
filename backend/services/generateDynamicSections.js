@@ -36,16 +36,80 @@ class DynamicSectionsGenerator {
 
         // Check Building Class
         if (rules.buildingClasses && Array.isArray(rules.buildingClasses) && rules.buildingClasses.length > 0) {
-            if (!buildingClassification || !rules.buildingClasses.includes(buildingClassification.classType)) {
-                return false; // Class doesn't match
+            // If no building class is specified, assume it's applicable
+            if (!buildingClassification || !buildingClassification.classType) {
+                console.log('Building classification not specified, assuming applicable');
+                return true;
+            }
+            if (!rules.buildingClasses.includes(buildingClassification.classType)) {
+                console.log(`Building class ${buildingClassification.classType} not in allowed classes:`, rules.buildingClasses);
+                return false;
             }
         }
 
         // Check Climate Zone
         if (rules.climateZones && Array.isArray(rules.climateZones) && rules.climateZones.length > 0) {
-            if (climateZone === null || !rules.climateZones.includes(climateZone)) {
-                return false; // Zone doesn't match
+            // If no climate zone is specified, assume it's applicable
+            if (climateZone === null || climateZone === undefined) {
+                console.log('Climate zone not specified, assuming applicable');
+                return true;
             }
+            // Convert both to strings for comparison
+            const zoneStr = String(climateZone);
+            if (!rules.climateZones.includes(zoneStr)) {
+                console.log(`Climate zone ${zoneStr} not in allowed zones:`, rules.climateZones);
+                return false;
+            }
+        }
+
+        // Check Floor Area
+        if (project && project.floorArea !== undefined) {
+            const floorArea = parseFloat(project.floorArea);
+            
+            if (isNaN(floorArea)) {
+                console.log('Floor area is not a valid number');
+                return false;
+            }
+
+            // Handle floor area ranges
+            if (rules.minFloorArea !== null && rules.maxFloorArea !== null) {
+                // Handles a defined range: min <= area < max
+                const minArea = parseFloat(rules.minFloorArea);
+                const maxArea = parseFloat(rules.maxFloorArea);
+                if (isNaN(minArea) || isNaN(maxArea)) {
+                    console.log('Invalid min/max floor area values');
+                    return false;
+                }
+                if (!(floorArea >= minArea && floorArea < maxArea)) {
+                    console.log(`Floor area ${floorArea} not in range [${minArea}, ${maxArea})`);
+                    return false;
+                }
+            } else if (rules.minFloorArea !== null) {
+                // Handles only a minimum: area >= min
+                const minArea = parseFloat(rules.minFloorArea);
+                if (isNaN(minArea)) {
+                    console.log('Invalid min floor area value');
+                    return false;
+                }
+                if (floorArea < minArea) {
+                    console.log(`Floor area ${floorArea} less than minimum ${minArea}`);
+                    return false;
+                }
+            } else if (rules.maxFloorArea !== null) {
+                // Handles only a maximum: area < max
+                const maxArea = parseFloat(rules.maxFloorArea);
+                if (isNaN(maxArea)) {
+                    console.log('Invalid max floor area value');
+                    return false;
+                }
+                if (floorArea >= maxArea) {
+                    console.log(`Floor area ${floorArea} greater than or equal to maximum ${maxArea}`);
+                    return false;
+                }
+            }
+        } else if (rules.minFloorArea !== null || rules.maxFloorArea !== null) {
+            console.log('Floor area rules exist but project floor area is not defined');
+            return false;
         }
 
         return true; // All checks passed
@@ -77,7 +141,9 @@ class DynamicSectionsGenerator {
      */
     async generateDynamicSections() {
         try {
+            console.log('Loading sections for type:', this.sectionType);
             const allSections = await loadSections(this.sectionType);
+            console.log('Loaded sections:', Object.keys(allSections));
             const applicableSections = [];
 
             const projectContext = {
@@ -85,14 +151,29 @@ class DynamicSectionsGenerator {
                 buildingClassification: this.buildingClassification,
                 climateZone: this.climateZone,
             };
+            console.log('Project context:', {
+                buildingClass: this.buildingClassification?.classType,
+                climateZone: this.climateZone,
+                floorArea: this.project?.floorArea
+            });
 
             // Process each section in the loaded data
             for (const [sectionId, sectionData] of Object.entries(allSections)) {
+                console.log(`Processing section ${sectionId}:`, {
+                    sectionParam: this.sectionParam,
+                    sectionId: sectionId.toLowerCase(),
+                    overallApplicability: sectionData.overallApplicability
+                });
+
                 if (this.sectionParam !== 'full' && this.sectionParam !== sectionId.toLowerCase()) {
+                    console.log(`Skipping section ${sectionId} - doesn't match sectionParam`);
                     continue;
                 }
 
-                if (this.checkApplicability(sectionData.overallApplicability || {}, projectContext)) {
+                const isApplicable = this.checkApplicability(sectionData.overallApplicability || {}, projectContext);
+                console.log(`Section ${sectionId} applicability:`, isApplicable);
+
+                if (isApplicable) {
                     const processedSection = {
                         sectionId: sectionId,
                         title: sectionData.title || sectionId,
@@ -102,8 +183,12 @@ class DynamicSectionsGenerator {
                     };
 
                     if (sectionData.contentBlocks && Array.isArray(sectionData.contentBlocks)) {
+                        console.log(`Processing ${sectionData.contentBlocks.length} content blocks for section ${sectionId}`);
                         for (const block of sectionData.contentBlocks) {
-                            if (this.checkApplicability(block.blockApplicability || {}, projectContext)) {
+                            const blockApplicable = this.checkApplicability(block.blockApplicability || {}, projectContext);
+                            console.log(`Block ${block.blockId} applicability:`, blockApplicable);
+                            
+                            if (blockApplicable) {
                                 const processedBlock = this.processContentBlock(block, projectContext);
                                 if (processedBlock) {
                                     processedSection.contentBlocks.push(processedBlock);
@@ -114,12 +199,15 @@ class DynamicSectionsGenerator {
 
                     if (processedSection.contentBlocks.length > 0) {
                         applicableSections.push(processedSection);
+                    } else {
+                        console.log(`Section ${sectionId} has no applicable content blocks`);
                     }
                 }
             }
 
             // Sort sections by displayOrder
             applicableSections.sort((a, b) => a.displayOrder - b.displayOrder);
+            console.log('Final applicable sections:', applicableSections.map(s => s.sectionId));
 
             return applicableSections;
         } catch (error) {
