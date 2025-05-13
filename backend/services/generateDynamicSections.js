@@ -27,103 +27,66 @@ class DynamicSectionsGenerator {
      * @param {Object} context - Project context containing project, classification, zone.
      * @returns {boolean} - True if the rules match, false otherwise.
      */
-    checkApplicability(rules, context) {
-        if (!rules || Object.keys(rules).length === 0) {
-            return true; // No rules means it's always applicable
-        }
-
-        const { buildingClassification, climateZone, project } = context;
-
-        // Check Building Class
-        if (rules.buildingClasses && Array.isArray(rules.buildingClasses) && rules.buildingClasses.length > 0) {
-            // If no building class is specified, assume it's applicable
-            if (!buildingClassification || !buildingClassification.classType) {
-                console.log('Building classification not specified, assuming applicable');
-                return true;
-            }
-            if (!rules.buildingClasses.includes(buildingClassification.classType)) {
-                console.log(`Building class ${buildingClassification.classType} not in allowed classes:`, rules.buildingClasses);
-                return false;
-            }
-        }
-
-        // Check Climate Zone
-        if (rules.climateZones && Array.isArray(rules.climateZones) && rules.climateZones.length > 0) {
-            // If no climate zone is specified, assume it's applicable
-            if (climateZone === null || climateZone === undefined) {
-                console.log('Climate zone not specified, assuming applicable');
-                return true;
-            }
-            // Convert both to strings for comparison
-            const zoneStr = String(climateZone);
-            if (!rules.climateZones.includes(zoneStr)) {
-                console.log(`Climate zone ${zoneStr} not in allowed zones:`, rules.climateZones);
-                return false;
-            }
-        }
-
-        // Check Floor Area
-        if (project && project.floorArea !== undefined) {
-            const floorArea = parseFloat(project.floorArea);
-            
-            if (isNaN(floorArea)) {
-                console.log('Floor area is not a valid number');
-                return false;
-            }
-
-            console.log('Checking floor area:', {
-                floorArea,
-                rules: {
-                    minFloorArea: rules.minFloorArea,
-                    maxFloorArea: rules.maxFloorArea
-                }
-            });
-
-            // Handle floor area ranges
-            if (rules.minFloorArea !== undefined && rules.maxFloorArea !== undefined && rules.maxFloorArea !== null) {
-                // Handles a defined range: min <= area < max
-                const minArea = parseFloat(rules.minFloorArea);
-                const maxArea = parseFloat(rules.maxFloorArea);
-                if (isNaN(minArea) || isNaN(maxArea)) {
-                    console.log('Invalid min/max floor area values');
-                    return false;
-                }
-                const isInRange = floorArea >= minArea && floorArea < maxArea;
-                console.log(`Floor area range check: ${floorArea} >= ${minArea} && ${floorArea} < ${maxArea} = ${isInRange}`);
-                if (!isInRange) {
-                    return false;
-                }
-            } else if (rules.minFloorArea !== undefined) {
-                // Handles only a minimum: area >= min
-                const minArea = parseFloat(rules.minFloorArea);
-                if (isNaN(minArea)) {
-                    console.log('Invalid min floor area value');
-                    return false;
-                }
-                const meetsMin = floorArea >= minArea;
-                console.log(`Floor area minimum check: ${floorArea} >= ${minArea} = ${meetsMin}`);
-                if (!meetsMin) {
-                    return false;
-                }
-            } else if (rules.maxFloorArea !== undefined && rules.maxFloorArea !== null) {
-                // Handles only a maximum: area < max
-                const maxArea = parseFloat(rules.maxFloorArea);
-                if (isNaN(maxArea)) {
-                    console.log('Invalid max floor area value');
-                    return false;
-                }
-                const meetsMax = floorArea < maxArea;
-                console.log(`Floor area maximum check: ${floorArea} < ${maxArea} = ${meetsMax}`);
-                if (!meetsMax) {
+    checkApplicability(rules, projectContext) {
+        try {
+            // Check building class applicability
+            if (rules.buildingClasses && rules.buildingClasses.length > 0) {
+                const projectClass = projectContext.buildingClassification?.classType;
+                if (!projectClass || !rules.buildingClasses.includes(projectClass)) {
+                    console.log(`Building class ${projectClass} not in allowed classes:`, rules.buildingClasses);
                     return false;
                 }
             }
-        } else if (rules.minFloorArea !== undefined || rules.maxFloorArea !== undefined) {
-            console.log('Floor area rules exist but project floor area is not defined');
+
+            // Check climate zone applicability
+            if (rules.climateZones && rules.climateZones.length > 0) {
+                const projectZone = projectContext.climateZone;
+                if (!projectZone || !rules.climateZones.includes(projectZone)) {
+                    console.log(`Climate zone ${projectZone} not in allowed zones:`, rules.climateZones);
+                    return false;
+                }
+            }
+
+            // Check floor area applicability
+            if (projectContext.project?.floorArea !== undefined) {
+                const floorArea = projectContext.project.floorArea;
+                console.log('Checking floor area:', { floorArea, rules });
+
+                // If both min and max are null/undefined, no floor area restrictions apply
+                if ((rules.minFloorArea === null || rules.minFloorArea === undefined) && 
+                    (rules.maxFloorArea === null || rules.maxFloorArea === undefined)) {
+                    return true;
+                }
+
+                // Check minimum floor area
+                if (rules.minFloorArea !== null && rules.minFloorArea !== undefined && floorArea < rules.minFloorArea) {
+                    console.log(`Floor area ${floorArea} below minimum ${rules.minFloorArea}`);
+                    return false;
+                }
+
+                // Check maximum floor area
+                if (rules.maxFloorArea !== null && rules.maxFloorArea !== undefined && floorArea > rules.maxFloorArea) {
+                    console.log(`Floor area ${floorArea} above maximum ${rules.maxFloorArea}`);
+                    return false;
+                }
+            }
+
+            // Check custom conditions if any
+            if (rules.customConditions && rules.customConditions.length > 0) {
+                for (const condition of rules.customConditions) {
+                    const value = this.getPropertyValue(projectContext, condition.property);
+                    if (!this.evaluateCondition(value, condition.operator, condition.value)) {
+                        console.log(`Custom condition failed:`, condition);
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        } catch (error) {
+            console.error('Error in checkApplicability:', error);
             return false;
         }
-
-        return true; // All checks passed
     }
 
     /**
