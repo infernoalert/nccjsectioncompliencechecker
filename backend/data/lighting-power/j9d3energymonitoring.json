@@ -58,6 +58,15 @@
       ]
     },
     {
+      "blockId": "j9d3-large-buildings-button",
+      "contentType": "button",
+      "text": "Sample",
+      "link": "https://payamamerian.wordpress.com/wp-content/uploads/2025/05/biggerthan2500-1.pdf",
+      "blockApplicability": {
+        "minFloorArea": 2500
+      }
+    },
+    {
       "blockId": "j9d3-communication-system",
       "contentType": "list",
       "title": "Communication System Requirements",

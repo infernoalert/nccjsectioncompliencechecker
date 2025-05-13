@@ -12,7 +12,8 @@ import {
     ListItem,
     ListItemText,
     Paper,
-    Divider
+    Divider,
+    Button
 } from '@mui/material';
 
 /**
@@ -124,6 +125,21 @@ const renderContentBlock = (block, index) => {
                             {block.notes}
                         </Typography>
                     )}
+                </Box>
+            );
+
+        case 'button':
+            return (
+                <Box key={index} sx={{ my: 2 }}>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        href={block.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        {block.text}
+                    </Button>
                 </Box>
             );
 
