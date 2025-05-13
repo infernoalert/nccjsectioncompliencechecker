@@ -16,9 +16,11 @@ import {
   MenuItem,
   useTheme,
   Chip,
-  Grid
+  Grid,
+  Divider
 } from '@mui/material';
-import { createProject, fetchBuildingTypes, fetchLocations } from '../store/slices/projectSlice';
+import { createProject, fetchBuildingTypes, fetchLocations, uploadFile } from '../store/slices/projectSlice';
+import FileUpload from './FileUpload';
 
 const NewProject = () => {
   const theme = useTheme();
@@ -26,13 +28,15 @@ const NewProject = () => {
   const dispatch = useDispatch();
   const { loading, error, buildingTypes, locations } = useSelector((state) => state.project);
   const [selectedBuildingType, setSelectedBuildingType] = useState(null);
+  const [fileError, setFileError] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
     description: '',
     buildingType: '',
     location: '',
     floorArea: '',
-    totalAreaOfHabitableRooms: ''
+    totalAreaOfHabitableRooms: '',
+    files: []
   });
 
   useEffect(() => {
@@ -75,6 +79,11 @@ const NewProject = () => {
     }));
   };
 
+  const handleFilesChange = (files) => {
+    setFileError(null);
+    setFormData(prev => ({ ...prev, files }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -90,7 +99,18 @@ const NewProject = () => {
     
     try {
       console.log('Submitting form data:', submissionData);
-      await dispatch(createProject(submissionData)).unwrap();
+      const project = await dispatch(createProject(submissionData)).unwrap();
+      
+      // Upload any pending files
+      const pendingFiles = formData.files.filter(file => file.isPending);
+      if (pendingFiles.length > 0) {
+        const uploadPromises = pendingFiles.map(async (fileData) => {
+          return dispatch(uploadFile({ projectId: project._id, file: fileData.file })).unwrap();
+        });
+        
+        await Promise.all(uploadPromises);
+      }
+      
       navigate('/projects');
     } catch (error) {
       console.error('Error creating project:', error);
@@ -286,6 +306,20 @@ const NewProject = () => {
                   </Grid>
                 )}
               </Grid>
+
+              <Divider sx={{ my: 3 }} />
+
+              {/* File Upload Section */}
+              <Box>
+                <Typography variant="h6" gutterBottom>
+                  Project Documents
+                </Typography>
+                <FileUpload
+                  files={formData.files}
+                  onFilesChange={handleFilesChange}
+                  onError={setFileError}
+                />
+              </Box>
 
               <Button
                 type="submit"

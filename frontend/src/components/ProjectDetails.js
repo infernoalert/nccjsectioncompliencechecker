@@ -15,13 +15,21 @@ import {
   CardContent,
   CardActions,
   Divider,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemSecondaryAction,
+  IconButton,
 } from '@mui/material';
 import {
   Edit as EditIcon,
   Assessment as AssessmentIcon,
   Delete as DeleteIcon,
+  Download as DownloadIcon,
+  Description as DescriptionIcon,
 } from '@mui/icons-material';
-import { fetchProject, deleteProject } from '../store/slices/projectSlice';
+import { fetchProject, deleteProject, downloadFile } from '../store/slices/projectSlice';
+import { formatFileSize } from '../utils/formatUtils';
 
 /**
  * ProjectDetails Component
@@ -148,16 +156,50 @@ const ProjectDetails = () => {
 
         <Divider sx={{ my: 3 }} />
 
+        {/* Project Files Section */}
+        <Box sx={{ mt: 4 }}>
+          <Typography variant="h6" gutterBottom>
+            Project Documents
+          </Typography>
+          {currentProject.files && currentProject.files.length > 0 ? (
+            <List>
+              {currentProject.files.map((file) => (
+                <ListItem key={file._id}>
+                  <ListItemText
+                    primary={file.name}
+                    secondary={`Size: ${formatFileSize(file.size)} • Uploaded: ${new Date(file.uploadedAt).toLocaleDateString()}`}
+                  />
+                  <ListItemSecondaryAction>
+                    <IconButton
+                      edge="end"
+                      aria-label="download"
+                      onClick={() => dispatch(downloadFile({ projectId: id, fileId: file._id }))}
+                    >
+                      <DownloadIcon />
+                    </IconButton>
+                  </ListItemSecondaryAction>
+                </ListItem>
+              ))}
+            </List>
+          ) : (
+            <Typography variant="body2" color="text.secondary">
+              No documents uploaded yet
+            </Typography>
+          )}
+        </Box>
+
+        <Divider sx={{ my: 3 }} />
+
         {/* Action Buttons */}
-        <Box sx={{ mt: 4, display: 'flex', gap: 2 }}>
-          {/* <Button
+        <Box sx={{ display: 'flex', gap: 2, mt: 3 }}>
+          <Button
             variant="contained"
             color="primary"
             startIcon={<EditIcon />}
             onClick={() => navigate(`/projects/${id}/edit`)}
           >
             Edit Project
-          </Button> */}
+          </Button>
           <Button
             variant="contained"
             color="secondary"
@@ -175,19 +217,11 @@ const ProjectDetails = () => {
             Lighting & Power
           </Button>
           <Button
-            variant="contained"
-            color="info"
-            startIcon={<AssessmentIcon />}
-            onClick={() => navigate(`/projects/${id}/report?section=exemptions`)}
-          >
-            {/* Generate Exemptions Report
-          </Button>
-          <Button
             variant="outlined"
             color="error"
             startIcon={<DeleteIcon />}
             onClick={handleDelete}
-          > */}
+          >
             Delete Project
           </Button>
         </Box>

@@ -5,7 +5,7 @@ import { API_URL } from '../../config';
 const PROJECTS_API_URL = `${API_URL}/api/projects`;
 
 // Create axios instance with auth token
-const axiosWithAuth = (token) => {
+const createAxiosWithAuth = (token) => {
   if (!token) {
     throw new Error('No authentication token available');
   }
@@ -26,7 +26,7 @@ export const fetchProjects = createAsyncThunk(
       if (!auth.token) {
         return rejectWithValue('No authentication token available');
       }
-      const response = await axiosWithAuth(auth.token).get('/');
+      const response = await createAxiosWithAuth(auth.token).get('/');
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.error || error.message);
@@ -42,7 +42,7 @@ export const fetchProject = createAsyncThunk(
       if (!auth.token) {
         return rejectWithValue('No authentication token available');
       }
-      const response = await axiosWithAuth(auth.token).get(`/${id}`);
+      const response = await createAxiosWithAuth(auth.token).get(`/${id}`);
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.error || error.message);
@@ -58,7 +58,7 @@ export const createProject = createAsyncThunk(
       if (!auth.token) {
         return rejectWithValue('No authentication token available');
       }
-      const response = await axiosWithAuth(auth.token).post('/', projectData);
+      const response = await createAxiosWithAuth(auth.token).post('/', projectData);
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.error || error.message);
@@ -74,7 +74,7 @@ export const updateProject = createAsyncThunk(
       if (!auth.token) {
         return rejectWithValue('No authentication token available');
       }
-      const response = await axiosWithAuth(auth.token).put(`/${id}`, data);
+      const response = await createAxiosWithAuth(auth.token).put(`/${id}`, data);
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.error || error.message);
@@ -90,7 +90,7 @@ export const deleteProject = createAsyncThunk(
       if (!auth.token) {
         return rejectWithValue('No authentication token available');
       }
-      await axiosWithAuth(auth.token).delete(`/${id}`);
+      await createAxiosWithAuth(auth.token).delete(`/${id}`);
       return id;
     } catch (error) {
       return rejectWithValue(error.response?.data?.error || error.message);
@@ -106,7 +106,7 @@ export const checkCompliance = createAsyncThunk(
       if (!auth.token) {
         return rejectWithValue('No authentication token available');
       }
-      const response = await axiosWithAuth(auth.token).post(`/${id}/check-compliance`);
+      const response = await createAxiosWithAuth(auth.token).post(`/${id}/check-compliance`);
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.error || error.message);
@@ -123,7 +123,7 @@ export const fetchBuildingTypes = createAsyncThunk(
       if (!auth.token) {
         return rejectWithValue('No authentication token available');
       }
-      const response = await axiosWithAuth(auth.token).get('/building-types');
+      const response = await createAxiosWithAuth(auth.token).get('/building-types');
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.error || error.message);
@@ -140,7 +140,7 @@ export const fetchLocations = createAsyncThunk(
       if (!auth.token) {
         return rejectWithValue('No authentication token available');
       }
-      const response = await axiosWithAuth(auth.token).get('/locations');
+      const response = await createAxiosWithAuth(auth.token).get('/locations');
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.error || error.message);
@@ -156,8 +156,86 @@ export const generateReport = createAsyncThunk(
       if (!auth.token) {
         return rejectWithValue('No authentication token available');
       }
-      const response = await axiosWithAuth(auth.token).get(`/${id}/report?section=${section}`);
+      const response = await createAxiosWithAuth(auth.token).get(`/${id}/report?section=${section}`);
       return response.data.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.error || error.message);
+    }
+  }
+);
+
+// File upload action
+export const uploadFile = createAsyncThunk(
+  'project/uploadFile',
+  async ({ projectId, file }, { getState, rejectWithValue }) => {
+    try {
+      const { auth } = getState();
+      if (!auth.token) {
+        return rejectWithValue('No authentication token available');
+      }
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await createAxiosWithAuth(auth.token).post(
+        `/${projectId}/files`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      );
+      return response.data.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.error || error.message);
+    }
+  }
+);
+
+// Delete file action
+export const deleteFile = createAsyncThunk(
+  'project/deleteFile',
+  async ({ projectId, fileId }, { getState, rejectWithValue }) => {
+    try {
+      const { auth } = getState();
+      if (!auth.token) {
+        return rejectWithValue('No authentication token available');
+      }
+
+      await createAxiosWithAuth(auth.token).delete(`/${projectId}/files/${fileId}`);
+      return fileId;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.error || error.message);
+    }
+  }
+);
+
+// Download file action
+export const downloadFile = createAsyncThunk(
+  'project/downloadFile',
+  async ({ projectId, fileId }, { getState, rejectWithValue }) => {
+    try {
+      const { auth } = getState();
+      if (!auth.token) {
+        return rejectWithValue('No authentication token available');
+      }
+
+      const response = await createAxiosWithAuth(auth.token).get(
+        `/${projectId}/files/${fileId}`,
+        { responseType: 'blob' }
+      );
+      
+      // Create a download link and trigger download
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `file-${fileId}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      
+      return true;
     } catch (error) {
       return rejectWithValue(error.response?.data?.error || error.message);
     }
@@ -307,6 +385,51 @@ const projectSlice = createSlice({
         state.report = action.payload;
       })
       .addCase(generateReport.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // Upload File
+      .addCase(uploadFile.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(uploadFile.fulfilled, (state, action) => {
+        state.loading = false;
+        if (state.currentProject) {
+          state.currentProject.files = state.currentProject.files || [];
+          state.currentProject.files.push(action.payload);
+        }
+      })
+      .addCase(uploadFile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // Delete File
+      .addCase(deleteFile.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteFile.fulfilled, (state, action) => {
+        state.loading = false;
+        if (state.currentProject) {
+          state.currentProject.files = state.currentProject.files.filter(
+            file => file._id !== action.payload
+          );
+        }
+      })
+      .addCase(deleteFile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // Download File
+      .addCase(downloadFile.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(downloadFile.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(downloadFile.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

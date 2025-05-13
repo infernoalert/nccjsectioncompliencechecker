@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const multer = require('multer');
 const { protect } = require('../middleware/authMiddleware');
 const {
   getProjects,
@@ -12,6 +13,12 @@ const {
   getLocations,
   generateReport
 } = require('../controllers/elemental_provision_controller');
+const {
+  uploadFile,
+  getFiles,
+  deleteFile,
+  downloadFile
+} = require('../controllers/fileController');
 const { getAllBuildingTypes } = require('../utils/mappingUtils');
 
 /**
@@ -258,6 +265,27 @@ const { getAllBuildingTypes } = require('../utils/mappingUtils');
  *       401:
  *         description: Not authorized
  */
+
+// Configure multer for file uploads
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 10 * 1024 * 1024 // 10MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype === 'application/pdf') {
+      cb(null, true);
+    } else {
+      cb(new Error('Only PDF files are allowed'), false);
+    }
+  }
+});
+
+// File routes
+router.post('/:id/files', protect, upload.single('file'), uploadFile);
+router.get('/:id/files', protect, getFiles);
+router.delete('/:id/files/:fileId', protect, deleteFile);
+router.get('/:id/files/:fileId', protect, downloadFile);
 
 // Building types route - MUST be defined BEFORE the /:id routes
 router.get('/building-types', protect, getBuildingTypes);

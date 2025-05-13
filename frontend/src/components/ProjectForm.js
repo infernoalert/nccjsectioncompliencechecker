@@ -22,8 +22,10 @@ import {
   updateProject, 
   fetchProject,
   fetchBuildingTypes,
-  fetchLocations
+  fetchLocations,
+  uploadFile
 } from '../store/slices/projectSlice';
+import FileUpload from './FileUpload';
 
 /**
  * ProjectForm Component
@@ -63,7 +65,10 @@ const ProjectForm = () => {
       windows: '',
     },
     specialRequirements: [],
+    files: []
   });
+
+  const [fileError, setFileError] = useState(null);
 
   useEffect(() => {
     // Fetch building types and locations when component mounts
@@ -90,6 +95,7 @@ const ProjectForm = () => {
           windows: '',
         },
         specialRequirements: currentProject.specialRequirements || [],
+        files: currentProject.files || []
       });
     }
   }, [currentProject]);
@@ -117,10 +123,24 @@ const ProjectForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      let project;
       if (id) {
-        await dispatch(updateProject({ id, data: formData })).unwrap();
+        project = await dispatch(updateProject({ id, data: formData })).unwrap();
       } else {
-        await dispatch(createProject(formData)).unwrap();
+        // Create new project
+        project = await dispatch(createProject(formData)).unwrap();
+        
+        // Upload any pending files
+        const pendingFiles = formData.files.filter(file => file.isPending);
+        if (pendingFiles.length > 0) {
+          const uploadPromises = pendingFiles.map(async (file) => {
+            const formData = new FormData();
+            formData.append('file', file);
+            return dispatch(uploadFile({ projectId: project._id, file })).unwrap();
+          });
+          
+          await Promise.all(uploadPromises);
+        }
       }
       navigate('/projects');
     } catch (err) {
@@ -128,7 +148,12 @@ const ProjectForm = () => {
     }
   };
 
-  if (loading) {
+  const handleFilesChange = (files) => {
+    setFileError(null);
+    setFormData(prev => ({ ...prev, files }));
+  };
+
+  if (loading && !id) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="80vh">
         <CircularProgress />
@@ -136,16 +161,21 @@ const ProjectForm = () => {
     );
   }
 
-  if (error) {
-    return (
-      <Container maxWidth="lg" sx={{ mt: 4 }}>
-        <Alert severity="error">{typeof error === 'object' ? error.message : error}</Alert>
-      </Container>
-    );
-  }
-
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+      {(error || fileError) && (
+        <Alert 
+          severity="error" 
+          sx={{ mb: 2 }}
+          onClose={() => {
+            if (error) dispatch({ type: 'project/clearError' });
+            if (fileError) setFileError(null);
+          }}
+        >
+          {error || fileError}
+        </Alert>
+      )}
+
       <Paper sx={{ p: 3 }}>
         <Typography variant="h4" gutterBottom>
           {id ? 'Edit Project' : 'New Project'}
@@ -179,8 +209,8 @@ const ProjectForm = () => {
                   label="Building Type"
                 >
                   {buildingTypes.map((type) => (
-                    <MenuItem key={type} value={type}>
-                      {type}
+                    <MenuItem key={type._id} value={type._id}>
+                      {type.name}
                     </MenuItem>
                   ))}
                 </Select>
@@ -207,8 +237,8 @@ const ProjectForm = () => {
                   label="Location"
                 >
                   {locations.map((location) => (
-                    <MenuItem key={location} value={location}>
-                      {location}
+                    <MenuItem key={location._id} value={location._id}>
+                      {location.name}
                     </MenuItem>
                   ))}
                 </Select>
@@ -295,6 +325,19 @@ const ProjectForm = () => {
             </Grid>
           </Grid>
         </form>
+      </Paper>
+
+      {/* File Upload Section */}
+      <Paper sx={{ p: 3, mt: 3 }}>
+        <Typography variant="h6" gutterBottom>
+          Project Documents
+        </Typography>
+        <FileUpload
+          projectId={id}
+          files={formData.files}
+          onFilesChange={handleFilesChange}
+          onError={setFileError}
+        />
       </Paper>
     </Container>
   );

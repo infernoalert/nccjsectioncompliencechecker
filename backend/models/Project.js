@@ -56,6 +56,32 @@ const projectSchema = new mongoose.Schema({
       message: 'Total area of habitable rooms must be a positive number for Class_2 and Class_4 buildings'
     }
   },
+  files: [{
+    name: {
+      type: String,
+      required: true
+    },
+    path: {
+      type: String,
+      required: true
+    },
+    type: {
+      type: String,
+      required: true,
+      enum: ['pdf']
+    },
+    size: {
+      type: Number,
+      required: true
+    },
+    uploadedAt: {
+      type: Date,
+      default: Date.now
+    },
+    description: {
+      type: String
+    }
+  }],
   buildingFabric: {
     type: {
       walls: {
