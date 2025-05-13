@@ -1,35 +1,64 @@
 {
     "version": "1.0",
     "lastUpdated": "YYYY-MM-DD",
-    "sectionId": "j9d5_solar_pv_battery",
-    "title": "J9D5: Facilities for Solar Photovoltaic and Battery Systems",
+    "sectionId": "pv_requirements",
+    "title": "J9D5: Facilities for solar photovoltaic and battery systems",
     "displayOrder": 0,
     "overallApplicability": {
-      "buildingClasses": ["Class_3", "Class_5", "Class_6", "Class_7b", "Class_8", "Class_9"],
+      "buildingClasses": ["Class_2", "Class_3", "Class_5", "Class_6", "Class_7b", "Class_8", "Class_9"],
       "climateZones": null,
       "minFloorArea": null,
       "maxFloorArea": null
     },
     "contentBlocks": [
       {
-        "blockId": "j9d5_requirements",
+        "blockId": "pv_requirements_main",
         "contentType": "list",
-        "title": "Requirements for Facilities Supporting Solar Photovoltaic and Battery Systems",
+        "title": "Main Electrical Switchboard Requirements",
         "blockApplicability": {
-          "buildingClasses": ["Class_3", "Class_5", "Class_6", "Class_7b", "Class_8", "Class_9"]
+          "buildingClasses": ["Class_2", "Class_3", "Class_5", "Class_6", "Class_7b", "Class_8", "Class_9"]
         },
         "listType": "unordered",
         "items": [
-          "Provisions to facilitate the easy retrofit of solar photovoltaic (PV) and battery storage equipment.",
-          "Applies to Class 3 buildings and Class 5 to 9 buildings.",
-          "Does not apply to stand-alone Class 7a buildings.",
-          "Buildings with solar PV panels installed on at least 20% of the roof area may have exemptions or concessions.",
-          "Facilities must support the integration of renewable energy systems for future expansion."
+          "The main electrical switchboard of a building must contain at least two empty three-phase circuit breaker slots and four DIN rail spaces labelled to indicate the use of each space for:",
+          "- A solar photovoltaic system; and",
+          "- A battery system; and",
+          "Be sized to accommodate the installation of solar photovoltaic panels producing their maximum electrical output on at least 20% of the building roof area."
+        ]
+      },
+      {
+        "blockId": "pv_requirements_roof",
+        "contentType": "list",
+        "title": "Roof Area Requirements",
+        "blockApplicability": {
+          "buildingClasses": ["Class_2", "Class_3", "Class_5", "Class_6", "Class_7b", "Class_8", "Class_9"]
+        },
+        "listType": "unordered",
+        "items": [
+          "At least 20% of the roof area of a building must be left clear for the installation of solar photovoltaic panels, except for buildings:",
+          "- With installed solar photovoltaic panels on at least 20% of the roof area; or",
+          "- With an equivalent generation capacity elsewhere on-site; or",
+          "- Where 100% of the roof area is shaded for more than 70% of daylight hours; or",
+          "- With a roof area of not more than 55 m²; or",
+          "- Where more than 50% of the roof area is used as a terrace, carpark, roof garden, roof light or the like."
+        ]
+      },
+      {
+        "blockId": "pv_requirements_limitations",
+        "contentType": "list",
+        "title": "Limitations and Exemptions",
+        "blockApplicability": {
+          "buildingClasses": ["Class_2", "Class_3", "Class_5", "Class_6", "Class_7b", "Class_8", "Class_9"]
+        },
+        "listType": "unordered",
+        "items": [
+          "The requirements for solar photovoltaic system spaces and sizing do not apply to a building with solar photovoltaic panels installed on at least 20% of the roof area.",
+          "The requirements for battery system spaces and sizing do not apply to a building with battery systems installed."
         ]
       }
     ],
     "metadata": {
-      "source": "NCC 2022 Volume One - Building Code of Australia",
+      "source": "NCC YYYY",
       "lastReviewed": "YYYY-MM-DD",
       "reviewedBy": "Reviewer",
       "status": "active"
