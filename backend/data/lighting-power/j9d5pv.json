@@ -1,0 +1,37 @@
+{
+    "version": "1.0",
+    "lastUpdated": "YYYY-MM-DD",
+    "sectionId": "j9d5_solar_pv_battery",
+    "title": "J9D5: Facilities for Solar Photovoltaic and Battery Systems",
+    "displayOrder": 0,
+    "overallApplicability": {
+      "buildingClasses": ["Class_3", "Class_5", "Class_6", "Class_7b", "Class_8", "Class_9"],
+      "climateZones": null,
+      "minFloorArea": null,
+      "maxFloorArea": null
+    },
+    "contentBlocks": [
+      {
+        "blockId": "j9d5_requirements",
+        "contentType": "list",
+        "title": "Requirements for Facilities Supporting Solar Photovoltaic and Battery Systems",
+        "blockApplicability": {
+          "buildingClasses": ["Class_3", "Class_5", "Class_6", "Class_7b", "Class_8", "Class_9"]
+        },
+        "listType": "unordered",
+        "items": [
+          "Provisions to facilitate the easy retrofit of solar photovoltaic (PV) and battery storage equipment.",
+          "Applies to Class 3 buildings and Class 5 to 9 buildings.",
+          "Does not apply to stand-alone Class 7a buildings.",
+          "Buildings with solar PV panels installed on at least 20% of the roof area may have exemptions or concessions.",
+          "Facilities must support the integration of renewable energy systems for future expansion."
+        ]
+      }
+    ],
+    "metadata": {
+      "source": "NCC 2022 Volume One - Building Code of Australia",
+      "lastReviewed": "YYYY-MM-DD",
+      "reviewedBy": "Reviewer",
+      "status": "active"
+    }
+  }
