@@ -1,0 +1,66 @@
+{
+    "version": "1.0",
+    "lastUpdated": "YYYY-MM-DD",
+    "sectionId": "ev_charging_requirements",
+    "title": "J9D4: Facilities for electric vehicle charging equipment",
+    "displayOrder": 0,
+    "overallApplicability": {
+      "buildingClasses": ["Class_2", "Class_3", "Class_5", "Class_6", "Class_7b", "Class_8", "Class_9"],
+      "climateZones": null,
+      "minFloorArea": null,
+      "maxFloorArea": null
+    },
+    "contentBlocks": [
+      {
+        "blockId": "ev_requirements",
+        "contentType": "list",
+        "title": "Requirements for Electric Vehicle Charging in Car Parks",
+        "blockApplicability": {
+          "buildingClasses": ["Class_2", "Class_3", "Class_5", "Class_6", "Class_7b", "Class_8", "Class_9"]
+        },
+        "listType": "unordered",
+        "items": [
+          "A carpark associated with a Class 2, 3, 5, 6, 7b, 8, or 9 building must be provided with electrical distribution boards dedicated to electric vehicle charging.",
+          "The electrical distribution boards must be provided in accordance with Table J9D4 in each storey of the carpark.",
+          "The electrical distribution boards must be labelled to indicate use for electric vehicle charging equipment.",
+          "Electrical distribution boards dedicated to serving electric vehicle charging in a carpark must:",
+          "- Be fitted with a charging control system with the ability to manage and schedule charging of electric vehicles in response to total building demand.",
+          "- When associated with a Class 2 building, have capacity for each circuit to support an electric vehicle charger able to deliver a minimum of 12 kWh from 11:00 pm to 7:00 am daily.",
+          "- When associated with a Class 5 to 9 building, have capacity for each circuit to support an electric vehicle charger able to deliver a minimum of 12 kWh from 9:00 am to 5:00 pm daily.",
+          "- When associated with a Class 3 building, have capacity for each circuit to support an electric vehicle charger able to deliver a minimum of 48 kWh from 11:00 pm to 7:00 am daily.",
+          "- Be sized to support the future installation of a 7 kW (32 A) type 2 electric vehicle charger in:",
+          "  - 100% of the car parking spaces associated with a Class 2 building;",
+          "  - 10% of car parking spaces associated with a Class 5 or 6 building;",
+          "  - 20% of car parking spaces associated with a Class 3, 7b, 8, or 9 building;",
+          "- Contain space of at least 36 mm width of DIN rail per outgoing circuit for individual sub-circuit electricity metering.",
+          "- Record electricity use of electric vehicle charging equipment.",
+          "- Be labelled to indicate the use of the space required for the future installation of metering equipment."
+        ]
+      },
+      {
+        "blockId": "table_j9d4",
+        "contentType": "table",
+        "title": "Table J9D4: Electric Vehicle Distribution Board Requirement for Each Storey of a Car Park",
+        "headers": [
+          "Carpark Spaces per Storey for Electric Vehicles",
+          "Electrical Distribution Boards for Electric Vehicle Charging per Storey"
+        ],
+        "rows": [
+          ["0 - 9", "0"],
+          ["10 - 24", "1"],
+          ["25 - 48", "2"],
+          ["49 - 72", "3"],
+          ["73 - 96", "4"],
+          ["97 - 120", "5"],
+          ["121 - 144", "6"],
+          ["145 - 168", "7"]
+        ]
+      }
+    ],
+    "metadata": {
+      "source": "NCC YYYY",
+      "lastReviewed": "YYYY-MM-DD",
+      "reviewedBy": "Reviewer",
+      "status": "active"
+    }
+  }
