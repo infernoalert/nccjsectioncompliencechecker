@@ -53,9 +53,6 @@ class ReportService {
              if (this.shouldIncludeSection('climatezone')) {
                  report.climateZone = await this.generateClimateZoneInfo(); // Keep existing logic
              }
-            // Add other core sections like Compliance Pathway, Building Fabric if they are *not* converted to dynamic JSON
-            // report.compliancePathway = await this.generateCompliancePathwayInfo(); // Example if kept
-            // report.buildingFabric = this.generateBuildingFabricInfo(); // Example if kept
 
             // --- JS Calculation Sections (Keep separate) ---
             // Add J1P2 calculations only if the section is requested ('full' or 'energy')
@@ -69,7 +66,7 @@ class ReportService {
                  }
             }
 
-            // Use the new DynamicSectionsGenerator
+            // Use the DynamicSectionsGenerator for all dynamic sections
             const dynamicSectionsGenerator = new DynamicSectionsGenerator(
                 this.project,
                 this.sectionParam,
@@ -98,144 +95,6 @@ class ReportService {
         }
         return this.sectionParam === sectionKey.toLowerCase();
     }
-
-
-    /**
-     * Loads, filters, and processes dynamic sections defined in JSON files.
-     * @returns {Promise<Array<Object>>} - Array of applicable, processed dynamic sections.
-     */
-    async generateDynamicSections() {
-        try {
-            const allSections = await loadSections('elemental-provisions'); // Load sections for elemental-provisions
-            const applicableSections = [];
-
-            // Use cached classification and zone
-            const projectContext = {
-                project: this.project,
-                buildingClassification: this.buildingClassification,
-                climateZone: this.climateZone,
-            };
-
-            // Process each section in the loaded data
-            for (const [sectionId, sectionData] of Object.entries(allSections)) {
-                // Check if section matches the requested sectionParam OR if 'full' report is requested
-                if (this.sectionParam !== 'full' && this.sectionParam !== sectionId.toLowerCase()) {
-                    continue; // Skip if a specific section is requested and this isn't it
-                }
-
-                // Check overall applicability
-                if (this.checkApplicability(sectionData.overallApplicability || {}, projectContext)) {
-                    const processedSection = {
-                        sectionId: sectionId,
-                        title: sectionData.title || sectionId,
-                        displayOrder: sectionData.displayOrder || 999, // Default order
-                        contentBlocks: [],
-                        _sourceFile: sectionData._sourceFile // Keep for debugging
-                    };
-
-                    // Process content blocks if they exist
-                    if (sectionData.contentBlocks && Array.isArray(sectionData.contentBlocks)) {
-                        for (const block of sectionData.contentBlocks) {
-                            // Check block-specific applicability (if defined)
-                            if (this.checkApplicability(block.blockApplicability || {}, projectContext)) {
-                                // Process content (handle variants, table filtering etc.)
-                                const processedBlock = this.processContentBlock(block, projectContext);
-                                if (processedBlock) { // Ensure processing didn't return null
-                                    processedSection.contentBlocks.push(processedBlock);
-                                }
-                            }
-                        }
-                    }
-
-                    // Only add the section if it has any applicable content blocks
-                    if (processedSection.contentBlocks.length > 0) {
-                        applicableSections.push(processedSection);
-                    }
-                }
-            }
-
-            // Sort sections by displayOrder
-            applicableSections.sort((a, b) => a.displayOrder - b.displayOrder);
-
-            return applicableSections;
-        } catch (error) {
-            console.error('Error in generateDynamicSections:', error);
-            throw new Error(`Failed to generate dynamic sections: ${error.message}`);
-        }
-    }
-
-    /**
-     * Checks if a given set of applicability rules match the project context.
-     * **SIMPLIFIED VERSION:** Needs expansion for floor area, custom conditions etc.
-     * @param {Object} rules - The applicability rules object (e.g., sectionDefinition.overallApplicability). Can be empty or null.
-     * @param {Object} context - Project context containing project, classification, zone.
-     * @returns {boolean} - True if the rules match, false otherwise.
-     */
-    checkApplicability(rules, context) {
-         if (!rules || Object.keys(rules).length === 0) {
-             return true; // No rules means it's always applicable (within its parent scope)
-         }
-
-        const { buildingClassification, climateZone, project } = context;
-
-        // Check Building Class
-        if (rules.buildingClasses && Array.isArray(rules.buildingClasses) && rules.buildingClasses.length > 0) {
-            if (!buildingClassification || !rules.buildingClasses.includes(buildingClassification.classType)) {
-                return false; // Class doesn't match
-            }
-        }
-
-        // Check Climate Zone
-        if (rules.climateZones && Array.isArray(rules.climateZones) && rules.climateZones.length > 0) {
-            if (climateZone === null || !rules.climateZones.includes(climateZone)) { // Use cached numeric zone
-                return false; // Zone doesn't match
-            }
-        }
-
-        // --- TODO: Add more checks here ---
-        // Check minFloorArea, maxFloorArea against project.floorArea
-        // Check customConditions array against project properties
-
-        return true; // All checks passed
-    }
-
-     /**
-      * Processes a single content block, handling variants and potentially table filtering.
-      * **SIMPLIFIED VERSION:** Needs expansion for variants, table filtering etc.
-      * @param {Object} block - The content block definition from JSON.
-      * @param {Object} context - Project context containing project, classification, zone.
-      * @returns {Object | null} - The processed block ready for frontend, or null if invalid.
-      */
-     processContentBlock(block, context) {
-         if (!block || !block.blockId || !block.contentType) {
-             console.warn('Skipping invalid content block:', block);
-             return null;
-         }
-
-         const processed = { ...block }; // Start with a copy
-
-         // --- TODO: Implement Variant Logic ---
-         // If block.variants exists:
-         //  - Iterate through variants
-         //  - Evaluate variant.condition against context (e.g., project.buildingClass, project.climateZone)
-         //  - If condition matches, replace relevant fields in 'processed' (e.g., processed.value = variant.value)
-         //  - Break after first match or handle multiple matches if needed
-         //  - If no variant matches, use defaultValue or original block content if appropriate
-
-         // --- TODO: Implement Table Row Filtering ---
-         // If block.contentType === 'table' && block.filterRowsBy:
-         //  - Get the property to filter by (e.g., 'climateZone') from block.filterRowsBy
-         //  - Get the project's value for that property (e.g., context.climateZone)
-         //  - Filter processed.rows to keep only rows where row[filterProperty] matches the project's value
-         //    (Requires rows to be objects or have a predictable structure, e.g., first element is the zone)
-
-         // Remove applicability rules before sending to frontend (optional)
-         // delete processed.blockApplicability;
-         // delete processed.variants;
-         // delete processed.filterRowsBy;
-
-         return processed;
-     }
 
     // --- Keep Core/Static/Calculation Generator Methods ---
 
@@ -385,19 +244,6 @@ class ReportService {
             return { error: `Error getting J1P2 calculation information: ${error.message}` };
         }
     }
-
-    // --- Remove Old Generator Methods Now Handled Dynamically ---
-    // Remove generateExemptionsInfo()
-    // Remove generateEnergyUseInfo() - IF energy-use.json is standardized
-    // Remove generateEnergyMonitoringInfo() - IF energy-monitoring.json is standardized
-    // Remove generateElementalProvisionsJ3Info() - IF j3d4ceilingfan.json is standardized
-    // Remove generateJ1P3EnergyUsageInfo() - IF j1p3-energy-usage.json is standardized
-    // Remove generateJ1P4EVSEInfo() - IF j1p4-evse.json is standardized
-    // Remove generateVerificationMethodsInfo() - IF verification-methods.json is standardized
-    // Remove generateSpecialRequirementsInfo() - IF special-requirements.json is standardized
-    // Remove generateJ3D3Requirements() - IF j3d3energyratesw.json covers this and is standardized
-    // etc.
-
 }
 
 module.exports = ReportService;

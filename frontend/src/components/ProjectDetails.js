@@ -150,14 +150,14 @@ const ProjectDetails = () => {
 
         {/* Action Buttons */}
         <Box sx={{ mt: 4, display: 'flex', gap: 2 }}>
-          <Button
+          {/* <Button
             variant="contained"
             color="primary"
             startIcon={<EditIcon />}
             onClick={() => navigate(`/projects/${id}/edit`)}
           >
             Edit Project
-          </Button>
+          </Button> */}
           <Button
             variant="contained"
             color="secondary"
