@@ -168,6 +168,14 @@ const ProjectDetails = () => {
           </Button>
           <Button
             variant="contained"
+            color="primary"
+            startIcon={<AssessmentIcon />}
+            onClick={() => navigate(`/j7lighting/${id}/report`)}
+          >
+            J7 Lighting & Power
+          </Button>
+          <Button
+            variant="contained"
             color="success"
             startIcon={<AssessmentIcon />}
             onClick={() => navigate(`/j9Monitor/${id}/report`)}
@@ -175,19 +183,11 @@ const ProjectDetails = () => {
             J9 Energy Monitor
           </Button>
           <Button
-            variant="contained"
-            color="info"
-            startIcon={<AssessmentIcon />}
-            onClick={() => navigate(`/projects/${id}/report?section=exemptions`)}
-          >
-            {/* Generate Exemptions Report
-          </Button>
-          <Button
             variant="outlined"
             color="error"
             startIcon={<DeleteIcon />}
             onClick={handleDelete}
-          > */}
+          >
             Delete Project
           </Button>
         </Box>
