@@ -307,20 +307,20 @@ const getVerificationMethods = async (classType) => {
 };
 
 /**
- * Get energy monitoring requirements based on floor area
+ * Get energy Monitor requirements based on floor area
  * @param {number} floorArea - The floor area of the building in square meters
- * @returns {Promise<Object>} The energy monitoring requirements
+ * @returns {Promise<Object>} The energy Monitor requirements
  */
-const getEnergyMonitoringRequirements = async (floorArea) => {
+const getEnergyMonitorRequirements = async (floorArea) => {
   try {
     // Ensure floor area is a number
     floorArea = Number(floorArea);
-    console.log(`Processing energy monitoring requirements for floor area: ${floorArea} m²`);
+    console.log(`Processing energy Monitor requirements for floor area: ${floorArea} m²`);
     
-    // Get energy monitoring requirements from the modular structure
-    const energyMonitoringData = await getSection('energy-monitoring');
-    if (!energyMonitoringData || !energyMonitoringData.energy_monitoring) {
-      throw new Error('No energy monitoring data found');
+    // Get energy Monitor requirements from the modular structure
+    const energyMonitorData = await getSection('energy-Monitor');
+    if (!energyMonitorData || !energyMonitorData.energy_monitor) {
+      throw new Error('No energy Monitor data found');
     }
 
     // Determine which area range the floor area falls into
@@ -335,16 +335,16 @@ const getEnergyMonitoringRequirements = async (floorArea) => {
     
     console.log(`Selected area range: ${areaRange}`);
 
-    // Get the energy monitoring requirements for the area range
-    const requirements = energyMonitoringData.energy_monitoring[areaRange];
+    // Get the energy Monitor requirements for the area range
+    const requirements = energyMonitorData.energy_monitor[areaRange];
     
     if (!requirements) {
-      throw new Error(`No energy monitoring requirements found for area range: ${areaRange}`);
+      throw new Error(`No energy Monitor requirements found for area range: ${areaRange}`);
     }
 
     return requirements;
   } catch (error) {
-    console.error(`Error getting energy monitoring requirements for floor area ${floorArea}:`, error);
+    console.error(`Error getting energy Monitor requirements for floor area ${floorArea}:`, error);
     throw error;
   }
 };
@@ -484,7 +484,7 @@ module.exports = {
   getExemptions,
   getEnergyUseRequirements,
   getVerificationMethods,
-  getEnergyMonitoringRequirements,
+  getEnergyMonitorRequirements,
   getCeilingFanRequirements,
   getEnergyEfficiencyRequirements,
   getJ3D3Requirements,

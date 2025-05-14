@@ -1,0 +1,179 @@
+{
+    "version": "1.0",
+    "lastUpdated": "2025-05-14",
+    "sectionId": "J7D3",
+    "title": "Artificial lighting",
+    "displayOrder": 3,
+    "overallApplicability": {
+      "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_9a", "Class_9b", "Class_9c"],
+      "climateZones": null,
+      "minFloorArea": null,
+      "maxFloorArea": null
+    },
+    "contentBlocks": [
+      {
+        "blockId": "J7D3_requirements",
+        "contentType": "list",
+        "title": "Requirements",
+        "blockApplicability": {
+          "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_9a", "Class_9b", "Class_9c"]
+        },
+        "listType": "unordered",
+        "items": [
+          "In a sole-occupancy unit of a Class 2 building or a Class 4 part of a building, the lamp power density or illumination power density of artificial lighting must not exceed 5 W/m2 within a sole-occupancy unit and 4 W/m2 on a verandah, balcony or the like attached to a sole-occupancy unit",
+          "The illumination power density allowance may be increased by dividing it by the illumination power density adjustment factor for a control device in Table J7D3b as applicable",
+          "When designing the lamp power density or illumination power density, the power of the proposed installation must be used rather than nominal allowances for exposed batten holders or luminaires",
+          "Halogen lamps must be separately switched from fluorescent lamps",
+          "In buildings other than sole-occupancy units of Class 2 buildings or Class 4 parts, the aggregate design illumination power load must not exceed the sum of the allowances obtained by multiplying the area of each space by the maximum illumination power density in Table J7D3a",
+          "Where there are multiple lighting systems serving the same space, the design illumination power load is the total illumination power load of all systems, or where a control system permits only one system to operate at a time, the highest illumination power load"
+        ]
+      },
+      {
+        "blockId": "J7D3_exemptions",
+        "contentType": "list",
+        "title": "Exemptions",
+        "blockApplicability": {
+          "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_9a", "Class_9b", "Class_9c"]
+        },
+        "listType": "unordered",
+        "items": [
+          "Emergency lighting",
+          "Signage, display lighting within cabinets and display cases that are fixed in place",
+          "Lighting for accommodation within the residential part of a detention centre",
+          "Heater where the heater also emits light, such as in bathrooms",
+          "Lighting of a specialist process such as surgical procedures or clean workstations",
+          "Lighting for theatrical, sporting or other performances",
+          "Lighting for permanent display in a museum or gallery (not retail)",
+          "Lighting for plant growth on green walls"
+        ]
+      },
+      {
+        "blockId": "Table_J7D3a",
+        "contentType": "table",
+        "title": "Table J7D3a Maximum illumination power density",
+        "headers": [
+          "Space",
+          "Maximum illumination power density (W/m²)"
+        ],
+        "rows": [
+          ["Auditorium, church and public hall", "10"],
+          ["Board room and conference room", "10"],
+          ["Carpark - general", "2"],
+          ["Carpark - entry zone (first 20 m of travel)", "6"],
+          ["Common rooms, spaces and corridors in a Class 2 building", "8"],
+          ["Control room, switch room, and the like", "9"],
+          ["Corridor", "8"],
+          ["Courtroom", "12"],
+          ["Dormitory of a Class 3 building used for sleeping only", "6"],
+          ["Dormitory of a Class 3 building used for sleeping and study", "9"],
+          ["Emergency procedure room, examination room and treatment room", "10"],
+          ["Foyer, entry lobby, circulation space and the like", "8"],
+          ["Kitchen and food preparation area", "8"],
+          ["Laboratory - artificially lit to high levels for the nature of the tasks", "12"],
+          ["Library - stack and shelving area", "12"],
+          ["Library - reading room and general areas", "10"],
+          ["Lounge area for communal use in a Class 3 building or Class 9c building", "10"],
+          ["Office - artificially lit to an ambient level of 200 lx or more", "7"],
+          ["Plant room", "2"],
+          ["Restaurant, café, bar, hotel lounge and space for the serving and consumption of food or drinks", "14"],
+          ["Retail space - artificially lit to an ambient level of 200 lx or more", "14"],
+          ["School general purpose learning areas and tutorial rooms", "8"],
+          ["Sole-occupancy unit of a Class 3 building", "5"],
+          ["Sole-occupancy unit of a Class 9c building", "7"],
+          ["Storage with shelving no higher than 75% of the height of the aisle lighting", "8"],
+          ["Storage with shelving higher than 75% of the height of the aisle lighting", "10"],
+          ["Service area, cleaner's room and the like", "3"],
+          ["Toilet, shower room and the like", "6"],
+          ["Wholesale storage and display area", "10"]
+        ]
+      },
+      {
+        "blockId": "Table_J7D3a_notes",
+        "contentType": "list",
+        "title": "Table J7D3a Notes",
+        "listType": "ordered",
+        "items": [
+          "In areas not listed above, the maximum illumination power density is—",
+          "for an illuminance not more than 80 lx, 2 W/m2; and",
+          "for an illuminance more than 80 lx and not more than 160 lx, 2.5 W/m2; and",
+          "for an illuminance more than 160 lx and not more than 240 lx, 3 W/m2; and",
+          "for an illuminance more than 240 lx and not more than 320 lx, 4.5 W/m2; and",
+          "for an illuminance more than 320 lx and not more than 400 lx, 6 W/m2; and",
+          "for an illuminance more than 400 lx and not more than 600 lx, 10 W/m2; and",
+          "for an illuminance more than 600 lx and not more than 800 lx, 11.5 W/m2.",
+          "For enclosed spaces with a Room Aspect Ratio of less than 1.5, the maximum illumination power density may be increased by dividing it by an adjustment factor for room aspect which is 0.5 + (Room Aspect Ratio/3).",
+          "The Room Aspect Ratio of the enclosed space is determined by the formula: A/(H x C), where—",
+          "A is the area of the enclosed space; and",
+          "H is the height of the space measured from the floor to the highest part of the ceiling; and",
+          "C is the perimeter of the enclosed space at floor level.",
+          "In addition to 2, the maximum illumination power density may be increased by dividing it by the illumination power density adjustment factor in Table J7D3b and Table J7D3c and where the control device is not installed to comply with J6D4.",
+          "Circulation spaces are included in the allowances listed in the Table."
+        ]
+      },
+      {
+        "blockId": "Table_J7D3b",
+        "contentType": "table",
+        "title": "Table J7D3b Illumination power density adjustment factor for a control device",
+        "headers": [
+          "Control device",
+          "Adjustment factor"
+        ],
+        "rows": [
+          ["Motion detector", "0.7"],
+          ["Motion detector in a toilet, shower room or the like", "0.4"],
+          ["Programmable dimming system", "0.85"],
+          ["Fixed dimming", "Maximum illumination power at the greatest level of output divided by the maximum illumination power with the dimming control set at full output"],
+          ["Daylight sensor and dynamic lighting control device - luminaires within the space", "0.5"],
+          ["Daylight sensor and dynamic lighting control device - luminaires within the perimeter zone 5 m from a window", "0.2"],
+          ["Manual override switch to time switch", "0.95"],
+          ["When at least 75% of the area of a space is served by more than one control device, the adjustment factor for each device is to be multiplied by the adjustment factor of the other control device. The adjustment factor is not to be applied more than once to the same space.", ""]
+        ]
+      },
+      {
+        "blockId": "Table_J7D3b_notes",
+        "contentType": "list",
+        "title": "Table J7D3b Notes",
+        "listType": "ordered",
+        "items": [
+          "A maximum of two illumination power density adjustment factors for a control device can be applied to an area.",
+          "Where more than one illumination power density adjustment factor (other than for room aspect) applies to an area, they are to be combined using the following formula: A x (B + [(1 - B)/2]), where—",
+          "A is the lowest applicable illumination power density adjustment factor; and",
+          "B is the second lowest applicable illumination power density adjustment factor.",
+          "The adjustment factor does not apply to tungsten, halogen or other incandescent sources.",
+          "Includes luminaires with a pre-programmed function which provides dimming from ON to OFF (one-stage dimming).",
+          "The illumination power density adjustment factor is only applied to lights controlled by daylight sensors between 8:00 am and 7:00 pm."
+        ]
+      },
+      {
+        "blockId": "Table_J7D3c",
+        "contentType": "table",
+        "title": "Table J7D3c Illumination power density adjustment factor for light colour characteristics",
+        "headers": [
+          "Light characteristic",
+          "Adjustment factor"
+        ],
+        "rows": [
+          ["For a light source with a minimum colour rendering index >90", "0.9"],
+          ["For a light source with a colour temperature <3500 K", "0.8"],
+          ["For a light source with a colour temperature >4500 K", "1.1"],
+          ["When more than one adjustment factor applies, each is to be separately considered and applied as appropriate.", ""]
+        ]
+      },
+      {
+        "blockId": "Table_J7D3c_notes",
+        "contentType": "list",
+        "title": "Table J7D3c Notes",
+        "listType": "ordered",
+        "items": [
+          "Includes luminaires that can adjust their CCT to 3500 K or below."
+        ]
+      }
+    ],
+    "metadata": {
+      "source": "NCC 2022",
+      "lastReviewed": "2025-05-14",
+      "reviewedBy": "AI Assistant",
+      "status": "active"
+    }
+  }
+  

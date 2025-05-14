@@ -85,7 +85,7 @@ To run the frontend, copy the appropriate environment file to `.env` in the fron
 - `npm run pm2:restart`: Restarts the PM2 application
 - `npm run pm2:delete`: Deletes the PM2 application
 - `npm run pm2:logs`: Shows the PM2 logs
-- `npm run pm2:monit`: Opens the PM2 monitoring interface
+- `npm run pm2:monit`: Opens the PM2 Monitor interface
 - `npm run pm2:status`: Shows the PM2 status
 
 ### Frontend
@@ -100,7 +100,7 @@ To run the frontend, copy the appropriate environment file to `.env` in the fron
 
 ### Backend Deployment with PM2
 
-PM2 is a process manager for Node.js applications that helps keep your application running 24/7 and provides features like automatic restarts, load balancing, and monitoring.
+PM2 is a process manager for Node.js applications that helps keep your application running 24/7 and provides features like automatic restarts, load balancing, and Monitor.
 
 #### PM2 Configuration
 
@@ -146,7 +146,7 @@ The following PM2 commands are available through npm scripts:
 - **npm run pm2:restart**: Restart the application
 - **npm run pm2:delete**: Delete the application from PM2
 - **npm run pm2:logs**: View the application logs
-- **npm run pm2:monit**: Open the PM2 monitoring interface
+- **npm run pm2:monit**: Open the PM2 Monitor interface
 - **npm run pm2:status**: View the PM2 status
 
 ### Frontend Deployment
@@ -552,7 +552,7 @@ The report structure is now more flexible. While the frontend might still group 
    - J3D3 Requirements (if converted)
    - J3D4 Ceiling Fans
    - Verification Methods
-   - Energy Monitoring
+   - Energy Monitor
    - Exemptions
    - Special Requirements
 
@@ -588,7 +588,7 @@ The frontend uses the `DynamicSectionRenderer` component to handle different con
 ### Backend Structure
 The lighting and power report is implemented through two main components:
 
-1. **LightingPowerReportService** (`backend/services/lighting_power_reportService.js`):
+1. **EnergyMonitorReportService** (`backend/services/energy_monitor_reportService.js`):
    - Handles report generation for lighting and power compliance
    - Structure:
      ```javascript
@@ -618,7 +618,7 @@ The lighting and power report is implemented through two main components:
          annualCoolingDegreeHours: number,
          annualDehumidificationGramHours: number
        },
-       lightingPowerReport: {
+       EnergyMonitorReport: {
          sections: Array<{
            sectionId: string,
            title: string,
@@ -633,12 +633,12 @@ The lighting and power report is implemented through two main components:
      }
      ```
 
-2. **JSON Data Structure** (`backend/data/lighting-power/`):
+2. **JSON Data Structure** (`backend/data/j9Monitor/`):
    - All lighting and power related JSON files should be placed in this directory
    - Each JSON file must include:
      ```json
      {
-       "category": "lighting-power",
+       "category": "j9Monitor",
        "sectionId": "unique_section_id",
        "title": "Section Title",
        "displayOrder": number,
@@ -663,7 +663,7 @@ The lighting and power report is implemented through two main components:
      ```
 
 ### Frontend Implementation
-The lighting and power report is displayed using the `LightingPowerReport` component (`frontend/src/components/LightingPowerReport.js`):
+The lighting and power report is displayed using the `EnergyMonitorReport` component (`frontend/src/components/EnergyMonitorReport.js`):
 
 1. **Component Structure**:
    ```jsx
@@ -698,19 +698,19 @@ The lighting and power report is displayed using the `LightingPowerReport` compo
    ```
 
 2. **Redux Integration**:
-   - Uses `lighting_power_reportSlice.js` for state management
+   - Uses `energy_monitor_reportSlice.js` for state management
    - Handles loading, error states, and report data
-   - Provides `generateLightingPowerReport` action for report generation
+   - Provides `generateEnergyMonitorReport` action for report generation
 
 ### Important Notes
 
 1. **JSON File Location**:
-   - All lighting and power related JSON files must be in `backend/data/lighting-power/`
-   - Each file must have the `category: "lighting-power"` field
+   - All lighting and power related JSON files must be in `backend/data/j9Monitor/`
+   - Each file must have the `category: "j9Monitor"` field
    - File naming should be descriptive and follow a consistent pattern
 
 2. **Section Loading**:
-   - The `sectionLoader.js` utility loads all JSON files from the lighting-power directory
+   - The `sectionLoader.js` utility loads all JSON files from the j9Monitor directory
    - Files are filtered based on the `category` field
    - Sections are processed based on their applicability rules
 
@@ -738,3 +738,329 @@ The lighting and power report is displayed using the `LightingPowerReport` compo
    - New sections can be added by creating new JSON files
    - Existing sections can be modified by updating JSON files
    - The structure allows for easy addition of new content types
+
+## Creating a New Section (e.g., J7 Lighting)
+
+To create a new section in the NCC Section Compliance Checker, follow these steps:
+
+### 1. Backend Setup
+Server.js
+sectionLoader.js
+App.js
+
+#Frontend
+ProjectDetails.js
+
+
+#### Required Files:
+
+1. **Service File** (`backend/services/[sectionName]_reportService.js`):
+   ```javascript
+   class [SectionName]ReportService {
+     constructor(project, section = 'full') {
+       this.project = project;
+       this.sectionParam = section;
+       this.buildingClassification = null;
+       this.climateZone = null;
+     }
+
+     async initialize() {
+       // Load building classification and climate zone
+     }
+
+     async generateReport() {
+       // Generate report with project info, building classification, climate zone
+       // and dynamic sections
+     }
+   }
+   ```
+
+2. **Controller File** (`backend/controllers/[sectionName]_reportController.js`):
+   ```javascript
+   const generate[SectionName]Report = asyncHandler(async (req, res) => {
+     // Handle report generation with proper error handling
+     // and authorization checks
+   });
+   ```
+
+3. **Routes File** (`backend/routes/[sectionName]_reportRoutes.js`):
+   ```javascript
+   router.get('/:id/report', protect, generate[SectionName]Report);
+   ```
+
+4. **JSON Data Files** (`backend/data/[sectionName]/`):
+   - Create a directory for your section's JSON files
+   - Each JSON file should follow the standard format:
+   ```json
+   {
+     "category": "[sectionName]",
+     "sectionId": "unique_section_id",
+     "title": "Section Title",
+     "displayOrder": number,
+     "overallApplicability": {
+       "buildingClasses": ["Class_2", "Class_4"],
+       "climateZones": [1, 2, 3],
+       "minFloorArea": number,
+       "maxFloorArea": number
+     },
+     "contentBlocks": [
+       {
+         "blockId": "unique_block_id",
+         "contentType": "text|table|list",
+         "content": "content or data",
+         "blockApplicability": {
+           "buildingClasses": ["Class_2", "Class_4"],
+           "climateZones": [1, 2, 3]
+         }
+       }
+     ]
+   }
+   ```
+
+### 2. Frontend Setup
+
+#### Required Files:
+
+1. **Report Component** (`frontend/src/components/reports/[SectionName]Report.js`):
+   ```javascript
+   const [SectionName]Report = () => {
+     // Use Redux hooks for state management
+     // Fetch report data
+     // Render report with DynamicSectionRenderer
+   };
+   ```
+
+2. **Redux Slice** (`frontend/src/store/slices/[sectionName]_reportSlice.js`):
+   ```javascript
+   const [sectionName]Slice = createSlice({
+     name: '[SectionName]',
+     initialState: {
+       report: null,
+       loading: false,
+       error: null,
+     },
+     // Add reducers and async thunks
+   });
+   ```
+
+3. **Update Store** (`frontend/src/store/index.js`):
+   ```javascript
+   import [sectionName]Reducer from './slices/[sectionName]_reportSlice';
+
+   const store = configureStore({
+     reducer: {
+       // ... other reducers
+       [SectionName]: [sectionName]Reducer,
+     },
+   });
+   ```
+
+### 3. Integration Steps
+
+1. **Backend Integration**:
+   - Add the new route to `server.js`
+   - Register the new service in the dependency injection container
+   - Add Swagger documentation for the new endpoints
+
+2. **Frontend Integration**:
+   - Add the new route to `App.js`
+   - Add a button/link to access the new section in `ProjectDetails.js`
+   - Update navigation components if needed
+
+3. **Data Integration**:
+   - Create JSON files for each subsection
+   - Ensure proper categorization and applicability rules
+   - Test with different building types and climate zones
+
+### 4. Testing
+
+1. **Backend Testing**:
+   - Test report generation with different project types
+   - Verify error handling and authorization
+   - Check dynamic section generation
+
+2. **Frontend Testing**:
+   - Test report rendering
+   - Verify Redux state management
+   - Check loading and error states
+   - Test print functionality
+
+### 5. Common Components Used
+
+1. **DynamicSectionRenderer**:
+   - Used for rendering dynamic content blocks
+   - Handles different content types (text, table, list)
+   - Manages section applicability
+
+2. **Project Information Display**:
+   - Shows project details
+   - Displays building classification
+   - Shows climate zone information
+
+3. **Print Functionality**:
+   - Implemented using window.print()
+   - Includes print-specific styling
+
+### 6. Best Practices
+
+1. **Code Organization**:
+   - Follow the established pattern for file naming and structure
+   - Use consistent error handling
+   - Implement proper authorization checks
+
+2. **Data Management**:
+   - Use Redux for state management
+   - Implement proper loading and error states
+   - Cache data when appropriate
+
+3. **User Experience**:
+   - Provide clear loading indicators
+   - Show meaningful error messages
+   - Include print functionality
+   - Maintain consistent styling
+
+4. **Performance**:
+   - Optimize JSON file loading
+   - Implement proper caching
+   - Use efficient rendering techniques
+
+### Content Types That Can Be Rendered**:
+   - `text`: Simple text display
+   - `table`: Structured data in tabular format
+   - `list`: Ordered or unordered lists
+   - `button`: Interactive button elements with the following properties:
+     ```json
+     {
+       "contentType": "button",
+       "buttonType": "primary|secondary|outlined|text",
+       "label": "Button Text",
+       "action": "action_type",
+       "actionParams": {
+         "param1": "value1",
+         "param2": "value2"
+       },
+       "disabled": boolean,
+       "icon": "icon_name",
+       "tooltip": "Button tooltip text"
+     }
+     ```
+     Supported button types:
+     - `primary`: Main action buttons
+     - `secondary`: Alternative action buttons
+     - `outlined`: Less prominent actions
+     - `text`: Text-only buttons
+     
+     Common actions:
+     - `navigate`: Navigate to another section/page
+     - `print`: Print the current report
+     - `download`: Download report as PDF
+     - `calculate`: Perform calculations
+     - `validate`: Validate form or data
+     - `custom`: Custom action defined in the frontend
+
+## If We Want to Add a New Content Type
+
+To add a new content type that can be rendered in the frontend, follow these steps:
+
+1. **Update Frontend Component**:
+   - Modify `DynamicSectionRenderer` component to handle the new content type
+   - Create a new renderer component for the specific content type
+   - Add the new content type to the switch statement in `DynamicSectionRenderer`
+
+2. **Backend Structure**:
+   Add the new content type to the JSON structure in backend data files:
+   ```json
+   {
+     "contentBlocks": [
+       {
+         "blockId": "unique_block_id",
+         "contentType": "newType",  // new content type
+         "content": {
+           // content specific properties
+         },
+         "blockApplicability": {
+           "buildingClasses": ["Class_2", "Class_4"],
+           "climateZones": [1, 2, 3]
+         }
+       }
+     ]
+   }
+   ```
+
+3. **Update Documentation**:
+   Add the new content type to the "Content Types That Can Be Rendered" section in this file:
+   ```markdown
+   ### Content Types That Can Be Rendered**:
+      - `text`: Simple text display
+      - `table`: Structured data in tabular format
+      - `list`: Ordered or unordered lists
+      - `button`: Interactive button elements
+      - `newType`: Description of new content type with example structure
+   ```
+
+4. **Update sectionLoader.js**:
+   - Add validation for the new content type
+   - Update the list of valid content types
+   - Add specific validation rules for the new content type
+
+5. **Testing**:
+   - Create test cases for the new content type
+   - Test rendering in different scenarios
+   - Test validation in sectionLoader
+   - Test integration with existing components
+
+6. **Example Implementation**:
+   ```jsx
+   // components/NewTypeRenderer.js
+   const NewTypeRenderer = ({ content }) => {
+     // Render logic for new content type
+     return (
+       <div className="new-type-container">
+         {/* Render content */}
+       </div>
+     );
+   };
+
+   // Update DynamicSectionRenderer
+   const DynamicSectionRenderer = ({ contentBlock }) => {
+     const { contentType, content } = contentBlock;
+
+     switch (contentType) {
+       case 'text':
+         return <TextRenderer content={content} />;
+       case 'table':
+         return <TableRenderer content={content} />;
+       case 'list':
+         return <ListRenderer content={content} />;
+       case 'button':
+         return <ButtonRenderer content={content} />;
+       case 'newType':  // new content type
+         return <NewTypeRenderer content={content} />;
+       default:
+         return <TextRenderer content="Unsupported content type" />;
+     }
+   };
+   ```
+
+7. **Validation in sectionLoader.js**:
+   ```javascript
+   const validateContentBlock = (block) => {
+     const validContentTypes = ['text', 'table', 'list', 'button', 'newType'];
+     
+     if (!validContentTypes.includes(block.contentType)) {
+       throw new Error(`Invalid content type: ${block.contentType}`);
+     }
+     
+     // Additional validation for specific content types
+     if (block.contentType === 'newType') {
+       validateNewTypeContent(block.content);
+     }
+   };
+   ```
+
+This process ensures that:
+- The new content type is properly documented
+- The frontend can render it correctly
+- The backend can validate it
+- It integrates well with existing components
+- It follows the application's architecture and patterns

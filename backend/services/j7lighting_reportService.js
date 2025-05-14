@@ -1,18 +1,11 @@
-// backend/services/LightingPowerReportService.js
+const DynamicSectionsGenerator = require('./generateDynamicSections');
+const Project = require('../models/Project');
+const { getBuildingClassification, getClimateZoneByLocation } = require('../utils/decisionTreeUtils');
 
-const { getBuildingClassification, getClimateZoneByLocation } = require('../utils/decisionTreeUtils.js');
-const locationToClimateZone = require('../data/mappings/locationToClimateZone.json');
-const DynamicSectionsGenerator = require('./generateDynamicSections.js');
-
-class LightingPowerReportService {
-    /**
-     * Constructor for LightingPowerReportService.
-     * @param {Object} project - The project object.
-     * @param {string} section - The section parameter.
-     */
+class J7LightingReportService {
     constructor(project, section = 'full') {
         if (!project) {
-            throw new Error("Project data is required for LightingPowerReportService.");
+            throw new Error("Project data is required for J7LightingReportService.");
         }
         this.project = project;
         this.sectionParam = section ? section.toLowerCase() : 'full';
@@ -20,9 +13,6 @@ class LightingPowerReportService {
         this.climateZone = null;
     }
 
-    /**
-     * Initializes essential data for report generation.
-     */
     async initialize() {
         try {
             // Load building classification
@@ -40,10 +30,6 @@ class LightingPowerReportService {
         }
     }
 
-    /**
-     * Generate lighting & power compliance report.
-     * @returns {Promise<Object>} The generated lighting & power report.
-     */
     async generateReport() {
         try {
             await this.initialize();
@@ -66,7 +52,7 @@ class LightingPowerReportService {
                 this.sectionParam,
                 this.buildingClassification,
                 this.climateZone,
-                'lighting-power'
+                'j7lighting'
             );
             report.dynamicSections = await dynamicSectionsGenerator.generateDynamicSections();
 
@@ -129,17 +115,10 @@ class LightingPowerReportService {
                 return { error: `Could not determine climate zone for location: ${this.project.location}` };
             }
 
-            const locationData = locationToClimateZone.locations.find(
-                loc => loc.id === this.project.location
-            );
-
             return {
                 zone: this.climateZone,
                 name: `Climate Zone ${this.climateZone}`,
-                description: `The building is located in Climate Zone ${this.climateZone}.`,
-                annualHeatingDegreeHours: locationData?.['Annual heating degree hours'],
-                annualCoolingDegreeHours: locationData?.['Annual cooling degree hours'],
-                annualDehumidificationGramHours: locationData?.['Annual dehumidification gram hours']
+                description: `The building is located in Climate Zone ${this.climateZone}.`
             };
         } catch (error) {
             console.error('Error generating climate zone info:', error);
@@ -148,4 +127,4 @@ class LightingPowerReportService {
     }
 }
 
-module.exports = LightingPowerReportService;
+module.exports = J7LightingReportService; 

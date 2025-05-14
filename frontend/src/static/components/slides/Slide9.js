@@ -395,7 +395,7 @@ const Slide9 = () => {
                     Part J9:
                   </Typography>
                   <Typography variant="body2" sx={{ color: '#4b5563' }}>
-                    Energy monitoring & renewables
+                    Energy Monitor & renewables
                   </Typography>
                 </PartItem>
               </Grid>

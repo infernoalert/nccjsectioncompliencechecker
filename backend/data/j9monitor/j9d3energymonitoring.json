@@ -1,8 +1,8 @@
 {
   "version": "1.0",
   "lastUpdated": "2024-03-19",
-  "sectionId": "j9d3-energy-monitoring",
-  "title": "J9D3 Facilities for energy monitoring",
+  "sectionId": "j9d3-energy-Monitor",
+  "title": "J9D3 Facilities for energy Monitor",
   "displayOrder": 1,
   "overallApplicability": {
     "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"],
@@ -20,7 +20,7 @@
       },
       "listType": "unordered",
       "items": [
-        "For buildings or sole-occupancy units with a floor area of less than 500 m², no specific energy monitoring requirements apply under J9D3."
+        "For buildings or sole-occupancy units with a floor area of less than 500 m², no specific energy Monitor requirements apply under J9D3."
       ]
     },
     {
@@ -94,7 +94,7 @@
       },
       "listType": "unordered",
       "items": [
-        "Energy meters required by (2) must be interlinked by a communication system that collates the time-of-use energy data to a single interface monitoring system where it can be stored, analysed and reviewed."
+        "Energy meters required by (2) must be interlinked by a communication system that collates the time-of-use energy data to a single interface Monitor system where it can be stored, analysed and reviewed."
       ]
     },
     {
