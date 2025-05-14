@@ -23,6 +23,29 @@
         "Item 1",
         "Item 2"
       ]
+    },
+    {
+      "blockId": "example_table",
+      "contentType": "table",
+      "title": "Example Table Title",
+      "headers": [
+        "Column 1",
+        "Column 2",
+        "Column 3"
+      ],
+      "rows": [
+        ["Row 1, Col 1", "Row 1, Col 2", "Row 1, Col 3"],
+        ["Row 2, Col 1", "Row 2, Col 2", "Row 2, Col 3"]
+      ]
+    },
+    {
+      "blockId": "example_button",
+      "contentType": "button",
+      "text": "Example Button",
+      "link": "https://example.com",
+      "blockApplicability": {
+        "minFloorArea": 1000
+      }
     }
   ],
   "metadata": {
