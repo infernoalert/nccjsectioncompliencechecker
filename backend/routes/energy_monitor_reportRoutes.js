@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const { protect } = require('../middleware/authMiddleware');
-const { generateLightingPowerReport } = require('../controllers/lighting_power_reportController');
+const { generateEnergyMonitorReport } = require('../controllers/energy_monitor_reportController');
 
 /**
  * @swagger
- * /api/j9monitoring/{id}/report:
+ * /api/j9Monitor/{id}/report:
  *   get:
  *     summary: Generate lighting & power compliance report for a project
  *     tags: [Lighting & Power]
@@ -23,7 +23,7 @@ const { generateLightingPowerReport } = require('../controllers/lighting_power_r
  *         required: false
  *         schema:
  *           type: string
- *           enum: [j9monitoring, elemental-provisions, energy-efficiency, fire-safety]
+ *           enum: [j9Monitor, elemental-provisions, energy-efficiency, fire-safety]
  *         description: Type of section to generate report for
  *     responses:
  *       200:
@@ -37,6 +37,6 @@ const { generateLightingPowerReport } = require('../controllers/lighting_power_r
  */
 
 // Generate lighting & power report
-router.get('/:id/report', protect, generateLightingPowerReport);
+router.get('/:id/report', protect, generateEnergyMonitorReport);
 
 module.exports = router; 

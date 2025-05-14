@@ -1,0 +1,48 @@
+{
+    "version": "1.0",
+    "lastUpdated": "2025-05-14",
+    "sectionId": "J7D5",
+    "title": "Interior decorative and display lighting",
+    "displayOrder": 5,
+    "overallApplicability": {
+      "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_9a", "Class_9b", "Class_9c"],
+      "climateZones": null,
+      "minFloorArea": null,
+      "maxFloorArea": null
+    },
+    "contentBlocks": [
+      {
+        "blockId": "J7D5_1",
+        "contentType": "list",
+        "title": "Control requirements for decorative and display lighting",
+        "blockApplicability": {
+          "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_9a", "Class_9b", "Class_9c"]
+        },
+        "listType": "unordered",
+        "items": [
+          "Decorative and display lighting must be controlled separately from other artificial lighting",
+          "Decorative and display lighting must be controlled by a manual switch for each area, unless displays have same times (e.g., in museums/galleries)",
+          "If display lighting exceeds 1 kW, it must be controlled by a time switch"
+        ]
+      },
+      {
+        "blockId": "J7D5_2",
+        "contentType": "list",
+        "title": "Window display lighting",
+        "blockApplicability": {
+          "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_9a", "Class_9b", "Class_9c"]
+        },
+        "listType": "unordered",
+        "items": [
+          "Window display lighting must be controlled separately from other display lighting"
+        ]
+      }
+    ],
+    "metadata": {
+      "source": "NCC 2022",
+      "lastReviewed": "2025-05-14",
+      "reviewedBy": "AI Assistant",
+      "status": "active"
+    }
+  }
+  

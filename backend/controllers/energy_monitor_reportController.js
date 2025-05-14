@@ -1,14 +1,14 @@
 const asyncHandler = require('express-async-handler');
 const Project = require('../models/Project');
-const LightingPowerReportService = require('../services/lighting_power_reportService');
+const EnergyMonitorReportService = require('../services/energy_monitor_reportService');
 
 // @desc    Generate lighting & power report for a project
-// @route   GET /api/j9monitoring/:id/report
+// @route   GET /api/j9Monitor/:id/report
 // @access  Private
-exports.generateLightingPowerReport = asyncHandler(async (req, res) => {
+exports.generateEnergyMonitorReport = asyncHandler(async (req, res) => {
   try {
     const project = await Project.findById(req.params.id);
-    const sectionType = req.query.sectionType || 'j9monitoring';
+    const sectionType = req.query.sectionType || 'j9Monitor';
 
     if (!project) {
       return res.status(404).json({
@@ -25,7 +25,7 @@ exports.generateLightingPowerReport = asyncHandler(async (req, res) => {
       });
     }
 
-    const reportService = new LightingPowerReportService(project);
+    const reportService = new EnergyMonitorReportService(project);
     const report = await reportService.generateReport(sectionType);
 
     return res.status(200).json({
@@ -33,7 +33,7 @@ exports.generateLightingPowerReport = asyncHandler(async (req, res) => {
       data: report
     });
   } catch (error) {
-    console.error('Error in generateLightingPowerReport:', error);
+    console.error('Error in generateEnergyMonitorReport:', error);
     return res.status(500).json({
       success: false,
       error: 'Internal server error',
