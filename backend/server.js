@@ -111,7 +111,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/climate-zones', climateZoneRoutes);
 app.use('/api/compliance-pathways', compliancePathwayRoutes);
 app.use('/api/projects', projectRoutes);
-app.use('/api/lighting-power', lightingPowerReportRoutes);
+app.use('/api/j9monitoring', lightingPowerReportRoutes);
 app.use('/api', complianceCalculatorRoutes);
 app.use('/api', referenceDataRoutes);
 app.use('/api/admin', adminRoutes);

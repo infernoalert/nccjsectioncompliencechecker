@@ -66,7 +66,7 @@ class LightingPowerReportService {
                 this.sectionParam,
                 this.buildingClassification,
                 this.climateZone,
-                'lighting-power'
+                'j9monitoring'
             );
             report.dynamicSections = await dynamicSectionsGenerator.generateDynamicSections();
 

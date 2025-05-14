@@ -8,7 +8,7 @@ const baseDirectory = path.join(__dirname, '../data');
 // Cache for different section types
 const sectionCache = {
   'elemental-provisions': null,
-  'lighting-power': null,
+  'j9monitoring': null,
   'energy-efficiency': null,
   'fire-safety': null,
   // Add more section types as needed
@@ -16,7 +16,7 @@ const sectionCache = {
 
 /**
  * Load sections based on the selected type
- * @param {string} sectionType - The type of section to load (e.g., 'elemental-provisions', 'lighting-power')
+ * @param {string} sectionType - The type of section to load (e.g., 'elemental-provisions', 'j9monitoring')
  * @returns {Promise<Object>} The loaded sections
  */
 async function loadSections(sectionType) {
