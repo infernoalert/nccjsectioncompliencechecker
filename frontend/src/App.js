@@ -109,7 +109,7 @@ function App() {
             }
           />
           <Route
-            path="/lighting-power/:id/report"
+            path="/j9monitoring/:id/report"
             element={
               <ProtectedRoute>
                 <LightingPowerReport />

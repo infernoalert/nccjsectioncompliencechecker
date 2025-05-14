@@ -6,7 +6,7 @@
 
 module.exports = {
   // Base path for decision tree files
-  basePath: 'data/lighting-power',
+  basePath: 'data/j9monitoring',
   
   // File extension for decision tree files
   fileExtension: '.json',
