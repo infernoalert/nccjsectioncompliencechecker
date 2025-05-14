@@ -923,3 +923,144 @@ ProjectDetails.js
    - Optimize JSON file loading
    - Implement proper caching
    - Use efficient rendering techniques
+
+### Content Types That Can Be Rendered**:
+   - `text`: Simple text display
+   - `table`: Structured data in tabular format
+   - `list`: Ordered or unordered lists
+   - `button`: Interactive button elements with the following properties:
+     ```json
+     {
+       "contentType": "button",
+       "buttonType": "primary|secondary|outlined|text",
+       "label": "Button Text",
+       "action": "action_type",
+       "actionParams": {
+         "param1": "value1",
+         "param2": "value2"
+       },
+       "disabled": boolean,
+       "icon": "icon_name",
+       "tooltip": "Button tooltip text"
+     }
+     ```
+     Supported button types:
+     - `primary`: Main action buttons
+     - `secondary`: Alternative action buttons
+     - `outlined`: Less prominent actions
+     - `text`: Text-only buttons
+     
+     Common actions:
+     - `navigate`: Navigate to another section/page
+     - `print`: Print the current report
+     - `download`: Download report as PDF
+     - `calculate`: Perform calculations
+     - `validate`: Validate form or data
+     - `custom`: Custom action defined in the frontend
+
+## If We Want to Add a New Content Type
+
+To add a new content type that can be rendered in the frontend, follow these steps:
+
+1. **Update Frontend Component**:
+   - Modify `DynamicSectionRenderer` component to handle the new content type
+   - Create a new renderer component for the specific content type
+   - Add the new content type to the switch statement in `DynamicSectionRenderer`
+
+2. **Backend Structure**:
+   Add the new content type to the JSON structure in backend data files:
+   ```json
+   {
+     "contentBlocks": [
+       {
+         "blockId": "unique_block_id",
+         "contentType": "newType",  // new content type
+         "content": {
+           // content specific properties
+         },
+         "blockApplicability": {
+           "buildingClasses": ["Class_2", "Class_4"],
+           "climateZones": [1, 2, 3]
+         }
+       }
+     ]
+   }
+   ```
+
+3. **Update Documentation**:
+   Add the new content type to the "Content Types That Can Be Rendered" section in this file:
+   ```markdown
+   ### Content Types That Can Be Rendered**:
+      - `text`: Simple text display
+      - `table`: Structured data in tabular format
+      - `list`: Ordered or unordered lists
+      - `button`: Interactive button elements
+      - `newType`: Description of new content type with example structure
+   ```
+
+4. **Update sectionLoader.js**:
+   - Add validation for the new content type
+   - Update the list of valid content types
+   - Add specific validation rules for the new content type
+
+5. **Testing**:
+   - Create test cases for the new content type
+   - Test rendering in different scenarios
+   - Test validation in sectionLoader
+   - Test integration with existing components
+
+6. **Example Implementation**:
+   ```jsx
+   // components/NewTypeRenderer.js
+   const NewTypeRenderer = ({ content }) => {
+     // Render logic for new content type
+     return (
+       <div className="new-type-container">
+         {/* Render content */}
+       </div>
+     );
+   };
+
+   // Update DynamicSectionRenderer
+   const DynamicSectionRenderer = ({ contentBlock }) => {
+     const { contentType, content } = contentBlock;
+
+     switch (contentType) {
+       case 'text':
+         return <TextRenderer content={content} />;
+       case 'table':
+         return <TableRenderer content={content} />;
+       case 'list':
+         return <ListRenderer content={content} />;
+       case 'button':
+         return <ButtonRenderer content={content} />;
+       case 'newType':  // new content type
+         return <NewTypeRenderer content={content} />;
+       default:
+         return <TextRenderer content="Unsupported content type" />;
+     }
+   };
+   ```
+
+7. **Validation in sectionLoader.js**:
+   ```javascript
+   const validateContentBlock = (block) => {
+     const validContentTypes = ['text', 'table', 'list', 'button', 'newType'];
+     
+     if (!validContentTypes.includes(block.contentType)) {
+       throw new Error(`Invalid content type: ${block.contentType}`);
+     }
+     
+     // Additional validation for specific content types
+     if (block.contentType === 'newType') {
+       validateNewTypeContent(block.content);
+     }
+   };
+   ```
+
+This process ensures that:
+- The new content type is properly documented
+- The frontend can render it correctly
+- The backend can validate it
+- It integrates well with existing components
+- It follows the application's architecture and patterns

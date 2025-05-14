@@ -88,6 +88,29 @@
         ]
       },
       {
+        "blockId": "Table_J7D3a_notes",
+        "contentType": "list",
+        "title": "Table J7D3a Notes",
+        "listType": "ordered",
+        "items": [
+          "In areas not listed above, the maximum illumination power density is—",
+          "for an illuminance not more than 80 lx, 2 W/m2; and",
+          "for an illuminance more than 80 lx and not more than 160 lx, 2.5 W/m2; and",
+          "for an illuminance more than 160 lx and not more than 240 lx, 3 W/m2; and",
+          "for an illuminance more than 240 lx and not more than 320 lx, 4.5 W/m2; and",
+          "for an illuminance more than 320 lx and not more than 400 lx, 6 W/m2; and",
+          "for an illuminance more than 400 lx and not more than 600 lx, 10 W/m2; and",
+          "for an illuminance more than 600 lx and not more than 800 lx, 11.5 W/m2.",
+          "For enclosed spaces with a Room Aspect Ratio of less than 1.5, the maximum illumination power density may be increased by dividing it by an adjustment factor for room aspect which is 0.5 + (Room Aspect Ratio/3).",
+          "The Room Aspect Ratio of the enclosed space is determined by the formula: A/(H x C), where—",
+          "A is the area of the enclosed space; and",
+          "H is the height of the space measured from the floor to the highest part of the ceiling; and",
+          "C is the perimeter of the enclosed space at floor level.",
+          "In addition to 2, the maximum illumination power density may be increased by dividing it by the illumination power density adjustment factor in Table J7D3b and Table J7D3c and where the control device is not installed to comply with J6D4.",
+          "Circulation spaces are included in the allowances listed in the Table."
+        ]
+      },
+      {
         "blockId": "Table_J7D3b",
         "contentType": "table",
         "title": "Table J7D3b Illumination power density adjustment factor for a control device",
@@ -107,6 +130,21 @@
         ]
       },
       {
+        "blockId": "Table_J7D3b_notes",
+        "contentType": "list",
+        "title": "Table J7D3b Notes",
+        "listType": "ordered",
+        "items": [
+          "A maximum of two illumination power density adjustment factors for a control device can be applied to an area.",
+          "Where more than one illumination power density adjustment factor (other than for room aspect) applies to an area, they are to be combined using the following formula: A x (B + [(1 - B)/2]), where—",
+          "A is the lowest applicable illumination power density adjustment factor; and",
+          "B is the second lowest applicable illumination power density adjustment factor.",
+          "The adjustment factor does not apply to tungsten, halogen or other incandescent sources.",
+          "Includes luminaires with a pre-programmed function which provides dimming from ON to OFF (one-stage dimming).",
+          "The illumination power density adjustment factor is only applied to lights controlled by daylight sensors between 8:00 am and 7:00 pm."
+        ]
+      },
+      {
         "blockId": "Table_J7D3c",
         "contentType": "table",
         "title": "Table J7D3c Illumination power density adjustment factor for light colour characteristics",
@@ -119,6 +157,15 @@
           ["For a light source with a colour temperature <3500 K", "0.8"],
           ["For a light source with a colour temperature >4500 K", "1.1"],
           ["When more than one adjustment factor applies, each is to be separately considered and applied as appropriate.", ""]
+        ]
+      },
+      {
+        "blockId": "Table_J7D3c_notes",
+        "contentType": "list",
+        "title": "Table J7D3c Notes",
+        "listType": "ordered",
+        "items": [
+          "Includes luminaires that can adjust their CCT to 3500 K or below."
         ]
       }
     ],
