@@ -24,9 +24,18 @@
       ]
     },
     {
+      "blockId": "j9d3-small-buildings-button",
+      "contentType": "button",
+      "text": "Sample-340A",
+      "link": "https://payamamerian.wordpress.com/wp-content/uploads/2025/05/pmc-340-english-datasheet-20240223.pdf",
+      "blockApplicability": {
+        "maxFloorArea": 500
+      }
+    },
+    {
       "blockId": "j9d3-medium-buildings",
       "contentType": "list",
-      "title": "Medium Buildings Requirements",
+      "title": "Medium Buildings Requirements Between 500 and 2500 m²",
       "blockApplicability": {
         "minFloorArea": 500,
         "maxFloorArea": 2500
@@ -35,6 +44,16 @@
       "items": [
         "A building or sole-occupancy unit with a floor area of more than 500 m² must have energy meters configured to record the time-of-use consumption of gas and electricity."
       ]
+    },
+    {
+      "blockId": "j9d3-medium-buildings-button",
+      "contentType": "button",
+      "text": "Sample PMC340B",
+      "link": "https://payamamerian.wordpress.com/wp-content/uploads/2025/05/pmc-340-english-datasheet-20240223.pdf",
+      "blockApplicability": {
+        "minFloorArea": 500,
+        "maxFloorArea": 2500
+      }
     },
     {
       "blockId": "j9d3-large-buildings",
