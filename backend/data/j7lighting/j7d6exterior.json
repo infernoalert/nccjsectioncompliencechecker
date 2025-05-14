@@ -1,0 +1,48 @@
+{
+    "version": "1.0",
+    "lastUpdated": "2025-05-14",
+    "sectionId": "J7D6",
+    "title": "Exterior artificial lighting",
+    "displayOrder": 6,
+    "overallApplicability": {
+      "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"],
+      "climateZones": null,
+      "minFloorArea": null,
+      "maxFloorArea": null
+    },
+    "contentBlocks": [
+      {
+        "blockId": "J7D6_1",
+        "contentType": "list",
+        "title": "Control requirements for exterior lighting",
+        "blockApplicability": {
+          "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"]
+        },
+        "listType": "unordered",
+        "items": [
+          "Exterior artificial lighting attached to or directed at building facade must be controlled by daylight sensor OR a programmable time switch",
+          "If total lighting load exceeds 100W, at least 90% must use LED luminaires OR be controlled by motion detector OR, if decorative/signage, have separate time switch"
+        ]
+      },
+      {
+        "blockId": "J7D6_2",
+        "contentType": "list",
+        "title": "Exemptions",
+        "blockApplicability": {
+          "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"]
+        },
+        "listType": "unordered",
+        "items": [
+          "Emergency lighting",
+          "Lighting around a detention centre"
+        ]
+      }
+    ],
+    "metadata": {
+      "source": "NCC 2022",
+      "lastReviewed": "2025-05-14",
+      "reviewedBy": "AI Assistant",
+      "status": "active"
+    }
+  }
+  

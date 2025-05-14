@@ -9,7 +9,7 @@ import NewProject from './components/NewProject';
 import ProjectDetails from './components/ProjectDetails';
 import ProjectForm from './components/ProjectForm';
 import ProjectReport from './components/ProjectReport';
-import LightingPowerReport from './components/LightingPowerReport';
+import EnergyMonitorReport from './components/EnergyMonitorReport';
 import NotFound from './components/NotFound';
 import Navbar from './components/Navbar';
 import Presentation from './static/Presentation';
@@ -17,6 +17,7 @@ import UserList from './components/UserList';
 import CreateUser from './components/CreateUser';
 import { useSelector } from 'react-redux';
 import './styles/print.css';
+import J7LightingReport from './components/reports/J7LightingReport';
 
 // Create a theme instance
 const theme = createTheme({
@@ -109,10 +110,18 @@ function App() {
             }
           />
           <Route
-            path="/lighting-power/:id/report"
+            path="/j9Monitor/:id/report"
             element={
               <ProtectedRoute>
-                <LightingPowerReport />
+                <EnergyMonitorReport />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/j7lighting/:id/report"
+            element={
+              <ProtectedRoute>
+                <J7LightingReport />
               </ProtectedRoute>
             }
           />

@@ -233,18 +233,18 @@ const Slide5 = () => {
             </ProvisionCard>
           </Grid>
           
-          {/* J9 Energy Monitoring */}
+          {/* J9 Energy Monitor */}
           <Grid item xs={12} md={4}>
             <ProvisionCard>
               <ProvisionHeader variant="j9">
                 <ProvisionIcon>
                   <SpeedIcon />
                 </ProvisionIcon>
-                <Typography>Part J9: Energy Monitoring</Typography>
+                <Typography>Part J9: Energy Monitor</Typography>
               </ProvisionHeader>
               <Box sx={{ p: 2 }}>
                 <Typography variant="body2" sx={{ color: '#4b5563', mb: 2 }}>
-                  Covers energy monitoring and future-proofing for renewable energy systems.
+                  Covers energy Monitor and future-proofing for renewable energy systems.
                 </Typography>
                 <ListItem>
                   <CheckCircleIcon sx={{ color: '#059669', mt: 0.5, mr: 1 }} />

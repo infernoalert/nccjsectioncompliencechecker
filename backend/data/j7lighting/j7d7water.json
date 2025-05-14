@@ -1,0 +1,34 @@
+{
+    "version": "1.0",
+    "lastUpdated": "2025-05-14",
+    "sectionId": "J7D7",
+    "title": "Boiling water and chilled water storage units",
+    "displayOrder": 7,
+    "overallApplicability": {
+      "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"],
+      "climateZones": null,
+      "minFloorArea": null,
+      "maxFloorArea": null
+    },
+    "contentBlocks": [
+      {
+        "blockId": "J7D7_1",
+        "contentType": "list",
+        "title": "Control requirements for water storage units",
+        "blockApplicability": {
+          "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"]
+        },
+        "listType": "unordered",
+        "items": [
+          "Power supply to boiling water or chilled water storage unit must be controlled by a time switch"
+        ]
+      }
+    ],
+    "metadata": {
+      "source": "NCC 2022",
+      "lastReviewed": "2025-05-14",
+      "reviewedBy": "AI Assistant",
+      "status": "active"
+    }
+  }
+  

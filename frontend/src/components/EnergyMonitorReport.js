@@ -12,22 +12,22 @@ import {
   Alert,
   Divider,
 } from '@mui/material';
-import { generateLightingPowerReport } from '../store/slices/lighting_power_reportSlice';
+import { generateEnergyMonitorReport } from '../store/slices/energy_monitor_reportSlice';
 import PrintIcon from '@mui/icons-material/Print';
 import DynamicSectionRenderer from './DynamicSectionRenderer';
 
-const LightingPowerReport = () => {
+const EnergyMonitorReport = () => {
   const { id } = useParams();
   const location = useLocation();
   const dispatch = useDispatch();
-  const { report, loading, error } = useSelector((state) => state.lightingPower);
+  const { report, loading, error } = useSelector((state) => state.EnergyMonitor);
 
   // Get section from URL query params
   const queryParams = new URLSearchParams(location.search);
   const sectionParam = queryParams.get('section') || 'full';
 
   useEffect(() => {
-    dispatch(generateLightingPowerReport(id));
+    dispatch(generateEnergyMonitorReport(id));
   }, [dispatch, id]);
 
   const handlePrint = () => {
@@ -154,4 +154,4 @@ const LightingPowerReport = () => {
   );
 };
 
-export default LightingPowerReport; 
+export default EnergyMonitorReport; 

@@ -57,7 +57,8 @@ const referenceDataRoutes = require('./routes/referenceDataRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const testRoutes = require('./routes/testRoutes');
 const healthRoutes = require('./routes/healthRoutes');
-const lightingPowerReportRoutes = require('./routes/lighting_power_reportRoutes');
+const EnergyMonitorReportRoutes = require('./routes/energy_monitor_reportRoutes');
+const j7lightingReportRoutes = require('./routes/j7lighting_reportRoutes');
 
 const app = express();
 
@@ -111,12 +112,13 @@ app.use('/api/auth', authRoutes);
 app.use('/api/climate-zones', climateZoneRoutes);
 app.use('/api/compliance-pathways', compliancePathwayRoutes);
 app.use('/api/projects', projectRoutes);
-app.use('/api/lighting-power', lightingPowerReportRoutes);
+app.use('/api/j9Monitor', EnergyMonitorReportRoutes);
 app.use('/api', complianceCalculatorRoutes);
 app.use('/api', referenceDataRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/test', testRoutes);
 app.use('/health', healthRoutes);
+app.use('/api/j7lighting', j7lightingReportRoutes);
 
 // Basic route
 app.get('/', (req, res) => {

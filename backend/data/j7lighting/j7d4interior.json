@@ -1,0 +1,79 @@
+{
+  "version": "1.0",
+  "lastUpdated": "2025-05-14",
+  "sectionId": "J7D4",
+  "title": "Interior artificial lighting and power control",
+  "displayOrder": 4,
+  "overallApplicability": {
+    "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_9a", "Class_9b", "Class_9c"],
+    "climateZones": null,
+    "minFloorArea": null,
+    "maxFloorArea": null
+  },
+  "contentBlocks": [
+    {
+      "blockId": "J7D4_1",
+      "contentType": "list",
+      "title": "General lighting control requirements",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_9a", "Class_9b", "Class_9c"]
+      },
+      "listType": "unordered",
+      "items": [
+        "All artificial lighting must be individually controlled by a switch or control device",
+        "Switches must be visible and easily accessed, generally in the room itself except for specialized spaces like auditoriums"
+      ]
+    },
+    {
+      "blockId": "J7D4_2",
+      "contentType": "list",
+      "title": "Sole-occupancy unit requirements",
+      "blockApplicability": {
+        "buildingClasses": ["Class_3"]
+      },
+      "listType": "unordered",
+      "items": [
+        "In a sole-occupancy unit of a Class 3 building (not designed for accommodation of the aged or people with a disability), an occupant activated device must cut power to lighting, air conditioning, exhaust fans, and bathroom heater when the unit is unoccupied"
+      ]
+    },
+    {
+      "blockId": "J7D4_3",
+      "contentType": "list",
+      "title": "Requirements for buildings over 250 m²",
+      "blockApplicability": {
+        "buildingClasses": ["Class_5", "Class_6", "Class_7", "Class_9a", "Class_9b", "Class_9c"]
+      },
+      "listType": "unordered",
+      "items": [
+        "95% of light fittings in a building greater than 250 m² must be controlled by a time switch or occupant sensing device (motion detector, key card)",
+        "In Class 5, 6, and 7 buildings, natural lighting zones adjacent to windows must have separate control",
+        "Artificial lighting in fire-isolated stair/passage/ramp must be controlled by motion detector",
+        "Foyers/corridors exceeding 250 W zone and adjacent to windows must be controlled by daylight sensor and dynamic lighting control device",
+        "Carpark entry zone first 19m (daytime): daylight sensor required"
+      ]
+    },
+    {
+      "blockId": "J7D4_4",
+      "contentType": "list",
+      "title": "Exemptions",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_9a", "Class_9b", "Class_9c"]
+      },
+      "listType": "unordered",
+      "items": [
+        "Emergency lighting",
+        "Spaces requiring 24hr light",
+        "Hospital patient care areas",
+        "Plant rooms",
+        "Workshops with power tools",
+        "Heaters that emit light"
+      ]
+    }
+  ],
+  "metadata": {
+    "source": "NCC 2022",
+    "lastReviewed": "2025-05-14",
+    "reviewedBy": "AI Assistant",
+    "status": "active"
+  }
+}
