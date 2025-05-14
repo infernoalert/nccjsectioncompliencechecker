@@ -2,11 +2,11 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
-const LIGHTING_POWER_API_URL = `${API_URL}/api/j9monitoring`;
+const energy_monitor_API_URL = `${API_URL}/api/j9Monitor`;
 
 // Create axios instance with base URL
 const api = axios.create({
-  baseURL: LIGHTING_POWER_API_URL,
+  baseURL: energy_monitor_API_URL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -27,8 +27,8 @@ api.interceptors.request.use(
 );
 
 // Generate lighting & power report
-export const generateLightingPowerReport = createAsyncThunk(
-  'lightingPower/generateReport',
+export const generateEnergyMonitorReport = createAsyncThunk(
+  'EnergyMonitor/generateReport',
   async (projectId, { rejectWithValue }) => {
     try {
       const response = await api.get(`/${projectId}/report`);
@@ -40,8 +40,8 @@ export const generateLightingPowerReport = createAsyncThunk(
   }
 );
 
-const lightingPowerSlice = createSlice({
-  name: 'lightingPower',
+const EnergyMonitorSlice = createSlice({
+  name: 'EnergyMonitor',
   initialState: {
     report: null,
     loading: false,
@@ -54,17 +54,17 @@ const lightingPowerSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(generateLightingPowerReport.pending, (state) => {
+      .addCase(generateEnergyMonitorReport.pending, (state) => {
         state.loading = true;
         state.error = null;
         state.report = null;
       })
-      .addCase(generateLightingPowerReport.fulfilled, (state, action) => {
+      .addCase(generateEnergyMonitorReport.fulfilled, (state, action) => {
         state.loading = false;
         state.report = action.payload;
         state.error = null;
       })
-      .addCase(generateLightingPowerReport.rejected, (state, action) => {
+      .addCase(generateEnergyMonitorReport.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
         state.report = null;
@@ -72,5 +72,5 @@ const lightingPowerSlice = createSlice({
   },
 });
 
-export const { clearError } = lightingPowerSlice.actions;
-export default lightingPowerSlice.reducer; 
+export const { clearError } = EnergyMonitorSlice.actions;
+export default EnergyMonitorSlice.reducer; 

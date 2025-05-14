@@ -21,7 +21,7 @@ module.exports = {
     'building-fabric',
     'energy-use',
     'verification-methods',
-    'energy-monitoring',
+    'energy-Monitor',
     'j3d4ceilingfan',
     'j3d3energyratesw'
   ]

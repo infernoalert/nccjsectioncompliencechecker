@@ -1,0 +1,36 @@
+{
+    "version": "1.0",
+    "lastUpdated": "2025-05-14",
+    "sectionId": "J7D8",
+    "title": "Lifts",
+    "displayOrder": 8,
+    "overallApplicability": {
+      "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"],
+      "climateZones": null,
+      "minFloorArea": null,
+      "maxFloorArea": null
+    },
+    "contentBlocks": [
+      {
+        "blockId": "J7D8_1",
+        "contentType": "list",
+        "title": "Requirements for lifts",
+        "blockApplicability": {
+          "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"]
+        },
+        "listType": "unordered",
+        "items": [
+          "Lifts must be configured to ensure lighting and ventilation in the car are turned off when unused for 15 minutes",
+          "Lifts must achieve idle and standby energy performance in Table J7D8a (e.g., load ≤800kg = Level 2, 801–2000kg = Level 3, etc.)",
+          "Lifts must achieve energy efficiency class in Table J7D8b (Usage category 1–4: Class C, >5: Class D, or for goods lift: at least Class D per ISO 25745-2)"
+        ]
+      }
+    ],
+    "metadata": {
+      "source": "NCC 2022",
+      "lastReviewed": "2025-05-14",
+      "reviewedBy": "AI Assistant",
+      "status": "active"
+    }
+  }
+  

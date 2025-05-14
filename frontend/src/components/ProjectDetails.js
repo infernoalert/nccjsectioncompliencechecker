@@ -170,9 +170,9 @@ const ProjectDetails = () => {
             variant="contained"
             color="success"
             startIcon={<AssessmentIcon />}
-            onClick={() => navigate(`/j9monitoring/${id}/report`)}
+            onClick={() => navigate(`/j9Monitor/${id}/report`)}
           >
-            J9 Energy Monitoring
+            J9 Energy Monitor
           </Button>
           <Button
             variant="contained"

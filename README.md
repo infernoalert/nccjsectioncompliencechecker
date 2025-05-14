@@ -112,7 +112,7 @@ The frontend application will start on http://localhost:3000
 - `npm run pm2:restart`: Restarts the PM2 application
 - `npm run pm2:delete`: Deletes the PM2 application
 - `npm run pm2:logs`: Shows the PM2 logs
-- `npm run pm2:monit`: Opens the PM2 monitoring interface
+- `npm run pm2:monit`: Opens the PM2 Monitor interface
 - `npm run pm2:status`: Shows the PM2 status
 
 ### Frontend
@@ -127,7 +127,7 @@ The frontend application will start on http://localhost:3000
 
 ### Backend Deployment with PM2
 
-PM2 is a process manager for Node.js applications that helps keep your application running 24/7 and provides features like automatic restarts, load balancing, and monitoring.
+PM2 is a process manager for Node.js applications that helps keep your application running 24/7 and provides features like automatic restarts, load balancing, and Monitor.
 
 1. Install PM2 globally:
    ```bash

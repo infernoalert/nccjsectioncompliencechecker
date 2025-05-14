@@ -85,7 +85,7 @@ To run the frontend, copy the appropriate environment file to `.env` in the fron
 - `npm run pm2:restart`: Restarts the PM2 application
 - `npm run pm2:delete`: Deletes the PM2 application
 - `npm run pm2:logs`: Shows the PM2 logs
-- `npm run pm2:monit`: Opens the PM2 monitoring interface
+- `npm run pm2:monit`: Opens the PM2 Monitor interface
 - `npm run pm2:status`: Shows the PM2 status
 
 ### Frontend
@@ -100,7 +100,7 @@ To run the frontend, copy the appropriate environment file to `.env` in the fron
 
 ### Backend Deployment with PM2
 
-PM2 is a process manager for Node.js applications that helps keep your application running 24/7 and provides features like automatic restarts, load balancing, and monitoring.
+PM2 is a process manager for Node.js applications that helps keep your application running 24/7 and provides features like automatic restarts, load balancing, and Monitor.
 
 #### PM2 Configuration
 
@@ -146,7 +146,7 @@ The following PM2 commands are available through npm scripts:
 - **npm run pm2:restart**: Restart the application
 - **npm run pm2:delete**: Delete the application from PM2
 - **npm run pm2:logs**: View the application logs
-- **npm run pm2:monit**: Open the PM2 monitoring interface
+- **npm run pm2:monit**: Open the PM2 Monitor interface
 - **npm run pm2:status**: View the PM2 status
 
 ### Frontend Deployment
@@ -552,7 +552,7 @@ The report structure is now more flexible. While the frontend might still group 
    - J3D3 Requirements (if converted)
    - J3D4 Ceiling Fans
    - Verification Methods
-   - Energy Monitoring
+   - Energy Monitor
    - Exemptions
    - Special Requirements
 
@@ -588,7 +588,7 @@ The frontend uses the `DynamicSectionRenderer` component to handle different con
 ### Backend Structure
 The lighting and power report is implemented through two main components:
 
-1. **LightingPowerReportService** (`backend/services/lighting_power_reportService.js`):
+1. **EnergyMonitorReportService** (`backend/services/energy_monitor_reportService.js`):
    - Handles report generation for lighting and power compliance
    - Structure:
      ```javascript
@@ -618,7 +618,7 @@ The lighting and power report is implemented through two main components:
          annualCoolingDegreeHours: number,
          annualDehumidificationGramHours: number
        },
-       lightingPowerReport: {
+       EnergyMonitorReport: {
          sections: Array<{
            sectionId: string,
            title: string,
@@ -633,12 +633,12 @@ The lighting and power report is implemented through two main components:
      }
      ```
 
-2. **JSON Data Structure** (`backend/data/j9monitoring/`):
+2. **JSON Data Structure** (`backend/data/j9Monitor/`):
    - All lighting and power related JSON files should be placed in this directory
    - Each JSON file must include:
      ```json
      {
-       "category": "j9monitoring",
+       "category": "j9Monitor",
        "sectionId": "unique_section_id",
        "title": "Section Title",
        "displayOrder": number,
@@ -663,7 +663,7 @@ The lighting and power report is implemented through two main components:
      ```
 
 ### Frontend Implementation
-The lighting and power report is displayed using the `LightingPowerReport` component (`frontend/src/components/LightingPowerReport.js`):
+The lighting and power report is displayed using the `EnergyMonitorReport` component (`frontend/src/components/EnergyMonitorReport.js`):
 
 1. **Component Structure**:
    ```jsx
@@ -698,19 +698,19 @@ The lighting and power report is displayed using the `LightingPowerReport` compo
    ```
 
 2. **Redux Integration**:
-   - Uses `lighting_power_reportSlice.js` for state management
+   - Uses `energy_monitor_reportSlice.js` for state management
    - Handles loading, error states, and report data
-   - Provides `generateLightingPowerReport` action for report generation
+   - Provides `generateEnergyMonitorReport` action for report generation
 
 ### Important Notes
 
 1. **JSON File Location**:
-   - All lighting and power related JSON files must be in `backend/data/j9monitoring/`
-   - Each file must have the `category: "j9monitoring"` field
+   - All lighting and power related JSON files must be in `backend/data/j9Monitor/`
+   - Each file must have the `category: "j9Monitor"` field
    - File naming should be descriptive and follow a consistent pattern
 
 2. **Section Loading**:
-   - The `sectionLoader.js` utility loads all JSON files from the j9monitoring directory
+   - The `sectionLoader.js` utility loads all JSON files from the j9Monitor directory
    - Files are filtered based on the `category` field
    - Sections are processed based on their applicability rules
 

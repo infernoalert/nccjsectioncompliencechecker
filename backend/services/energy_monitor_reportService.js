@@ -1,18 +1,18 @@
-// backend/services/LightingPowerReportService.js
+// backend/services/EnergyMonitorReportService.js
 
 const { getBuildingClassification, getClimateZoneByLocation } = require('../utils/decisionTreeUtils.js');
 const locationToClimateZone = require('../data/mappings/locationToClimateZone.json');
 const DynamicSectionsGenerator = require('./generateDynamicSections.js');
 
-class LightingPowerReportService {
+class EnergyMonitorReportService {
     /**
-     * Constructor for LightingPowerReportService.
+     * Constructor for EnergyMonitorReportService.
      * @param {Object} project - The project object.
      * @param {string} section - The section parameter.
      */
     constructor(project, section = 'full') {
         if (!project) {
-            throw new Error("Project data is required for LightingPowerReportService.");
+            throw new Error("Project data is required for EnergyMonitorReportService.");
         }
         this.project = project;
         this.sectionParam = section ? section.toLowerCase() : 'full';
@@ -66,7 +66,7 @@ class LightingPowerReportService {
                 this.sectionParam,
                 this.buildingClassification,
                 this.climateZone,
-                'j9monitoring'
+                'j9Monitor'
             );
             report.dynamicSections = await dynamicSectionsGenerator.generateDynamicSections();
 
@@ -148,4 +148,4 @@ class LightingPowerReportService {
     }
 }
 
-module.exports = LightingPowerReportService;
+module.exports = EnergyMonitorReportService;
