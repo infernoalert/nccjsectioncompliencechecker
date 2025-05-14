@@ -9,6 +9,7 @@ const baseDirectory = path.join(__dirname, '../data');
 const sectionCache = {
   'elemental-provisions': null,
   'j9Monitor': null,
+  'j7lighting': null,
   'energy-efficiency': null,
   'fire-safety': null,
   // Add more section types as needed
