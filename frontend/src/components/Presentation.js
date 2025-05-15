@@ -11,13 +11,11 @@ const Presentation = () => {
           <Typography variant="h4" gutterBottom>
             Presentation
           </Typography>
-          <Typography variant="body1">
-            This is the presentation page content.
-          </Typography>
+          <Typography variant="body1">This is the presentation page content.</Typography>
         </Paper>
       </Container>
     </Box>
   );
 };
 
-export default Presentation; 
+export default Presentation;

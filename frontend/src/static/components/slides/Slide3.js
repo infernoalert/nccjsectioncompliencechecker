@@ -1,11 +1,6 @@
 import React from 'react';
 import { Box, Typography, Grid } from '@mui/material';
-import {
-  SlideContainer,
-  HeaderAccent,
-  SlideNumber,
-  GradientDivider,
-} from '../styles/SlideStyles';
+import { SlideContainer, HeaderAccent, SlideNumber, GradientDivider } from '../styles/SlideStyles';
 import styled from '@emotion/styled';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ThermostatIcon from '@mui/icons-material/Thermostat';
@@ -35,11 +30,12 @@ const ReqHeader = styled(Box)(({ theme, variant }) => ({
   fontWeight: 600,
   display: 'flex',
   alignItems: 'center',
-  background: variant === 'thermal' 
-    ? 'linear-gradient(90deg, #2c7da0, #3d8daf)'
-    : variant === 'energy'
-    ? 'linear-gradient(90deg, #2a9d8f, #40b4a6)'
-    : 'linear-gradient(90deg, #3a86a3, #4d97b3)',
+  background:
+    variant === 'thermal'
+      ? 'linear-gradient(90deg, #2c7da0, #3d8daf)'
+      : variant === 'energy'
+        ? 'linear-gradient(90deg, #2a9d8f, #40b4a6)'
+        : 'linear-gradient(90deg, #3a86a3, #4d97b3)',
 }));
 
 const ReqBody = styled(Box)(({ theme }) => ({
@@ -66,7 +62,7 @@ const Slide3 = () => {
   return (
     <SlideContainer>
       <HeaderAccent />
-      
+
       {/* Main Content */}
       <Box sx={{ p: 4 }}>
         <Box sx={{ mb: 3 }}>
@@ -75,11 +71,12 @@ const Slide3 = () => {
           </Typography>
           <GradientDivider />
         </Box>
-        
+
         <Typography variant="body1" sx={{ fontSize: '1.125rem', color: '#374151', mb: 3 }}>
-          Beyond J1P1, there are three additional Performance Requirements focused on specific building types:
+          Beyond J1P1, there are three additional Performance Requirements focused on specific
+          building types:
         </Typography>
-        
+
         <Grid container spacing={3} sx={{ mb: 4 }}>
           <Grid item xs={12} md={4}>
             <RequirementCard>
@@ -89,7 +86,8 @@ const Slide3 = () => {
               </ReqHeader>
               <ReqBody>
                 <Typography variant="body2" sx={{ color: '#4b5563', mb: 2 }}>
-                  Applies to sole-occupancy units of Class 2 buildings and Class 4 parts of buildings
+                  Applies to sole-occupancy units of Class 2 buildings and Class 4 parts of
+                  buildings
                 </Typography>
                 <ListItem>
                   <CheckCircleIcon sx={{ color: '#2563eb', mt: 0.5, mr: 1 }} />
@@ -112,7 +110,7 @@ const Slide3 = () => {
               </ReqBody>
             </RequirementCard>
           </Grid>
-          
+
           <Grid item xs={12} md={4}>
             <RequirementCard>
               <ReqHeader variant="energy">
@@ -121,7 +119,8 @@ const Slide3 = () => {
               </ReqHeader>
               <ReqBody>
                 <Typography variant="body2" sx={{ color: '#4b5563', mb: 2 }}>
-                  Applies to sole-occupancy units of Class 2 buildings and Class 4 parts of buildings
+                  Applies to sole-occupancy units of Class 2 buildings and Class 4 parts of
+                  buildings
                 </Typography>
                 <ListItem>
                   <CheckCircleIcon sx={{ color: '#059669', mt: 0.5, mr: 1 }} />
@@ -144,7 +143,7 @@ const Slide3 = () => {
               </ReqBody>
             </RequirementCard>
           </Grid>
-          
+
           <Grid item xs={12} md={4}>
             <RequirementCard>
               <ReqHeader variant="renewable">
@@ -177,7 +176,7 @@ const Slide3 = () => {
             </RequirementCard>
           </Grid>
         </Grid>
-        
+
         <Box sx={{ backgroundColor: '#eff6ff', p: 3, borderRadius: '8px' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
             <BusinessIcon sx={{ color: '#2563eb', mr: 1 }} />
@@ -185,11 +184,12 @@ const Slide3 = () => {
               The Building Envelope in Section J
             </Typography>
           </Box>
-          
+
           <Typography variant="body1" sx={{ color: '#374151', mb: 2 }}>
-            For the purpose of Section J, the building envelope includes parts of a building's fabric that separate a conditioned space or habitable room from:
+            For the purpose of Section J, the building envelope includes parts of a building's
+            fabric that separate a conditioned space or habitable room from:
           </Typography>
-          
+
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
               <EnvelopeItem>
@@ -200,7 +200,9 @@ const Slide3 = () => {
             <Grid item xs={12} md={6}>
               <EnvelopeItem>
                 <WarehouseIcon sx={{ color: '#059669', mr: 2 }} />
-                <Typography>Adjacent non-conditioned spaces (car parks, warehouses, etc.)</Typography>
+                <Typography>
+                  Adjacent non-conditioned spaces (car parks, warehouses, etc.)
+                </Typography>
               </EnvelopeItem>
             </Grid>
             <Grid item xs={12} md={6}>
@@ -218,10 +220,10 @@ const Slide3 = () => {
           </Grid>
         </Box>
       </Box>
-      
+
       <SlideNumber>3 / 12</SlideNumber>
     </SlideContainer>
   );
 };
 
-export default Slide3; 
+export default Slide3;

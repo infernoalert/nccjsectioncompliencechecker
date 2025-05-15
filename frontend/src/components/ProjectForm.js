@@ -17,24 +17,24 @@ import {
   Select,
   Divider,
 } from '@mui/material';
-import { 
-  createProject, 
-  updateProject, 
+import {
+  createProject,
+  updateProject,
   fetchProject,
   fetchBuildingTypes,
-  fetchLocations
+  fetchLocations,
 } from '../store/slices/projectSlice';
 
 /**
  * ProjectForm Component
- * 
+ *
  * This component provides a form for editing project details. It includes:
  * - Basic project information (name, description, location)
  * - Building classification and climate zone selection
  * - Compliance pathway selection
  * - Building fabric specifications
  * - Special requirements
- * 
+ *
  * The component handles both creation and editing of projects, with proper
  * validation and error handling.
  */
@@ -42,13 +42,9 @@ const ProjectForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { 
-    currentProject, 
-    loading, 
-    error,
-    buildingTypes,
-    locations
-  } = useSelector((state) => state.project);
+  const { currentProject, loading, error, buildingTypes, locations } = useSelector(
+    state => state.project
+  );
 
   const [formData, setFormData] = useState({
     name: '',
@@ -69,7 +65,7 @@ const ProjectForm = () => {
     // Fetch building types and locations when component mounts
     dispatch(fetchBuildingTypes());
     dispatch(fetchLocations());
-    
+
     if (id) {
       dispatch(fetchProject(id));
     }
@@ -94,12 +90,12 @@ const ProjectForm = () => {
     }
   }, [currentProject]);
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     const { name, value } = e.target;
-    
+
     if (name.startsWith('buildingFabric.')) {
       const fabricField = name.split('.')[1];
-      setFormData((prev) => ({
+      setFormData(prev => ({
         ...prev,
         buildingFabric: {
           ...prev.buildingFabric,
@@ -107,14 +103,14 @@ const ProjectForm = () => {
         },
       }));
     } else {
-      setFormData((prev) => ({
+      setFormData(prev => ({
         ...prev,
         [name]: value,
       }));
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
     try {
       if (id) {
@@ -178,7 +174,7 @@ const ProjectForm = () => {
                   onChange={handleChange}
                   label="Building Type"
                 >
-                  {buildingTypes.map((type) => (
+                  {buildingTypes.map(type => (
                     <MenuItem key={type} value={type}>
                       {type}
                     </MenuItem>
@@ -206,7 +202,7 @@ const ProjectForm = () => {
                   onChange={handleChange}
                   label="Location"
                 >
-                  {locations.map((location) => (
+                  {locations.map(location => (
                     <MenuItem key={location} value={location}>
                       {location}
                     </MenuItem>
@@ -277,18 +273,10 @@ const ProjectForm = () => {
 
             <Grid item xs={12}>
               <Box sx={{ mt: 3, display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
-                <Button
-                  variant="outlined"
-                  onClick={() => navigate('/projects')}
-                >
+                <Button variant="outlined" onClick={() => navigate('/projects')}>
                   Cancel
                 </Button>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  disabled={loading}
-                >
+                <Button type="submit" variant="contained" color="primary" disabled={loading}>
                   {loading ? <CircularProgress size={24} /> : 'Save Project'}
                 </Button>
               </Box>
@@ -300,4 +288,4 @@ const ProjectForm = () => {
   );
 };
 
-export default ProjectForm; 
+export default ProjectForm;

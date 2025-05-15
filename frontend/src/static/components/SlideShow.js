@@ -66,11 +66,11 @@ const SlideShow = () => {
   };
 
   return (
-    <Box 
-      sx={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
         minHeight: '100vh',
         backgroundColor: '#f0f4f8',
         py: 4,
@@ -79,21 +79,15 @@ const SlideShow = () => {
       }}
     >
       {currentSlide > 1 && (
-        <NavigationButton 
-          onClick={handlePrevSlide}
-          sx={{ left: 20 }}
-        >
+        <NavigationButton onClick={handlePrevSlide} sx={{ left: 20 }}>
           <ArrowBackIosNewIcon />
         </NavigationButton>
       )}
-      
+
       {renderCurrentSlide()}
-      
+
       {currentSlide < totalSlides && (
-        <NavigationButton 
-          onClick={handleNextSlide}
-          sx={{ right: 20 }}
-        >
+        <NavigationButton onClick={handleNextSlide} sx={{ right: 20 }}>
           <ArrowForwardIosIcon />
         </NavigationButton>
       )}
@@ -101,4 +95,4 @@ const SlideShow = () => {
   );
 };
 
-export default SlideShow; 
+export default SlideShow;

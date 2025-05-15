@@ -5,7 +5,7 @@ import {
   HeaderAccent,
   SlideNumber,
   GradientDivider,
-  InfoBox
+  InfoBox,
 } from '../styles/SlideStyles';
 import LeafIcon from '@mui/icons-material/EnergySavingsLeaf';
 import GlobeIcon from '@mui/icons-material/Public';
@@ -55,7 +55,7 @@ const Slide2 = () => {
   return (
     <SlideContainer>
       <HeaderAccent />
-      
+
       {/* Main Content */}
       <Box sx={{ p: 4 }}>
         <Box sx={{ mb: 3 }}>
@@ -64,12 +64,12 @@ const Slide2 = () => {
           </Typography>
           <GradientDivider />
         </Box>
-        
+
         <Box sx={{ mb: 3 }}>
           <Typography variant="body1" sx={{ fontSize: '1.125rem', color: '#374151', mb: 2 }}>
             The overall objectives of the Performance Requirements in Section J are to:
           </Typography>
-          
+
           <Grid container spacing={2} sx={{ mt: 1 }}>
             <Grid item xs={12} md={4}>
               <ObjectiveBox color="blue">
@@ -82,9 +82,7 @@ const Slide2 = () => {
             <Grid item xs={12} md={4}>
               <ObjectiveBox color="green">
                 <GlobeIcon sx={{ color: '#059669', mr: 2 }} />
-                <Typography sx={{ fontWeight: 500 }}>
-                  Reduce greenhouse gas emissions
-                </Typography>
+                <Typography sx={{ fontWeight: 500 }}>Reduce greenhouse gas emissions</Typography>
               </ObjectiveBox>
             </Grid>
             <Grid item xs={12} md={4}>
@@ -98,25 +96,28 @@ const Slide2 = () => {
           </Grid>
         </Box>
 
-        <Box sx={{ 
-          background: 'linear-gradient(to right, #eff6ff, #f0fdf4)', 
-          borderRadius: '8px', 
-          p: 2, 
-          mb: 3,
-          display: 'flex',
-          alignItems: 'center'
-        }}>
+        <Box
+          sx={{
+            background: 'linear-gradient(to right, #eff6ff, #f0fdf4)',
+            borderRadius: '8px',
+            p: 2,
+            mb: 3,
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
           <BoltIcon sx={{ color: '#2563eb', mr: 1 }} />
           <Box>
             <Typography variant="h5" sx={{ fontWeight: 600, color: '#1f2937' }}>
               J1P1 Energy Use
             </Typography>
             <Typography variant="body2" sx={{ color: '#4b5563' }}>
-              Applicable to all building classes, except sole-occupancy units of Class 2 buildings or Class 4 parts
+              Applicable to all building classes, except sole-occupancy units of Class 2 buildings
+              or Class 4 parts
             </Typography>
           </Box>
         </Box>
-        
+
         <Grid container spacing={3}>
           <Grid item xs={12} md={6}>
             <FeatureCard color="#2c7da0">
@@ -129,13 +130,14 @@ const Slide2 = () => {
                     Energy Features
                   </Typography>
                   <Typography variant="body2" sx={{ color: '#4b5563' }}>
-                    Energy efficient appliances, electrical equipment, smart meters and renewable energy sources. Use of passive solar design to optimize heating and cooling.
+                    Energy efficient appliances, electrical equipment, smart meters and renewable
+                    energy sources. Use of passive solar design to optimize heating and cooling.
                   </Typography>
                 </Box>
               </Box>
             </FeatureCard>
           </Grid>
-          
+
           <Grid item xs={12} md={6}>
             <FeatureCard color="#2a9d8f">
               <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
@@ -147,13 +149,14 @@ const Slide2 = () => {
                     Energy Source of Services
                   </Typography>
                   <Typography variant="body2" sx={{ color: '#4b5563' }}>
-                    Onsite renewable energy generation including wind, wave action and geothermal generation, but not "Greenpower" energy contracts.
+                    Onsite renewable energy generation including wind, wave action and geothermal
+                    generation, but not "Greenpower" energy contracts.
                   </Typography>
                 </Box>
               </Box>
             </FeatureCard>
           </Grid>
-          
+
           <Grid item xs={12} md={6}>
             <FeatureCard color="#2c7da0">
               <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
@@ -165,13 +168,15 @@ const Slide2 = () => {
                     Services
                   </Typography>
                   <Typography variant="body2" sx={{ color: '#4b5563' }}>
-                    Mechanical or electrical systems that use energy to provide air conditioning, ventilation, heated water, artificial lighting, vertical transport, etc. Excludes cooking facilities and portable appliances.
+                    Mechanical or electrical systems that use energy to provide air conditioning,
+                    ventilation, heated water, artificial lighting, vertical transport, etc.
+                    Excludes cooking facilities and portable appliances.
                   </Typography>
                 </Box>
               </Box>
             </FeatureCard>
           </Grid>
-          
+
           <Grid item xs={12} md={6}>
             <FeatureCard color="#2a9d8f">
               <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
@@ -183,14 +188,15 @@ const Slide2 = () => {
                     Sealing of Building Envelope
                   </Typography>
                   <Typography variant="body2" sx={{ color: '#4b5563' }}>
-                    Sealing between conditioned spaces and non-conditioned spaces to prevent unwanted entry or loss of heat.
+                    Sealing between conditioned spaces and non-conditioned spaces to prevent
+                    unwanted entry or loss of heat.
                   </Typography>
                 </Box>
               </Box>
             </FeatureCard>
           </Grid>
         </Grid>
-        
+
         <Box sx={{ mt: 3, backgroundColor: '#dbeafe', p: 2, borderRadius: '8px' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
             <SpeedIcon sx={{ color: '#1d4ed8', mr: 1 }} />
@@ -199,14 +205,15 @@ const Slide2 = () => {
             </Typography>
           </Box>
           <Typography variant="body2" sx={{ color: '#374151' }}>
-            The amount of energy consumed by a building's services minus the amount of renewable energy generated and used on site. Values vary based on building class.
+            The amount of energy consumed by a building's services minus the amount of renewable
+            energy generated and used on site. Values vary based on building class.
           </Typography>
         </Box>
       </Box>
-      
+
       <SlideNumber>2 / 12</SlideNumber>
     </SlideContainer>
   );
 };
 
-export default Slide2; 
+export default Slide2;

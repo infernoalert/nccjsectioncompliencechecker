@@ -1,11 +1,15 @@
 import React from 'react';
-import { Box, Typography, Grid, List, ListItem, ListItemIcon, ListItemText, Paper } from '@mui/material';
 import {
-  SlideContainer,
-  HeaderAccent,
-  SlideNumber,
-  GradientDivider,
-} from '../styles/SlideStyles';
+  Box,
+  Typography,
+  Grid,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Paper,
+} from '@mui/material';
+import { SlideContainer, HeaderAccent, SlideNumber, GradientDivider } from '../styles/SlideStyles';
 import styled from '@emotion/styled';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -60,7 +64,7 @@ const BuildingHeader = styled(Box)(({ theme, compliant }) => ({
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
-  background: compliant 
+  background: compliant
     ? 'linear-gradient(90deg, #2a9d8f, #3dbea8)'
     : 'linear-gradient(90deg, #e76f51, #f4a261)',
 }));
@@ -112,7 +116,7 @@ const Slide10 = () => {
   return (
     <SlideContainer>
       <HeaderAccent />
-      
+
       {/* Main Content */}
       <Box sx={{ p: 4 }}>
         <Box sx={{ mb: 3 }}>
@@ -121,20 +125,24 @@ const Slide10 = () => {
           </Typography>
           <GradientDivider />
         </Box>
-        
+
         {/* True/False Question */}
         <TrueFalseCard>
-          <Typography variant="h5" sx={{ fontWeight: 600, color: '#1f2937', mb: 2, display: 'flex', alignItems: 'center' }}>
+          <Typography
+            variant="h5"
+            sx={{ fontWeight: 600, color: '#1f2937', mb: 2, display: 'flex', alignItems: 'center' }}
+          >
             <QuestionMarkIcon sx={{ color: '#2563eb', mr: 1 }} />
             True or False?
           </Typography>
-          
+
           <QuestionBox>
             <Typography variant="body1" sx={{ color: '#374151' }}>
-              For an SOU in a Class 2 building, a minimum 6-star energy efficiency rating is sufficient to demonstrate compliance with J1P1.
+              For an SOU in a Class 2 building, a minimum 6-star energy efficiency rating is
+              sufficient to demonstrate compliance with J1P1.
             </Typography>
           </QuestionBox>
-          
+
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <AnswerBox>
               <CancelIcon sx={{ color: '#dc2626', mr: 1, fontSize: '1.5rem' }} />
@@ -144,16 +152,21 @@ const Slide10 = () => {
             </AnswerBox>
             <Box sx={{ mx: 2, color: '#9ca3af' }}>|</Box>
             <Typography variant="body1" sx={{ color: '#4b5563' }}>
-              A minimum 6-star rating demonstrates compliance with just some requirements. You also need to demonstrate compliance with other DTS Provisions for thermal breaks, building sealing, etc.
+              A minimum 6-star rating demonstrates compliance with just some requirements. You also
+              need to demonstrate compliance with other DTS Provisions for thermal breaks, building
+              sealing, etc.
             </Typography>
           </Box>
         </TrueFalseCard>
-        
-        <Typography variant="h5" sx={{ fontWeight: 600, color: '#1f2937', mb: 2, display: 'flex', alignItems: 'center' }}>
+
+        <Typography
+          variant="h5"
+          sx={{ fontWeight: 600, color: '#1f2937', mb: 2, display: 'flex', alignItems: 'center' }}
+        >
           <BusinessIcon sx={{ color: '#2563eb', mr: 1 }} />
           Which Class 2 Building Meets Energy Efficiency Requirements?
         </Typography>
-        
+
         <Grid container spacing={3} sx={{ mb: 4 }}>
           {/* Building A */}
           <Grid item xs={12} md={4}>
@@ -173,28 +186,36 @@ const Slide10 = () => {
               <UnitRow>
                 <Typography variant="body2">Unit 1</Typography>
                 <StarRating>
-                  <Typography variant="body2" sx={{ mr: 0.5 }}>6.5</Typography>
+                  <Typography variant="body2" sx={{ mr: 0.5 }}>
+                    6.5
+                  </Typography>
                   <StarIcon />
                 </StarRating>
               </UnitRow>
               <UnitRow>
                 <Typography variant="body2">Unit 2</Typography>
                 <StarRating>
-                  <Typography variant="body2" sx={{ mr: 0.5 }}>7.0</Typography>
+                  <Typography variant="body2" sx={{ mr: 0.5 }}>
+                    7.0
+                  </Typography>
                   <StarIcon />
                 </StarRating>
               </UnitRow>
               <UnitRow>
                 <Typography variant="body2">Unit 3</Typography>
                 <StarRating>
-                  <Typography variant="body2" sx={{ mr: 0.5 }}>6.5</Typography>
+                  <Typography variant="body2" sx={{ mr: 0.5 }}>
+                    6.5
+                  </Typography>
                   <StarIcon />
                 </StarRating>
               </UnitRow>
               <UnitRow>
                 <Typography variant="body2">Unit 4</Typography>
                 <StarRating>
-                  <Typography variant="body2" sx={{ mr: 0.5 }}>8.0</Typography>
+                  <Typography variant="body2" sx={{ mr: 0.5 }}>
+                    8.0
+                  </Typography>
                   <StarIcon />
                 </StarRating>
               </UnitRow>
@@ -204,7 +225,7 @@ const Slide10 = () => {
                     <ListItemIcon sx={{ minWidth: 30 }}>
                       <CheckCircleIcon sx={{ color: '#059669', fontSize: '1rem' }} />
                     </ListItemIcon>
-                    <ListItemText 
+                    <ListItemText
                       primary="All units ≥ 6★"
                       primaryTypographyProps={{ variant: 'body2', color: '#065f46' }}
                     />
@@ -213,7 +234,7 @@ const Slide10 = () => {
                     <ListItemIcon sx={{ minWidth: 30 }}>
                       <CheckCircleIcon sx={{ color: '#059669', fontSize: '1rem' }} />
                     </ListItemIcon>
-                    <ListItemText 
+                    <ListItemText
                       primary="Average = 7★"
                       primaryTypographyProps={{ variant: 'body2', color: '#065f46' }}
                     />
@@ -222,7 +243,7 @@ const Slide10 = () => {
               </SummaryBox>
             </BuildingCard>
           </Grid>
-          
+
           {/* Building B */}
           <Grid item xs={12} md={4}>
             <BuildingCard>
@@ -241,28 +262,36 @@ const Slide10 = () => {
               <UnitRow>
                 <Typography variant="body2">Unit 1</Typography>
                 <StarRating>
-                  <Typography variant="body2" sx={{ mr: 0.5 }}>6.5</Typography>
+                  <Typography variant="body2" sx={{ mr: 0.5 }}>
+                    6.5
+                  </Typography>
                   <StarIcon />
                 </StarRating>
               </UnitRow>
               <UnitRow>
                 <Typography variant="body2">Unit 2</Typography>
                 <StarRating>
-                  <Typography variant="body2" sx={{ mr: 0.5 }}>7.0</Typography>
+                  <Typography variant="body2" sx={{ mr: 0.5 }}>
+                    7.0
+                  </Typography>
                   <StarIcon />
                 </StarRating>
               </UnitRow>
               <UnitRow>
                 <Typography variant="body2">Unit 3</Typography>
                 <StarRating>
-                  <Typography variant="body2" sx={{ mr: 0.5 }}>6.0</Typography>
+                  <Typography variant="body2" sx={{ mr: 0.5 }}>
+                    6.0
+                  </Typography>
                   <StarIcon />
                 </StarRating>
               </UnitRow>
               <UnitRow>
                 <Typography variant="body2">Unit 4</Typography>
                 <StarRating>
-                  <Typography variant="body2" sx={{ mr: 0.5 }}>7.5</Typography>
+                  <Typography variant="body2" sx={{ mr: 0.5 }}>
+                    7.5
+                  </Typography>
                   <StarIcon />
                 </StarRating>
               </UnitRow>
@@ -272,7 +301,7 @@ const Slide10 = () => {
                     <ListItemIcon sx={{ minWidth: 30 }}>
                       <CheckCircleIcon sx={{ color: '#059669', fontSize: '1rem' }} />
                     </ListItemIcon>
-                    <ListItemText 
+                    <ListItemText
                       primary="All units ≥ 6★"
                       primaryTypographyProps={{ variant: 'body2', color: '#991b1b' }}
                     />
@@ -281,7 +310,7 @@ const Slide10 = () => {
                     <ListItemIcon sx={{ minWidth: 30 }}>
                       <CancelIcon sx={{ color: '#dc2626', fontSize: '1rem' }} />
                     </ListItemIcon>
-                    <ListItemText 
+                    <ListItemText
                       primary="Average < 7★"
                       primaryTypographyProps={{ variant: 'body2', color: '#991b1b' }}
                     />
@@ -290,7 +319,7 @@ const Slide10 = () => {
               </SummaryBox>
             </BuildingCard>
           </Grid>
-          
+
           {/* Building C */}
           <Grid item xs={12} md={4}>
             <BuildingCard>
@@ -309,28 +338,36 @@ const Slide10 = () => {
               <UnitRow>
                 <Typography variant="body2">Unit 1</Typography>
                 <StarRating>
-                  <Typography variant="body2" sx={{ mr: 0.5 }}>7.0</Typography>
+                  <Typography variant="body2" sx={{ mr: 0.5 }}>
+                    7.0
+                  </Typography>
                   <StarIcon />
                 </StarRating>
               </UnitRow>
               <UnitRow>
                 <Typography variant="body2">Unit 2</Typography>
                 <StarRating>
-                  <Typography variant="body2" sx={{ mr: 0.5 }}>8.0</Typography>
+                  <Typography variant="body2" sx={{ mr: 0.5 }}>
+                    8.0
+                  </Typography>
                   <StarIcon />
                 </StarRating>
               </UnitRow>
               <UnitRow problem>
                 <Typography variant="body2">Unit 3</Typography>
                 <StarRating>
-                  <Typography variant="body2" sx={{ mr: 0.5 }}>5.5</Typography>
+                  <Typography variant="body2" sx={{ mr: 0.5 }}>
+                    5.5
+                  </Typography>
                   <StarIcon />
                 </StarRating>
               </UnitRow>
               <UnitRow>
                 <Typography variant="body2">Unit 4</Typography>
                 <StarRating>
-                  <Typography variant="body2" sx={{ mr: 0.5 }}>7.5</Typography>
+                  <Typography variant="body2" sx={{ mr: 0.5 }}>
+                    7.5
+                  </Typography>
                   <StarIcon />
                 </StarRating>
               </UnitRow>
@@ -340,7 +377,7 @@ const Slide10 = () => {
                     <ListItemIcon sx={{ minWidth: 30 }}>
                       <CancelIcon sx={{ color: '#dc2626', fontSize: '1rem' }} />
                     </ListItemIcon>
-                    <ListItemText 
+                    <ListItemText
                       primary="Unit 3 < 6★ minimum"
                       primaryTypographyProps={{ variant: 'body2', color: '#991b1b' }}
                     />
@@ -349,7 +386,7 @@ const Slide10 = () => {
                     <ListItemIcon sx={{ minWidth: 30 }}>
                       <CheckCircleIcon sx={{ color: '#059669', fontSize: '1rem' }} />
                     </ListItemIcon>
-                    <ListItemText 
+                    <ListItemText
                       primary="Average = 7★"
                       primaryTypographyProps={{ variant: 'body2', color: '#991b1b' }}
                     />
@@ -359,12 +396,12 @@ const Slide10 = () => {
             </BuildingCard>
           </Grid>
         </Grid>
-        
+
         {/* Verification Methods Quick Reference */}
         <Typography variant="h5" sx={{ fontWeight: 600, color: '#1f2937', mb: 2 }}>
           Which Building Classifications Can Each Verification Method Be Used With?
         </Typography>
-        
+
         <Paper sx={{ p: 3, borderRadius: '8px', boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)' }}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={4}>
@@ -380,7 +417,7 @@ const Slide10 = () => {
                 </Box>
               </MethodBox>
             </Grid>
-            
+
             <Grid item xs={12} sm={4}>
               <MethodBox color="green">
                 <Typography variant="subtitle1" sx={{ fontWeight: 500, color: '#065f46', mb: 1 }}>
@@ -397,7 +434,7 @@ const Slide10 = () => {
                 </Box>
               </MethodBox>
             </Grid>
-            
+
             <Grid item xs={12} sm={4}>
               <MethodBox color="blue">
                 <Typography variant="subtitle1" sx={{ fontWeight: 500, color: '#1e40af', mb: 1 }}>
@@ -414,7 +451,7 @@ const Slide10 = () => {
                 </Box>
               </MethodBox>
             </Grid>
-            
+
             <Grid item xs={12} sm={4}>
               <MethodBox color="green">
                 <Typography variant="subtitle1" sx={{ fontWeight: 500, color: '#065f46', mb: 1 }}>
@@ -431,7 +468,7 @@ const Slide10 = () => {
                 </Box>
               </MethodBox>
             </Grid>
-            
+
             <Grid item xs={12} sm={4}>
               <MethodBox color="blue">
                 <Typography variant="subtitle1" sx={{ fontWeight: 500, color: '#1e40af', mb: 1 }}>
@@ -445,10 +482,10 @@ const Slide10 = () => {
           </Grid>
         </Paper>
       </Box>
-      
+
       <SlideNumber>10 / 12</SlideNumber>
     </SlideContainer>
   );
 };
 
-export default Slide10; 
+export default Slide10;

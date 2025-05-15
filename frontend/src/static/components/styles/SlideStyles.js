@@ -100,4 +100,4 @@ export const NavigationButton = styled('div')({
   '&:hover': {
     backgroundColor: 'rgba(255, 255, 255, 0.9)',
   },
-}); 
+});

@@ -1,11 +1,6 @@
 import React from 'react';
 import { Box, Typography, Grid, Paper } from '@mui/material';
-import {
-  SlideContainer,
-  HeaderAccent,
-  SlideNumber,
-  GradientDivider,
-} from '../styles/SlideStyles';
+import { SlideContainer, HeaderAccent, SlideNumber, GradientDivider } from '../styles/SlideStyles';
 import styled from '@emotion/styled';
 import PublicIcon from '@mui/icons-material/Public';
 import ThermostatIcon from '@mui/icons-material/Thermostat';
@@ -92,7 +87,7 @@ const Slide12 = () => {
   return (
     <SlideContainer>
       <HeaderAccent />
-      
+
       {/* Main Content */}
       <Box sx={{ p: 4 }}>
         <Box sx={{ mb: 3 }}>
@@ -101,7 +96,7 @@ const Slide12 = () => {
           </Typography>
           <GradientDivider />
         </Box>
-        
+
         {/* Stats Summary */}
         <Grid container spacing={2} sx={{ mb: 4 }}>
           <Grid item xs={12} sm={6} md={3}>
@@ -137,14 +132,17 @@ const Slide12 = () => {
             </StatBox>
           </Grid>
         </Grid>
-        
+
         {/* Key Points */}
         <Paper elevation={1} sx={{ p: 3, mb: 4 }}>
-          <Typography variant="h5" sx={{ fontWeight: 600, color: '#1f2937', mb: 2, display: 'flex', alignItems: 'center' }}>
+          <Typography
+            variant="h5"
+            sx={{ fontWeight: 600, color: '#1f2937', mb: 2, display: 'flex', alignItems: 'center' }}
+          >
             <StarIcon sx={{ color: '#2563eb', mr: 1.5 }} />
             Key Points
           </Typography>
-          
+
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
               <SummaryItem>
@@ -152,53 +150,63 @@ const Slide12 = () => {
                   <PublicIcon fontSize="small" />
                 </SummaryIcon>
                 <Typography variant="body1" sx={{ color: '#374151' }}>
-                  The overall aim is to <Box component="span" sx={{ fontWeight: 500 }}>reduce greenhouse gas emissions</Box> from commercial buildings in Australia
+                  The overall aim is to{' '}
+                  <Box component="span" sx={{ fontWeight: 500 }}>
+                    reduce greenhouse gas emissions
+                  </Box>{' '}
+                  from commercial buildings in Australia
                 </Typography>
               </SummaryItem>
             </Grid>
-            
+
             <Grid item xs={12} md={6}>
               <SummaryItem>
                 <SummaryIcon>
                   <ThermostatIcon fontSize="small" />
                 </SummaryIcon>
                 <Typography variant="body1" sx={{ color: '#374151' }}>
-                  Compliance reduces energy used to maintain comfortable temperature and operate the building
+                  Compliance reduces energy used to maintain comfortable temperature and operate the
+                  building
                 </Typography>
               </SummaryItem>
             </Grid>
-            
+
             <Grid item xs={12} md={6}>
               <SummaryItem>
                 <SummaryIcon>
                   <StarIcon fontSize="small" />
                 </SummaryIcon>
                 <Typography variant="body1" sx={{ color: '#374151' }}>
-                  Evidence of compliance is commonly provided through energy ratings (e.g., NatHERS 6★ minimum, 7★ average)
+                  Evidence of compliance is commonly provided through energy ratings (e.g., NatHERS
+                  6★ minimum, 7★ average)
                 </Typography>
               </SummaryItem>
             </Grid>
-            
+
             <Grid item xs={12} md={6}>
               <SummaryItem>
                 <SummaryIcon>
                   <DescriptionIcon fontSize="small" />
                 </SummaryIcon>
                 <Typography variant="body1" sx={{ color: '#374151' }}>
-                  Other elements must be met using DTS Provisions or a compliant Performance Solution
+                  Other elements must be met using DTS Provisions or a compliant Performance
+                  Solution
                 </Typography>
               </SummaryItem>
             </Grid>
           </Grid>
         </Paper>
-        
+
         {/* Different Requirements */}
         <Box sx={{ bgcolor: '#eff6ff', borderRadius: '8px', p: 3, mb: 3 }}>
-          <Typography variant="h6" sx={{ fontWeight: 600, color: '#1f2937', mb: 2, display: 'flex', alignItems: 'center' }}>
+          <Typography
+            variant="h6"
+            sx={{ fontWeight: 600, color: '#1f2937', mb: 2, display: 'flex', alignItems: 'center' }}
+          >
             <BusinessIcon sx={{ color: '#2563eb', mr: 1.5 }} />
             Different DTS Provisions Apply To:
           </Typography>
-          
+
           <Grid container spacing={2}>
             <Grid item xs={12} md={6}>
               <BuildingType>
@@ -208,7 +216,7 @@ const Slide12 = () => {
                 </Typography>
               </BuildingType>
             </Grid>
-            
+
             <Grid item xs={12} md={6}>
               <BuildingType>
                 <ColorBar color="#10b981" />
@@ -219,14 +227,15 @@ const Slide12 = () => {
             </Grid>
           </Grid>
         </Box>
-        
+
         {/* Acknowledgment */}
         <Acknowledgment>
           <Typography variant="h5" sx={{ fontWeight: 600, color: '#1f2937', mb: 1 }}>
             Thank You
           </Typography>
           <Typography variant="body1" sx={{ color: '#374151', mb: 2 }}>
-            That brings our presentation on using the energy efficiency provisions in NCC Volume One to a close.
+            That brings our presentation on using the energy efficiency provisions in NCC Volume One
+            to a close.
           </Typography>
           <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <OpenInNewIcon sx={{ color: '#2563eb', mr: 1 }} />
@@ -238,17 +247,15 @@ const Slide12 = () => {
             </Typography>
           </Box>
         </Acknowledgment>
-        
+
         <Footer>
-          <Typography variant="body2">
-            Energy Efficiency Provisions in NCC Volume One
-          </Typography>
+          <Typography variant="body2">Energy Efficiency Provisions in NCC Volume One</Typography>
         </Footer>
       </Box>
-      
+
       <SlideNumber>12 / 12</SlideNumber>
     </SlideContainer>
   );
 };
 
-export default Slide12; 
+export default Slide12;

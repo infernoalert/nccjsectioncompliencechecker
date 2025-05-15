@@ -14,14 +14,14 @@ const api = axios.create({
 
 // Add request interceptor to add auth token
 api.interceptors.request.use(
-  (config) => {
+  config => {
     const token = localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
-  (error) => {
+  error => {
     return Promise.reject(error);
   }
 );
@@ -34,7 +34,11 @@ export const generateJ7LightingReport = createAsyncThunk(
       const response = await api.get(`/${projectId}/report`);
       return response.data.data;
     } catch (error) {
-      const errorMessage = error.response?.data?.message || error.response?.data?.error || error.message || 'Failed to generate report';
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        error.message ||
+        'Failed to generate report';
       return rejectWithValue(errorMessage);
     }
   }
@@ -48,13 +52,13 @@ const J7LightingSlice = createSlice({
     error: null,
   },
   reducers: {
-    clearError: (state) => {
+    clearError: state => {
       state.error = null;
     },
   },
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder
-      .addCase(generateJ7LightingReport.pending, (state) => {
+      .addCase(generateJ7LightingReport.pending, state => {
         state.loading = true;
         state.error = null;
         state.report = null;
@@ -73,4 +77,4 @@ const J7LightingSlice = createSlice({
 });
 
 export const { clearError } = J7LightingSlice.actions;
-export default J7LightingSlice.reducer; 
+export default J7LightingSlice.reducer;

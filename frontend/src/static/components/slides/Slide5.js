@@ -1,11 +1,6 @@
 import React from 'react';
 import { Box, Typography, Grid } from '@mui/material';
-import {
-  SlideContainer,
-  HeaderAccent,
-  SlideNumber,
-  GradientDivider,
-} from '../styles/SlideStyles';
+import { SlideContainer, HeaderAccent, SlideNumber, GradientDivider } from '../styles/SlideStyles';
 import styled from '@emotion/styled';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import BusinessIcon from '@mui/icons-material/Business';
@@ -35,17 +30,18 @@ const ProvisionHeader = styled(Box)(({ theme, variant }) => ({
   alignItems: 'center',
   color: 'white',
   fontWeight: 600,
-  background: variant === 'j4' 
-    ? 'linear-gradient(90deg, #3d8daf, #5cb5d2)'
-    : variant === 'j5'
-    ? 'linear-gradient(90deg, #2a9d8f, #3dbea8)'
-    : variant === 'j6'
-    ? 'linear-gradient(90deg, #2c7da0, #4b9cc2)'
-    : variant === 'j7'
-    ? 'linear-gradient(90deg, #2a9d8f, #3dbea8)'
-    : variant === 'j8'
-    ? 'linear-gradient(90deg, #2c7da0, #4b9cc2)'
-    : 'linear-gradient(90deg, #2a9d8f, #3dbea8)',
+  background:
+    variant === 'j4'
+      ? 'linear-gradient(90deg, #3d8daf, #5cb5d2)'
+      : variant === 'j5'
+        ? 'linear-gradient(90deg, #2a9d8f, #3dbea8)'
+        : variant === 'j6'
+          ? 'linear-gradient(90deg, #2c7da0, #4b9cc2)'
+          : variant === 'j7'
+            ? 'linear-gradient(90deg, #2a9d8f, #3dbea8)'
+            : variant === 'j8'
+              ? 'linear-gradient(90deg, #2c7da0, #4b9cc2)'
+              : 'linear-gradient(90deg, #2a9d8f, #3dbea8)',
 }));
 
 const ProvisionIcon = styled(Box)(({ theme }) => ({
@@ -70,7 +66,7 @@ const Slide5 = () => {
   return (
     <SlideContainer>
       <HeaderAccent />
-      
+
       {/* Main Content */}
       <Box sx={{ p: 4 }}>
         <Box sx={{ mb: 3 }}>
@@ -79,12 +75,13 @@ const Slide5 = () => {
           </Typography>
           <GradientDivider />
         </Box>
-        
+
         <Typography variant="body1" sx={{ fontSize: '1.125rem', color: '#374151', mb: 3 }}>
-          The Deemed-to-Satisfy (DTS) Provisions offer prescriptive approaches to satisfying the Performance Requirements.
-          Each part addresses different aspects of building energy efficiency:
+          The Deemed-to-Satisfy (DTS) Provisions offer prescriptive approaches to satisfying the
+          Performance Requirements. Each part addresses different aspects of building energy
+          efficiency:
         </Typography>
-        
+
         <Grid container spacing={3} sx={{ mb: 3 }}>
           {/* J4 Building Fabric */}
           <Grid item xs={12} md={4}>
@@ -97,7 +94,8 @@ const Slide5 = () => {
               </ProvisionHeader>
               <Box sx={{ p: 2 }}>
                 <Typography variant="body2" sx={{ color: '#4b5563', mb: 2 }}>
-                  Focuses on constructing buildings that reduce the need for mechanical heating and cooling.
+                  Focuses on constructing buildings that reduce the need for mechanical heating and
+                  cooling.
                 </Typography>
                 <ListItem>
                   <CheckCircleIcon sx={{ color: '#2563eb', mt: 0.5, mr: 1 }} />
@@ -114,7 +112,7 @@ const Slide5 = () => {
               </Box>
             </ProvisionCard>
           </Grid>
-          
+
           {/* J5 Building Sealing */}
           <Grid item xs={12} md={4}>
             <ProvisionCard>
@@ -143,7 +141,7 @@ const Slide5 = () => {
               </Box>
             </ProvisionCard>
           </Grid>
-          
+
           {/* J6 Air-conditioning and Ventilation */}
           <Grid item xs={12} md={4}>
             <ProvisionCard>
@@ -173,7 +171,7 @@ const Slide5 = () => {
             </ProvisionCard>
           </Grid>
         </Grid>
-        
+
         <Grid container spacing={3} sx={{ mb: 3 }}>
           {/* J7 Artificial Lighting and Power */}
           <Grid item xs={12} md={4}>
@@ -186,7 +184,8 @@ const Slide5 = () => {
               </ProvisionHeader>
               <Box sx={{ p: 2 }}>
                 <Typography variant="body2" sx={{ color: '#4b5563', mb: 2 }}>
-                  Addresses lighting which typically accounts for 26% of office building electrical energy.
+                  Addresses lighting which typically accounts for 26% of office building electrical
+                  energy.
                 </Typography>
                 <ListItem>
                   <CheckCircleIcon sx={{ color: '#059669', mt: 0.5, mr: 1 }} />
@@ -203,7 +202,7 @@ const Slide5 = () => {
               </Box>
             </ProvisionCard>
           </Grid>
-          
+
           {/* J8 Heated Water Supply */}
           <Grid item xs={12} md={4}>
             <ProvisionCard>
@@ -225,14 +224,12 @@ const Slide5 = () => {
                 </ListItem>
                 <ListItem>
                   <CheckCircleIcon sx={{ color: '#2563eb', mt: 0.5, mr: 1 }} />
-                  <Typography variant="body2">
-                    Swimming and spa pool plant requirements
-                  </Typography>
+                  <Typography variant="body2">Swimming and spa pool plant requirements</Typography>
                 </ListItem>
               </Box>
             </ProvisionCard>
           </Grid>
-          
+
           {/* J9 Energy Monitor */}
           <Grid item xs={12} md={4}>
             <ProvisionCard>
@@ -262,7 +259,7 @@ const Slide5 = () => {
             </ProvisionCard>
           </Grid>
         </Grid>
-        
+
         <Box sx={{ backgroundColor: '#eff6ff', p: 3, borderRadius: '8px' }}>
           <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
             <DescriptionIcon sx={{ color: '#2563eb', mr: 1 }} />
@@ -270,24 +267,26 @@ const Slide5 = () => {
               Supporting Specifications
             </Typography>
           </Box>
-          
+
           <Typography variant="body1" sx={{ color: '#374151', mb: 2 }}>
             Section J includes 10 specifications that provide detailed requirements:
             <Box component="span" sx={{ fontWeight: 500 }}>
-              {' '}6 specifications support the Deemed-to-Satisfy Provisions
-            </Box>, while the others relate to 
-            Performance Requirements and Verification Methods.
+              {' '}
+              6 specifications support the Deemed-to-Satisfy Provisions
+            </Box>
+            , while the others relate to Performance Requirements and Verification Methods.
           </Typography>
-          
+
           <Typography variant="body2" sx={{ color: '#2563eb', fontStyle: 'italic', mt: 1 }}>
-            Note: All elements within Section J are designed to work as a system to ensure the building achieves the desired level of energy efficiency.
+            Note: All elements within Section J are designed to work as a system to ensure the
+            building achieves the desired level of energy efficiency.
           </Typography>
         </Box>
       </Box>
-      
+
       <SlideNumber>5 / 12</SlideNumber>
     </SlideContainer>
   );
 };
 
-export default Slide5; 
+export default Slide5;

@@ -20,7 +20,7 @@ const EnergyMonitorReport = () => {
   const { id } = useParams();
   const location = useLocation();
   const dispatch = useDispatch();
-  const { report, loading, error } = useSelector((state) => state.EnergyMonitor);
+  const { report, loading, error } = useSelector(state => state.EnergyMonitor);
 
   // Get section from URL query params
   const queryParams = new URLSearchParams(location.search);
@@ -46,7 +46,9 @@ const EnergyMonitorReport = () => {
   if (error) {
     return (
       <Container maxWidth="lg" sx={{ mt: 4 }}>
-        <Alert severity="error">Error loading report: {typeof error === 'object' ? error.message : error}</Alert>
+        <Alert severity="error">
+          Error loading report: {typeof error === 'object' ? error.message : error}
+        </Alert>
       </Container>
     );
   }
@@ -87,13 +89,36 @@ const EnergyMonitorReport = () => {
             {/* --- Render Core/Static Sections --- */}
             {report.projectInfo && (
               <Box sx={{ mb: 4 }}>
-                <Typography variant="h5" gutterBottom>Project Information</Typography>
+                <Typography variant="h5" gutterBottom>
+                  Project Information
+                </Typography>
                 <Grid container spacing={1}>
-                  <Grid item xs={12} sm={6}><Typography variant="body1"><strong>Name:</strong> {report.projectInfo.name}</Typography></Grid>
-                  <Grid item xs={12} sm={6}><Typography variant="body1"><strong>Type:</strong> {report.projectInfo.buildingType}</Typography></Grid>
-                  <Grid item xs={12} sm={6}><Typography variant="body1"><strong>Location:</strong> {report.projectInfo.location}</Typography></Grid>
-                  <Grid item xs={12} sm={6}><Typography variant="body1"><strong>Floor Area:</strong> {report.projectInfo.floorArea} m²</Typography></Grid>
-                  <Grid item xs={12} sm={6}><Typography variant="body1"><strong>Habitable Rooms Area:</strong> {report.projectInfo.totalAreaOfHabitableRooms ?? 'N/A'} m²</Typography></Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Typography variant="body1">
+                      <strong>Name:</strong> {report.projectInfo.name}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Typography variant="body1">
+                      <strong>Type:</strong> {report.projectInfo.buildingType}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Typography variant="body1">
+                      <strong>Location:</strong> {report.projectInfo.location}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Typography variant="body1">
+                      <strong>Floor Area:</strong> {report.projectInfo.floorArea} m²
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Typography variant="body1">
+                      <strong>Habitable Rooms Area:</strong>{' '}
+                      {report.projectInfo.totalAreaOfHabitableRooms ?? 'N/A'} m²
+                    </Typography>
+                  </Grid>
                 </Grid>
                 <Divider sx={{ my: 2 }} />
               </Box>
@@ -101,19 +126,42 @@ const EnergyMonitorReport = () => {
 
             {report.buildingClassification && (
               <Box sx={{ mb: 4 }}>
-                <Typography variant="h5" gutterBottom>Building Classification & Climate Zone</Typography>
+                <Typography variant="h5" gutterBottom>
+                  Building Classification & Climate Zone
+                </Typography>
                 <Grid container spacing={1}>
                   <Grid item xs={12} sm={6}>
-                    <Typography variant="body1"><strong>Classification:</strong> {report.buildingClassification.classType} - {report.buildingClassification.name}</Typography>
-                    <Typography variant="body2" color="text.secondary">{report.buildingClassification.description}</Typography>
+                    <Typography variant="body1">
+                      <strong>Classification:</strong> {report.buildingClassification.classType} -{' '}
+                      {report.buildingClassification.name}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {report.buildingClassification.description}
+                    </Typography>
                   </Grid>
                   {report.climateZone && (
                     <Grid item xs={12} sm={6}>
-                      <Typography variant="body1"><strong>Climate Zone:</strong> {report.climateZone.name}</Typography>
-                      <Typography variant="body2" color="text.secondary">{report.climateZone.description}</Typography>
-                      {report.climateZone.annualHeatingDegreeHours !== undefined && <Typography variant="caption" display="block">Heating Degree Hours: {report.climateZone.annualHeatingDegreeHours}</Typography>}
-                      {report.climateZone.annualCoolingDegreeHours !== undefined && <Typography variant="caption" display="block">Cooling Degree Hours: {report.climateZone.annualCoolingDegreeHours}</Typography>}
-                      {report.climateZone.annualDehumidificationGramHours !== undefined && <Typography variant="caption" display="block">Dehumid. Gram Hours: {report.climateZone.annualDehumidificationGramHours}</Typography>}
+                      <Typography variant="body1">
+                        <strong>Climate Zone:</strong> {report.climateZone.name}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {report.climateZone.description}
+                      </Typography>
+                      {report.climateZone.annualHeatingDegreeHours !== undefined && (
+                        <Typography variant="caption" display="block">
+                          Heating Degree Hours: {report.climateZone.annualHeatingDegreeHours}
+                        </Typography>
+                      )}
+                      {report.climateZone.annualCoolingDegreeHours !== undefined && (
+                        <Typography variant="caption" display="block">
+                          Cooling Degree Hours: {report.climateZone.annualCoolingDegreeHours}
+                        </Typography>
+                      )}
+                      {report.climateZone.annualDehumidificationGramHours !== undefined && (
+                        <Typography variant="caption" display="block">
+                          Dehumid. Gram Hours: {report.climateZone.annualDehumidificationGramHours}
+                        </Typography>
+                      )}
                     </Grid>
                   )}
                 </Grid>
@@ -123,11 +171,11 @@ const EnergyMonitorReport = () => {
 
             {/* --- Render Dynamic Sections --- */}
             {report.dynamicSections && report.dynamicSections.length > 0 ? (
-              report.dynamicSections.map((section) => (
+              report.dynamicSections.map(section => (
                 <DynamicSectionRenderer key={section.sectionId} section={section} />
               ))
             ) : (
-              <Typography variant="body1" color="text.secondary" sx={{my: 3}}>
+              <Typography variant="body1" color="text.secondary" sx={{ my: 3 }}>
                 No applicable dynamic sections found for this project or report view.
               </Typography>
             )}
@@ -154,4 +202,4 @@ const EnergyMonitorReport = () => {
   );
 };
 
-export default EnergyMonitorReport; 
+export default EnergyMonitorReport;

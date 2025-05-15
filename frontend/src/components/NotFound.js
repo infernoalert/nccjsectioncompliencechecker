@@ -25,7 +25,8 @@ const NotFound = () => {
           Page Not Found
         </Typography>
         <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
-          The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.
+          The page you are looking for might have been removed, had its name changed, or is
+          temporarily unavailable.
         </Typography>
         <Button
           variant="contained"
@@ -40,4 +41,4 @@ const NotFound = () => {
   );
 };
 
-export default NotFound; 
+export default NotFound;

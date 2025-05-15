@@ -25,14 +25,14 @@ import { fetchProject, deleteProject } from '../store/slices/projectSlice';
 
 /**
  * ProjectDetails Component
- * 
+ *
  * This component displays detailed information about a specific project and provides
  * access to related functionality such as:
  * - Viewing project details
  * - Editing project information
  * - Generating compliance reports
  * - Deleting projects
- * 
+ *
  * The component integrates with Redux for state management and uses Material-UI
  * for the user interface.
  */
@@ -40,7 +40,7 @@ const ProjectDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { currentProject, loading, error } = useSelector((state) => state.project);
+  const { currentProject, loading, error } = useSelector(state => state.project);
 
   useEffect(() => {
     dispatch(fetchProject(id));
@@ -196,4 +196,4 @@ const ProjectDetails = () => {
   );
 };
 
-export default ProjectDetails; 
+export default ProjectDetails;

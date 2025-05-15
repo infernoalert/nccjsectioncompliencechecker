@@ -16,33 +16,33 @@ import {
   Chip,
   Container,
   CircularProgress,
-  Alert
+  Alert,
 } from '@mui/material';
 import { fetchProjects } from '../store/slices/projectSlice';
 
 /**
  * ProjectList Component
- * 
+ *
  * This component displays a list of all projects. It handles:
  * - Fetching projects from the backend
  * - Displaying projects in a grid layout
  * - Loading states
  * - Error handling
  * - Navigation to project details
- * 
+ *
  * The component integrates with Redux for state management and uses Material-UI
  * for the user interface.
  */
 const ProjectList = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { projects, loading, error } = useSelector((state) => state.project);
+  const { projects, loading, error } = useSelector(state => state.project);
 
   useEffect(() => {
     dispatch(fetchProjects());
   }, [dispatch]);
 
-  const getStatusColor = (status) => {
+  const getStatusColor = status => {
     switch (status) {
       case 'compliant':
         return 'success';
@@ -75,12 +75,7 @@ const ProjectList = () => {
     <Box>
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
         <Typography variant="h4">Projects</Typography>
-        <Button
-          component={Link}
-          to="/projects/new"
-          variant="contained"
-          color="primary"
-        >
+        <Button component={Link} to="/projects/new" variant="contained" color="primary">
           Create New Project
         </Button>
       </Box>
@@ -99,10 +94,13 @@ const ProjectList = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {projects.map((project) => (
+            {projects.map(project => (
               <TableRow key={project._id}>
                 <TableCell>{project.name}</TableCell>
-                <TableCell>{project.buildingClassification?.classType?.replace('Class_', '') || 'Not specified'}</TableCell>
+                <TableCell>
+                  {project.buildingClassification?.classType?.replace('Class_', '') ||
+                    'Not specified'}
+                </TableCell>
                 <TableCell>{project.climateZone?.zoneRange || 'Not specified'}</TableCell>
                 <TableCell>{project.compliancePathway?.name || 'Not specified'}</TableCell>
                 <TableCell>
@@ -144,4 +142,4 @@ const ProjectList = () => {
   );
 };
 
-export default ProjectList; 
+export default ProjectList;
