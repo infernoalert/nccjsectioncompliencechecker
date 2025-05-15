@@ -9,7 +9,7 @@ import {
   Link,
   Paper,
   Alert,
-  CircularProgress
+  CircularProgress,
 } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../../store/slices/authSlice';
@@ -17,21 +17,21 @@ import { login } from '../../store/slices/authSlice';
 const SignIn = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { loading, error } = useSelector((state) => state.auth);
+  const { loading, error } = useSelector(state => state.auth);
 
   const [formData, setFormData] = useState({
     email: '',
-    password: ''
+    password: '',
   });
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
     try {
       await dispatch(login(formData)).unwrap();
@@ -48,7 +48,7 @@ const SignIn = () => {
           marginTop: 8,
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'center'
+          alignItems: 'center',
         }}
       >
         <Paper
@@ -58,7 +58,7 @@ const SignIn = () => {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            width: '100%'
+            width: '100%',
           }}
         >
           <Typography component="h1" variant="h5">
@@ -115,4 +115,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn; 
+export default SignIn;

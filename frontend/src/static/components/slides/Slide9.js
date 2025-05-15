@@ -1,11 +1,6 @@
 import React from 'react';
 import { Box, Typography, Grid, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
-import {
-  SlideContainer,
-  HeaderAccent,
-  SlideNumber,
-  GradientDivider,
-} from '../styles/SlideStyles';
+import { SlideContainer, HeaderAccent, SlideNumber, GradientDivider } from '../styles/SlideStyles';
 import styled from '@emotion/styled';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import StarIcon from '@mui/icons-material/Star';
@@ -34,15 +29,16 @@ const MethodHeader = styled(Box)(({ theme, variant }) => ({
   fontWeight: 600,
   display: 'flex',
   alignItems: 'center',
-  background: variant === 'nabers' 
-    ? 'linear-gradient(90deg, #2c7da0, #4097bf)'
-    : variant === 'green-star'
-    ? 'linear-gradient(90deg, #2a9d8f, #3cbeb0)'
-    : variant === 'reference'
-    ? 'linear-gradient(90deg, #3a86a3, #5aa9c2)'
-    : variant === 'sealing'
-    ? 'linear-gradient(90deg, #2a9d8f, #3cbeb0)'
-    : 'linear-gradient(90deg, #2c7da0, #4097bf)',
+  background:
+    variant === 'nabers'
+      ? 'linear-gradient(90deg, #2c7da0, #4097bf)'
+      : variant === 'green-star'
+        ? 'linear-gradient(90deg, #2a9d8f, #3cbeb0)'
+        : variant === 'reference'
+          ? 'linear-gradient(90deg, #3a86a3, #5aa9c2)'
+          : variant === 'sealing'
+            ? 'linear-gradient(90deg, #2a9d8f, #3cbeb0)'
+            : 'linear-gradient(90deg, #2c7da0, #4097bf)',
 }));
 
 const MethodBody = styled(Box)(({ theme }) => ({
@@ -69,13 +65,10 @@ const Badge = styled('span')(({ theme, variant }) => ({
   fontWeight: 600,
   marginRight: '4px',
   marginBottom: '4px',
-  backgroundColor: variant === 'blue' 
-    ? 'rgba(44, 125, 160, 0.1)' 
-    : 'rgba(42, 157, 143, 0.1)',
+  backgroundColor: variant === 'blue' ? 'rgba(44, 125, 160, 0.1)' : 'rgba(42, 157, 143, 0.1)',
   color: variant === 'blue' ? '#2c7da0' : '#2a9d8f',
-  border: variant === 'blue' 
-    ? '1px solid rgba(44, 125, 160, 0.2)' 
-    : '1px solid rgba(42, 157, 143, 0.2)',
+  border:
+    variant === 'blue' ? '1px solid rgba(44, 125, 160, 0.2)' : '1px solid rgba(42, 157, 143, 0.2)',
 }));
 
 const PartItem = styled(Box)(({ theme }) => ({
@@ -91,7 +84,7 @@ const Slide9 = () => {
   return (
     <SlideContainer>
       <HeaderAccent />
-      
+
       {/* Main Content */}
       <Box sx={{ p: 4 }}>
         <Box sx={{ mb: 3 }}>
@@ -100,21 +93,31 @@ const Slide9 = () => {
           </Typography>
           <GradientDivider />
         </Box>
-        
-        <Box sx={{ backgroundColor: '#eff6ff', p: 3, borderRadius: '8px', borderLeft: '4px solid #3b82f6', mb: 3 }}>
+
+        <Box
+          sx={{
+            backgroundColor: '#eff6ff',
+            p: 3,
+            borderRadius: '8px',
+            borderLeft: '4px solid #3b82f6',
+            mb: 3,
+          }}
+        >
           <Typography variant="body1" sx={{ color: '#374151' }}>
-            Whether you choose to use a DTS Solution or a Performance Solution or a combination of both, you may need to provide evidence 
-            that the proposed solution complies with the Performance Requirements. For Section J Energy Efficiency, the NCC 
-            provides 5 Verification Methods for assessing possible compliance solutions.
+            Whether you choose to use a DTS Solution or a Performance Solution or a combination of
+            both, you may need to provide evidence that the proposed solution complies with the
+            Performance Requirements. For Section J Energy Efficiency, the NCC provides 5
+            Verification Methods for assessing possible compliance solutions.
           </Typography>
           <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
             <InfoIcon sx={{ color: '#2563eb', mr: 1, fontSize: '1rem' }} />
             <Typography variant="body2" sx={{ color: '#1e40af' }}>
-              Note: DTS Solutions can only be assessed with evidence of suitability and/or expert judgment.
+              Note: DTS Solutions can only be assessed with evidence of suitability and/or expert
+              judgment.
             </Typography>
           </Box>
         </Box>
-        
+
         <Grid container spacing={2} sx={{ mb: 2 }}>
           {/* J1V1 NABERS Energy */}
           <Grid item xs={12} md={4}>
@@ -140,7 +143,7 @@ const Slide9 = () => {
                     <ListItemIcon sx={{ minWidth: 30 }}>
                       <CheckCircleIcon sx={{ color: '#2563eb', fontSize: '1rem' }} />
                     </ListItemIcon>
-                    <ListItemText 
+                    <ListItemText
                       primary="Energy modeling framework on a 6-star scale"
                       primaryTypographyProps={{ variant: 'body2', color: '#4b5563' }}
                     />
@@ -149,7 +152,7 @@ const Slide9 = () => {
                     <ListItemIcon sx={{ minWidth: 30 }}>
                       <CheckCircleIcon sx={{ color: '#2563eb', fontSize: '1rem' }} />
                     </ListItemIcon>
-                    <ListItemText 
+                    <ListItemText
                       primary="Additional thermal comfort requirements apply"
                       primaryTypographyProps={{ variant: 'body2', color: '#4b5563' }}
                     />
@@ -158,7 +161,7 @@ const Slide9 = () => {
               </MethodBody>
             </MethodCard>
           </Grid>
-          
+
           {/* J1V2 Green Star */}
           <Grid item xs={12} md={4}>
             <MethodCard>
@@ -174,14 +177,15 @@ const Slide9 = () => {
                   <Badge variant="green">Class 2 common areas</Badge>
                 </Box>
                 <Typography variant="body2" sx={{ color: '#4b5563', mb: 2 }}>
-                  Compares the proposed building to a reference building compliant with DTS Provisions.
+                  Compares the proposed building to a reference building compliant with DTS
+                  Provisions.
                 </Typography>
                 <List dense>
                   <ListItem sx={{ px: 0 }}>
                     <ListItemIcon sx={{ minWidth: 30 }}>
                       <CheckCircleIcon sx={{ color: '#059669', fontSize: '1rem' }} />
                     </ListItemIcon>
-                    <ListItemText 
+                    <ListItemText
                       primary="Will exceed minimum energy efficiency requirements"
                       primaryTypographyProps={{ variant: 'body2', color: '#4b5563' }}
                     />
@@ -190,7 +194,7 @@ const Slide9 = () => {
                     <ListItemIcon sx={{ minWidth: 30 }}>
                       <CheckCircleIcon sx={{ color: '#059669', fontSize: '1rem' }} />
                     </ListItemIcon>
-                    <ListItemText 
+                    <ListItemText
                       primary="Additional DTS Provisions still apply"
                       primaryTypographyProps={{ variant: 'body2', color: '#4b5563' }}
                     />
@@ -199,7 +203,7 @@ const Slide9 = () => {
               </MethodBody>
             </MethodCard>
           </Grid>
-          
+
           {/* J1V3 Reference Building */}
           <Grid item xs={12} md={4}>
             <MethodCard>
@@ -215,14 +219,15 @@ const Slide9 = () => {
                   <Badge variant="blue">Class 2 common areas</Badge>
                 </Box>
                 <Typography variant="body2" sx={{ color: '#4b5563', mb: 2 }}>
-                  Compares annual greenhouse gas emissions of proposed building to a reference building.
+                  Compares annual greenhouse gas emissions of proposed building to a reference
+                  building.
                 </Typography>
                 <List dense>
                   <ListItem sx={{ px: 0 }}>
                     <ListItemIcon sx={{ minWidth: 30 }}>
                       <CheckCircleIcon sx={{ color: '#2563eb', fontSize: '1rem' }} />
                     </ListItemIcon>
-                    <ListItemText 
+                    <ListItemText
                       primary="Reference building based on DTS Provisions"
                       primaryTypographyProps={{ variant: 'body2', color: '#4b5563' }}
                     />
@@ -231,7 +236,7 @@ const Slide9 = () => {
                     <ListItemIcon sx={{ minWidth: 30 }}>
                       <CheckCircleIcon sx={{ color: '#2563eb', fontSize: '1rem' }} />
                     </ListItemIcon>
-                    <ListItemText 
+                    <ListItemText
                       primary="Emissions must not exceed reference building"
                       primaryTypographyProps={{ variant: 'body2', color: '#4b5563' }}
                     />
@@ -241,7 +246,7 @@ const Slide9 = () => {
             </MethodCard>
           </Grid>
         </Grid>
-        
+
         <Grid container spacing={2} sx={{ mb: 3 }}>
           {/* J1V4 Building Envelope Sealing */}
           <Grid item xs={12} md={6}>
@@ -257,14 +262,15 @@ const Slide9 = () => {
                   <Badge variant="green">Class 2, 3, 4, 5, 6, 8, 9</Badge>
                 </Box>
                 <Typography variant="body2" sx={{ color: '#4b5563', mb: 2 }}>
-                  Demonstrates compliance with building sealing requirements only - not other energy efficiency aspects.
+                  Demonstrates compliance with building sealing requirements only - not other energy
+                  efficiency aspects.
                 </Typography>
                 <List dense>
                   <ListItem sx={{ px: 0 }}>
                     <ListItemIcon sx={{ minWidth: 30 }}>
                       <CheckCircleIcon sx={{ color: '#059669', fontSize: '1rem' }} />
                     </ListItemIcon>
-                    <ListItemText 
+                    <ListItemText
                       primary="Alternative to prescriptive building sealing in Part J5"
                       primaryTypographyProps={{ variant: 'body2', color: '#4b5563' }}
                     />
@@ -273,7 +279,7 @@ const Slide9 = () => {
                     <ListItemIcon sx={{ minWidth: 30 }}>
                       <CheckCircleIcon sx={{ color: '#059669', fontSize: '1rem' }} />
                     </ListItemIcon>
-                    <ListItemText 
+                    <ListItemText
                       primary="Demonstrates compliance with J1P1(e)"
                       primaryTypographyProps={{ variant: 'body2', color: '#4b5563' }}
                     />
@@ -282,7 +288,7 @@ const Slide9 = () => {
               </MethodBody>
             </MethodCard>
           </Grid>
-          
+
           {/* J1V5 Reference Building for SOUs */}
           <Grid item xs={12} md={6}>
             <MethodCard>
@@ -304,7 +310,7 @@ const Slide9 = () => {
                     <ListItemIcon sx={{ minWidth: 30 }}>
                       <CheckCircleIcon sx={{ color: '#2563eb', fontSize: '1rem' }} />
                     </ListItemIcon>
-                    <ListItemText 
+                    <ListItemText
                       primary="Satisfies J1P2 if heating/cooling loads don't exceed reference"
                       primaryTypographyProps={{ variant: 'body2', color: '#4b5563' }}
                     />
@@ -313,7 +319,7 @@ const Slide9 = () => {
                     <ListItemIcon sx={{ minWidth: 30 }}>
                       <CheckCircleIcon sx={{ color: '#2563eb', fontSize: '1rem' }} />
                     </ListItemIcon>
-                    <ListItemText 
+                    <ListItemText
                       primary="J1P3 satisfied by comparing energy usage (J1V5(2))"
                       primaryTypographyProps={{ variant: 'body2', color: '#4b5563' }}
                     />
@@ -322,7 +328,7 @@ const Slide9 = () => {
                     <ListItemIcon sx={{ minWidth: 30 }}>
                       <CheckCircleIcon sx={{ color: '#2563eb', fontSize: '1rem' }} />
                     </ListItemIcon>
-                    <ListItemText 
+                    <ListItemText
                       primary="Additional requirements in specifications 33 and 45"
                       primaryTypographyProps={{ variant: 'body2', color: '#4b5563' }}
                     />
@@ -332,9 +338,15 @@ const Slide9 = () => {
             </MethodCard>
           </Grid>
         </Grid>
-        
+
         <Box sx={{ mt: 'auto', pt: 3 }}>
-          <Box sx={{ background: 'linear-gradient(90deg, #eff6ff, #ecfdf5)', p: 3, borderRadius: '8px' }}>
+          <Box
+            sx={{
+              background: 'linear-gradient(90deg, #eff6ff, #ecfdf5)',
+              p: 3,
+              borderRadius: '8px',
+            }}
+          >
             <Typography variant="h5" sx={{ fontWeight: 600, color: '#1f2937', mb: 2 }}>
               Matching Exercise: Parts in Section J
             </Typography>
@@ -403,10 +415,10 @@ const Slide9 = () => {
           </Box>
         </Box>
       </Box>
-      
+
       <SlideNumber>9 / 12</SlideNumber>
     </SlideContainer>
   );
 };
 
-export default Slide9; 
+export default Slide9;

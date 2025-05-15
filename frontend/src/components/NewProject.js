@@ -16,7 +16,7 @@ import {
   MenuItem,
   useTheme,
   Chip,
-  Grid
+  Grid,
 } from '@mui/material';
 import { createProject, fetchBuildingTypes, fetchLocations } from '../store/slices/projectSlice';
 
@@ -24,7 +24,7 @@ const NewProject = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { loading, error, buildingTypes, locations } = useSelector((state) => state.project);
+  const { loading, error, buildingTypes, locations } = useSelector(state => state.project);
   const [selectedBuildingType, setSelectedBuildingType] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
@@ -32,7 +32,7 @@ const NewProject = () => {
     buildingType: '',
     location: '',
     floorArea: '',
-    totalAreaOfHabitableRooms: ''
+    totalAreaOfHabitableRooms: '',
   });
 
   useEffect(() => {
@@ -44,50 +44,52 @@ const NewProject = () => {
         console.error('Error fetching data:', error);
       }
     };
-    
+
     fetchData();
   }, [dispatch]);
 
-  const handleBuildingTypeChange = (e) => {
+  const handleBuildingTypeChange = e => {
     const buildingTypeId = e.target.value;
-    
+
     // Find the selected building type for display purposes
     const selectedType = buildingTypes.find(type => type.id === buildingTypeId);
     console.log('Selected building type:', selectedType);
-    
+
     // Set the selected building type state
     setSelectedBuildingType(selectedType);
-    
+
     // Update form data with just the building type
     setFormData(prev => ({
       ...prev,
       buildingType: buildingTypeId,
       // Reset totalAreaOfHabitableRooms when changing building type
-      totalAreaOfHabitableRooms: ''
+      totalAreaOfHabitableRooms: '',
     }));
   };
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    
+
     // Prepare the data for submission
     const submissionData = { ...formData };
-    
+
     // For non-Class_2 and non-Class_4 buildings, set totalAreaOfHabitableRooms to null
-    if (selectedBuildingType && 
-        selectedBuildingType.nccClassification !== 'Class_2' && 
-        selectedBuildingType.nccClassification !== 'Class_4') {
+    if (
+      selectedBuildingType &&
+      selectedBuildingType.nccClassification !== 'Class_2' &&
+      selectedBuildingType.nccClassification !== 'Class_4'
+    ) {
       submissionData.totalAreaOfHabitableRooms = null;
     }
-    
+
     try {
       console.log('Submitting form data:', submissionData);
       await dispatch(createProject(submissionData)).unwrap();
@@ -98,9 +100,10 @@ const NewProject = () => {
   };
 
   // Check if the selected building type is Class_2 or Class_4
-  const isClass2OrClass4 = selectedBuildingType && 
-    (selectedBuildingType.nccClassification === 'Class_2' || 
-     selectedBuildingType.nccClassification === 'Class_4');
+  const isClass2OrClass4 =
+    selectedBuildingType &&
+    (selectedBuildingType.nccClassification === 'Class_2' ||
+      selectedBuildingType.nccClassification === 'Class_4');
 
   return (
     <Container maxWidth="md">
@@ -135,8 +138,8 @@ const NewProject = () => {
                 rows={4}
                 disabled={loading}
               />
-              <FormControl 
-                fullWidth 
+              <FormControl
+                fullWidth
                 required
                 sx={{
                   '& .MuiOutlinedInput-root': {
@@ -165,9 +168,9 @@ const NewProject = () => {
                   <MenuItem value="" disabled>
                     <em>Please Select Building Type</em>
                   </MenuItem>
-                  {buildingTypes.map((type) => (
-                    <MenuItem 
-                      key={type.id} 
+                  {buildingTypes.map(type => (
+                    <MenuItem
+                      key={type.id}
                       value={type.id}
                       sx={{
                         py: 1.5,
@@ -194,20 +197,16 @@ const NewProject = () => {
                     NCC Classification: {selectedBuildingType.nccClassification}
                   </Typography>
                   <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                    {selectedBuildingType.commonFeatures && selectedBuildingType.commonFeatures.map((feature, index) => (
-                      <Chip
-                        key={index}
-                        label={feature}
-                        size="small"
-                        variant="outlined"
-                      />
-                    ))}
+                    {selectedBuildingType.commonFeatures &&
+                      selectedBuildingType.commonFeatures.map((feature, index) => (
+                        <Chip key={index} label={feature} size="small" variant="outlined" />
+                      ))}
                   </Box>
                 </Box>
               )}
 
-              <FormControl 
-                fullWidth 
+              <FormControl
+                fullWidth
                 required
                 sx={{
                   '& .MuiOutlinedInput-root': {
@@ -236,9 +235,9 @@ const NewProject = () => {
                   <MenuItem value="" disabled>
                     <em>Please Select Location</em>
                   </MenuItem>
-                  {locations.map((location) => (
-                    <MenuItem 
-                      key={location.id} 
+                  {locations.map(location => (
+                    <MenuItem
+                      key={location.id}
                       value={location.id}
                       sx={{
                         py: 1.5,
@@ -304,4 +303,4 @@ const NewProject = () => {
   );
 };
 
-export default NewProject; 
+export default NewProject;

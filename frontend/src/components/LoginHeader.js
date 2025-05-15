@@ -1,20 +1,12 @@
 import React, { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  Box,
-  IconButton,
-  Menu,
-  MenuItem,
-} from '@mui/material';
+import { AppBar, Toolbar, Typography, Box, IconButton, Menu, MenuItem } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 
 const LoginHeader = () => {
   const [anchorEl, setAnchorEl] = useState(null);
 
-  const handleMenu = (event) => {
+  const handleMenu = event => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -25,7 +17,12 @@ const LoginHeader = () => {
   return (
     <AppBar position="static">
       <Toolbar>
-        <Typography variant="h6" component={RouterLink} to="/" sx={{ flexGrow: 1, textDecoration: 'none', color: 'inherit' }}>
+        <Typography
+          variant="h6"
+          component={RouterLink}
+          to="/"
+          sx={{ flexGrow: 1, textDecoration: 'none', color: 'inherit' }}
+        >
           NCC Section J Compliance
         </Typography>
 
@@ -39,21 +36,17 @@ const LoginHeader = () => {
           >
             <MenuIcon />
           </IconButton>
-          <Menu
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={handleClose}
-          >
+          <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
             <MenuItem component={RouterLink} to="/" onClick={handleClose}>
               Home
             </MenuItem>
             <MenuItem component={RouterLink} to="/presentation" onClick={handleClose}>
               Presentation
             </MenuItem>
-            <MenuItem 
-              component="a" 
-              href="https://payamamerian.com/" 
-              target="_blank" 
+            <MenuItem
+              component="a"
+              href="https://payamamerian.com/"
+              target="_blank"
               rel="noopener noreferrer"
               onClick={handleClose}
             >
@@ -66,4 +59,4 @@ const LoginHeader = () => {
   );
 };
 
-export default LoginHeader; 
+export default LoginHeader;

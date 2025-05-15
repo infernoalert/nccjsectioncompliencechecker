@@ -33,8 +33,8 @@ const theme = createTheme({
 
 // Protected Route component
 const ProtectedRoute = ({ children, roles = [] }) => {
-  const { isAuthenticated, user } = useSelector((state) => state.auth);
-  
+  const { isAuthenticated, user } = useSelector(state => state.auth);
+
   if (!isAuthenticated) {
     return <Navigate to="/login" />;
   }
@@ -47,7 +47,7 @@ const ProtectedRoute = ({ children, roles = [] }) => {
 };
 
 function App() {
-  const { isAuthenticated } = useSelector((state) => state.auth);
+  const { isAuthenticated } = useSelector(state => state.auth);
 
   return (
     <ThemeProvider theme={theme}>

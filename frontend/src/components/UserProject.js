@@ -1,23 +1,15 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import {
-  Container,
-  Box,
-  Typography,
-  Button,
-  Paper,
-  CircularProgress,
-  Grid
-} from '@mui/material';
+import { Container, Box, Typography, Button, Paper, CircularProgress, Grid } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { fetchProjects } from '../store/slices/projectSlice';
 
 const UserProject = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { projects, loading, error } = useSelector((state) => state.project);
-  const { token, isAuthenticated } = useSelector((state) => state.auth);
+  const { projects, loading, error } = useSelector(state => state.project);
+  const { token, isAuthenticated } = useSelector(state => state.auth);
 
   useEffect(() => {
     console.log('Auth State:', { token, isAuthenticated });
@@ -38,7 +30,7 @@ const UserProject = () => {
     navigate('/projects/new');
   };
 
-  const handleViewProject = (projectId) => {
+  const handleViewProject = projectId => {
     navigate(`/projects/${projectId}`);
   };
 
@@ -50,33 +42,35 @@ const UserProject = () => {
     <Container maxWidth="lg">
       <Box sx={{ mt: 4, mb: 4 }}>
         <Paper elevation={3} sx={{ p: 4 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+          <Box
+            sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}
+          >
             <Typography variant="h4" component="h1">
               My Projects
             </Typography>
-            <Button 
-              variant="contained" 
-              color="primary" 
+            <Button
+              variant="contained"
+              color="primary"
               startIcon={<AddIcon />}
               onClick={handleCreateProject}
             >
               Create New Project
             </Button>
           </Box>
-          
+
           {error && (
             <Typography variant="body1" color="error" sx={{ mb: 3 }}>
               {typeof error === 'object' ? error.message : error}
             </Typography>
           )}
-          
+
           {loading ? (
             <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
               <CircularProgress />
             </Box>
           ) : projects && projects.length > 0 ? (
             <Grid container spacing={3}>
-              {projects.map((project) => (
+              {projects.map(project => (
                 <Grid item xs={12} md={6} lg={4} key={project._id}>
                   <Paper elevation={2}>
                     <Box sx={{ p: 2 }}>
@@ -110,9 +104,9 @@ const UserProject = () => {
               <Typography variant="body1" color="text.secondary">
                 Create your first project to get started
               </Typography>
-              <Button 
-                variant="contained" 
-                color="primary" 
+              <Button
+                variant="contained"
+                color="primary"
                 startIcon={<AddIcon />}
                 onClick={handleCreateProject}
                 sx={{ mt: 2 }}
@@ -127,4 +121,4 @@ const UserProject = () => {
   );
 };
 
-export default UserProject; 
+export default UserProject;

@@ -5,15 +5,15 @@ import { API_URL } from '../../config';
 const PROJECTS_API_URL = `${API_URL}/api/projects`;
 
 // Create axios instance with auth token
-const axiosWithAuth = (token) => {
+const axiosWithAuth = token => {
   if (!token) {
     throw new Error('No authentication token available');
   }
   return axios.create({
     baseURL: PROJECTS_API_URL,
     headers: {
-      Authorization: `Bearer ${token}`
-    }
+      Authorization: `Bearer ${token}`,
+    },
   });
 };
 
@@ -171,21 +171,21 @@ const initialState = {
   locations: [],
   loading: false,
   error: null,
-  report: null
+  report: null,
 };
 
 const projectSlice = createSlice({
   name: 'project',
   initialState,
   reducers: {
-    clearError: (state) => {
+    clearError: state => {
       state.error = null;
-    }
+    },
   },
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder
       // Fetch Projects
-      .addCase(fetchProjects.pending, (state) => {
+      .addCase(fetchProjects.pending, state => {
         state.loading = true;
         state.error = null;
       })
@@ -198,7 +198,7 @@ const projectSlice = createSlice({
         state.error = action.payload;
       })
       // Fetch Project
-      .addCase(fetchProject.pending, (state) => {
+      .addCase(fetchProject.pending, state => {
         state.loading = true;
         state.error = null;
       })
@@ -211,7 +211,7 @@ const projectSlice = createSlice({
         state.error = action.payload;
       })
       // Create Project
-      .addCase(createProject.pending, (state) => {
+      .addCase(createProject.pending, state => {
         state.loading = true;
         state.error = null;
       })
@@ -224,7 +224,7 @@ const projectSlice = createSlice({
         state.error = action.payload;
       })
       // Update Project
-      .addCase(updateProject.pending, (state) => {
+      .addCase(updateProject.pending, state => {
         state.loading = true;
         state.error = null;
       })
@@ -241,7 +241,7 @@ const projectSlice = createSlice({
         state.error = action.payload;
       })
       // Delete Project
-      .addCase(deleteProject.pending, (state) => {
+      .addCase(deleteProject.pending, state => {
         state.loading = true;
         state.error = null;
       })
@@ -257,7 +257,7 @@ const projectSlice = createSlice({
         state.error = action.payload;
       })
       // Check Compliance
-      .addCase(checkCompliance.pending, (state) => {
+      .addCase(checkCompliance.pending, state => {
         state.loading = true;
         state.error = null;
       })
@@ -272,7 +272,7 @@ const projectSlice = createSlice({
         state.error = action.payload;
       })
       // Fetch Building Types
-      .addCase(fetchBuildingTypes.pending, (state) => {
+      .addCase(fetchBuildingTypes.pending, state => {
         state.loading = true;
         state.error = null;
       })
@@ -285,7 +285,7 @@ const projectSlice = createSlice({
         state.error = action.payload;
       })
       // Fetch Locations
-      .addCase(fetchLocations.pending, (state) => {
+      .addCase(fetchLocations.pending, state => {
         state.loading = true;
         state.error = null;
       })
@@ -298,7 +298,7 @@ const projectSlice = createSlice({
         state.error = action.payload;
       })
       // Generate Report
-      .addCase(generateReport.pending, (state) => {
+      .addCase(generateReport.pending, state => {
         state.loading = true;
         state.error = null;
       })
@@ -310,8 +310,8 @@ const projectSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       });
-  }
+  },
 });
 
 export const { clearError } = projectSlice.actions;
-export default projectSlice.reducer; 
+export default projectSlice.reducer;

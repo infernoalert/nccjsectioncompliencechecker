@@ -9,7 +9,7 @@ import {
   Link,
   Paper,
   Alert,
-  CircularProgress
+  CircularProgress,
 } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { register } from '../../store/slices/authSlice';
@@ -17,21 +17,21 @@ import { register } from '../../store/slices/authSlice';
 const SignUp = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { loading, error } = useSelector((state) => state.auth);
+  const { loading, error } = useSelector(state => state.auth);
 
   const [formData, setFormData] = useState({
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
   });
-  
+
   const [passwordError, setPasswordError] = useState('');
   const [emailError, setEmailError] = useState('');
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
     // Clear errors when user types
     if (e.target.name === 'password' || e.target.name === 'confirmPassword') {
@@ -42,37 +42,37 @@ const SignUp = () => {
     }
   };
 
-  const validateEmail = (email) => {
+  const validateEmail = email => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    
+
     // Validate email
     if (!validateEmail(formData.email)) {
       setEmailError('Please enter a valid email address');
       return;
     }
-    
+
     // Validate password
     if (formData.password !== formData.confirmPassword) {
       setPasswordError('Passwords do not match');
       return;
     }
-    
+
     if (formData.password.length < 6) {
       setPasswordError('Password must be at least 6 characters long');
       return;
     }
-    
+
     try {
       // Use email as both username and email
       const userData = {
         username: formData.email,
         email: formData.email,
-        password: formData.password
+        password: formData.password,
       };
       await dispatch(register(userData)).unwrap();
       navigate('/');
@@ -88,7 +88,7 @@ const SignUp = () => {
           marginTop: 8,
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'center'
+          alignItems: 'center',
         }}
       >
         <Paper
@@ -98,7 +98,7 @@ const SignUp = () => {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            width: '100%'
+            width: '100%',
           }}
         >
           <Typography component="h1" variant="h5">
@@ -169,7 +169,7 @@ const SignUp = () => {
             </Button>
             <Box sx={{ textAlign: 'center' }}>
               <Link component={RouterLink} to="/signin" variant="body2">
-                {"Already have an account? Sign In"}
+                {'Already have an account? Sign In'}
               </Link>
             </Box>
           </Box>
@@ -179,4 +179,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp; 
+export default SignUp;

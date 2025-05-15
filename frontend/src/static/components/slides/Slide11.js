@@ -1,11 +1,15 @@
 import React from 'react';
-import { Box, Typography, Grid, List, ListItem, ListItemIcon, ListItemText, Paper } from '@mui/material';
 import {
-  SlideContainer,
-  HeaderAccent,
-  SlideNumber,
-  GradientDivider,
-} from '../styles/SlideStyles';
+  Box,
+  Typography,
+  Grid,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Paper,
+} from '@mui/material';
+import { SlideContainer, HeaderAccent, SlideNumber, GradientDivider } from '../styles/SlideStyles';
 import styled from '@emotion/styled';
 import InfoIcon from '@mui/icons-material/Info';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -50,13 +54,14 @@ const ResourceIcon = styled(Box)(({ theme, color }) => ({
   borderRadius: '50%',
   color: 'white',
   marginRight: '16px',
-  background: color === 'blue' 
-    ? 'linear-gradient(135deg, #2c7da0, #3d8daf)'
-    : color === 'green'
-    ? 'linear-gradient(135deg, #2a9d8f, #3dbea8)'
-    : color === 'teal'
-    ? 'linear-gradient(135deg, #2c7da0, #2a9d8f)'
-    : 'linear-gradient(135deg, #4361ee, #7209b7)',
+  background:
+    color === 'blue'
+      ? 'linear-gradient(135deg, #2c7da0, #3d8daf)'
+      : color === 'green'
+        ? 'linear-gradient(135deg, #2a9d8f, #3dbea8)'
+        : color === 'teal'
+          ? 'linear-gradient(135deg, #2c7da0, #2a9d8f)'
+          : 'linear-gradient(135deg, #4361ee, #7209b7)',
 }));
 
 const InfoBox = styled(Box)(({ theme }) => ({
@@ -80,7 +85,7 @@ const Slide11 = () => {
   return (
     <SlideContainer>
       <HeaderAccent />
-      
+
       {/* Main Content */}
       <Box sx={{ p: 4 }}>
         <Box sx={{ mb: 3 }}>
@@ -89,21 +94,23 @@ const Slide11 = () => {
           </Typography>
           <GradientDivider />
         </Box>
-        
+
         <InfoBox>
           <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
             <InfoIcon sx={{ color: '#2563eb', mt: 0.5, mr: 1.5, fontSize: '1.5rem' }} />
             <Box>
               <Typography variant="body1" sx={{ color: '#374151' }}>
-                These resources are not mandatory. They provide guidance and help, but nothing in them needs to be complied with in order to comply with the NCC.
+                These resources are not mandatory. They provide guidance and help, but nothing in
+                them needs to be complied with in order to comply with the NCC.
               </Typography>
               <Typography variant="body1" sx={{ color: '#374151', mt: 1, fontWeight: 500 }}>
-                The calculators are guidance tools and not intended to be used as evidence of compliance.
+                The calculators are guidance tools and not intended to be used as evidence of
+                compliance.
               </Typography>
             </Box>
           </Box>
         </InfoBox>
-        
+
         <Grid container spacing={3} sx={{ mb: 3 }}>
           {/* Facade Calculator */}
           <Grid item xs={12} md={6}>
@@ -130,7 +137,7 @@ const Slide11 = () => {
                     <ListItemIcon sx={{ minWidth: 30 }}>
                       <CheckCircleIcon sx={{ color: '#2563eb', fontSize: '1rem' }} />
                     </ListItemIcon>
-                    <ListItemText 
+                    <ListItemText
                       primary="Evaluate different facade designs against requirements"
                       primaryTypographyProps={{ variant: 'body2', color: '#374151' }}
                     />
@@ -139,7 +146,7 @@ const Slide11 = () => {
                     <ListItemIcon sx={{ minWidth: 30 }}>
                       <CheckCircleIcon sx={{ color: '#2563eb', fontSize: '1rem' }} />
                     </ListItemIcon>
-                    <ListItemText 
+                    <ListItemText
                       primary="Explore thermal performance of various materials"
                       primaryTypographyProps={{ variant: 'body2', color: '#374151' }}
                     />
@@ -148,7 +155,7 @@ const Slide11 = () => {
                     <ListItemIcon sx={{ minWidth: 30 }}>
                       <CheckCircleIcon sx={{ color: '#2563eb', fontSize: '1rem' }} />
                     </ListItemIcon>
-                    <ListItemText 
+                    <ListItemText
                       primary="Compare options for glazing and wall construction"
                       primaryTypographyProps={{ variant: 'body2', color: '#374151' }}
                     />
@@ -157,7 +164,7 @@ const Slide11 = () => {
               </ResourceBody>
             </ResourceCard>
           </Grid>
-          
+
           {/* Fan System Calculator */}
           <Grid item xs={12} md={6}>
             <ResourceCard>
@@ -183,7 +190,7 @@ const Slide11 = () => {
                     <ListItemIcon sx={{ minWidth: 30 }}>
                       <CheckCircleIcon sx={{ color: '#059669', fontSize: '1rem' }} />
                     </ListItemIcon>
-                    <ListItemText 
+                    <ListItemText
                       primary="Fan system characteristics and fouling risk"
                       primaryTypographyProps={{ variant: 'body2', color: '#374151' }}
                     />
@@ -192,7 +199,7 @@ const Slide11 = () => {
                     <ListItemIcon sx={{ minWidth: 30 }}>
                       <CheckCircleIcon sx={{ color: '#059669', fontSize: '1rem' }} />
                     </ListItemIcon>
-                    <ListItemText 
+                    <ListItemText
                       primary="Duct sizes, runs, flow rates, and roughness"
                       primaryTypographyProps={{ variant: 'body2', color: '#374151' }}
                     />
@@ -201,7 +208,7 @@ const Slide11 = () => {
                     <ListItemIcon sx={{ minWidth: 30 }}>
                       <CheckCircleIcon sx={{ color: '#059669', fontSize: '1rem' }} />
                     </ListItemIcon>
-                    <ListItemText 
+                    <ListItemText
                       primary="Motor input power calculations and efficiency"
                       primaryTypographyProps={{ variant: 'body2', color: '#374151' }}
                     />
@@ -211,7 +218,7 @@ const Slide11 = () => {
             </ResourceCard>
           </Grid>
         </Grid>
-        
+
         <Grid container spacing={3}>
           {/* Pump System Calculator */}
           <Grid item xs={12} md={6}>
@@ -238,7 +245,7 @@ const Slide11 = () => {
                     <ListItemIcon sx={{ minWidth: 30 }}>
                       <CheckCircleIcon sx={{ color: '#2563eb', fontSize: '1rem' }} />
                     </ListItemIcon>
-                    <ListItemText 
+                    <ListItemText
                       primary="Pump system characteristics and speed control"
                       primaryTypographyProps={{ variant: 'body2', color: '#374151' }}
                     />
@@ -247,7 +254,7 @@ const Slide11 = () => {
                     <ListItemIcon sx={{ minWidth: 30 }}>
                       <CheckCircleIcon sx={{ color: '#2563eb', fontSize: '1rem' }} />
                     </ListItemIcon>
-                    <ListItemText 
+                    <ListItemText
                       primary="Operating hours, pump design, pump stage, and speed"
                       primaryTypographyProps={{ variant: 'body2', color: '#374151' }}
                     />
@@ -256,7 +263,7 @@ const Slide11 = () => {
                     <ListItemIcon sx={{ minWidth: 30 }}>
                       <CheckCircleIcon sx={{ color: '#2563eb', fontSize: '1rem' }} />
                     </ListItemIcon>
-                    <ListItemText 
+                    <ListItemText
                       primary="Pipe details and configuration options"
                       primaryTypographyProps={{ variant: 'body2', color: '#374151' }}
                     />
@@ -265,7 +272,7 @@ const Slide11 = () => {
               </ResourceBody>
             </ResourceCard>
           </Grid>
-          
+
           {/* Lighting Calculator */}
           <Grid item xs={12} md={6}>
             <ResourceCard>
@@ -291,7 +298,7 @@ const Slide11 = () => {
                     <ListItemIcon sx={{ minWidth: 30 }}>
                       <CheckCircleIcon sx={{ color: '#7c3aed', fontSize: '1rem' }} />
                     </ListItemIcon>
-                    <ListItemText 
+                    <ListItemText
                       primary="Floor areas, perimeter space, and ceiling heights"
                       primaryTypographyProps={{ variant: 'body2', color: '#374151' }}
                     />
@@ -300,7 +307,7 @@ const Slide11 = () => {
                     <ListItemIcon sx={{ minWidth: 30 }}>
                       <CheckCircleIcon sx={{ color: '#7c3aed', fontSize: '1rem' }} />
                     </ListItemIcon>
-                    <ListItemText 
+                    <ListItemText
                       primary="Design illumination power load calculations"
                       primaryTypographyProps={{ variant: 'body2', color: '#374151' }}
                     />
@@ -309,7 +316,7 @@ const Slide11 = () => {
                     <ListItemIcon sx={{ minWidth: 30 }}>
                       <CheckCircleIcon sx={{ color: '#7c3aed', fontSize: '1rem' }} />
                     </ListItemIcon>
-                    <ListItemText 
+                    <ListItemText
                       primary="Space type categorization and light color options"
                       primaryTypographyProps={{ variant: 'body2', color: '#374151' }}
                     />
@@ -319,7 +326,7 @@ const Slide11 = () => {
             </ResourceCard>
           </Grid>
         </Grid>
-        
+
         <Box sx={{ mt: 4 }}>
           <LinkBox>
             <OpenInNewIcon sx={{ color: '#059669', mr: 1.5, fontSize: '1.5rem' }} />
@@ -332,10 +339,10 @@ const Slide11 = () => {
           </LinkBox>
         </Box>
       </Box>
-      
+
       <SlideNumber>11 / 12</SlideNumber>
     </SlideContainer>
   );
 };
 
-export default Slide11; 
+export default Slide11;

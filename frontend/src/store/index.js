@@ -6,11 +6,11 @@ import EnergyMonitorReducer from './slices/energy_monitor_reportSlice';
 import J7LightingReducer from './slices/j7lighting_reportSlice';
 
 export const store = configureStore({
-    reducer: {
-        auth: authReducer,
-        user: userReducer,
-        project: projectReducer,
-        EnergyMonitor: EnergyMonitorReducer,
-        J7Lighting: J7LightingReducer
-    },
-}); 
+  reducer: {
+    auth: authReducer,
+    user: userReducer,
+    project: projectReducer,
+    EnergyMonitor: EnergyMonitorReducer,
+    J7Lighting: J7LightingReducer,
+  },
+});
