@@ -17,6 +17,7 @@ import {
   IconButton,
   useTheme,
   useMediaQuery,
+  Dialog,
 } from '@mui/material';
 import {
   Search as SearchIcon,
@@ -28,18 +29,24 @@ import {
   Update as UpdateIcon,
   AutoFixHigh as AutoFixHighIcon,
   Forum as ForumIcon,
+  Close as CloseIcon,
 } from '@mui/icons-material';
 import LoginHeader from './LoginHeader';
 
-const FeatureCard = ({ icon, title, description }) => {
+const FeatureCard = ({ icon, title, description, onClick }) => {
   const Icon = icon;
   return (
     <Card
       sx={{
         height: '100%',
         transition: 'transform 0.2s',
-        '&:hover': { transform: 'translateY(-5px)' },
+        '&:hover': { 
+          transform: 'translateY(-5px)', 
+          boxShadow: onClick ? 6 : undefined, 
+          cursor: onClick ? 'pointer' : 'default' 
+        },
       }}
+      onClick={onClick}
     >
       <CardContent>
         <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
@@ -66,6 +73,8 @@ const Login = () => {
     email: '',
     password: '',
   });
+  const [openVideo, setOpenVideo] = useState(false);
+  const [currentVideoUrl, setCurrentVideoUrl] = useState('');
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -89,13 +98,31 @@ const Login = () => {
     dispatch(clearError());
   };
 
-  // Updated features array with your actual workflow and value propositions
+  const handleCardClick = (videoUrl) => {
+    if (videoUrl) {
+      let embedUrl = videoUrl;
+      if (videoUrl.includes('youtu.be/')) {
+        embedUrl = videoUrl.replace('youtu.be/', 'www.youtube.com/embed/');
+      } else if (videoUrl.includes('watch?v=')) {
+        embedUrl = videoUrl.replace('watch?v=', 'embed/');
+      }
+      setCurrentVideoUrl(embedUrl);
+      setOpenVideo(true);
+    }
+  };
+
+  const handleCloseVideo = () => {
+    setOpenVideo(false);
+    setCurrentVideoUrl('');
+  };
+
   const features = [
     {
       icon: WorkIcon,
       title: 'Project-First Compliance',
       description:
-        'Start by defining your project type (apartment, warehouse etc.) and location to get tailored NCC rules.',
+        'Building in Australia! Dont Guess the Rules. Set your project type and location to get tailored NCC rules. ...Video',
+      videoUrl: 'https://youtu.be/-1aAi-gaueM',
     },
     {
       icon: SearchIcon,
@@ -129,7 +156,6 @@ const Login = () => {
     },
   ];
 
-  // Updated main header text (keep the same JSX structure, just change these strings)
   const headerTexts = {
     title: 'NCC Compliance Made Simple',
     subtitle: 'Your project-specific National Construction Code solution',
@@ -341,13 +367,55 @@ const Login = () => {
                   key={index}
                   sx={{ display: 'flex' }}
                 >
-                  <FeatureCard {...feature} />
+                  <FeatureCard
+                    {...feature}
+                    onClick={feature.videoUrl ? () => handleCardClick(feature.videoUrl) : undefined}
+                  />
                 </Grid>
               ))}
             </Grid>
           </Grid>
         </Grid>
       </Container>
+      {/* Video Dialog Popup */}
+      <Dialog
+        open={openVideo}
+        onClose={handleCloseVideo}
+        maxWidth="md"
+        fullWidth
+        PaperProps={{ sx: { position: 'relative', background: 'black' } }}
+      >
+        <IconButton
+          aria-label="close"
+          onClick={handleCloseVideo}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+            zIndex: 1,
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+        <Box sx={{ position: 'relative', pt: '56.25%' }}>
+          <iframe
+            src={currentVideoUrl + '?autoplay=1'}
+            title="YouTube video player"
+            frameBorder="0"
+            allow="autoplay; encrypted-media"
+            allowFullScreen
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              border: 0,
+            }}
+          />
+        </Box>
+      </Dialog>
     </Box>
   );
 };
