@@ -145,10 +145,18 @@ const Login = () => {
       }}
     >
       <LoginHeader />
-      <Container maxWidth="lg" sx={{ mt: 4, mb: 8, flex: 1 }}>
+      <Container 
+        maxWidth="lg" 
+        sx={{ 
+          mt: { xs: 2, sm: 3, md: 4 }, 
+          mb: { xs: 4, sm: 6, md: 8 }, 
+          flex: 1,
+          px: { xs: 2, sm: 3, md: 4 }
+        }}
+      >
         <Grid 
           container 
-          spacing={4} 
+          spacing={{ xs: 2, sm: 3, md: 4 }} 
           sx={{ 
             display: 'flex',
             alignItems: 'stretch'
@@ -161,13 +169,13 @@ const Login = () => {
             sx={{ 
               display: 'flex',
               flexDirection: 'column',
-              gap: 3
+              gap: { xs: 2, sm: 3 }
             }}
           >
             <Paper
               elevation={3}
               sx={{
-                p: 4,
+                p: { xs: 2, sm: 3, md: 4 },
                 borderRadius: 2,
                 background: 'linear-gradient(145deg, #ffffff 0%, #f5f5f5 100%)',
                 flex: 1,
@@ -179,11 +187,23 @@ const Login = () => {
                 variant="h4"
                 gutterBottom
                 align="center"
-                sx={{ fontWeight: 'bold', color: 'primary.main' }}
+                sx={{ 
+                  fontWeight: 'bold', 
+                  color: 'primary.main',
+                  fontSize: { xs: '1.5rem', sm: '2rem', md: '2.125rem' }
+                }}
               >
                 Welcome Back
               </Typography>
-              <Typography variant="body1" align="center" color="text.secondary" sx={{ mb: 4 }}>
+              <Typography 
+                variant="body1" 
+                align="center" 
+                color="text.secondary" 
+                sx={{ 
+                  mb: { xs: 2, sm: 3, md: 4 },
+                  fontSize: { xs: '0.875rem', sm: '1rem' }
+                }}
+              >
                 Sign in to access NCC compliance tools
               </Typography>
               {error && (
@@ -202,7 +222,12 @@ const Login = () => {
                   margin="normal"
                   required
                   variant="outlined"
-                  sx={{ mb: 2 }}
+                  sx={{ 
+                    mb: 2,
+                    '& .MuiOutlinedInput-root': {
+                      fontSize: { xs: '0.875rem', sm: '1rem' }
+                    }
+                  }}
                 />
                 <TextField
                   fullWidth
@@ -214,7 +239,12 @@ const Login = () => {
                   margin="normal"
                   required
                   variant="outlined"
-                  sx={{ mb: 3 }}
+                  sx={{ 
+                    mb: 3,
+                    '& .MuiOutlinedInput-root': {
+                      fontSize: { xs: '0.875rem', sm: '1rem' }
+                    }
+                  }}
                 />
                 <Button
                   type="submit"
@@ -224,16 +254,20 @@ const Login = () => {
                   size="large"
                   disabled={loading}
                   sx={{
-                    py: 1.5,
+                    py: { xs: 1, sm: 1.5 },
                     borderRadius: 2,
                     textTransform: 'none',
-                    fontSize: '1.1rem',
+                    fontSize: { xs: '1rem', sm: '1.1rem' }
                   }}
                 >
                   {loading ? <CircularProgress size={24} /> : 'Sign In'}
                 </Button>
-                <Box sx={{ mt: 3, textAlign: 'center' }}>
-                  <Typography variant="body2" color="text.secondary">
+                <Box sx={{ mt: { xs: 2, sm: 3 }, textAlign: 'center' }}>
+                  <Typography 
+                    variant="body2" 
+                    color="text.secondary"
+                    sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
+                  >
                     Not registered yet?{' '}
                     <Link
                       to="/register"
@@ -251,11 +285,11 @@ const Login = () => {
             </Paper>
             <Grid 
               container 
-              spacing={2} 
+              spacing={{ xs: 1, sm: 2 }} 
               sx={{ 
                 display: 'flex',
                 flexDirection: 'column',
-                gap: 2
+                gap: { xs: 1, sm: 2 }
               }}
             >
               <Grid item xs={12}>
@@ -273,10 +307,12 @@ const Login = () => {
             md={7} 
             sx={{ 
               display: 'flex',
-              flexDirection: 'column'
+              flexDirection: 'column',
+              justifyContent: 'center',
+              height: '100%'
             }}
           >
-            <Box sx={{ mb: 4 }}>
+            <Box sx={{ mb: 4, flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
               <Typography
                 variant="h4"
                 gutterBottom
@@ -294,19 +330,16 @@ const Login = () => {
               sx={{ 
                 flex: 1,
                 display: 'flex',
-                flexDirection: 'column'
+                justifyContent: 'center'
               }}
             >
               {features.map((feature, index) => (
                 <Grid 
-                  item 
-                  xs={12} 
-                  sm={6} 
+                  item
+                  xs={12}
+                  sm={6}
                   key={index}
-                  sx={{ 
-                    display: 'flex',
-                    flexDirection: 'column'
-                  }}
+                  sx={{ display: 'flex' }}
                 >
                   <FeatureCard {...feature} />
                 </Grid>
