@@ -126,10 +126,12 @@ const Login = () => {
     },
     {
       icon: SearchIcon,
-      title: 'Precise NCC Filtering',
+      title: 'Precision Tool',
       description:
-        'See only relevant clauses for your project - no more sifting through unrelated sections.',
+        ' NCC Clarity, Tailored to You! Cut through the National Construction Code complexity. Get a precise view of your project regulations... Video',
+      videoUrl: 'https://youtu.be/1234567890',
     },
+
     {
       icon: SpeedIcon,
       title: 'Expert-Enhanced Sections',

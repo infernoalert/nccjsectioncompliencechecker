@@ -1,0 +1,90 @@
+{
+  "version": "1.0",
+  "lastUpdated": "2024-03-19",
+  "sectionId": "J6D8",
+  "title": "Energy monitoring",
+  "displayOrder": 8,
+  "overallApplicability": {
+    "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"],
+    "climateZones": null,
+    "minFloorArea": null,
+    "maxFloorArea": null
+  },
+  "contentBlocks": [
+    {
+      "blockId": "J6D8_general_requirements",
+      "contentType": "list",
+      "title": "General Requirements",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"]
+      },
+      "listType": "unordered",
+      "items": [
+        "A building must be provided with an energy monitoring system that measures and records the energy consumption of the building",
+        "The energy monitoring system must be capable of measuring and recording the energy consumption of each major energy consuming system in the building",
+        "The energy monitoring system must be capable of measuring and recording the energy consumption of each major energy consuming system in the building at intervals of not more than 15 minutes",
+        "The energy monitoring system must be capable of storing the energy consumption data for a period of not less than 12 months",
+        "The energy monitoring system must be capable of displaying the energy consumption data in a format that is easily understood by the building operator",
+        "The energy monitoring system must be capable of exporting the energy consumption data in a format that is compatible with commonly used energy management software",
+        "The energy monitoring system must be capable of generating reports that show the energy consumption of the building and each major energy consuming system in the building",
+        "The energy monitoring system must be capable of generating alerts when the energy consumption of the building or any major energy consuming system in the building exceeds a predetermined threshold",
+        "The energy monitoring system must be capable of being accessed remotely by the building operator",
+        "The energy monitoring system must be capable of being integrated with the building management system"
+      ]
+    },
+    {
+      "blockId": "J6D8_major_systems",
+      "contentType": "list",
+      "title": "Major Energy Consuming Systems",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"]
+      },
+      "listType": "unordered",
+      "items": [
+        "Air-conditioning systems",
+        "Mechanical ventilation systems",
+        "Hot water systems",
+        "Lighting systems",
+        "Lift systems",
+        "Escalator systems",
+        "Moving walkway systems",
+        "Building management systems",
+        "Security systems",
+        "Fire protection systems",
+        "Emergency power systems",
+        "Renewable energy systems",
+        "Energy storage systems",
+        "Energy recovery systems",
+        "Energy distribution systems"
+      ]
+    },
+    {
+      "blockId": "J6D8_exemptions",
+      "contentType": "list",
+      "title": "Exemptions",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"]
+      },
+      "listType": "unordered",
+      "items": [
+        "A building that is not required to be provided with an energy monitoring system",
+        "A building that is required to be provided with an energy monitoring system but is not required to be air-conditioned",
+        "A building that is required to be provided with an energy monitoring system and is required to be air-conditioned but is not required to be mechanically ventilated",
+        "A building that is required to be provided with an energy monitoring system, is required to be air-conditioned and is required to be mechanically ventilated but is not required to have an outdoor air economy cycle",
+        "A building that is required to be provided with an energy monitoring system, is required to be air-conditioned, is required to be mechanically ventilated and is required to have an outdoor air economy cycle but is not required to have a building management system",
+        "A building that is required to be provided with an energy monitoring system, is required to be air-conditioned, is required to be mechanically ventilated, is required to have an outdoor air economy cycle and is required to have a building management system but is not required to have a security system",
+        "A building that is required to be provided with an energy monitoring system, is required to be air-conditioned, is required to be mechanically ventilated, is required to have an outdoor air economy cycle, is required to have a building management system, is required to have a security system and is required to have a fire protection system but is not required to have a fire protection system",
+        "A building that is required to be provided with an energy monitoring system, is required to be air-conditioned, is required to be mechanically ventilated, is required to have an outdoor air economy cycle, is required to have a building management system, is required to have a security system, is required to have a fire protection system and is required to have a fire protection system but is not required to have an emergency power system",
+        "A building that is required to be provided with an energy monitoring system, is required to be air-conditioned, is required to be mechanically ventilated, is required to have an outdoor air economy cycle, is required to have a building management system, is required to have a security system, is required to have a fire protection system, is required to have an emergency power system and is required to have a renewable energy system but is not required to have a renewable energy system",
+        "A building that is required to be provided with an energy monitoring system, is required to be air-conditioned, is required to be mechanically ventilated, is required to have an outdoor air economy cycle, is required to have a building management system, is required to have a security system, is required to have a fire protection system, is required to have an emergency power system, is required to have a renewable energy system, is required to have an energy storage system and is required to have an energy storage system but is not required to have an energy recovery system",
+        "A building that is required to be provided with an energy monitoring system, is required to be air-conditioned, is required to be mechanically ventilated, is required to have an outdoor air economy cycle, is required to have a building management system, is required to have a security system, is required to have a fire protection system, is required to have an emergency power system, is required to have a renewable energy system, is required to have an energy storage system and is required to have an energy recovery system but is not required to have an energy distribution system"
+      ]
+    }
+  ],
+  "metadata": {
+    "source": "NCC 2022",
+    "lastReviewed": "2024-03-19",
+    "reviewedBy": "AI Assistant",
+    "status": "active"
+  }
+} 

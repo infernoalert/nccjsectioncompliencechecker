@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
-const energy_monitor_API_URL = `${API_URL}/api/j9Monitor`;
+const energy_monitor_API_URL = `${API_URL}/api/j9monitor`;
 
 // Create axios instance with base URL
 const api = axios.create({

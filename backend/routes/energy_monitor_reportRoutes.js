@@ -5,7 +5,7 @@ const { generateEnergyMonitorReport } = require('../controllers/energy_monitor_r
 
 /**
  * @swagger
- * /api/j9Monitor/{id}/report:
+ * /api/j9monitor/{id}/report:
  *   get:
  *     summary: Generate lighting & power compliance report for a project
  *     tags: [Lighting & Power]
@@ -23,7 +23,7 @@ const { generateEnergyMonitorReport } = require('../controllers/energy_monitor_r
  *         required: false
  *         schema:
  *           type: string
- *           enum: [j9Monitor, elemental-provisions, energy-efficiency, fire-safety]
+ *           enum: [j9monitor, elemental-provisions, energy-efficiency, fire-safety]
  *         description: Type of section to generate report for
  *     responses:
  *       200:
