@@ -112,7 +112,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/climate-zones', climateZoneRoutes);
 app.use('/api/compliance-pathways', compliancePathwayRoutes);
 app.use('/api/projects', projectRoutes);
-app.use('/api/j9Monitor', EnergyMonitorReportRoutes);
+app.use('/api/j9monitor', EnergyMonitorReportRoutes);
 app.use('/api', complianceCalculatorRoutes);
 app.use('/api', referenceDataRoutes);
 app.use('/api/admin', adminRoutes);

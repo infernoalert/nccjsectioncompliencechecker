@@ -1,0 +1,199 @@
+{
+  "version": "1.0",
+  "lastUpdated": "2024-03-19",
+  "sectionId": "J6D5",
+  "title": "Fans and duct systems",
+  "displayOrder": 5,
+  "overallApplicability": {
+    "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"],
+    "climateZones": null,
+    "minFloorArea": null,
+    "maxFloorArea": null
+  },
+  "contentBlocks": [
+    {
+      "blockId": "J6D5_general_requirements",
+      "contentType": "list",
+      "title": "General Requirements",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"]
+      },
+      "listType": "unordered",
+      "items": [
+        "Fans, ductwork and duct components that form part of an air-conditioning system or mechanical ventilation system must either separately comply with all requirements or achieve a fan motor input power per unit of flowrate lower than the fan motor input power per unit of flowrate achieved when applying all requirements together"
+      ]
+    },
+    {
+      "blockId": "J6D5_fan_requirements",
+      "contentType": "list",
+      "title": "Fan Requirements",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"]
+      },
+      "listType": "unordered",
+      "items": [
+        "Fans in systems that have a static pressure of not more than 200 Pa must have an efficiency at the full load operating point not less than the efficiency calculated with the formula: ηmin = 0.13ln(p) + 0.3",
+        "Fans in systems that have a static pressure above 200 Pa must have an efficiency at the full load operating point not less than the efficiency calculated with the formula: ηmin = 0.85 - a × ln(P) + b × N/100",
+        "The requirements do not apply to fans that need to be explosion proof"
+      ]
+    },
+    {
+      "blockId": "J6D5_ductwork_requirements",
+      "contentType": "list",
+      "title": "Ductwork Requirements",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"]
+      },
+      "listType": "unordered",
+      "items": [
+        "The pressure drop in the index run across all straight sections of rigid ductwork and all sections of flexible ductwork must not exceed 1 Pa/m when averaged over the entire length of straight rigid duct and flexible duct",
+        "Flexible ductwork must not account for more than 6 m in length in any duct run",
+        "The upstream connection to ductwork bends, elbows and tees in the index run must have an equivalent diameter to the connected duct",
+        "Turning vanes must be included in all rigid ductwork elbows of 90° or more acute than 90° in the index run except where the inclusion of turning vanes presents a fouling risk or a long radius bend in accordance with AS 4254.2 is used"
+      ]
+    },
+    {
+      "blockId": "J6D5_ductwork_components",
+      "contentType": "list",
+      "title": "Ductwork Components Requirements",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"]
+      },
+      "listType": "unordered",
+      "items": [
+        "The pressure drop across a coil must not exceed the value specified in Table J6D5d",
+        "A HEPA air filter must not exceed the higher of a pressure drop of 200 Pa when clean or the filter design pressure drop when clean at an air velocity of 1.5 m/s",
+        "Any other air filter must not exceed the pressure drop specified in Table J6D5e when clean or the filter design pressure drop when clean at an air velocity of 2.5 m/s",
+        "The pressure drop across intake louvres must not exceed the higher of: 30 Pa for single stage louvres, 60 Pa for two stage louvres, 50 Pa for acoustic louvres, or 30 Pa for other non-weatherproof louvres",
+        "The pressure drop across a variable air volume box must not exceed 100 Pa for units with electric reheat or 25 Pa for other units (not including coil pressure losses)",
+        "Rooftop cowls must not exceed a pressure drop of 30 Pa",
+        "Attenuators must not exceed a pressure drop of 40 Pa",
+        "Fire dampers must not exceed a pressure drop of 15 Pa when open",
+        "Balancing and control dampers must not exceed a pressure drop of 25 Pa when in the fully open position",
+        "Supply air diffusers and grilles must not exceed a pressure drop of 40 Pa",
+        "Exhaust grilles must not exceed a pressure drop of 30 Pa",
+        "Transfer ducts must not exceed a pressure drop of 12 Pa",
+        "Door grilles must not exceed a pressure drop of 12 Pa",
+        "Active chilled beams must not exceed a pressure drop of 150 Pa"
+      ]
+    },
+    {
+      "blockId": "J6D5_exemptions",
+      "contentType": "list",
+      "title": "Exemptions",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"]
+      },
+      "listType": "unordered",
+      "items": [
+        "Fans in unducted air-conditioning systems with a supply air capacity of less than 1000 L/s",
+        "Smoke spill fans, except where also used for air-conditioning or ventilation",
+        "The power for process-related components",
+        "Kitchen exhaust systems"
+      ]
+    },
+    {
+      "blockId": "Table_J6D5a",
+      "contentType": "table",
+      "title": "Table J6D5a: Minimum fan performance grade",
+      "headers": [
+        "Fan type",
+        "Installation type A or C",
+        "Installation type B or D"
+      ],
+      "rows": [
+        ["Axial — as a component of an air handling unit or fan coil unit", "46.0", "51.5"],
+        ["Axial — other", "42.0", "61.0"],
+        ["Mixed flow — as a component of an air handling unit or fan coil unit", "46.0", "51.5"],
+        ["Mixed flow — other", "52.5", "65.0"],
+        ["Centrifugal forward — curved", "46.0", "51.5"],
+        ["Centrifugal radial bladed", "46.0", "51.5"],
+        ["Centrifugal backward-curved", "64.0", "64.0"]
+      ]
+    },
+    {
+      "blockId": "Table_J6D5a_notes",
+      "contentType": "list",
+      "title": "Table J6D5a Notes",
+      "listType": "ordered",
+      "items": [
+        "Installation type A means an arrangement where the fan is installed with free inlet and outlet conditions",
+        "Installation type B means an arrangement where the fan is installed with a free inlet and a duct at its outlet",
+        "Installation type C means an arrangement where the fan is installed with a duct fitted to its inlet and with free outlet conditions",
+        "Installation type D means an arrangement where the fan is installed with a duct fitted to its inlet and outlet"
+      ]
+    },
+    {
+      "blockId": "Table_J6D5b",
+      "contentType": "table",
+      "title": "Table J6D5b: Fan regression coefficient a",
+      "headers": [
+        "Fan type",
+        "Fan motor input power < 10 kW",
+        "Fan motor input power ≥ 10 kW"
+      ],
+      "rows": [
+        ["Axial", "2.74", "0.78"],
+        ["Mixed flow", "4.56", "1.1"],
+        ["Centrifugal forward-curved", "2.74", "0.78"],
+        ["Centrifugal radial bladed", "2.74", "0.78"],
+        ["Centrifugal backward-curved", "4.56", "1.1"]
+      ]
+    },
+    {
+      "blockId": "Table_J6D5c",
+      "contentType": "table",
+      "title": "Table J6D5c: Fan regression coefficient b",
+      "headers": [
+        "Fan type",
+        "Fan motor input power < 10 kW",
+        "Fan motor input power ≥ 10 kW"
+      ],
+      "rows": [
+        ["Axial", "6.33", "1.88"],
+        ["Mixed flow", "10.5", "2.6"],
+        ["Centrifugal forward-curved", "6.33", "1.88"],
+        ["Centrifugal radial bladed", "6.33", "1.88"],
+        ["Centrifugal backward-curved", "10.5", "2.6"]
+      ]
+    },
+    {
+      "blockId": "Table_J6D5d",
+      "contentType": "table",
+      "title": "Table J6D5d: Maximum coil pressure drop",
+      "headers": [
+        "Number of rows",
+        "Maximum pressure drop (Pa)"
+      ],
+      "rows": [
+        ["1", "30"],
+        ["2", "50"],
+        ["4", "90"],
+        ["6", "130"],
+        ["8", "175"],
+        ["10", "220"]
+      ]
+    },
+    {
+      "blockId": "Table_J6D5e",
+      "contentType": "table",
+      "title": "Table J6D5e: Maximum clean filter pressure drop",
+      "headers": [
+        "Filter minimum efficiency reporting value",
+        "Maximum pressure drop (Pa)"
+      ],
+      "rows": [
+        ["9", "55"],
+        ["11", "65"],
+        ["13", "95"],
+        ["14", "110"]
+      ]
+    }
+  ],
+  "metadata": {
+    "source": "NCC 2022",
+    "lastReviewed": "2024-03-19",
+    "reviewedBy": "AI Assistant",
+    "status": "active"
+  }
+} 

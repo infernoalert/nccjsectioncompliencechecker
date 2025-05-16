@@ -66,7 +66,7 @@ class EnergyMonitorReportService {
                 this.sectionParam,
                 this.buildingClassification,
                 this.climateZone,
-                'j9Monitor'
+                'j9monitor'
             );
             report.dynamicSections = await dynamicSectionsGenerator.generateDynamicSections();
 

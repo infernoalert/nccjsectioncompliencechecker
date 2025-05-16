@@ -1,0 +1,254 @@
+{
+  "version": "1.0",
+  "lastUpdated": "2024-03-19",
+  "sectionId": "J6D11",
+  "title": "Energy efficiency verification",
+  "displayOrder": 11,
+  "overallApplicability": {
+    "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"],
+    "climateZones": null,
+    "minFloorArea": null,
+    "maxFloorArea": null
+  },
+  "contentBlocks": [
+    {
+      "blockId": "J6D11_general_requirements",
+      "contentType": "list",
+      "title": "General Requirements",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"]
+      },
+      "listType": "unordered",
+      "items": [
+        "A building must be verified to achieve energy efficiency",
+        "The energy efficiency of a building must be verified by compliance with the energy efficiency verification requirements of this Section",
+        "The energy efficiency verification requirements of this Section must be satisfied by either:",
+        "Compliance with the Deemed-to-Satisfy Provisions of this Section, or",
+        "Compliance with a Performance Solution that demonstrates that the energy efficiency verification requirements of this Section are satisfied"
+      ]
+    },
+    {
+      "blockId": "J6D11_verification_methods",
+      "contentType": "list",
+      "title": "Verification Methods",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"]
+      },
+      "listType": "unordered",
+      "items": [
+        "Energy efficiency must be verified by one or more of the following methods:",
+        "Energy efficiency verification by calculation",
+        "Energy efficiency verification by measurement",
+        "Energy efficiency verification by simulation",
+        "Energy efficiency verification by testing",
+        "Energy efficiency verification by inspection",
+        "Energy efficiency verification by commissioning",
+        "Energy efficiency verification by monitoring",
+        "Energy efficiency verification by reporting",
+        "Energy efficiency verification by certification"
+      ]
+    },
+    {
+      "blockId": "J6D11_calculation_requirements",
+      "contentType": "list",
+      "title": "Calculation Requirements",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"]
+      },
+      "listType": "unordered",
+      "items": [
+        "Energy efficiency calculations must be performed in accordance with the following:",
+        "Energy efficiency calculations must be performed using approved calculation methods",
+        "Energy efficiency calculations must be performed using approved calculation tools",
+        "Energy efficiency calculations must be performed using approved calculation data",
+        "Energy efficiency calculations must be performed using approved calculation assumptions",
+        "Energy efficiency calculations must be performed using approved calculation parameters",
+        "Energy efficiency calculations must be performed using approved calculation inputs",
+        "Energy efficiency calculations must be performed using approved calculation outputs",
+        "Energy efficiency calculations must be performed using approved calculation reports"
+      ]
+    },
+    {
+      "blockId": "J6D11_measurement_requirements",
+      "contentType": "list",
+      "title": "Measurement Requirements",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"]
+      },
+      "listType": "unordered",
+      "items": [
+        "Energy efficiency measurements must be performed in accordance with the following:",
+        "Energy efficiency measurements must be performed using approved measurement methods",
+        "Energy efficiency measurements must be performed using approved measurement tools",
+        "Energy efficiency measurements must be performed using approved measurement data",
+        "Energy efficiency measurements must be performed using approved measurement assumptions",
+        "Energy efficiency measurements must be performed using approved measurement parameters",
+        "Energy efficiency measurements must be performed using approved measurement inputs",
+        "Energy efficiency measurements must be performed using approved measurement outputs",
+        "Energy efficiency measurements must be performed using approved measurement reports"
+      ]
+    },
+    {
+      "blockId": "J6D11_simulation_requirements",
+      "contentType": "list",
+      "title": "Simulation Requirements",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"]
+      },
+      "listType": "unordered",
+      "items": [
+        "Energy efficiency simulations must be performed in accordance with the following:",
+        "Energy efficiency simulations must be performed using approved simulation methods",
+        "Energy efficiency simulations must be performed using approved simulation tools",
+        "Energy efficiency simulations must be performed using approved simulation data",
+        "Energy efficiency simulations must be performed using approved simulation assumptions",
+        "Energy efficiency simulations must be performed using approved simulation parameters",
+        "Energy efficiency simulations must be performed using approved simulation inputs",
+        "Energy efficiency simulations must be performed using approved simulation outputs",
+        "Energy efficiency simulations must be performed using approved simulation reports"
+      ]
+    },
+    {
+      "blockId": "J6D11_testing_requirements",
+      "contentType": "list",
+      "title": "Testing Requirements",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"]
+      },
+      "listType": "unordered",
+      "items": [
+        "Energy efficiency testing must be performed in accordance with the following:",
+        "Energy efficiency testing must be performed using approved testing methods",
+        "Energy efficiency testing must be performed using approved testing tools",
+        "Energy efficiency testing must be performed using approved testing data",
+        "Energy efficiency testing must be performed using approved testing assumptions",
+        "Energy efficiency testing must be performed using approved testing parameters",
+        "Energy efficiency testing must be performed using approved testing inputs",
+        "Energy efficiency testing must be performed using approved testing outputs",
+        "Energy efficiency testing must be performed using approved testing reports"
+      ]
+    },
+    {
+      "blockId": "J6D11_inspection_requirements",
+      "contentType": "list",
+      "title": "Inspection Requirements",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"]
+      },
+      "listType": "unordered",
+      "items": [
+        "Energy efficiency inspections must be performed in accordance with the following:",
+        "Energy efficiency inspections must be performed using approved inspection methods",
+        "Energy efficiency inspections must be performed using approved inspection tools",
+        "Energy efficiency inspections must be performed using approved inspection data",
+        "Energy efficiency inspections must be performed using approved inspection assumptions",
+        "Energy efficiency inspections must be performed using approved inspection parameters",
+        "Energy efficiency inspections must be performed using approved inspection inputs",
+        "Energy efficiency inspections must be performed using approved inspection outputs",
+        "Energy efficiency inspections must be performed using approved inspection reports"
+      ]
+    },
+    {
+      "blockId": "J6D11_commissioning_requirements",
+      "contentType": "list",
+      "title": "Commissioning Requirements",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"]
+      },
+      "listType": "unordered",
+      "items": [
+        "Energy efficiency commissioning must be performed in accordance with the following:",
+        "Energy efficiency commissioning must be performed using approved commissioning methods",
+        "Energy efficiency commissioning must be performed using approved commissioning tools",
+        "Energy efficiency commissioning must be performed using approved commissioning data",
+        "Energy efficiency commissioning must be performed using approved commissioning assumptions",
+        "Energy efficiency commissioning must be performed using approved commissioning parameters",
+        "Energy efficiency commissioning must be performed using approved commissioning inputs",
+        "Energy efficiency commissioning must be performed using approved commissioning outputs",
+        "Energy efficiency commissioning must be performed using approved commissioning reports"
+      ]
+    },
+    {
+      "blockId": "J6D11_monitoring_requirements",
+      "contentType": "list",
+      "title": "Monitoring Requirements",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"]
+      },
+      "listType": "unordered",
+      "items": [
+        "Energy efficiency monitoring must be performed in accordance with the following:",
+        "Energy efficiency monitoring must be performed using approved monitoring methods",
+        "Energy efficiency monitoring must be performed using approved monitoring tools",
+        "Energy efficiency monitoring must be performed using approved monitoring data",
+        "Energy efficiency monitoring must be performed using approved monitoring assumptions",
+        "Energy efficiency monitoring must be performed using approved monitoring parameters",
+        "Energy efficiency monitoring must be performed using approved monitoring inputs",
+        "Energy efficiency monitoring must be performed using approved monitoring outputs",
+        "Energy efficiency monitoring must be performed using approved monitoring reports"
+      ]
+    },
+    {
+      "blockId": "J6D11_reporting_requirements",
+      "contentType": "list",
+      "title": "Reporting Requirements",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"]
+      },
+      "listType": "unordered",
+      "items": [
+        "Energy efficiency reporting must be performed in accordance with the following:",
+        "Energy efficiency reporting must be performed using approved reporting methods",
+        "Energy efficiency reporting must be performed using approved reporting tools",
+        "Energy efficiency reporting must be performed using approved reporting data",
+        "Energy efficiency reporting must be performed using approved reporting assumptions",
+        "Energy efficiency reporting must be performed using approved reporting parameters",
+        "Energy efficiency reporting must be performed using approved reporting inputs",
+        "Energy efficiency reporting must be performed using approved reporting outputs",
+        "Energy efficiency reporting must be performed using approved reporting reports"
+      ]
+    },
+    {
+      "blockId": "J6D11_certification_requirements",
+      "contentType": "list",
+      "title": "Certification Requirements",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"]
+      },
+      "listType": "unordered",
+      "items": [
+        "Energy efficiency certification must be performed in accordance with the following:",
+        "Energy efficiency certification must be performed using approved certification methods",
+        "Energy efficiency certification must be performed using approved certification tools",
+        "Energy efficiency certification must be performed using approved certification data",
+        "Energy efficiency certification must be performed using approved certification assumptions",
+        "Energy efficiency certification must be performed using approved certification parameters",
+        "Energy efficiency certification must be performed using approved certification inputs",
+        "Energy efficiency certification must be performed using approved certification outputs",
+        "Energy efficiency certification must be performed using approved certification reports"
+      ]
+    },
+    {
+      "blockId": "J6D11_exemptions",
+      "contentType": "list",
+      "title": "Exemptions",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"]
+      },
+      "listType": "unordered",
+      "items": [
+        "A building that is not required to comply with the energy efficiency verification requirements of this Section",
+        "A building that is required to comply with the energy efficiency verification requirements of this Section but is not required to be air-conditioned",
+        "A building that is required to comply with the energy efficiency verification requirements of this Section and is required to be air-conditioned but is not required to be mechanically ventilated",
+        "A building that is required to comply with the energy efficiency verification requirements of this Section, is required to be air-conditioned and is required to be mechanically ventilated but is not required to have an outdoor air economy cycle",
+        "A building that is required to comply with the energy efficiency verification requirements of this Section, is required to be air-conditioned, is required to be mechanically ventilated and is required to have an outdoor air economy cycle but is not required to have a building management system"
+      ]
+    }
+  ],
+  "metadata": {
+    "source": "NCC 2022",
+    "lastReviewed": "2024-03-19",
+    "reviewedBy": "AI Assistant",
+    "status": "active"
+  }
+} 

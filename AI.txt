@@ -633,12 +633,12 @@ The lighting and power report is implemented through two main components:
      }
      ```
 
-2. **JSON Data Structure** (`backend/data/j9Monitor/`):
+2. **JSON Data Structure** (`backend/data/j9monitor/`):
    - All lighting and power related JSON files should be placed in this directory
    - Each JSON file must include:
      ```json
      {
-       "category": "j9Monitor",
+       "category": "j9monitor",
        "sectionId": "unique_section_id",
        "title": "Section Title",
        "displayOrder": number,
@@ -705,12 +705,12 @@ The lighting and power report is displayed using the `EnergyMonitorReport` compo
 ### Important Notes
 
 1. **JSON File Location**:
-   - All lighting and power related JSON files must be in `backend/data/j9Monitor/`
-   - Each file must have the `category: "j9Monitor"` field
+   - All lighting and power related JSON files must be in `backend/data/j9monitor/`
+   - Each file must have the `category: "j9monitor"` field
    - File naming should be descriptive and follow a consistent pattern
 
 2. **Section Loading**:
-   - The `sectionLoader.js` utility loads all JSON files from the j9Monitor directory
+   - The `sectionLoader.js` utility loads all JSON files from the j9monitor directory
    - Files are filtered based on the `category` field
    - Sections are processed based on their applicability rules
 

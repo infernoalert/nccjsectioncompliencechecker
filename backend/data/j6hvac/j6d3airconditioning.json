@@ -1,0 +1,105 @@
+{
+  "version": "1.0",
+  "lastUpdated": "2024-03-19",
+  "sectionId": "J6D3",
+  "title": "Air-conditioning system control",
+  "displayOrder": 3,
+  "overallApplicability": {
+    "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"],
+    "climateZones": null,
+    "minFloorArea": null,
+    "maxFloorArea": null
+  },
+  "contentBlocks": [
+    {
+      "blockId": "J6D3_requirements",
+      "contentType": "list",
+      "title": "Requirements",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"]
+      },
+      "listType": "unordered",
+      "items": [
+        "An air-conditioning system must be capable of being deactivated when the building or part of a building served by that system is not occupied",
+        "When serving more than one air-conditioning zone or area with different heating or cooling needs, must thermostatically control the temperature of each zone or area",
+        "Must not control the temperature by mixing actively heated air and actively cooled air",
+        "Must limit reheating to not more than 7.5 K rise in temperature for fixed supply air rate",
+        "Must limit reheating to not more than 7.5 K rise in temperature at the nominal supply air rate but increased or decreased at the same rate that the supply air rate is respectively decreased or increased for variable supply air rate",
+        "Which provides the required mechanical ventilation, other than in climate zone 1 or where dehumidification control is needed, must have an outdoor air economy cycle if the total air flow rate of any airside component of an air-conditioning system is greater than or equal to the flow rates in Table J6D3",
+        "Which contains more than one water heater, chiller or coil, must be capable of stopping the flow of water to those not operating",
+        "With an airflow of more than 1000 L/s, must have a variable speed fan when its supply air quantity is capable of being varied",
+        "When serving a sole-occupancy unit in a Class 3 building, must not operate when any external door of the sole-occupancy unit that opens to a balcony or the like, is open for more than one minute",
+        "Must have the ability to use direct signals from the control components responsible for the delivery of comfort conditions in the building to regulate the operation of central plant",
+        "Must have a control dead band of not less than 2°C, except where a smaller range is required for specialised applications",
+        "Must be provided with balancing dampers and balancing valves, as required to meet the needs of the system at its maximum operating condition",
+        "Must ensure that each independently operating space of more than 1 000 m2 and every separate floor of the building has provision to terminate airflow independently",
+        "Must have automatic variable temperature operation of heated water and chilled water circuits",
+        "When deactivated, must close any motorised outdoor air or return air damper that is not otherwise being actively controlled"
+      ]
+    },
+    {
+      "blockId": "J6D3_multiple_systems",
+      "contentType": "list",
+      "title": "Multiple Systems Control",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"]
+      },
+      "listType": "unordered",
+      "items": [
+        "When two or more air-conditioning systems serve the same space they must use control sequences that prevent the systems from operating in opposing heating and cooling modes"
+      ]
+    },
+    {
+      "blockId": "J6D3_time_switches",
+      "contentType": "list",
+      "title": "Time Switches Requirements",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"]
+      },
+      "listType": "unordered",
+      "items": [
+        "A time switch must be provided to control an air-conditioning system of more than 2 kWr",
+        "A time switch must be provided to control a heater of more than 1 kW used for air-conditioning heating",
+        "The time switch must be capable of switching electric power on and off at variable pre-programmed times and on variable pre-programmed days"
+      ]
+    },
+    {
+      "blockId": "J6D3_time_switch_exemptions",
+      "contentType": "list",
+      "title": "Time Switch Exemptions",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"]
+      },
+      "listType": "unordered",
+      "items": [
+        "An air-conditioning system that serves only one sole-occupancy unit in a Class 2, 3 or 9c building",
+        "An air-conditioning system that serves a Class 4 part of a building",
+        "A conditioned space where air-conditioning is needed for 24 hour continuous use"
+      ]
+    },
+    {
+      "blockId": "Table_J6D3",
+      "contentType": "table",
+      "title": "Table J6D3: Requirement for an outdoor air economy cycle",
+      "headers": [
+        "Climate zone",
+        "Total air flow rate requiring an economy cycle (L/s)"
+      ],
+      "rows": [
+        ["2", "9000"],
+        ["3", "7500"],
+        ["4", "3500"],
+        ["5", "3000"],
+        ["6", "2000"],
+        ["7", "2500"],
+        ["8", "4000"]
+      ]
+    }
+  ],
+  "metadata": {
+    "source": "NCC 2022",
+    "lastReviewed": "2024-03-19",
+    "reviewedBy": "AI Assistant",
+    "status": "active"
+  }
+} 

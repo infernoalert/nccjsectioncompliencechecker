@@ -110,7 +110,7 @@ function App() {
             }
           />
           <Route
-            path="/j9Monitor/:id/report"
+            path="/j9monitor/:id/report"
             element={
               <ProtectedRoute>
                 <EnergyMonitorReport />

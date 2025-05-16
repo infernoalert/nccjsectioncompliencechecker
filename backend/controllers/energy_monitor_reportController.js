@@ -3,12 +3,12 @@ const Project = require('../models/Project');
 const EnergyMonitorReportService = require('../services/energy_monitor_reportService');
 
 // @desc    Generate lighting & power report for a project
-// @route   GET /api/j9Monitor/:id/report
+// @route   GET /api/j9monitor/:id/report
 // @access  Private
 exports.generateEnergyMonitorReport = asyncHandler(async (req, res) => {
   try {
     const project = await Project.findById(req.params.id);
-    const sectionType = req.query.sectionType || 'j9Monitor';
+    const sectionType = req.query.sectionType || 'j9monitor';
 
     if (!project) {
       return res.status(404).json({
