@@ -1064,3 +1064,5 @@ This process ensures that:
 - The backend can validate it
 - It integrates well with existing components
 - It follows the application's architecture and patterns
+
+J9 implementation uses a Redux slice pattern with an axios instance.

@@ -1,1 +1,29 @@
- 
+{
+  "category": "j6hvac",
+  "sectionId": "j6d10energyefficiency",
+  "title": "Energy Efficiency",
+  "displayOrder": 10,
+  "overallApplicability": {
+    "buildingClasses": ["Class_2", "Class_4"],
+    "climateZones": [1, 2, 3, 4, 5, 6, 7, 8],
+    "minFloorArea": 0,
+    "maxFloorArea": null
+  },
+  "contentBlocks": [
+    {
+      "blockId": "j6d10.1",
+      "contentType": "list",
+      "title": "Energy Efficiency Requirements",
+      "listType": "unordered",
+      "items": [
+        "HVAC systems must be designed and installed to achieve energy efficiency in accordance with Section J of the NCC.",
+        "The system must include energy-efficient components and controls that minimize energy consumption while maintaining required comfort conditions.",
+        "The design must consider factors such as building orientation, thermal mass, and natural ventilation opportunities to reduce mechanical system requirements."
+      ],
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_4"],
+        "climateZones": [1, 2, 3, 4, 5, 6, 7, 8]
+      }
+    }
+  ]
+} 

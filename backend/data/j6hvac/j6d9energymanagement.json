@@ -1,1 +1,41 @@
- 
+{
+  "category": "j6hvac",
+  "sectionId": "j6d9energymanagement",
+  "title": "Energy Management",
+  "displayOrder": 9,
+  "overallApplicability": {
+    "buildingClasses": ["Class_2", "Class_4"],
+    "climateZones": [1, 2, 3, 4, 5, 6, 7, 8],
+    "minFloorArea": 0,
+    "maxFloorArea": null
+  },
+  "contentBlocks": [
+    {
+      "blockId": "j6d9.1",
+      "contentType": "text",
+      "content": "Energy management systems must be provided for buildings with a total floor area greater than 500 m².",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_4"],
+        "climateZones": [1, 2, 3, 4, 5, 6, 7, 8]
+      }
+    },
+    {
+      "blockId": "j6d9.2",
+      "contentType": "text",
+      "content": "The energy management system must be capable of monitoring and controlling the operation of HVAC systems.",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_4"],
+        "climateZones": [1, 2, 3, 4, 5, 6, 7, 8]
+      }
+    },
+    {
+      "blockId": "j6d9.3",
+      "contentType": "text",
+      "content": "The system must provide for the scheduling of HVAC system operation and the monitoring of energy consumption.",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_4"],
+        "climateZones": [1, 2, 3, 4, 5, 6, 7, 8]
+      }
+    }
+  ]
+} 

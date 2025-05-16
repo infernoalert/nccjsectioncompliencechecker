@@ -1,1 +1,63 @@
- 
+{
+  "category": "j6hvac",
+  "sectionId": "j6d13energyefficiencycompliance",
+  "title": "Energy Efficiency Compliance",
+  "displayOrder": 13,
+  "overallApplicability": {
+    "buildingClasses": ["Class_2", "Class_4"],
+    "climateZones": [1, 2, 3, 4, 5, 6, 7, 8],
+    "minFloorArea": 0,
+    "maxFloorArea": null
+  },
+  "contentBlocks": [
+    {
+      "blockId": "j6d13.1",
+      "contentType": "list",
+      "title": "Compliance Requirements",
+      "listType": "unordered",
+      "items": [
+        "The HVAC system must comply with all relevant energy efficiency requirements specified in Section J of the NCC.",
+        "System must meet minimum energy efficiency standards",
+        "All components must be properly sized and installed",
+        "Documentation must be maintained to demonstrate compliance"
+      ],
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_4"],
+        "climateZones": [1, 2, 3, 4, 5, 6, 7, 8]
+      }
+    },
+    {
+      "blockId": "j6d13.2",
+      "contentType": "list",
+      "title": "Verification and Testing",
+      "listType": "unordered",
+      "items": [
+        "The installed HVAC system must be verified and tested to ensure it meets the specified energy efficiency requirements.",
+        "System performance must be tested and documented",
+        "Energy consumption must be monitored and recorded",
+        "Any non-compliant issues must be rectified"
+      ],
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_4"],
+        "climateZones": [1, 2, 3, 4, 5, 6, 7, 8]
+      }
+    },
+    {
+      "blockId": "j6d13.3",
+      "contentType": "list",
+      "title": "Documentation",
+      "listType": "unordered",
+      "items": [
+        "Comprehensive documentation must be maintained to demonstrate compliance with energy efficiency requirements.",
+        "System design documentation",
+        "Installation and testing records",
+        "Energy consumption monitoring data",
+        "Compliance certificates and approvals"
+      ],
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_4"],
+        "climateZones": [1, 2, 3, 4, 5, 6, 7, 8]
+      }
+    }
+  ]
+} 
