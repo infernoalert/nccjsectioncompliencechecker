@@ -129,7 +129,7 @@ const Login = () => {
       title: 'Precision Tool',
       description:
         ' NCC Clarity, Tailored to You! Cut through the National Construction Code complexity. Get a precise view of your project regulations... Video',
-      videoUrl: 'https://youtu.be/1234567890',
+      videoUrl: 'https://youtu.be/aHG_2Q5zSm4',
     },
 
     {
