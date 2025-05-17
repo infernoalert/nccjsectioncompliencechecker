@@ -1065,7 +1065,7 @@ This process ensures that:
 - It integrates well with existing components
 - It follows the application's architecture and patterns
 ###################################################
-create new sexton 
+create new section 
 Backend:
 
 Service Layer:
@@ -1177,3 +1177,89 @@ Link/Button: You can use a standard HTML <a> tag for a link, or a <button> eleme
 
 URL: The key is to construct the URL correctly.  It should follow the pattern /project/:projectId/jxxx-report, where :projectId is a placeholder for the actual ID of the project.  This ID is essential for the backend to retrieve the correct data for the report.
 
+##############################
+Create a new service file: backend/services/j6hvav_reportService.js
+Use generateReport() method.
+Use DynamicSectionsGenerator to generate the dynamic sections. Pass 'j6hvac' as the section type.
+Implement shouldIncludeSection() method.
+use j7lighting_reportService.js and exactly use same methode strcture and concept, do not create other files yet
+
+Create a new controller file: backend/controllers/j6hvac_reportController.js
+Use express-async-handler for asynchronous operations.
+Create a generateJ6hvacReport function. This function should:
+Retrieve the project from the database.
+Authorize user access to the project.
+Instantiate the J6hvacReportService.
+Call the service's generateReport() method.
+Send the generated report as a JSON response.
+use j7lighting_reportController.js and exactly use same methode strcture and concept, do not create other files yet
+
+Create a new route file: backend/routes/j6hvac_reportRoutes.js
+Use express.Router().
+Use authMiddleware.protect to secure routes.
+Define a GET route (/:id/report) to call the controller function.
+use j7lighting_reportRoutes.js and exactly use same methode strcture and concept, do not create other files yet
+
+
+// Configuration: -- May Not Required
+Create a new configuration file: backend/data/j6hvac/decision-tree-config.js
+Define:
+basePath: Base directory for the j6dX JSON data files (e.g., 'data/j6hvac').
+fileExtension: File extension for the JSON files ('.json').
+sections: List of sections. (Can be empty initially).
+use decision-tree-config.js in j7lighting folder and exactly use same methode strcture and concept, do not create other files yet
+
+In backend/app.js, import and use the new route:
+const j6hvavRoutes = require('./routes/j6hvac_reportRoutes');
+app.use('/api/j6hvac', j6hvacRoutes);
+use j7lighting as main sample and use exactly same structure 
+
+In backend/server.js, import and mounted routes j6hvac_reportRoutes
+use j7lighting as main sample and use exactly same structure 
+
+Add 'j6hvac' to the sectionCache object in sectionLoader.js
+
+Create a new component: frontend/src/components/reports/J6hvacReport.js
+This component will:
+Fetch the report data from the backend API (/api/j6hvac/:projectId/report).
+Display the report data. Use DynamicSectionRenderer.js to render the dynamic sections of the report.
+Handle loading and error states.
+Structure the report layout, including headings, sections, and data presentation.
+use j7lighting as main sample and use exactly same structure 
+J7LightingReport.js as main sample and use exactly same methodes and structure
+
+Store (Redux Slice):
+Create a new Redux slice: frontend/src/store/slices/j6hvac_reportSlice.js
+This slice will manage the state for the J6hvac report data.
+Define actions for:
+Fetching the report data (e.g., fetchJ6hvacReport).
+Setting the report data in the store.
+Handling loading and error states.
+use j7lighting as main sample and use exactly same structure 
+j7lighting_reportSlice.js as main sample and use exactly same methodes and structure
+
+Route:
+Add a new route in frontend/src/App.js to display the J6hvacReport component. Make sure to protect this route.
+<PrivateRoute path="/project/:projectId/j6hvac-report" component={J6hvacReport} />
+use j7lighting as main sample and use exactly same structure 
+
+Redux Store Registration:
+In frontend/src/store/index.js, register the J6hvac reducer 
+
+Navigation:
+Add a link or button in the appropriate location (e.g., in the project details page) to navigate to the J6hvac report page. The link should use the project ID in the URL.
+It should follow the pattern /project/:projectId/j6hvac-report, where :projectId is a placeholder for the actual ID of the project.  This ID is essential for the backend to retrieve the correct data for the report.
+Call it J6 HVAC and put it before j7xxx use same methode, as j7xxx 
+
+
++++++++++++++++++++++++++++++++++++++++++++++
+accepted contentType
+
+paragraph - For text paragraphs
+heading - For headings (h3-h6)
+list - For lists (which we're already using)
+paragraphList - For multiple paragraphs
+keyValue - For key-value pairs
+table - For tables
+button - For buttons
+note - For notes

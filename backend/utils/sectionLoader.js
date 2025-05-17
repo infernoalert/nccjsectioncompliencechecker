@@ -12,6 +12,7 @@ const sectionCache = {
   'j7lighting': null,
   'energy-efficiency': null,
   'fire-safety': null,
+  'j6hvac': null,
   // Add more section types as needed
 };
 

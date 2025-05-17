@@ -59,6 +59,7 @@ const testRoutes = require('./routes/testRoutes');
 const healthRoutes = require('./routes/healthRoutes');
 const EnergyMonitorReportRoutes = require('./routes/energy_monitor_reportRoutes');
 const j7lightingReportRoutes = require('./routes/j7lighting_reportRoutes');
+const j6hvacReportRoutes = require('./routes/j6hvac_reportRoutes');
 
 const app = express();
 
@@ -119,6 +120,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/test', testRoutes);
 app.use('/health', healthRoutes);
 app.use('/api/j7lighting', j7lightingReportRoutes);
+app.use('/api/j6hvac', j6hvacReportRoutes);
 
 // Basic route
 app.get('/', (req, res) => {

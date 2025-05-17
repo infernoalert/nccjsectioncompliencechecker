@@ -18,6 +18,7 @@ import CreateUser from './components/CreateUser';
 import { useSelector } from 'react-redux';
 import './styles/print.css';
 import J7LightingReport from './components/reports/J7LightingReport';
+import J6hvacReport from './components/reports/J6hvacReport';
 
 // Create a theme instance
 const theme = createTheme({
@@ -122,6 +123,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <J7LightingReport />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/j6hvac/:id/report"
+            element={
+              <ProtectedRoute>
+                <J6hvacReport />
               </ProtectedRoute>
             }
           />

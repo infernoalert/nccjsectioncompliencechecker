@@ -11,6 +11,7 @@ const projectRoutes = require('./routes/projectRoutes');
 const buildingClassRoutes = require('./routes/buildingClassRoutes');
 const locationRoutes = require('./routes/locationRoutes');
 const healthRoutes = require('./routes/healthRoutes');
+const j6hvacRoutes = require('./routes/j6hvac_reportRoutes');
 
 const app = express();
 
@@ -30,6 +31,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/building-classes', buildingClassRoutes);
 app.use('/api/locations', locationRoutes);
+app.use('/api/j6hvac', j6hvacRoutes);
 
 // Error handling
 app.use(errorHandler);
