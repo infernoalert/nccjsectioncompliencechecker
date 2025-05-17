@@ -170,6 +170,14 @@ const ProjectDetails = () => {
             variant="contained"
             color="primary"
             startIcon={<AssessmentIcon />}
+            onClick={() => navigate(`/j6hvac/${id}/report`)}
+          >
+            J6 HVAC
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<AssessmentIcon />}
             onClick={() => navigate(`/j7lighting/${id}/report`)}
           >
             J7 Lighting & Power

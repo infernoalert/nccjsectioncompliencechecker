@@ -6,7 +6,7 @@
   "displayOrder": 3,
   "overallApplicability": {
     "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"],
-    "climateZones": null,
+    "climateZones": ["1", "2", "3", "4", "5", "6", "7", "8"],
     "minFloorArea": null,
     "maxFloorArea": null
   },
@@ -25,17 +25,24 @@
         "Must not control the temperature by mixing actively heated air and actively cooled air",
         "Must limit reheating to not more than 7.5 K rise in temperature for fixed supply air rate",
         "Must limit reheating to not more than 7.5 K rise in temperature at the nominal supply air rate but increased or decreased at the same rate that the supply air rate is respectively decreased or increased for variable supply air rate",
-        "Which provides the required mechanical ventilation, other than in climate zone 1 or where dehumidification control is needed, must have an outdoor air economy cycle if the total air flow rate of any airside component of an air-conditioning system is greater than or equal to the flow rates in Table J6D3",
         "Which contains more than one water heater, chiller or coil, must be capable of stopping the flow of water to those not operating",
         "With an airflow of more than 1000 L/s, must have a variable speed fan when its supply air quantity is capable of being varied",
-        "When serving a sole-occupancy unit in a Class 3 building, must not operate when any external door of the sole-occupancy unit that opens to a balcony or the like, is open for more than one minute",
         "Must have the ability to use direct signals from the control components responsible for the delivery of comfort conditions in the building to regulate the operation of central plant",
         "Must have a control dead band of not less than 2°C, except where a smaller range is required for specialised applications",
         "Must be provided with balancing dampers and balancing valves, as required to meet the needs of the system at its maximum operating condition",
-        "Must ensure that each independently operating space of more than 1 000 m2 and every separate floor of the building has provision to terminate airflow independently",
         "Must have automatic variable temperature operation of heated water and chilled water circuits",
         "When deactivated, must close any motorised outdoor air or return air damper that is not otherwise being actively controlled"
       ]
+    },
+    {
+      "blockId": "J6D3_mechanical_ventilation_requirements",
+      "contentType": "paragraph",
+      "title": "Mechanical Ventilation Requirements",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"],
+        "climateZones": ["2", "3", "4", "5", "6", "7", "8"]
+      },
+      "text": "An air-conditioning system which provides the required mechanical ventilation, other than where dehumidification control is needed, must have an outdoor air economy cycle if the total air flow rate of any airside component of an air-conditioning system is greater than or equal to the flow rates specified for the respective climate zone."
     },
     {
       "blockId": "J6D3_multiple_systems",
@@ -64,36 +71,118 @@
       ]
     },
     {
-      "blockId": "J6D3_time_switch_exemptions",
+      "blockId": "J6D3_time_switch_exemptions_class4",
       "contentType": "list",
-      "title": "Time Switch Exemptions",
+      "title": "Time Switch Exemptions - Class 4 Buildings",
       "blockApplicability": {
-        "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"]
+        "buildingClasses": ["Class_4"]
+      },
+      "listType": "unordered",
+      "items": [
+        "An air-conditioning system that serves a Class 4 part of a building"
+      ]
+    },
+    {
+      "blockId": "J6D3_time_switch_exemptions_other",
+      "contentType": "list",
+      "title": "Time Switch Exemptions - Other Buildings",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_3", "Class_9c"]
       },
       "listType": "unordered",
       "items": [
         "An air-conditioning system that serves only one sole-occupancy unit in a Class 2, 3 or 9c building",
-        "An air-conditioning system that serves a Class 4 part of a building",
         "A conditioned space where air-conditioning is needed for 24 hour continuous use"
       ]
     },
     {
-      "blockId": "Table_J6D3",
-      "contentType": "table",
-      "title": "Table J6D3: Requirement for an outdoor air economy cycle",
-      "headers": [
-        "Climate zone",
-        "Total air flow rate requiring an economy cycle (L/s)"
-      ],
-      "rows": [
-        ["2", "9000"],
-        ["3", "7500"],
-        ["4", "3500"],
-        ["5", "3000"],
-        ["6", "2000"],
-        ["7", "2500"],
-        ["8", "4000"]
-      ]
+      "blockId": "J6D3_class3_balcony_requirements",
+      "contentType": "paragraph",
+      "title": "Class 3 Building Balcony Requirements",
+      "blockApplicability": {
+        "buildingClasses": ["Class_3"]
+      },
+      "text": "When serving a sole-occupancy unit in a Class 3 building, the air-conditioning system must not operate when any external door of the sole-occupancy unit that opens to a balcony or the like, is open for more than one minute."
+    },
+    {
+      "blockId": "J6D3_large_space_requirements",
+      "contentType": "paragraph",
+      "title": "Large Space Requirements",
+      "blockApplicability": {
+        "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"],
+        "minFloorArea": 1000
+      },
+      "text": "Must ensure that each independently operating space of more than 1 000 m² and every separate floor of the building has provision to terminate airflow independently."
+    },
+    {
+      "blockId": "J6D3_climate_zone_2",
+      "contentType": "paragraph",
+      "title": "Climate Zone 2 Requirements",
+      "blockApplicability": {
+        "climateZones": ["2"],
+        "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"]
+      },
+      "text": "For Climate Zone 2, an outdoor air economy cycle is required if the total air flow rate of any airside component of an air-conditioning system is greater than or equal to 9000 L/s."
+    },
+    {
+      "blockId": "J6D3_climate_zone_3",
+      "contentType": "paragraph",
+      "title": "Climate Zone 3 Requirements",
+      "blockApplicability": {
+        "climateZones": ["3"],
+        "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"]
+      },
+      "text": "For Climate Zone 3, an outdoor air economy cycle is required if the total air flow rate of any airside component of an air-conditioning system is greater than or equal to 7500 L/s."
+    },
+    {
+      "blockId": "J6D3_climate_zone_4",
+      "contentType": "paragraph",
+      "title": "Climate Zone 4 Requirements",
+      "blockApplicability": {
+        "climateZones": ["4"],
+        "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"]
+      },
+      "text": "For Climate Zone 4, an outdoor air economy cycle is required if the total air flow rate of any airside component of an air-conditioning system is greater than or equal to 3500 L/s."
+    },
+    {
+      "blockId": "J6D3_climate_zone_5",
+      "contentType": "paragraph",
+      "title": "Climate Zone 5 Requirements",
+      "blockApplicability": {
+        "climateZones": ["5"],
+        "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"]
+      },
+      "text": "For Climate Zone 5, an outdoor air economy cycle is required if the total air flow rate of any airside component of an air-conditioning system is greater than or equal to 3000 L/s."
+    },
+    {
+      "blockId": "J6D3_climate_zone_6",
+      "contentType": "paragraph",
+      "title": "Climate Zone 6 Requirements",
+      "blockApplicability": {
+        "climateZones": ["6"],
+        "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"]
+      },
+      "text": "For Climate Zone 6, an outdoor air economy cycle is required if the total air flow rate of any airside component of an air-conditioning system is greater than or equal to 2000 L/s."
+    },
+    {
+      "blockId": "J6D3_climate_zone_7",
+      "contentType": "paragraph",
+      "title": "Climate Zone 7 Requirements",
+      "blockApplicability": {
+        "climateZones": ["7"],
+        "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"]
+      },
+      "text": "For Climate Zone 7, an outdoor air economy cycle is required if the total air flow rate of any airside component of an air-conditioning system is greater than or equal to 2500 L/s."
+    },
+    {
+      "blockId": "J6D3_climate_zone_8",
+      "contentType": "paragraph",
+      "title": "Climate Zone 8 Requirements",
+      "blockApplicability": {
+        "climateZones": ["8"],
+        "buildingClasses": ["Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9a", "Class_9b", "Class_9c"]
+      },
+      "text": "For Climate Zone 8, an outdoor air economy cycle is required if the total air flow rate of any airside component of an air-conditioning system is greater than or equal to 4000 L/s."
     }
   ],
   "metadata": {
