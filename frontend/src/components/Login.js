@@ -136,7 +136,8 @@ const Login = () => {
       icon: SpeedIcon,
       title: 'Expert-Enhanced Sections',
       description:
-        'Get engineer-reviewed explanations for J1/J2/J3/J7/J9 with practical compliance shortcuts.',
+        'Get engineer-reviewed explanations with practical compliance shortcuts....Video',
+        videoUrl: 'https://youtu.be/OtP7sHYy1co',
     },
     {
       icon: HelpIcon,
