@@ -20,6 +20,7 @@ import {
   Edit as EditIcon,
   Assessment as AssessmentIcon,
   Delete as DeleteIcon,
+  Chat as ChatIcon,
 } from '@mui/icons-material';
 import { fetchProject, deleteProject } from '../store/slices/projectSlice';
 
@@ -89,10 +90,20 @@ const ProjectDetails = () => {
           <Typography variant="h4" gutterBottom>
             {currentProject.name}
           </Typography>
-          <Chip
-            label={currentProject.status || 'In Progress'}
-            color={currentProject.status === 'Completed' ? 'success' : 'warning'}
-          />
+          <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+            <Button
+              variant="contained"
+              color="info"
+              startIcon={<ChatIcon />}
+              onClick={() => navigate(`/projects/${id}/chat`)}
+            >
+              Chat with AI
+            </Button>
+            <Chip
+              label={currentProject.status || 'In Progress'}
+              color={currentProject.status === 'Completed' ? 'success' : 'warning'}
+            />
+          </Box>
         </Box>
 
         <Divider sx={{ my: 3 }} />
@@ -150,14 +161,6 @@ const ProjectDetails = () => {
 
         {/* Action Buttons */}
         <Box sx={{ mt: 4, display: 'flex', gap: 2 }}>
-          {/* <Button
-            variant="contained"
-            color="primary"
-            startIcon={<EditIcon />}
-            onClick={() => navigate(`/projects/${id}/edit`)}
-          >
-            Edit Project
-          </Button> */}
           <Button
             variant="contained"
             color="secondary"
