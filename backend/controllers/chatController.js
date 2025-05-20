@@ -39,19 +39,21 @@ exports.chatWithAI = async (req, res) => {
 
     console.log('Project found:', {
       id: project._id,
-      buildingClass: project.buildingClass,
-      timeZone: project.timeZone,
-      location: project.location
+      buildingType: project.buildingType,
+      buildingClassification: project.buildingClassification?.classType || 'Not specified',
+      location: project.location,
+      floorArea: `${project.floorArea} m²`
     });
 
     // Create system message with project context
-    const systemMessage = `You are an AI assistant helping with NCC Section J compliance for a building project. Do not provide any information about the project other than the NCC Section J compliance.answer any question not related to NCC section J compliance.
+    const systemMessage = `You are an AI assistant helping with NCC Section J compliance for a building project. Do not provide any information about the project other than the NCC Section J compliance. Answer any question not related to NCC section J compliance.
     Project details:
-    - Building Class: ${project.buildingClass}
-    - Time Zone: ${project.timeZone}
+    - Building Type: ${project.buildingType}
+    - Building Classification: ${project.buildingClassification?.classType || 'Not specified'}
     - Location: ${project.location}
+    - Floor Area: ${project.floorArea} m²
     
-    Focus on providing accurate information about NCC Section J requirements and how they apply to this specific project. reject answers that are not related to NCC section J compliance.`;
+    Focus on providing accurate information about NCC Section J requirements and how they apply to this specific project. Reject answers that are not related to NCC section J compliance.`;
 
     const completion = await openai.chat.completions.create({
       messages: [

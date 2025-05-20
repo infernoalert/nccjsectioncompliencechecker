@@ -21,11 +21,15 @@ const projectSchema = new mongoose.Schema({
   },
   buildingClassification: {
     type: {
-      classification: String,
+      classType: String,
+      name: String,
       description: String,
       typicalUse: String,
       commonFeatures: [String],
-      notes: String
+      notes: String,
+      technicalDetails: {
+        type: Object
+      }
     }
   },
   location: {

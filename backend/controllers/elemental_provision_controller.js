@@ -48,6 +48,26 @@ exports.getProject = asyncHandler(async (req, res) => {
       error: 'Project not found'
     });
   }
+
+  // If buildingClassification is not set or is incomplete, try to populate it
+  if (!project.buildingClassification?.classType) {
+    try {
+      const classificationInfo = await getBuildingClassification(project.buildingType);
+      project.buildingClassification = {
+        classType: classificationInfo.classType,
+        name: classificationInfo.name,
+        description: classificationInfo.description,
+        typicalUse: classificationInfo.typicalUse,
+        commonFeatures: classificationInfo.commonFeatures,
+        notes: classificationInfo.notes,
+        technicalDetails: classificationInfo.technicalDetails
+      };
+      await project.save();
+    } catch (error) {
+      console.error('Error populating building classification:', error);
+    }
+  }
+
   res.json({
     success: true,
     data: project
@@ -63,7 +83,16 @@ exports.createProject = asyncHandler(async (req, res) => {
   // Validate building type using the decision tree
   let buildingClassification;
   try {
-    buildingClassification = await getBuildingClassification(buildingType);
+    const classificationInfo = await getBuildingClassification(buildingType);
+    buildingClassification = {
+      classType: classificationInfo.classType,
+      name: classificationInfo.name,
+      description: classificationInfo.description,
+      typicalUse: classificationInfo.typicalUse,
+      commonFeatures: classificationInfo.commonFeatures,
+      notes: classificationInfo.notes,
+      technicalDetails: classificationInfo.technicalDetails
+    };
   } catch (error) {
     return res.status(400).json({
       success: false,
@@ -130,8 +159,16 @@ exports.updateProject = asyncHandler(async (req, res) => {
   // If building type is being updated, validate it
   if (buildingType && buildingType !== project.buildingType) {
     try {
-      const buildingClassification = await getBuildingClassification(buildingType);
-      project.buildingClassification = buildingClassification;
+      const classificationInfo = await getBuildingClassification(buildingType);
+      project.buildingClassification = {
+        classType: classificationInfo.classType,
+        name: classificationInfo.name,
+        description: classificationInfo.description,
+        typicalUse: classificationInfo.typicalUse,
+        commonFeatures: classificationInfo.commonFeatures,
+        notes: classificationInfo.notes,
+        technicalDetails: classificationInfo.technicalDetails
+      };
     } catch (error) {
       return res.status(400).json({
         success: false,

@@ -60,7 +60,30 @@ const getBuildingClassification = (buildingType) => {
     );
 
     if (!classificationInfo) {
-      throw new Error(`Classification details not found for: ${buildingTypeInfo.nccClassification}`);
+      // If exact match not found, try to find a partial match
+      const partialMatch = buildingClassifications.building_classifications.find(
+        classification => classification.id.startsWith(buildingTypeInfo.nccClassification.split('_')[0])
+      );
+      
+      if (!partialMatch) {
+        throw new Error(`Classification details not found for: ${buildingTypeInfo.nccClassification}`);
+      }
+      
+      // Use the partial match
+      return {
+        classType: buildingTypeInfo.nccClassification,
+        name: buildingTypeInfo.name,
+        description: buildingTypeInfo.description,
+        typicalUse: buildingTypeInfo.typicalUse,
+        commonFeatures: buildingTypeInfo.commonFeatures,
+        notes: buildingTypeInfo.notes,
+        technicalDetails: {
+          description: partialMatch.description,
+          typicalUse: partialMatch.typicalUse,
+          commonFeatures: partialMatch.commonFeatures,
+          notes: partialMatch.notes
+        }
+      };
     }
 
     // Return combined information
