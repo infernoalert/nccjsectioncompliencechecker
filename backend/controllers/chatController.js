@@ -53,8 +53,7 @@ exports.chatWithAI = async (req, res) => {
     - Location: ${project.location}
     - Floor Area: ${project.floorArea} m²
     
-    Focus on providing accurate information about NCC Section J requirements and how they apply to this specific project. Reject answers that are not related to NCC section J compliance.`;
-
+    Focus on the project detail and providing accurate information. mention project details in your answer. Reject answers that are not related to NCC section J compliance.`;
     const completion = await openai.chat.completions.create({
       messages: [
         { role: "system", content: systemMessage },
