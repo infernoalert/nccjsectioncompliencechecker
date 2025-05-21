@@ -1263,3 +1263,36 @@ keyValue - For key-value pairs
 table - For tables
 button - For buttons
 note - For notes
+
+
+Create a new provider class implementing the AnalyticsProvider interface
+Add it to the providers array in createAnalyticsConfig
+For example, to add Hotjar in the future:
+class HotjarProvider implements AnalyticsProvider {
+  private hotjarId: string;
+
+  constructor(hotjarId: string) {
+    this.hotjarId = hotjarId;
+  }
+
+  initialize(): void {
+    // Hotjar initialization code
+  }
+
+  trackEvent(event: AnalyticsEvent): void {
+    // Hotjar event tracking
+  }
+
+  trackPageView(url: string): void {
+    // Hotjar page view tracking
+  }
+}
+
+// Then in createAnalyticsConfig:
+export const createAnalyticsConfig = (ga4MeasurementId: string, hotjarId: string): AnalyticsConfig => ({
+  enabled: process.env.NODE_ENV === 'production',
+  providers: [
+    new GA4Provider(ga4MeasurementId),
+    new HotjarProvider(hotjarId)
+  ],
+});
