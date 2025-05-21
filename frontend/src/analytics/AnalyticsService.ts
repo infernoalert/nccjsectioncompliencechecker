@@ -38,6 +38,6 @@ export const analytics = AnalyticsService.getInstance();
 
 // Create a production-only configuration
 export const createAnalyticsConfig = (ga4MeasurementId: string): AnalyticsConfig => ({
-  enabled: process.env.NODE_ENV === 'production',
+  enabled: window.location.hostname !== 'localhost',
   providers: [new GA4Provider(ga4MeasurementId)],
 }); 
