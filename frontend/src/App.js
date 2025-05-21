@@ -16,6 +16,7 @@ import Presentation from './static/Presentation';
 import UserList from './components/UserList';
 import CreateUser from './components/CreateUser';
 import ChatInterface from './components/ChatInterface';
+import SingleLineDiagram from './components/SingleLineDiagram/SingleLineDiagram';
 import { useSelector } from 'react-redux';
 import './styles/print.css';
 import J7LightingReport from './components/reports/J7LightingReport';
@@ -164,6 +165,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <ChatInterface />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/projects/:id/diagram"
+            element={
+              <ProtectedRoute>
+                <SingleLineDiagram />
               </ProtectedRoute>
             }
           />

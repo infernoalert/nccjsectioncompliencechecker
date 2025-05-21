@@ -21,6 +21,7 @@ import {
   Assessment as AssessmentIcon,
   Delete as DeleteIcon,
   Chat as ChatIcon,
+  Draw as DrawIcon,
 } from '@mui/icons-material';
 import { fetchProject, deleteProject } from '../store/slices/projectSlice';
 
@@ -98,6 +99,14 @@ const ProjectDetails = () => {
               onClick={() => navigate(`/projects/${id}/chat`)}
             >
               Chat with AI
+            </Button>
+            <Button
+              variant="contained"
+              color="secondary"
+              startIcon={<DrawIcon />}
+              onClick={() => navigate(`/projects/${id}/diagram`)}
+            >
+              Draw Diagram
             </Button>
             <Chip
               label={currentProject.status || 'In Progress'}
