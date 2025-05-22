@@ -423,7 +423,7 @@ const SingleLineDiagram = () => {
             >
               {isSaving ? 'Saving...' : 'Save to Project'}
             </Button>
-            <Button
+            {/* <Button
               variant="contained"
               color="secondary"
               startIcon={<SaveIcon />}
@@ -431,8 +431,8 @@ const SingleLineDiagram = () => {
               disabled={isLoading}
             >
               Export Diagram
-            </Button>
-            <Button
+            </Button> */}
+            {/* <Button
               variant="contained"
               color="info"
               startIcon={<UploadIcon />}
@@ -440,7 +440,7 @@ const SingleLineDiagram = () => {
               disabled={isLoading}
             >
               Import Diagram
-            </Button>
+            </Button> */}
             <Button
               variant="contained"
               color="error"
