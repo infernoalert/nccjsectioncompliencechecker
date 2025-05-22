@@ -13,6 +13,7 @@ const {
   generateReport
 } = require('../controllers/elemental_provision_controller');
 const { getAllBuildingTypes } = require('../utils/mappingUtils');
+const diagramService = require('../services/diagramService');
 
 /**
  * @swagger
@@ -187,6 +188,65 @@ const { getAllBuildingTypes } = require('../utils/mappingUtils');
  *               type: string
  *               description: Metering description
  *
+ *     Diagram:
+ *       type: object
+ *       properties:
+ *         nodes:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               id:
+ *                 type: string
+ *               type:
+ *                 type: string
+ *               position:
+ *                 type: object
+ *                 properties:
+ *                   x:
+ *                     type: number
+ *                   y:
+ *                     type: number
+ *               data:
+ *                 type: object
+ *                 properties:
+ *                   label:
+ *                     type: string
+ *         edges:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               id:
+ *                 type: string
+ *               source:
+ *                 type: string
+ *               target:
+ *                 type: string
+ *               type:
+ *                 type: string
+ *               style:
+ *                 type: object
+ *               animated:
+ *                 type: boolean
+ *               markerEnd:
+ *                 type: object
+ *     
+ *     DiagramResponse:
+ *       type: object
+ *       properties:
+ *         success:
+ *           type: boolean
+ *         fileName:
+ *           type: string
+ *         lastModified:
+ *           type: string
+ *           format: date-time
+ *         version:
+ *           type: number
+ *         data:
+ *           $ref: '#/components/schemas/Diagram'
+ *
  * /api/projects/{id}/report:
  *   get:
  *     summary: Generate a compliance report for a project
@@ -276,5 +336,42 @@ router.route('/:id')
 // Additional project routes
 router.get('/:id/check-compliance', protect, checkCompliance);
 router.get('/:id/report', protect, generateReport);
+
+// Diagram routes
+router.post('/:id/diagram', protect, async (req, res) => {
+  try {
+    const result = await diagramService.saveDiagram(req.params.id, req.body);
+    res.json(result);
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+router.get('/:id/diagram', protect, async (req, res) => {
+  try {
+    const result = await diagramService.getDiagram(req.params.id);
+    res.json(result);
+  } catch (error) {
+    res.status(404).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+router.delete('/:id/diagram', protect, async (req, res) => {
+  try {
+    const result = await diagramService.deleteDiagram(req.params.id);
+    res.json(result);
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
 
 module.exports = router; 

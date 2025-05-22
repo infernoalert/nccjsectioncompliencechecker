@@ -138,6 +138,20 @@ const projectSchema = new mongoose.Schema({
   updatedAt: {
     type: Date,
     default: Date.now
+  },
+  diagram: {
+    fileName: {
+      type: String,
+      default: null
+    },
+    lastModified: {
+      type: Date,
+      default: null
+    },
+    version: {
+      type: Number,
+      default: 1
+    }
   }
 }, {
   timestamps: true

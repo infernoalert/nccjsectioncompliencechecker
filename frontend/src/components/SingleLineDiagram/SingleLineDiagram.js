@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import ReactFlow, {
   MiniMap,
   Controls,
@@ -9,7 +9,7 @@ import ReactFlow, {
   Panel,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import { Button, Box, Paper, Typography } from '@mui/material';
+import { Button, Box, Paper, Typography, Snackbar, Alert, CircularProgress } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PowerIcon from '@mui/icons-material/Power';
 import ElectricBoltIcon from '@mui/icons-material/ElectricBolt';
@@ -27,6 +27,9 @@ import SettingsInputComponentIcon from '@mui/icons-material/SettingsInputCompone
 import RouterIcon from '@mui/icons-material/Router';
 import SaveIcon from '@mui/icons-material/Save';
 import UploadIcon from '@mui/icons-material/Upload';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
 import { 
   
   TransformerNode, 
@@ -97,11 +100,59 @@ const componentTypes = [
 ];
 
 const SingleLineDiagram = () => {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const { id: projectId } = useParams();
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [selectedElements, setSelectedElements] = useState([]);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const fileInputRef = useRef(null);
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
+  const [isSaving, setIsSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Load diagram when component mounts or projectId changes
+  useEffect(() => {
+    const loadDiagram = async () => {
+      if (!projectId) return;
+
+      setIsLoading(true);
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          throw new Error('Authentication token not found. Please log in again.');
+        }
+
+        const response = await axios.get(`/api/projects/${projectId}/diagram`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (response.data.success && response.data.data) {
+          setNodes(response.data.data.nodes || []);
+          setEdges(response.data.data.edges || []);
+          if (reactFlowInstance) {
+            reactFlowInstance.fitView();
+          }
+        }
+      } catch (error) {
+        console.error('Error loading diagram:', error);
+        // If it's a 404, it means no diagram exists yet - that's okay
+        if (error.response?.status !== 404) {
+          setSnackbar({
+            open: true,
+            message: error.response?.data?.error || error.message || 'Error loading diagram',
+            severity: 'error'
+          });
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadDiagram();
+  }, [projectId, reactFlowInstance]);
 
   const onConnect = useCallback(
     (params) => {
@@ -217,7 +268,11 @@ const SingleLineDiagram = () => {
           }
         } catch (error) {
           console.error('Error importing diagram:', error);
-          alert('Error importing diagram. Please make sure the file is valid.');
+          setSnackbar({
+            open: true,
+            message: 'Error importing diagram. Please make sure the file is valid.',
+            severity: 'error'
+          });
         }
       };
       reader.readAsText(file);
@@ -230,8 +285,95 @@ const SingleLineDiagram = () => {
     fileInputRef.current?.click();
   }, []);
 
+  const onSave = useCallback(async () => {
+    if (!projectId) {
+      setSnackbar({
+        open: true,
+        message: 'No project ID found. Please save from within a project.',
+        severity: 'error'
+      });
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const flow = {
+        nodes: nodes.map(node => ({
+          ...node,
+          position: node.position,
+          data: { ...node.data }
+        })),
+        edges: edges.map(edge => ({
+          ...edge,
+          source: edge.source,
+          target: edge.target,
+          type: edge.type,
+          style: edge.style,
+          animated: edge.animated,
+          markerEnd: edge.markerEnd
+        }))
+      };
+
+      // Get the token from localStorage
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('Authentication token not found. Please log in again.');
+      }
+
+      const response = await axios.post(
+        `/api/projects/${projectId}/diagram`,
+        flow,
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      
+      if (response.data.success) {
+        setSnackbar({
+          open: true,
+          message: 'Diagram saved successfully!',
+          severity: 'success'
+        });
+      }
+    } catch (error) {
+      console.error('Error saving diagram:', error);
+      setSnackbar({
+        open: true,
+        message: error.response?.data?.error || error.message || 'Error saving diagram',
+        severity: 'error'
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  }, [nodes, edges, projectId]);
+
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false });
+  };
+
   return (
-    <div style={{ width: '100%', height: '100vh' }}>
+    <div style={{ width: '100%', height: '100vh', position: 'relative' }}>
+      {isLoading && (
+        <Box
+          sx={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: 'rgba(255, 255, 255, 0.7)',
+            zIndex: 1000,
+          }}
+        >
+          <CircularProgress />
+        </Box>
+      )}
       <input
         type="file"
         ref={fileInputRef}
@@ -275,16 +417,27 @@ const SingleLineDiagram = () => {
             <Button
               variant="contained"
               color="primary"
+              startIcon={<CloudUploadIcon />}
+              onClick={onSave}
+              disabled={isSaving || isLoading}
+            >
+              {isSaving ? 'Saving...' : 'Save to Project'}
+            </Button>
+            <Button
+              variant="contained"
+              color="secondary"
               startIcon={<SaveIcon />}
               onClick={onExport}
+              disabled={isLoading}
             >
               Export Diagram
             </Button>
             <Button
               variant="contained"
-              color="secondary"
+              color="info"
               startIcon={<UploadIcon />}
               onClick={handleImportClick}
+              disabled={isLoading}
             >
               Import Diagram
             </Button>
@@ -293,7 +446,7 @@ const SingleLineDiagram = () => {
               color="error"
               startIcon={<DeleteIcon />}
               onClick={onDelete}
-              disabled={selectedElements.length === 0}
+              disabled={selectedElements.length === 0 || isLoading}
             >
               Delete Selected
             </Button>
@@ -324,6 +477,16 @@ const SingleLineDiagram = () => {
           </Paper>
         </Panel>
       </ReactFlow>
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      >
+        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };
