@@ -16,22 +16,48 @@ import ElectricBoltIcon from '@mui/icons-material/ElectricBolt';
 import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import TransformIcon from '@mui/icons-material/Transform';
 import CableIcon from '@mui/icons-material/Cable';
-import { PowerSourceNode, TransformerNode, LoadNode } from './CustomNodes';
+import SpeedIcon from '@mui/icons-material/Speed';
+import MemoryIcon from '@mui/icons-material/Memory';
+import SmartToyIcon from '@mui/icons-material/SmartToy';
+import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
+import CloudIcon from '@mui/icons-material/Cloud';
+import StorageIcon from '@mui/icons-material/Storage';
+import WifiIcon from '@mui/icons-material/Wifi';
+import SettingsInputComponentIcon from '@mui/icons-material/SettingsInputComponent';
+import RouterIcon from '@mui/icons-material/Router';
+import { 
+  
+  TransformerNode, 
+  LoadNode,
+  MeterNode,
+  MeterMemoryNode,
+  SmartMeterNode,
+  AuthorityMeterNode,
+  CloudNode,
+  OnPremiseNode,
+  WirelessNode,
+  RS485Node,
+  EthernetNode
+} from './CustomNodes';
 
 // Custom node types
 const nodeTypes = {
-  powerSource: PowerSourceNode,
+  
   transformer: TransformerNode,
   load: LoadNode,
+  meter: MeterNode,
+  meterMemory: MeterMemoryNode,
+  smartMeter: SmartMeterNode,
+  authorityMeter: AuthorityMeterNode,
+  cloud: CloudNode,
+  onPremise: OnPremiseNode,
+  wireless: WirelessNode,
+  rs485: RS485Node,
+  ethernet: EthernetNode,
 };
 
 const initialNodes = [
-  {
-    id: '1',
-    type: 'powerSource',
-    data: { label: 'Power Source' },
-    position: { x: 250, y: 25 },
-  },
+  
   {
     id: '2',
     type: 'transformer',
@@ -52,11 +78,20 @@ const initialEdges = [
 ];
 
 const componentTypes = [
-  { type: 'powerSource', label: 'Power Source', icon: <PowerIcon /> },
+  
   { type: 'transformer', label: 'Transformer', icon: <TransformIcon /> },
   { type: 'load', label: 'Load', icon: <LightbulbIcon /> },
   { type: 'switch', label: 'Switch', icon: <ElectricBoltIcon /> },
   { type: 'cable', label: 'Cable', icon: <CableIcon /> },
+  { type: 'meter', label: 'Meter', icon: <SpeedIcon /> },
+  { type: 'meterMemory', label: 'Meter/Memory', icon: <MemoryIcon /> },
+  { type: 'smartMeter', label: 'Smart Meter', icon: <SmartToyIcon /> },
+  { type: 'authorityMeter', label: 'Authority Meter', icon: <VerifiedUserIcon /> },
+  { type: 'cloud', label: 'Cloud', icon: <CloudIcon /> },
+  { type: 'onPremise', label: 'On-Premise', icon: <StorageIcon /> },
+  { type: 'wireless', label: 'Wireless', icon: <WifiIcon /> },
+  { type: 'rs485', label: 'RS485', icon: <SettingsInputComponentIcon /> },
+  { type: 'ethernet', label: 'Ethernet', icon: <RouterIcon /> },
 ];
 
 const SingleLineDiagram = () => {
