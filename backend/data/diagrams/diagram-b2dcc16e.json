@@ -26,17 +26,37 @@
         "label": "Load"
       },
       "position": {
-        "x": 480,
-        "y": 180
+        "x": 330,
+        "y": 225
       },
       "width": 100,
       "height": 87,
-      "selected": true,
+      "selected": false,
       "positionAbsolute": {
-        "x": 480,
-        "y": 180
+        "x": 330,
+        "y": 225
       },
       "dragging": false
+    },
+    {
+      "id": "text-3",
+      "type": "text",
+      "position": {
+        "x": 540,
+        "y": 315
+      },
+      "data": {
+        "label": "Text Note",
+        "text": "test"
+      },
+      "width": 150,
+      "height": 80,
+      "selected": false,
+      "dragging": false,
+      "positionAbsolute": {
+        "x": 540,
+        "y": 315
+      }
     }
   ],
   "edges": [

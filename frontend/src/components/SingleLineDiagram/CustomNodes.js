@@ -143,6 +143,114 @@ const CustomNode = ({ data, type }) => {
   );
 };
 
+const TextNode = ({ data }) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [text, setText] = useState(data.text || '');
+
+  const handleDoubleClick = () => {
+    setIsEditing(true);
+  };
+
+  const handleBlur = () => {
+    setIsEditing(false);
+    data.text = text;
+  };
+
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      setIsEditing(false);
+      data.text = text;
+    }
+  };
+
+  return (
+    <div style={{ padding: 10, background: 'white', borderRadius: 5, minWidth: '150px' }}>
+      <Handle
+        type="source"
+        position={Position.Top}
+        style={{ background: '#555', width: 8, height: 8 }}
+      />
+      <Handle
+        type="target"
+        position={Position.Top}
+        style={{ background: '#555', width: 8, height: 8 }}
+      />
+      <Handle
+        type="source"
+        position={Position.Right}
+        style={{ background: '#555', width: 8, height: 8 }}
+      />
+      <Handle
+        type="target"
+        position={Position.Right}
+        style={{ background: '#555', width: 8, height: 8 }}
+      />
+      <Handle
+        type="source"
+        position={Position.Bottom}
+        style={{ background: '#555', width: 8, height: 8 }}
+      />
+      <Handle
+        type="target"
+        position={Position.Bottom}
+        style={{ background: '#555', width: 8, height: 8 }}
+      />
+      <Handle
+        type="source"
+        position={Position.Left}
+        style={{ background: '#555', width: 8, height: 8 }}
+      />
+      <Handle
+        type="target"
+        position={Position.Left}
+        style={{ background: '#555', width: 8, height: 8 }}
+      />
+
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        {isEditing ? (
+          <TextField
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            onBlur={handleBlur}
+            onKeyDown={handleKeyDown}
+            multiline
+            rows={3}
+            size="small"
+            autoFocus
+            variant="outlined"
+            sx={{
+              '& .MuiInputBase-input': {
+                fontSize: '12px',
+              },
+              width: '100%',
+            }}
+          />
+        ) : (
+          <div 
+            onDoubleClick={handleDoubleClick}
+            style={{ 
+              fontSize: 12,
+              cursor: 'pointer',
+              padding: '8px',
+              borderRadius: '4px',
+              backgroundColor: '#f5f5f5',
+              width: '100%',
+              minHeight: '60px',
+              whiteSpace: 'pre-wrap',
+              wordBreak: 'break-word',
+              '&:hover': {
+                backgroundColor: '#e0e0e0',
+              }
+            }}
+          >
+            {text || 'Double click to add text'}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
 // Export memoized versions of CustomNode for each type
 export const TransformerNode = memo((props) => <CustomNode {...props} type="transformer" />);
 export const LoadNode = memo((props) => <CustomNode {...props} type="load" />);
@@ -154,4 +262,5 @@ export const CloudNode = memo((props) => <CustomNode {...props} type="cloud" />)
 export const OnPremiseNode = memo((props) => <CustomNode {...props} type="onPremise" />);
 export const WirelessNode = memo((props) => <CustomNode {...props} type="wireless" />);
 export const RS485Node = memo((props) => <CustomNode {...props} type="rs485" />);
-export const EthernetNode = memo((props) => <CustomNode {...props} type="ethernet" />); 
+export const EthernetNode = memo((props) => <CustomNode {...props} type="ethernet" />);
+export const TextNodeComponent = memo(TextNode); 

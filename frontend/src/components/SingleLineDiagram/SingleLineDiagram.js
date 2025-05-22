@@ -28,10 +28,10 @@ import RouterIcon from '@mui/icons-material/Router';
 import SaveIcon from '@mui/icons-material/Save';
 import UploadIcon from '@mui/icons-material/Upload';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import EditIcon from '@mui/icons-material/Edit';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { 
-  
   TransformerNode, 
   LoadNode,
   MeterNode,
@@ -42,12 +42,12 @@ import {
   OnPremiseNode,
   WirelessNode,
   RS485Node,
-  EthernetNode
+  EthernetNode,
+  TextNodeComponent
 } from './CustomNodes';
 
 // Custom node types
 const nodeTypes = {
-  
   transformer: TransformerNode,
   load: LoadNode,
   meter: MeterNode,
@@ -59,10 +59,10 @@ const nodeTypes = {
   wireless: WirelessNode,
   rs485: RS485Node,
   ethernet: EthernetNode,
+  text: TextNodeComponent,
 };
 
 const initialNodes = [
-  
   {
     id: '2',
     type: 'transformer',
@@ -83,7 +83,7 @@ const initialEdges = [
 ];
 
 const componentTypes = [
-  
+  { type: 'text', label: 'Text Note', icon: <EditIcon /> },
   { type: 'transformer', label: 'Transformer', icon: <TransformIcon /> },
   { type: 'load', label: 'Load', icon: <LightbulbIcon /> },
   { type: 'switch', label: 'Switch', icon: <ElectricBoltIcon /> },
