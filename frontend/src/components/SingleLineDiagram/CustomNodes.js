@@ -41,7 +41,6 @@ const CustomNode = ({ data, type }) => {
 
   const handleBlur = () => {
     setIsEditing(false);
-    // Update the node data with the new label
     data.label = label;
   };
 
@@ -54,7 +53,54 @@ const CustomNode = ({ data, type }) => {
 
   return (
     <div style={{ padding: 10, background: 'white', borderRadius: 5 }}>
-      <Handle type="target" position={Position.Top} />
+      {/* Top Handle */}
+      <Handle
+        type="source"
+        position={Position.Top}
+        style={{ background: '#555', width: 8, height: 8 }}
+      />
+      <Handle
+        type="target"
+        position={Position.Top}
+        style={{ background: '#555', width: 8, height: 8 }}
+      />
+
+      {/* Right Handle */}
+      <Handle
+        type="source"
+        position={Position.Right}
+        style={{ background: '#555', width: 8, height: 8 }}
+      />
+      <Handle
+        type="target"
+        position={Position.Right}
+        style={{ background: '#555', width: 8, height: 8 }}
+      />
+
+      {/* Bottom Handle */}
+      <Handle
+        type="source"
+        position={Position.Bottom}
+        style={{ background: '#555', width: 8, height: 8 }}
+      />
+      <Handle
+        type="target"
+        position={Position.Bottom}
+        style={{ background: '#555', width: 8, height: 8 }}
+      />
+
+      {/* Left Handle */}
+      <Handle
+        type="source"
+        position={Position.Left}
+        style={{ background: '#555', width: 8, height: 8 }}
+      />
+      <Handle
+        type="target"
+        position={Position.Left}
+        style={{ background: '#555', width: 8, height: 8 }}
+      />
+
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <img src={getSvgPath()} alt={data.label} width="40" height="40" />
         <div style={{ marginTop: 5, minWidth: '80px', textAlign: 'center' }}>
@@ -93,7 +139,6 @@ const CustomNode = ({ data, type }) => {
           )}
         </div>
       </div>
-      <Handle type="source" position={Position.Bottom} />
     </div>
   );
 };

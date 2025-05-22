@@ -101,7 +101,20 @@ const SingleLineDiagram = () => {
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
 
   const onConnect = useCallback(
-    (params) => setEdges((eds) => addEdge(params, eds)),
+    (params) => {
+      const newEdge = {
+        ...params,
+        type: 'step',
+        style: { stroke: '#000', strokeWidth: 2 },
+        animated: false,
+        markerEnd: {
+          type: 'arrowclosed',
+          width: 20,
+          height: 20,
+        },
+      };
+      setEdges((eds) => addEdge(newEdge, eds));
+    },
     [setEdges]
   );
 
@@ -167,6 +180,19 @@ const SingleLineDiagram = () => {
         onDrop={onDrop}
         onDragOver={onDragOver}
         nodeTypes={nodeTypes}
+        defaultEdgeOptions={{
+          type: 'step',
+          style: { stroke: '#000', strokeWidth: 2 },
+          animated: false,
+          markerEnd: {
+            type: 'arrowclosed',
+            width: 20,
+            height: 20,
+          },
+        }}
+        connectionMode="loose"
+        snapToGrid={true}
+        snapGrid={[15, 15]}
         fitView
         deleteKeyCode={['Backspace', 'Delete']}
       >
