@@ -51,54 +51,66 @@ const CustomNode = ({ data, type }) => {
     }
   };
 
+  const handleStyle = {
+    width: 8,
+    height: 8,
+    background: '#555',
+    border: 'none',
+    opacity: data.showHandles ? 1 : 0,
+    '&:hover': {
+      opacity: 1,
+      background: '#555',
+    }
+  };
+
   return (
     <div style={{ padding: 10, background: 'white', borderRadius: 5 }}>
       {/* Top Handle */}
       <Handle
         type="source"
         position={Position.Top}
-        style={{ background: '#555', width: 8, height: 8 }}
+        style={handleStyle}
       />
       <Handle
         type="target"
         position={Position.Top}
-        style={{ background: '#555', width: 8, height: 8 }}
+        style={handleStyle}
       />
 
       {/* Right Handle */}
       <Handle
         type="source"
         position={Position.Right}
-        style={{ background: '#555', width: 8, height: 8 }}
+        style={handleStyle}
       />
       <Handle
         type="target"
         position={Position.Right}
-        style={{ background: '#555', width: 8, height: 8 }}
+        style={handleStyle}
       />
 
       {/* Bottom Handle */}
       <Handle
         type="source"
         position={Position.Bottom}
-        style={{ background: '#555', width: 8, height: 8 }}
+        style={handleStyle}
       />
       <Handle
         type="target"
         position={Position.Bottom}
-        style={{ background: '#555', width: 8, height: 8 }}
+        style={handleStyle}
       />
 
       {/* Left Handle */}
       <Handle
         type="source"
         position={Position.Left}
-        style={{ background: '#555', width: 8, height: 8 }}
+        style={handleStyle}
       />
       <Handle
         type="target"
         position={Position.Left}
-        style={{ background: '#555', width: 8, height: 8 }}
+        style={handleStyle}
       />
 
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -163,47 +175,59 @@ const TextNode = ({ data }) => {
     }
   };
 
+  const handleStyle = {
+    width: 8,
+    height: 8,
+    background: '#555',
+    border: 'none',
+    opacity: data.showHandles ? 1 : 0,
+    '&:hover': {
+      opacity: 1,
+      background: '#555',
+    }
+  };
+
   return (
     <div style={{ padding: 10, background: 'white', borderRadius: 5, minWidth: '150px' }}>
       <Handle
         type="source"
         position={Position.Top}
-        style={{ background: '#555', width: 8, height: 8 }}
+        style={handleStyle}
       />
       <Handle
         type="target"
         position={Position.Top}
-        style={{ background: '#555', width: 8, height: 8 }}
+        style={handleStyle}
       />
       <Handle
         type="source"
         position={Position.Right}
-        style={{ background: '#555', width: 8, height: 8 }}
+        style={handleStyle}
       />
       <Handle
         type="target"
         position={Position.Right}
-        style={{ background: '#555', width: 8, height: 8 }}
+        style={handleStyle}
       />
       <Handle
         type="source"
         position={Position.Bottom}
-        style={{ background: '#555', width: 8, height: 8 }}
+        style={handleStyle}
       />
       <Handle
         type="target"
         position={Position.Bottom}
-        style={{ background: '#555', width: 8, height: 8 }}
+        style={handleStyle}
       />
       <Handle
         type="source"
         position={Position.Left}
-        style={{ background: '#555', width: 8, height: 8 }}
+        style={handleStyle}
       />
       <Handle
         type="target"
         position={Position.Left}
-        style={{ background: '#555', width: 8, height: 8 }}
+        style={handleStyle}
       />
 
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>

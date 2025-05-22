@@ -29,6 +29,8 @@ import SaveIcon from '@mui/icons-material/Save';
 import UploadIcon from '@mui/icons-material/Upload';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import EditIcon from '@mui/icons-material/Edit';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { 
@@ -109,6 +111,7 @@ const SingleLineDiagram = () => {
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [showHandles, setShowHandles] = useState(false);
 
   // Load diagram when component mounts or projectId changes
   useEffect(() => {
@@ -156,6 +159,24 @@ const SingleLineDiagram = () => {
 
   const onConnect = useCallback(
     (params) => {
+      // Check if the connection is valid (not connecting to the same handle)
+      if (params.source === params.target) {
+        return;
+      }
+
+      // Check if there's already a connection between these exact handles
+      const existingConnection = edges.find(
+        edge => 
+          edge.source === params.source && 
+          edge.target === params.target &&
+          edge.sourceHandle === params.sourceHandle &&
+          edge.targetHandle === params.targetHandle
+      );
+
+      if (existingConnection) {
+        return;
+      }
+
       const newEdge = {
         ...params,
         type: 'step',
@@ -169,7 +190,7 @@ const SingleLineDiagram = () => {
       };
       setEdges((eds) => addEdge(newEdge, eds));
     },
-    [setEdges]
+    [setEdges, edges]
   );
 
   const onSelectionChange = useCallback(({ nodes, edges }) => {
@@ -212,13 +233,29 @@ const SingleLineDiagram = () => {
         id: `${type}-${nodes.length + 1}`,
         type,
         position,
-        data: { label: componentTypes.find(comp => comp.type === type).label },
+        data: { 
+          label: componentTypes.find(comp => comp.type === type).label,
+          showHandles: showHandles 
+        },
       };
 
       setNodes((nds) => nds.concat(newNode));
     },
-    [reactFlowInstance, nodes, setNodes]
+    [reactFlowInstance, nodes, setNodes, showHandles]
   );
+
+  // Update existing nodes when showHandles changes
+  useEffect(() => {
+    setNodes((nds) =>
+      nds.map((node) => ({
+        ...node,
+        data: {
+          ...node.data,
+          showHandles: showHandles,
+        },
+      }))
+    );
+  }, [showHandles, setNodes]);
 
   const onExport = useCallback(() => {
     if (reactFlowInstance) {
@@ -403,7 +440,7 @@ const SingleLineDiagram = () => {
             height: 20,
           },
         }}
-        connectionMode="loose"
+        connectionMode="strict"
         snapToGrid={true}
         snapGrid={[15, 15]}
         fitView
@@ -477,6 +514,30 @@ const SingleLineDiagram = () => {
           </Paper>
         </Panel>
       </ReactFlow>
+      <Box
+        sx={{
+          position: 'absolute',
+          bottom: 20,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          zIndex: 1000,
+        }}
+      >
+        <Button
+          variant="contained"
+          onClick={() => setShowHandles(!showHandles)}
+          sx={{
+            bgcolor: 'rgba(0, 0, 0, 0.6)',
+            color: 'white',
+            '&:hover': {
+              bgcolor: 'rgba(0, 0, 0, 0.8)',
+            },
+          }}
+          startIcon={showHandles ? <VisibilityOffIcon /> : <VisibilityIcon />}
+        >
+          {showHandles ? 'Hide Connection Points' : 'Show Connection Points'}
+        </Button>
+      </Box>
       <Snackbar
         open={snackbar.open}
         autoHideDuration={6000}
