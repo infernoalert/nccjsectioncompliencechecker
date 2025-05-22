@@ -13,9 +13,54 @@ import {
 import SendIcon from '@mui/icons-material/Send';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import { Position } from 'reactflow';
 
-const MAX_RETRIES = 3;
-const RETRY_DELAY = 1000; // 1 second
+// Command definitions
+const COMMANDS = {
+  ADD: 'add',
+  DELETE: 'delete',
+  DELETE_ALL: 'delete-all',
+  CONNECT: 'connect',
+  DISCONNECT: 'disconnect'
+};
+
+// Node types mapping
+const NODE_TYPES = {
+  'smart-meter': 'smartMeter',
+  'smartmeter': 'smartMeter',
+  'meter': 'meter',
+  'transformer': 'transformer',
+  'load': 'load',
+  'cloud': 'cloud',
+  'wireless': 'wireless',
+  'rs485': 'rs485',
+  'ethernet': 'ethernet',
+  'on-premise': 'onPremise',
+  'onpremise': 'onPremise',
+  'auth-meter': 'authorityMeter',
+  'authmeter': 'authorityMeter',
+  'meter-memory': 'meterMemory',
+  'metermemory': 'meterMemory'
+};
+
+// Connection points mapping
+const CONNECTION_POINTS = {
+  'top': 'top',
+  'right': 'right',
+  'bottom': 'bottom',
+  'left': 'left',
+  't': 'top',
+  'r': 'right',
+  'b': 'bottom',
+  'l': 'left'
+};
+
+// Grid configuration
+const GRID_CONFIG = {
+  cellSize: 150, // Increased from 100 to 150 to create more space between nodes
+  startX: 100,   // Starting X position
+  startY: 100    // Starting Y position
+};
 
 const ChatDiagramGenerator = ({ onDiagramGenerated }) => {
   const { id: projectId } = useParams();
@@ -24,6 +69,65 @@ const ChatDiagramGenerator = ({ onDiagramGenerated }) => {
   const [error, setError] = useState(null);
   const [chatHistory, setChatHistory] = useState([]);
   const chatEndRef = useRef(null);
+  const [testInput, setTestInput] = useState('');
+
+  const handleTestSubmit = async () => {
+    if (!testInput.trim()) return;
+
+    try {
+      // Add test input to chat history
+      setChatHistory(prev => [...prev, { 
+        type: 'user', 
+        content: `[TEST] ${testInput}`
+      }]);
+
+      // Split input into multiple commands by pipe
+      const commands = testInput.split('|').map(cmd => cmd.trim()).filter(cmd => cmd);
+      
+      // Process each command
+      let currentNodes = await getCurrentDiagram();
+      let currentEdges = await getCurrentEdges();
+      let allMessages = [];
+
+      for (const cmd of commands) {
+        try {
+          // Parse the command and its arguments
+          const parts = cmd.split(',').map(part => part.trim().toLowerCase());
+          const command = parts[0];
+          const args = parts.slice(1);
+
+          validateCommand(command, args);
+          const result = await executeCommand(command, args, currentNodes, currentEdges);
+          
+          currentNodes = result.nodes;
+          currentEdges = result.edges;
+          allMessages.push(result.message);
+        } catch (error) {
+          allMessages.push(`Error in command "${cmd}": ${error.message}`);
+          // Continue with next command even if one fails
+        }
+      }
+
+      // Add all messages to chat history
+      setChatHistory(prev => [...prev, { 
+        type: 'ai', 
+        content: allMessages.join('\n')
+      }]);
+
+      // Update diagram with final state
+      onDiagramGenerated({ nodes: currentNodes, edges: currentEdges });
+
+    } catch (error) {
+      console.error('Command execution error:', error);
+      
+      setChatHistory(prev => [...prev, { 
+        type: 'error', 
+        content: error.message || 'Error executing commands'
+      }]);
+    } finally {
+      setTestInput('');
+    }
+  };
 
   const scrollToBottom = () => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -33,7 +137,255 @@ const ChatDiagramGenerator = ({ onDiagramGenerated }) => {
     scrollToBottom();
   }, [chatHistory]);
 
-  const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+  const validateCommand = (command, args) => {
+    if (!Object.values(COMMANDS).includes(command)) {
+      throw new Error(`Invalid command: ${command}. Available commands: ${Object.values(COMMANDS).join(', ')}`);
+    }
+
+    switch (command) {
+      case COMMANDS.DELETE_ALL:
+        if (args.length !== 0) {
+          throw new Error('Delete-all command takes no arguments');
+        }
+        break;
+
+      case COMMANDS.ADD:
+        if (args.length !== 3) {
+          throw new Error(`Add command requires 3 arguments: nodeType,x,y. Received: ${args.join(',')}`);
+        }
+        if (!NODE_TYPES[args[0]]) {
+          throw new Error(`Invalid node type: ${args[0]}. Available types: ${Object.keys(NODE_TYPES).join(', ')}`);
+        }
+        if (isNaN(args[1]) || isNaN(args[2])) {
+          throw new Error('X and Y coordinates must be numbers');
+        }
+        break;
+
+      case COMMANDS.DELETE:
+        if (args.length !== 2) {
+          throw new Error(`Delete command requires 2 arguments: x,y. Received: ${args.join(',')}`);
+        }
+        if (isNaN(args[0]) || isNaN(args[1])) {
+          throw new Error('X and Y coordinates must be numbers');
+        }
+        break;
+
+      case COMMANDS.CONNECT:
+        if (args.length !== 6) {
+          throw new Error(`Connect command requires 6 arguments: x1,y1,point1,x2,y2,point2. Received: ${args.join(',')}`);
+        }
+        if (args.slice(0, 2).some(arg => isNaN(arg)) || args.slice(3, 5).some(arg => isNaN(arg))) {
+          throw new Error('Coordinates must be numbers');
+        }
+        if (!CONNECTION_POINTS[args[2]] || !CONNECTION_POINTS[args[5]]) {
+          throw new Error(`Invalid connection point. Available points: ${Object.keys(CONNECTION_POINTS).join(', ')}`);
+        }
+        break;
+
+      case COMMANDS.DISCONNECT:
+        if (args.length !== 6) {
+          throw new Error(`Disconnect command requires 6 arguments: x1,y1,point1,x2,y2,point2. Received: ${args.join(',')}`);
+        }
+        if (args.slice(0, 2).some(arg => isNaN(arg)) || args.slice(3, 5).some(arg => isNaN(arg))) {
+          throw new Error('Coordinates must be numbers');
+        }
+        if (!CONNECTION_POINTS[args[2]] || !CONNECTION_POINTS[args[5]]) {
+          throw new Error(`Invalid connection point. Available points: ${Object.keys(CONNECTION_POINTS).join(', ')}`);
+        }
+        break;
+    }
+  };
+
+  const calculatePosition = (x, y) => {
+    return {
+      x: GRID_CONFIG.startX + (x - 1) * GRID_CONFIG.cellSize,
+      y: GRID_CONFIG.startY + (y - 1) * GRID_CONFIG.cellSize
+    };
+  };
+
+  const findNodeAtPosition = (nodes, x, y) => {
+    const position = calculatePosition(parseInt(x), parseInt(y));
+    return nodes.find(node => 
+      Math.abs(node.position.x - position.x) < GRID_CONFIG.cellSize / 2 &&
+      Math.abs(node.position.y - position.y) < GRID_CONFIG.cellSize / 2
+    );
+  };
+
+  const findConnectionPoint = (node, point) => {
+    const pointMap = {
+      'top': { position: Position.Top, type: 'source' },
+      'right': { position: Position.Right, type: 'source' },
+      'bottom': { position: Position.Bottom, type: 'source' },
+      'left': { position: Position.Left, type: 'source' }
+    };
+    return pointMap[point];
+  };
+
+  const executeCommand = async (command, args, currentNodes, currentEdges) => {
+    let updatedNodes = [...currentNodes];
+    let updatedEdges = [...currentEdges];
+    let message = '';
+
+    switch (command) {
+      case COMMANDS.DELETE_ALL:
+        updatedNodes = [];
+        updatedEdges = [];
+        message = 'Cleared all nodes and connections';
+        break;
+
+      case COMMANDS.ADD: {
+        const [nodeType, x, y] = args;
+        const position = calculatePosition(parseInt(x), parseInt(y));
+        const nodeId = `${NODE_TYPES[nodeType]}-${Date.now()}`;
+        
+        const newNode = {
+          id: nodeId,
+          type: NODE_TYPES[nodeType],
+          position,
+          data: { 
+            label: nodeType.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
+            showHandles: false
+          }
+        };
+
+        updatedNodes = [...currentNodes, newNode];
+        message = `Added ${nodeType} at position (${x}, ${y})`;
+        break;
+      }
+
+      case COMMANDS.DELETE: {
+        const [x, y] = args;
+        const nodeToDelete = findNodeAtPosition(currentNodes, x, y);
+        
+        if (!nodeToDelete) {
+          throw new Error(`No node found at position (${x}, ${y})`);
+        }
+
+        updatedNodes = currentNodes.filter(node => node.id !== nodeToDelete.id);
+        // Also remove any edges connected to this node
+        updatedEdges = currentEdges.filter(edge => 
+          edge.source !== nodeToDelete.id && edge.target !== nodeToDelete.id
+        );
+        message = `Deleted node at position (${x}, ${y})`;
+        break;
+      }
+
+      case COMMANDS.CONNECT: {
+        const [x1, y1, point1, x2, y2, point2] = args;
+        const node1 = findNodeAtPosition(currentNodes, x1, y1);
+        const node2 = findNodeAtPosition(currentNodes, x2, y2);
+
+        if (!node1 || !node2) {
+          throw new Error('Both positions must contain nodes to connect');
+        }
+
+        const connection1 = findConnectionPoint(node1, CONNECTION_POINTS[point1]);
+        const connection2 = findConnectionPoint(node2, CONNECTION_POINTS[point2]);
+
+        if (!connection1 || !connection2) {
+          throw new Error('Invalid connection points');
+        }
+
+        const newEdge = {
+          id: `e${node1.id}-${node2.id}-${Date.now()}`,
+          source: node1.id,
+          target: node2.id,
+          sourceHandle: point1,
+          targetHandle: point2,
+          type: 'step',
+          style: { stroke: '#000', strokeWidth: 2 },
+          animated: false,
+          markerEnd: {
+            type: 'arrowclosed',
+            width: 20,
+            height: 20,
+          },
+        };
+
+        updatedEdges = [...currentEdges, newEdge];
+        message = `Connected nodes at (${x1}, ${y1}) and (${x2}, ${y2})`;
+        break;
+      }
+
+      case COMMANDS.DISCONNECT: {
+        const [x1, y1, point1, x2, y2, point2] = args;
+        const node1 = findNodeAtPosition(currentNodes, x1, y1);
+        const node2 = findNodeAtPosition(currentNodes, x2, y2);
+
+        if (!node1 || !node2) {
+          throw new Error('Both positions must contain nodes to disconnect');
+        }
+
+        updatedEdges = currentEdges.filter(edge => 
+          !(edge.source === node1.id && edge.target === node2.id && 
+            edge.sourceHandle === point1 && edge.targetHandle === point2)
+        );
+
+        message = `Disconnected nodes at (${x1}, ${y1}) and (${x2}, ${y2})`;
+        break;
+      }
+    }
+
+    await updateDiagram(updatedNodes, updatedEdges);
+    return {
+      success: true,
+      message,
+      nodes: updatedNodes,
+      edges: updatedEdges
+    };
+  };
+
+  const getCurrentDiagram = async () => {
+    try {
+      const response = await axios.get(`/api/projects/${projectId}/diagram`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      return response.data.data?.nodes || [];
+    } catch (error) {
+      if (error.response?.status === 404) {
+        return [];
+      }
+      throw error;
+    }
+  };
+
+  const getCurrentEdges = async () => {
+    try {
+      const response = await axios.get(`/api/projects/${projectId}/diagram`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      return response.data.data?.edges || [];
+    } catch (error) {
+      if (error.response?.status === 404) {
+        return [];
+      }
+      throw error;
+    }
+  };
+
+  const updateDiagram = async (nodes, edges = []) => {
+    const flow = {
+      nodes,
+      edges
+    };
+
+    await axios.post(
+      `/api/projects/${projectId}/diagram`,
+      flow,
+      {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -46,119 +398,53 @@ const ChatDiagramGenerator = ({ onDiagramGenerated }) => {
     setIsLoading(true);
     setError(null);
 
-    let retryCount = 0;
-    let lastError = null;
+    try {
+      // Split input into multiple commands by pipe
+      const commands = message.split('|').map(cmd => cmd.trim()).filter(cmd => cmd);
+      
+      // Process each command
+      let currentNodes = await getCurrentDiagram();
+      let currentEdges = await getCurrentEdges();
+      let allMessages = [];
 
-    while (retryCount < MAX_RETRIES) {
-      try {
-        console.log(`Attempt ${retryCount + 1} of ${MAX_RETRIES}`);
-        console.log('Sending interpret-chat request:', {
-          projectId,
-          message: userMessage.content,
-          chatHistory: chatHistory.map(msg => ({
-            role: msg.type === 'user' ? 'user' : 'assistant',
-            content: msg.content
-          }))
-        });
+      for (const cmd of commands) {
+        try {
+          // Parse the command and its arguments
+          const parts = cmd.split(',').map(part => part.trim().toLowerCase());
+          const command = parts[0];
+          const args = parts.slice(1);
 
-        // Step 1: Interpret chat to design plan
-        const interpretResponse = await axios.post(
-          `/api/projects/${projectId}/interpret-chat`,
-          { 
-            projectId,
-            message: userMessage.content,
-            chatHistory: chatHistory.map(msg => ({
-              role: msg.type === 'user' ? 'user' : 'assistant',
-              content: msg.content
-            }))
-          },
-          {
-            headers: {
-              'Authorization': `Bearer ${localStorage.getItem('token')}`,
-              'Content-Type': 'application/json'
-            }
-          }
-        );
-
-        console.log('Interpret response:', interpretResponse.data);
-
-        if (!interpretResponse.data.nodes || !interpretResponse.data.edges) {
-          throw new Error('Invalid response from server: missing nodes or edges');
-        }
-
-        // Step 2: Generate diagram layout
-        console.log('Sending generate-layout request:', interpretResponse.data);
-        const layoutResponse = await axios.post(
-          `/api/projects/${projectId}/generate-layout`,
-          {
-            nodes: interpretResponse.data.nodes,
-            connections: interpretResponse.data.edges
-          },
-          {
-            headers: {
-              'Authorization': `Bearer ${localStorage.getItem('token')}`,
-              'Content-Type': 'application/json'
-            }
-          }
-        );
-
-        console.log('Layout response:', layoutResponse.data);
-
-        if (!layoutResponse.data.nodes || !layoutResponse.data.edges) {
-          throw new Error('Invalid response from server: missing nodes or edges in layout');
-        }
-
-        // Add AI response to chat history
-        setChatHistory(prev => [...prev, { 
-          type: 'ai', 
-          content: 'Diagram generated successfully! The layout has been updated based on your description.'
-        }]);
-
-        // Pass the generated diagram to the parent component
-        onDiagramGenerated(layoutResponse.data);
-        setIsLoading(false);
-        return;
-      } catch (error) {
-        console.error(`Attempt ${retryCount + 1} failed:`, {
-          error,
-          response: error.response?.data,
-          status: error.response?.status
-        });
-
-        lastError = error;
-        retryCount++;
-
-        if (retryCount < MAX_RETRIES) {
-          console.log(`Retrying in ${RETRY_DELAY}ms...`);
-          await sleep(RETRY_DELAY);
+          validateCommand(command, args);
+          const result = await executeCommand(command, args, currentNodes, currentEdges);
+          
+          currentNodes = result.nodes;
+          currentEdges = result.edges;
+          allMessages.push(result.message);
+        } catch (error) {
+          allMessages.push(`Error in command "${cmd}": ${error.message}`);
+          // Continue with next command even if one fails
         }
       }
-    }
 
-    // If we get here, all retries failed
-    let errorMessage = 'Error generating diagram';
-    
-    if (lastError.response?.data?.message) {
-      errorMessage = lastError.response.data.message;
-    } else if (lastError.response?.data?.error) {
-      errorMessage = lastError.response.data.error;
-    } else if (lastError.message) {
-      errorMessage = lastError.message;
-    }
+      // Add all messages to chat history
+      setChatHistory(prev => [...prev, { 
+        type: 'ai', 
+        content: allMessages.join('\n')
+      }]);
 
-    if (lastError.response?.status === 401) {
-      errorMessage = 'Authentication failed. Please log in again.';
-    } else if (lastError.response?.status === 429) {
-      errorMessage = 'Rate limit exceeded. Please try again later.';
-    }
+      // Update diagram with final state
+      onDiagramGenerated({ nodes: currentNodes, edges: currentEdges });
 
-    // Add error message to chat history
-    setChatHistory(prev => [...prev, { 
-      type: 'error', 
-      content: errorMessage 
-    }]);
-    setError(errorMessage);
-    setIsLoading(false);
+    } catch (error) {
+      console.error('Command execution error:', error);
+      
+      setChatHistory(prev => [...prev, { 
+        type: 'error', 
+        content: error.message || 'Error executing commands'
+      }]);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -170,12 +456,59 @@ const ChatDiagramGenerator = ({ onDiagramGenerated }) => {
       borderRadius: 1,
       boxShadow: 1
     }}>
+      <Box sx={{ 
+        p: 2, 
+        borderBottom: 1, 
+        borderColor: 'divider',
+        backgroundColor: '#fff3e0'
+      }}>
+        <Typography variant="subtitle2" color="warning.main" sx={{ mb: 1 }}>
+          [TEMPORARY TEST INTERFACE - WILL BE REMOVED]
+        </Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+          Commands (separate multiple commands with |):
+          <br />- add,nodeType,x,y
+          <br />- delete,x,y
+          <br />- connect,x1,y1,point1,x2,y2,point2
+          <br />- disconnect,x1,y1,point1,x2,y2,point2
+          <br />Connection points: top(t), right(r), bottom(b), left(l)
+          <br />Example: add,smart-meter,1,1 | add,meter,2,1 | connect,1,1,right,2,1,left
+        </Typography>
+        <Box sx={{ display: 'flex', gap: 1 }}>
+          <TextField
+            fullWidth
+            value={testInput}
+            onChange={(e) => setTestInput(e.target.value)}
+            placeholder="Example: add,smart-meter,1,1 | add,meter,2,1 | connect,1,1,right,2,1,left"
+            size="small"
+            multiline
+            rows={3}
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                borderRadius: 1
+              }
+            }}
+          />
+          <Button
+            variant="contained"
+            color="warning"
+            onClick={handleTestSubmit}
+            size="small"
+          >
+            Test
+          </Button>
+        </Box>
+      </Box>
+
       <Box sx={{ p: 2, borderBottom: 1, borderColor: 'divider' }}>
         <Typography variant="h6">
-          Diagram Assistant
+          Command Interface
         </Typography>
         <Typography variant="body2" color="text.secondary">
-          Describe your EMS diagram requirements
+          Available commands: add, delete, connect, disconnect
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          Example: add smartmeter 1 2
         </Typography>
       </Box>
 
@@ -223,11 +556,9 @@ const ChatDiagramGenerator = ({ onDiagramGenerated }) => {
               fullWidth
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              placeholder="Describe the EMS diagram you want to create..."
+              placeholder="Enter command (e.g., add smartmeter 1 2)..."
               disabled={isLoading}
               size="small"
-              multiline
-              maxRows={4}
               sx={{
                 '& .MuiOutlinedInput-root': {
                   borderRadius: 2

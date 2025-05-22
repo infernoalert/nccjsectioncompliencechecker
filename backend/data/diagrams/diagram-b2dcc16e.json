@@ -1,277 +1,47 @@
 {
   "nodes": [
     {
-      "id": "authorityMeter-3",
-      "type": "AuthorityMeterNode",
+      "id": "smartMeter-1747954092219",
+      "type": "smartMeter",
       "position": {
-        "x": 0,
-        "y": 0
-      },
-      "data": {
-        "label": "Authority Meter",
-        "showHandles": false
-      },
-      "width": 150,
-      "height": 40
-    },
-    {
-      "id": "smartMeter-9",
-      "type": "SmartMeterNode",
-      "position": {
-        "x": 200,
+        "x": 100,
         "y": 100
       },
       "data": {
-        "label": "Central Hot Water",
+        "label": "Smart Meter",
         "showHandles": false
-      },
-      "width": 150,
-      "height": 40
+      }
     },
     {
-      "id": "smartMeter-6",
-      "type": "SmartMeterNode",
+      "id": "meter-1747954092243",
+      "type": "meter",
       "position": {
-        "x": 400,
+        "x": 250,
         "y": 100
       },
       "data": {
-        "label": "EVSE",
+        "label": "Meter",
         "showHandles": false
-      },
-      "width": 150,
-      "height": 40
-    },
-    {
-      "id": "smartMeter-8",
-      "type": "SmartMeterNode",
-      "position": {
-        "x": 600,
-        "y": 100
-      },
-      "data": {
-        "label": "Lifts",
-        "showHandles": false
-      },
-      "width": 150,
-      "height": 40
-    },
-    {
-      "id": "smartMeter-7",
-      "type": "SmartMeterNode",
-      "position": {
-        "x": 800,
-        "y": 100
-      },
-      "data": {
-        "label": "Lighting",
-        "showHandles": false
-      },
-      "width": 150,
-      "height": 40
-    },
-    {
-      "id": "onPremise-11",
-      "type": "OnPremiseNode",
-      "position": {
-        "x": 1000,
-        "y": 200
-      },
-      "data": {
-        "label": "On-Premise",
-        "showHandles": false
-      },
-      "width": 150,
-      "height": 40
-    },
-    {
-      "id": "ethernet-11",
-      "type": "EthernetNode",
-      "position": {
-        "x": 1000,
-        "y": 100
-      },
-      "data": {
-        "label": "Network",
-        "showHandles": false
-      },
-      "width": 150,
-      "height": 40
-    },
-    {
-      "id": "smartMeter-13",
-      "type": "SmartMeterNode",
-      "position": {
-        "x": 1200,
-        "y": 100
-      },
-      "data": {
-        "label": "Billing Meters",
-        "showHandles": false
-      },
-      "width": 150,
-      "height": 40
-    },
-    {
-      "id": "text-5",
-      "type": "TextNode",
-      "position": {
-        "x": 800,
-        "y": 400
-      },
-      "data": {
-        "label": "Text Note",
-        "showHandles": false
-      },
-      "width": 150,
-      "height": 40
-    },
-    {
-      "id": "text-10",
-      "type": "TextNode",
-      "position": {
-        "x": 600,
-        "y": 400
-      },
-      "data": {
-        "label": "Text Note",
-        "showHandles": false
-      },
-      "width": 150,
-      "height": 40
+      }
     }
   ],
   "edges": [
     {
-      "id": "e1",
-      "source": "authorityMeter-3",
-      "target": "smartMeter-9",
+      "id": "esmartMeter-1747954092219-meter-1747954092243-1747954092254",
+      "source": "smartMeter-1747954092219",
+      "target": "meter-1747954092243",
+      "sourceHandle": "right",
+      "targetHandle": "left",
+      "type": "step",
       "style": {
-        "stroke": "#555"
+        "stroke": "#000",
+        "strokeWidth": 2
       },
+      "animated": false,
       "markerEnd": {
-        "type": "arrowclosed"
-      }
-    },
-    {
-      "id": "e2",
-      "source": "authorityMeter-3",
-      "target": "smartMeter-6",
-      "style": {
-        "stroke": "#555"
-      },
-      "markerEnd": {
-        "type": "arrowclosed"
-      }
-    },
-    {
-      "id": "e3",
-      "source": "authorityMeter-3",
-      "target": "smartMeter-8",
-      "style": {
-        "stroke": "#555"
-      },
-      "markerEnd": {
-        "type": "arrowclosed"
-      }
-    },
-    {
-      "id": "e4",
-      "source": "authorityMeter-3",
-      "target": "smartMeter-7",
-      "style": {
-        "stroke": "#555"
-      },
-      "markerEnd": {
-        "type": "arrowclosed"
-      }
-    },
-    {
-      "id": "e5",
-      "source": "smartMeter-9",
-      "target": "ethernet-11",
-      "style": {
-        "stroke": "#555"
-      },
-      "markerEnd": {
-        "type": "arrowclosed"
-      }
-    },
-    {
-      "id": "e6",
-      "source": "smartMeter-6",
-      "target": "ethernet-11",
-      "style": {
-        "stroke": "#555"
-      },
-      "markerEnd": {
-        "type": "arrowclosed"
-      }
-    },
-    {
-      "id": "e7",
-      "source": "smartMeter-8",
-      "target": "ethernet-11",
-      "style": {
-        "stroke": "#555"
-      },
-      "markerEnd": {
-        "type": "arrowclosed"
-      }
-    },
-    {
-      "id": "e8",
-      "source": "smartMeter-7",
-      "target": "ethernet-11",
-      "style": {
-        "stroke": "#555"
-      },
-      "markerEnd": {
-        "type": "arrowclosed"
-      }
-    },
-    {
-      "id": "e9",
-      "source": "ethernet-11",
-      "target": "onPremise-11",
-      "style": {
-        "stroke": "#555"
-      },
-      "markerEnd": {
-        "type": "arrowclosed"
-      }
-    },
-    {
-      "id": "e10",
-      "source": "smartMeter-13",
-      "target": "ethernet-11",
-      "style": {
-        "stroke": "#555"
-      },
-      "markerEnd": {
-        "type": "arrowclosed"
-      }
-    },
-    {
-      "id": "e11",
-      "source": "text-5",
-      "target": "authorityMeter-3",
-      "style": {
-        "stroke": "#555"
-      },
-      "markerEnd": {
-        "type": "arrowclosed"
-      }
-    },
-    {
-      "id": "e12",
-      "source": "text-10",
-      "target": "onPremise-11",
-      "style": {
-        "stroke": "#555"
-      },
-      "markerEnd": {
-        "type": "arrowclosed"
+        "type": "arrowclosed",
+        "width": 20,
+        "height": 20
       }
     }
   ]
