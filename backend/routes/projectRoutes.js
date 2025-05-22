@@ -14,6 +14,7 @@ const {
 } = require('../controllers/elemental_provision_controller');
 const { getAllBuildingTypes } = require('../utils/mappingUtils');
 const diagramService = require('../services/diagramService');
+const { interpretChat, generateDiagramLayout } = require('../controllers/diagramController');
 
 /**
  * @swagger
@@ -373,5 +374,9 @@ router.delete('/:id/diagram', protect, async (req, res) => {
     });
   }
 });
+
+// Diagram generation routes
+router.post('/:id/interpret-chat', protect, interpretChat);
+router.post('/:id/generate-layout', protect, generateDiagramLayout);
 
 module.exports = router; 

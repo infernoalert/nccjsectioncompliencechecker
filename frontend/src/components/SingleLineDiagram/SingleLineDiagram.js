@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef, useEffect } from 'react';
+import React, { useState, useCallback, useRef, useEffect, useMemo } from 'react';
 import ReactFlow, {
   MiniMap,
   Controls,
@@ -49,8 +49,9 @@ import {
   EthernetNode,
   TextNodeComponent
 } from './CustomNodes';
+import ChatDiagramGenerator from './ChatDiagramGenerator';
 
-// Custom node types
+// Move nodeTypes outside of component and memoize it
 const nodeTypes = {
   transformer: TransformerNode,
   load: LoadNode,
@@ -115,6 +116,9 @@ const SingleLineDiagramInner = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [showHandles, setShowHandles] = useState(false);
   const { getNodes, setNodes: setFlowNodes, getEdges, setEdges: setFlowEdges } = useReactFlow();
+
+  // Memoize the nodeTypes to prevent recreation
+  const memoizedNodeTypes = useMemo(() => nodeTypes, []);
 
   // Load diagram when component mounts or projectId changes
   useEffect(() => {
@@ -416,169 +420,118 @@ const SingleLineDiagramInner = () => {
     setSnackbar({ ...snackbar, open: false });
   };
 
+  const handleDiagramGenerated = useCallback((diagramData) => {
+    setNodes(diagramData.nodes || []);
+    setEdges(diagramData.edges || []);
+    if (reactFlowInstance) {
+      reactFlowInstance.fitView();
+    }
+  }, [reactFlowInstance]);
+
   return (
-    <div style={{ width: '100%', height: '100vh', position: 'relative' }}>
-      {isLoading && (
-        <Box
-          sx={{
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: 'rgba(255, 255, 255, 0.7)',
-            zIndex: 1000,
-          }}
+    <Box sx={{ 
+      display: 'flex', 
+      height: 'calc(100vh - 64px)', // Adjust based on your header height
+      width: '100%',
+      overflow: 'hidden'
+    }}>
+      {/* Left side - Diagram */}
+      <Box sx={{ 
+        flex: 1,
+        height: '100%',
+        position: 'relative',
+        borderRight: '1px solid #e0e0e0'
+      }}>
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          onConnect={onConnect}
+          onSelectionChange={onSelectionChange}
+          onInit={setReactFlowInstance}
+          onDrop={onDrop}
+          onDragOver={onDragOver}
+          onKeyDown={onKeyDown}
+          nodeTypes={memoizedNodeTypes}
+          fitView
+          attributionPosition="bottom-left"
         >
-          <CircularProgress />
-        </Box>
-      )}
-      <input
-        type="file"
-        ref={fileInputRef}
-        onChange={onImport}
-        accept=".json"
-        style={{ display: 'none' }}
-      />
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
-        onSelectionChange={onSelectionChange}
-        onKeyDown={onKeyDown}
-        onInit={setReactFlowInstance}
-        onDrop={onDrop}
-        onDragOver={onDragOver}
-        nodeTypes={nodeTypes}
-        defaultEdgeOptions={{
-          type: 'step',
-          style: { stroke: '#000', strokeWidth: 2 },
-          animated: false,
-          markerEnd: {
-            type: 'arrowclosed',
-            width: 20,
-            height: 20,
-          },
-          stepPattern: ['vertical', 'horizontal'],
-        }}
-        connectionMode="loose"
-        snapToGrid={true}
-        snapGrid={[15, 15]}
-        fitView
-        deleteKeyCode={['Backspace', 'Delete']}
-        connectionRadius={20}
-        validateConnection={(connection) => {
-          return connection.source !== connection.target;
-        }}
-      >
-        <Controls />
-        <MiniMap />
-        <Background variant="dots" gap={12} size={1} />
-        <Panel position="top-right">
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-            <Button
-              variant="contained"
-              color="primary"
-              startIcon={<CloudUploadIcon />}
-              onClick={onSave}
-              disabled={isSaving || isLoading}
-            >
-              {isSaving ? 'Saving...' : 'Save to Project'}
-            </Button>
-            {/* <Button
-              variant="contained"
-              color="secondary"
-              startIcon={<SaveIcon />}
-              onClick={onExport}
-              disabled={isLoading}
-            >
-              Export Diagram
-            </Button> */}
-            {/* <Button
-              variant="contained"
-              color="info"
-              startIcon={<UploadIcon />}
-              onClick={handleImportClick}
-              disabled={isLoading}
-            >
-              Import Diagram
-            </Button> */}
-            <Button
-              variant="contained"
-              color="error"
-              startIcon={<DeleteIcon />}
-              onClick={onDelete}
-              disabled={selectedElements.length === 0 || isLoading}
-            >
-              Delete Selected
-            </Button>
-          </Box>
-        </Panel>
-        <Panel position="left" style={{ width: '200px' }}>
-          <Paper sx={{ p: 2 }}>
-            <Typography variant="h6" gutterBottom>
-              Components
-            </Typography>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+          <Controls />
+          <MiniMap />
+          <Background />
+          <Panel position="top-left">
+            <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', p: 1 }}>
               {componentTypes.map((component) => (
                 <Button
                   key={component.type}
                   variant="outlined"
+                  size="small"
                   startIcon={component.icon}
-                  draggable
                   onDragStart={(event) => {
                     event.dataTransfer.setData('application/reactflow', component.type);
                     event.dataTransfer.effectAllowed = 'move';
                   }}
-                  sx={{ justifyContent: 'flex-start' }}
+                  draggable
+                  sx={{ 
+                    textTransform: 'none',
+                    '&:hover': {
+                      backgroundColor: 'rgba(0, 0, 0, 0.04)'
+                    }
+                  }}
                 >
                   {component.label}
                 </Button>
               ))}
             </Box>
-          </Paper>
-        </Panel>
-      </ReactFlow>
-      <Box
-        sx={{
-          position: 'absolute',
-          bottom: 20,
-          left: '50%',
-          transform: 'translateX(-50%)',
-          zIndex: 1000,
-        }}
-      >
-        <Button
-          variant="contained"
-          onClick={() => setShowHandles(!showHandles)}
-          sx={{
-            bgcolor: 'rgba(0, 0, 0, 0.6)',
-            color: 'white',
-            '&:hover': {
-              bgcolor: 'rgba(0, 0, 0, 0.8)',
-            },
-          }}
-          startIcon={showHandles ? <VisibilityOffIcon /> : <VisibilityIcon />}
-        >
-          {showHandles ? 'Hide Connection Points' : 'Show Connection Points'}
-        </Button>
+          </Panel>
+          <Panel position="top-right">
+            <Box sx={{ display: 'flex', gap: 1 }}>
+              <Button
+                variant="outlined"
+                size="small"
+                onClick={onDelete}
+                disabled={selectedElements.length === 0}
+                startIcon={<DeleteIcon />}
+                sx={{ textTransform: 'none' }}
+              >
+                Delete Selected
+              </Button>
+              <Button
+                variant="outlined"
+                size="small"
+                onClick={() => setShowHandles(!showHandles)}
+                startIcon={showHandles ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                sx={{ textTransform: 'none' }}
+              >
+                {showHandles ? 'Hide Handles' : 'Show Handles'}
+              </Button>
+              <Button
+                variant="contained"
+                size="small"
+                onClick={onSave}
+                disabled={isSaving}
+                startIcon={isSaving ? <CircularProgress size={20} /> : <SaveIcon />}
+                sx={{ textTransform: 'none' }}
+              >
+                {isSaving ? 'Saving...' : 'Save Diagram'}
+              </Button>
+            </Box>
+          </Panel>
+        </ReactFlow>
       </Box>
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={6000}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-      >
-        <Alert onClose={handleCloseSnackbar} severity={snackbar.severity}>
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
-    </div>
+
+      {/* Right side - Chat */}
+      <Box sx={{ 
+        width: '400px',
+        height: '100%',
+        overflow: 'auto',
+        backgroundColor: '#f5f5f5',
+        p: 2
+      }}>
+        <ChatDiagramGenerator onDiagramGenerated={handleDiagramGenerated} />
+      </Box>
+    </Box>
   );
 };
 
