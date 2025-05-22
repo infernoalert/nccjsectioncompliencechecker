@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import ReactFlow, {
   MiniMap,
   Controls,
@@ -25,6 +25,8 @@ import StorageIcon from '@mui/icons-material/Storage';
 import WifiIcon from '@mui/icons-material/Wifi';
 import SettingsInputComponentIcon from '@mui/icons-material/SettingsInputComponent';
 import RouterIcon from '@mui/icons-material/Router';
+import SaveIcon from '@mui/icons-material/Save';
+import UploadIcon from '@mui/icons-material/Upload';
 import { 
   
   TransformerNode, 
@@ -99,6 +101,7 @@ const SingleLineDiagram = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [selectedElements, setSelectedElements] = useState([]);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
+  const fileInputRef = useRef(null);
 
   const onConnect = useCallback(
     (params) => {
@@ -166,8 +169,76 @@ const SingleLineDiagram = () => {
     [reactFlowInstance, nodes, setNodes]
   );
 
+  const onExport = useCallback(() => {
+    if (reactFlowInstance) {
+      const flow = {
+        nodes: nodes.map(node => ({
+          ...node,
+          position: node.position,
+          data: { ...node.data }
+        })),
+        edges: edges.map(edge => ({
+          ...edge,
+          source: edge.source,
+          target: edge.target,
+          type: edge.type,
+          style: edge.style,
+          animated: edge.animated,
+          markerEnd: edge.markerEnd
+        }))
+      };
+
+      const jsonString = JSON.stringify(flow, null, 2);
+      const blob = new Blob([jsonString], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'single-line-diagram.json';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+  }, [nodes, edges, reactFlowInstance]);
+
+  const onImport = useCallback((event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const flow = JSON.parse(e.target.result);
+          if (flow.nodes && flow.edges) {
+            setNodes(flow.nodes);
+            setEdges(flow.edges);
+            if (reactFlowInstance) {
+              reactFlowInstance.fitView();
+            }
+          }
+        } catch (error) {
+          console.error('Error importing diagram:', error);
+          alert('Error importing diagram. Please make sure the file is valid.');
+        }
+      };
+      reader.readAsText(file);
+    }
+    // Reset the file input
+    event.target.value = '';
+  }, [setNodes, setEdges, reactFlowInstance]);
+
+  const handleImportClick = useCallback(() => {
+    fileInputRef.current?.click();
+  }, []);
+
   return (
     <div style={{ width: '100%', height: '100vh' }}>
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={onImport}
+        accept=".json"
+        style={{ display: 'none' }}
+      />
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -200,16 +271,33 @@ const SingleLineDiagram = () => {
         <MiniMap />
         <Background variant="dots" gap={12} size={1} />
         <Panel position="top-right">
-          <Button
-            variant="contained"
-            color="error"
-            startIcon={<DeleteIcon />}
-            onClick={onDelete}
-            disabled={selectedElements.length === 0}
-            sx={{ mb: 1 }}
-          >
-            Delete Selected
-          </Button>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<SaveIcon />}
+              onClick={onExport}
+            >
+              Export Diagram
+            </Button>
+            <Button
+              variant="contained"
+              color="secondary"
+              startIcon={<UploadIcon />}
+              onClick={handleImportClick}
+            >
+              Import Diagram
+            </Button>
+            <Button
+              variant="contained"
+              color="error"
+              startIcon={<DeleteIcon />}
+              onClick={onDelete}
+              disabled={selectedElements.length === 0}
+            >
+              Delete Selected
+            </Button>
+          </Box>
         </Panel>
         <Panel position="left" style={{ width: '200px' }}>
           <Paper sx={{ p: 2 }}>
