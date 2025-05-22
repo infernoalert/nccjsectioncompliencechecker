@@ -159,26 +159,19 @@ const SingleLineDiagram = () => {
 
   const onConnect = useCallback(
     (params) => {
-      // Check if the connection is valid (not connecting to the same handle)
+      console.log('Connection params:', params); // Debug log
+      
+      // Only allow connections between different nodes
       if (params.source === params.target) {
         return;
       }
 
-      // Check if there's already a connection between these exact handles
-      const existingConnection = edges.find(
-        edge => 
-          edge.source === params.source && 
-          edge.target === params.target &&
-          edge.sourceHandle === params.sourceHandle &&
-          edge.targetHandle === params.targetHandle
-      );
-
-      if (existingConnection) {
-        return;
-      }
-
       const newEdge = {
-        ...params,
+        id: `e${params.source}-${params.target}-${Date.now()}`,
+        source: params.source,
+        target: params.target,
+        sourceHandle: params.sourceHandle,
+        targetHandle: params.targetHandle,
         type: 'step',
         style: { stroke: '#000', strokeWidth: 2 },
         animated: false,
@@ -188,9 +181,10 @@ const SingleLineDiagram = () => {
           height: 20,
         },
       };
-      setEdges((eds) => addEdge(newEdge, eds));
+
+      setEdges((eds) => [...eds, newEdge]);
     },
-    [setEdges, edges]
+    [setEdges]
   );
 
   const onSelectionChange = useCallback(({ nodes, edges }) => {
@@ -440,11 +434,16 @@ const SingleLineDiagram = () => {
             height: 20,
           },
         }}
-        connectionMode="strict"
+        connectionMode="loose"
         snapToGrid={true}
         snapGrid={[15, 15]}
         fitView
         deleteKeyCode={['Backspace', 'Delete']}
+        connectionRadius={20}
+        validateConnection={(connection) => {
+          // Only allow connections between different nodes
+          return connection.source !== connection.target;
+        }}
       >
         <Controls />
         <MiniMap />

@@ -52,65 +52,72 @@ const CustomNode = ({ data, type }) => {
   };
 
   const handleStyle = {
-    width: 8,
-    height: 8,
-    background: '#555',
-    border: 'none',
-    opacity: data.showHandles ? 1 : 0,
-    '&:hover': {
-      opacity: 1,
-      background: '#555',
-    }
+    width: 12,
+    height: 12,
+    background: data.showHandles ? '#555' : 'transparent',
+    border: data.showHandles ? '2px solid #333' : 'none',
+    borderRadius: '50%',
+    cursor: 'crosshair',
+    zIndex: 1000,
   };
 
   return (
-    <div style={{ padding: 10, background: 'white', borderRadius: 5 }}>
-      {/* Top Handle */}
+    <div style={{ padding: 10, background: 'white', borderRadius: 5, position: 'relative' }}>
       <Handle
         type="source"
         position={Position.Top}
+        id="top"
         style={handleStyle}
+        isConnectable={true}
       />
       <Handle
         type="target"
         position={Position.Top}
+        id="top"
         style={handleStyle}
+        isConnectable={true}
       />
-
-      {/* Right Handle */}
       <Handle
         type="source"
         position={Position.Right}
+        id="right"
         style={handleStyle}
+        isConnectable={true}
       />
       <Handle
         type="target"
         position={Position.Right}
+        id="right"
         style={handleStyle}
+        isConnectable={true}
       />
-
-      {/* Bottom Handle */}
       <Handle
         type="source"
         position={Position.Bottom}
+        id="bottom"
         style={handleStyle}
+        isConnectable={true}
       />
       <Handle
         type="target"
         position={Position.Bottom}
+        id="bottom"
         style={handleStyle}
+        isConnectable={true}
       />
-
-      {/* Left Handle */}
       <Handle
         type="source"
         position={Position.Left}
+        id="left"
         style={handleStyle}
+        isConnectable={true}
       />
       <Handle
         type="target"
         position={Position.Left}
+        id="left"
         style={handleStyle}
+        isConnectable={true}
       />
 
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -176,58 +183,72 @@ const TextNode = ({ data }) => {
   };
 
   const handleStyle = {
-    width: 8,
-    height: 8,
-    background: '#555',
-    border: 'none',
-    opacity: data.showHandles ? 1 : 0,
-    '&:hover': {
-      opacity: 1,
-      background: '#555',
-    }
+    width: 12,
+    height: 12,
+    background: data.showHandles ? '#555' : 'transparent',
+    border: data.showHandles ? '2px solid #333' : 'none',
+    borderRadius: '50%',
+    cursor: 'crosshair',
+    zIndex: 1000,
   };
 
   return (
-    <div style={{ padding: 10, background: 'white', borderRadius: 5, minWidth: '150px' }}>
+    <div style={{ padding: 10, background: 'white', borderRadius: 5, minWidth: '150px', position: 'relative' }}>
       <Handle
         type="source"
         position={Position.Top}
+        id="top"
         style={handleStyle}
+        isConnectable={true}
       />
       <Handle
         type="target"
         position={Position.Top}
+        id="top"
         style={handleStyle}
+        isConnectable={true}
       />
       <Handle
         type="source"
         position={Position.Right}
+        id="right"
         style={handleStyle}
+        isConnectable={true}
       />
       <Handle
         type="target"
         position={Position.Right}
+        id="right"
         style={handleStyle}
+        isConnectable={true}
       />
       <Handle
         type="source"
         position={Position.Bottom}
+        id="bottom"
         style={handleStyle}
+        isConnectable={true}
       />
       <Handle
         type="target"
         position={Position.Bottom}
+        id="bottom"
         style={handleStyle}
+        isConnectable={true}
       />
       <Handle
         type="source"
         position={Position.Left}
+        id="left"
         style={handleStyle}
+        isConnectable={true}
       />
       <Handle
         type="target"
         position={Position.Left}
+        id="left"
         style={handleStyle}
+        isConnectable={true}
       />
 
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
