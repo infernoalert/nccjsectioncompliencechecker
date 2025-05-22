@@ -1,65 +1,226 @@
 {
   "nodes": [
     {
-      "id": "2",
-      "type": "transformer",
+      "id": "authorityMeter-3",
+      "type": "authorityMeter",
+      "position": {
+        "x": 255,
+        "y": -495
+      },
       "data": {
-        "label": "Transformer",
+        "label": "Authority Meter",
         "showHandles": true
       },
-      "position": {
-        "x": 510,
-        "y": 210
-      },
-      "width": 100,
+      "width": 112,
       "height": 87,
       "selected": false,
       "positionAbsolute": {
-        "x": 510,
-        "y": 210
+        "x": 255,
+        "y": -495
       },
       "dragging": false
     },
     {
-      "id": "3",
-      "type": "load",
-      "data": {
-        "label": "Load",
-        "showHandles": true
-      },
-      "position": {
-        "x": 330,
-        "y": 225
-      },
-      "width": 100,
-      "height": 87,
-      "selected": false,
-      "positionAbsolute": {
-        "x": 330,
-        "y": 225
-      },
-      "dragging": false
-    },
-    {
-      "id": "text-3",
+      "id": "text-5",
       "type": "text",
       "position": {
-        "x": 675,
-        "y": 210
+        "x": 240,
+        "y": -645
       },
       "data": {
         "label": "Text Note",
-        "text": "test",
-        "showHandles": true
+        "showHandles": true,
+        "text": "Main Income"
       },
       "width": 150,
       "height": 80,
-      "selected": true,
-      "dragging": false,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 240,
+        "y": -645
+      },
+      "dragging": false
+    },
+    {
+      "id": "text-10",
+      "type": "text",
+      "position": {
+        "x": -165,
+        "y": -585
+      },
+      "data": {
+        "label": "Text Note",
+        "showHandles": true,
+        "text": "Other Data"
+      },
+      "width": 150,
+      "height": 80,
+      "selected": false,
+      "positionAbsolute": {
+        "x": -165,
+        "y": -585
+      },
+      "dragging": false
+    },
+    {
+      "id": "onPremise-11",
+      "type": "onPremise",
+      "position": {
+        "x": -120,
+        "y": -390
+      },
+      "data": {
+        "label": "On-Premise",
+        "showHandles": true
+      },
+      "width": 100,
+      "height": 87,
+      "selected": false,
+      "positionAbsolute": {
+        "x": -120,
+        "y": -390
+      },
+      "dragging": false
+    },
+    {
+      "id": "smartMeter-5",
+      "type": "smartMeter",
+      "position": {
+        "x": 195,
+        "y": -360
+      },
+      "data": {
+        "label": "Air Con",
+        "showHandles": true
+      },
+      "width": 100,
+      "height": 87,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 195,
+        "y": -360
+      },
+      "dragging": false
+    },
+    {
+      "id": "smartMeter-6",
+      "type": "smartMeter",
+      "position": {
+        "x": 435,
+        "y": -360
+      },
+      "data": {
+        "label": "Central Hot Water",
+        "showHandles": true
+      },
+      "width": 126,
+      "height": 87,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 435,
+        "y": -360
+      },
+      "dragging": false
+    },
+    {
+      "id": "smartMeter-7",
+      "type": "smartMeter",
+      "position": {
+        "x": 675,
+        "y": -360
+      },
+      "data": {
+        "label": "EVSE",
+        "showHandles": true
+      },
+      "width": 100,
+      "height": 87,
+      "selected": false,
       "positionAbsolute": {
         "x": 675,
-        "y": 210
-      }
+        "y": -360
+      },
+      "dragging": false
+    },
+    {
+      "id": "smartMeter-8",
+      "type": "smartMeter",
+      "position": {
+        "x": 555,
+        "y": -360
+      },
+      "data": {
+        "label": "Lifts",
+        "showHandles": true
+      },
+      "width": 100,
+      "height": 87,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 555,
+        "y": -360
+      },
+      "dragging": false
+    },
+    {
+      "id": "smartMeter-9",
+      "type": "smartMeter",
+      "position": {
+        "x": 315,
+        "y": -360
+      },
+      "data": {
+        "label": "Lighting",
+        "showHandles": true
+      },
+      "width": 100,
+      "height": 87,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 315,
+        "y": -360
+      },
+      "dragging": false
+    },
+    {
+      "id": "cloud-10",
+      "type": "cloud",
+      "position": {
+        "x": -120,
+        "y": -225
+      },
+      "data": {
+        "label": "Cloud",
+        "showHandles": true
+      },
+      "width": 100,
+      "height": 87,
+      "selected": false,
+      "positionAbsolute": {
+        "x": -120,
+        "y": -225
+      },
+      "dragging": false
+    },
+    {
+      "id": "ethernet-11",
+      "type": "ethernet",
+      "position": {
+        "x": 45,
+        "y": -225
+      },
+      "data": {
+        "label": "Network",
+        "showHandles": true
+      },
+      "width": 100,
+      "height": 87,
+      "selected": false,
+      "positionAbsolute": {
+        "x": 45,
+        "y": -225
+      },
+      "dragging": false
     }
   ],
   "edges": [
@@ -169,6 +330,275 @@
       "target": "2",
       "sourceHandle": "top",
       "targetHandle": "top",
+      "type": "step",
+      "style": {
+        "stroke": "#000",
+        "strokeWidth": 2
+      },
+      "animated": false,
+      "markerEnd": {
+        "type": "arrowclosed",
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "id": "etext-4-onPremise-5-1747884942827",
+      "source": "text-4",
+      "target": "onPremise-5",
+      "sourceHandle": "right",
+      "targetHandle": "left",
+      "style": {
+        "stroke": "#000",
+        "strokeWidth": 2
+      },
+      "animated": false,
+      "markerEnd": {
+        "type": "arrowclosed",
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "id": "etext-5-authorityMeter-3-1747886180216",
+      "source": "text-5",
+      "target": "authorityMeter-3",
+      "sourceHandle": "bottom",
+      "targetHandle": "top",
+      "type": "step",
+      "style": {
+        "stroke": "#000",
+        "strokeWidth": 2
+      },
+      "animated": false,
+      "markerEnd": {
+        "type": "arrowclosed",
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "id": "eauthorityMeter-3-smartMeter-5-1747886589951",
+      "source": "authorityMeter-3",
+      "target": "smartMeter-5",
+      "sourceHandle": "bottom",
+      "targetHandle": "top",
+      "type": "step",
+      "style": {
+        "stroke": "#000",
+        "strokeWidth": 2
+      },
+      "animated": false,
+      "markerEnd": {
+        "type": "arrowclosed",
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "id": "eauthorityMeter-3-smartMeter-9-1747886595083",
+      "source": "authorityMeter-3",
+      "target": "smartMeter-9",
+      "sourceHandle": "bottom",
+      "targetHandle": "top",
+      "type": "step",
+      "style": {
+        "stroke": "#000",
+        "strokeWidth": 2
+      },
+      "animated": false,
+      "markerEnd": {
+        "type": "arrowclosed",
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "id": "eauthorityMeter-3-smartMeter-6-1747886598603",
+      "source": "authorityMeter-3",
+      "target": "smartMeter-6",
+      "sourceHandle": "bottom",
+      "targetHandle": "top",
+      "type": "step",
+      "style": {
+        "stroke": "#000",
+        "strokeWidth": 2
+      },
+      "animated": false,
+      "markerEnd": {
+        "type": "arrowclosed",
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "id": "eauthorityMeter-3-smartMeter-8-1747886602473",
+      "source": "authorityMeter-3",
+      "target": "smartMeter-8",
+      "sourceHandle": "bottom",
+      "targetHandle": "top",
+      "type": "step",
+      "style": {
+        "stroke": "#000",
+        "strokeWidth": 2
+      },
+      "animated": false,
+      "markerEnd": {
+        "type": "arrowclosed",
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "id": "eauthorityMeter-3-smartMeter-7-1747886606080",
+      "source": "authorityMeter-3",
+      "target": "smartMeter-7",
+      "sourceHandle": "bottom",
+      "targetHandle": "top",
+      "type": "step",
+      "style": {
+        "stroke": "#000",
+        "strokeWidth": 2
+      },
+      "animated": false,
+      "markerEnd": {
+        "type": "arrowclosed",
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "id": "etext-10-onPremise-11-1747886867261",
+      "source": "text-10",
+      "target": "onPremise-11",
+      "sourceHandle": "bottom",
+      "targetHandle": "top",
+      "type": "step",
+      "style": {
+        "stroke": "#000",
+        "strokeWidth": 2
+      },
+      "animated": false,
+      "markerEnd": {
+        "type": "arrowclosed",
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "id": "esmartMeter-9-ethernet-11-1747886932931",
+      "source": "smartMeter-9",
+      "target": "ethernet-11",
+      "sourceHandle": "bottom",
+      "targetHandle": "right",
+      "type": "step",
+      "style": {
+        "stroke": "#000",
+        "strokeWidth": 2
+      },
+      "animated": false,
+      "markerEnd": {
+        "type": "arrowclosed",
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "id": "esmartMeter-5-ethernet-11-1747886937445",
+      "source": "smartMeter-5",
+      "target": "ethernet-11",
+      "sourceHandle": "bottom",
+      "targetHandle": "right",
+      "type": "step",
+      "style": {
+        "stroke": "#000",
+        "strokeWidth": 2
+      },
+      "animated": false,
+      "markerEnd": {
+        "type": "arrowclosed",
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "id": "esmartMeter-6-ethernet-11-1747886939583",
+      "source": "smartMeter-6",
+      "target": "ethernet-11",
+      "sourceHandle": "bottom",
+      "targetHandle": "right",
+      "type": "step",
+      "style": {
+        "stroke": "#000",
+        "strokeWidth": 2
+      },
+      "animated": false,
+      "markerEnd": {
+        "type": "arrowclosed",
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "id": "esmartMeter-8-ethernet-11-1747886941965",
+      "source": "smartMeter-8",
+      "target": "ethernet-11",
+      "sourceHandle": "bottom",
+      "targetHandle": "right",
+      "type": "step",
+      "style": {
+        "stroke": "#000",
+        "strokeWidth": 2
+      },
+      "animated": false,
+      "markerEnd": {
+        "type": "arrowclosed",
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "id": "esmartMeter-7-ethernet-11-1747886944153",
+      "source": "smartMeter-7",
+      "target": "ethernet-11",
+      "sourceHandle": "bottom",
+      "targetHandle": "right",
+      "type": "step",
+      "style": {
+        "stroke": "#000",
+        "strokeWidth": 2
+      },
+      "animated": false,
+      "markerEnd": {
+        "type": "arrowclosed",
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "id": "eethernet-11-cloud-10-1747886966119",
+      "source": "ethernet-11",
+      "target": "cloud-10",
+      "sourceHandle": "left",
+      "targetHandle": "right",
+      "type": "straight",
+      "style": {
+        "stroke": "#000",
+        "strokeWidth": 2
+      },
+      "animated": false,
+      "markerEnd": {
+        "type": "arrowclosed",
+        "width": 20,
+        "height": 20
+      }
+    },
+    {
+      "id": "eethernet-11-onPremise-11-1747886969112",
+      "source": "ethernet-11",
+      "target": "onPremise-11",
+      "sourceHandle": "top",
+      "targetHandle": "right",
       "type": "step",
       "style": {
         "stroke": "#000",

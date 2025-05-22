@@ -7,6 +7,8 @@ import ReactFlow, {
   useEdgesState,
   addEdge,
   Panel,
+  ReactFlowProvider,
+  useReactFlow,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { Button, Box, Paper, Typography, Snackbar, Alert, CircularProgress } from '@mui/material';
@@ -101,7 +103,7 @@ const componentTypes = [
   { type: 'ethernet', label: 'Ethernet', icon: <RouterIcon /> },
 ];
 
-const SingleLineDiagram = () => {
+const SingleLineDiagramInner = () => {
   const { id: projectId } = useParams();
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
@@ -112,6 +114,7 @@ const SingleLineDiagram = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [showHandles, setShowHandles] = useState(false);
+  const { getNodes, setNodes: setFlowNodes, getEdges, setEdges: setFlowEdges } = useReactFlow();
 
   // Load diagram when component mounts or projectId changes
   useEffect(() => {
@@ -159,11 +162,20 @@ const SingleLineDiagram = () => {
 
   const onConnect = useCallback(
     (params) => {
-      console.log('Connection params:', params); // Debug log
-      
-      // Only allow connections between different nodes
-      if (params.source === params.target) {
-        return;
+      // Find source and target node positions
+      const sourceNode = nodes.find(n => n.id === params.source);
+      const targetNode = nodes.find(n => n.id === params.target);
+
+      let edgeType = 'step';
+      if (sourceNode && targetNode) {
+        // Check if handles are aligned horizontally or vertically (rounded for grid tolerance)
+        const sx = Math.round(sourceNode.position.x);
+        const sy = Math.round(sourceNode.position.y);
+        const tx = Math.round(targetNode.position.x);
+        const ty = Math.round(targetNode.position.y);
+        if (sx === tx || sy === ty) {
+          edgeType = 'straight';
+        }
       }
 
       const newEdge = {
@@ -172,7 +184,7 @@ const SingleLineDiagram = () => {
         target: params.target,
         sourceHandle: params.sourceHandle,
         targetHandle: params.targetHandle,
-        type: 'step',
+        type: edgeType,
         style: { stroke: '#000', strokeWidth: 2 },
         animated: false,
         markerEnd: {
@@ -184,7 +196,7 @@ const SingleLineDiagram = () => {
 
       setEdges((eds) => [...eds, newEdge]);
     },
-    [setEdges]
+    [setEdges, nodes]
   );
 
   const onSelectionChange = useCallback(({ nodes, edges }) => {
@@ -199,11 +211,30 @@ const SingleLineDiagram = () => {
 
   const onKeyDown = useCallback(
     (event) => {
-      if (event.key === 'Delete' || event.key === 'Backspace') {
-        onDelete();
+      if (
+        event.key === 'Delete' || event.key === 'Backspace'
+      ) {
+        const tag = event.target.tagName;
+        const isInput = tag === 'INPUT' || tag === 'TEXTAREA' || event.target.isContentEditable;
+        if (!isInput) {
+          onDelete();
+        }
+      } else if (event.ctrlKey || event.metaKey) {
+        if (event.key === 'z') {
+          event.preventDefault();
+          const currentNodes = getNodes();
+          const currentEdges = getEdges();
+          if (currentNodes.length > 0 || currentEdges.length > 0) {
+            setFlowNodes([]);
+            setFlowEdges([]);
+          }
+        } else if (event.key === 'a') {
+          event.preventDefault();
+          setSelectedElements([...nodes, ...edges]);
+        }
       }
     },
-    [onDelete]
+    [onDelete, getNodes, getEdges, setFlowNodes, setFlowEdges, nodes, edges, setSelectedElements]
   );
 
   const onDragOver = useCallback((event) => {
@@ -433,6 +464,7 @@ const SingleLineDiagram = () => {
             width: 20,
             height: 20,
           },
+          stepPattern: ['vertical', 'horizontal'],
         }}
         connectionMode="loose"
         snapToGrid={true}
@@ -441,7 +473,6 @@ const SingleLineDiagram = () => {
         deleteKeyCode={['Backspace', 'Delete']}
         connectionRadius={20}
         validateConnection={(connection) => {
-          // Only allow connections between different nodes
           return connection.source !== connection.target;
         }}
       >
@@ -548,6 +579,14 @@ const SingleLineDiagram = () => {
         </Alert>
       </Snackbar>
     </div>
+  );
+};
+
+const SingleLineDiagram = () => {
+  return (
+    <ReactFlowProvider>
+      <SingleLineDiagramInner />
+    </ReactFlowProvider>
   );
 };
 
