@@ -9,26 +9,25 @@ Project details:
 
 When helping users create or modify diagrams:
 1. Understand their requirements
-2. Provide step-by-step commands in the format:
-   - add,nodeType,x,y
-   - delete,x,y
-   - connect,x1,y1,point1,x2,y2,point2
-   - disconnect,x1,y1,point1,x2,y2,point2
+2. Provide step-by-step commands in the format (all lowercase, no quotes, wrap each command in curly braces):
+   - {add,<type>,<x>,<y>,<label>} → Adds a component to the diagram grid
+   - {connect,<x1>,<y1>,<side1>,<x2>,<y2>,<side2>} → Connects two nodes
+   - {add,label,<x>,<y>,<text>} → Inserts a visual comment or section header in the diagram
+   - start with {delete-all} always. Remembr the screen is completly empty and nothing is on it.
+3. Everything in {} is a command.
+4. When placing nodes, only adjust the X or Y position by exactly **1 unit** relative to the previous or connected node. This creates a clean layered structure and avoids disorganized diagrams.
+5. When connecting nodes on different layers (different Y coordinates), use top and bottom handles.
+6. When connecting nodes on the same layer (same Y coordinate), use left and right handles.
+   
 
 Available node types:
-- smart-meter: For smart meters with communication
-- meter: For basic meters
-- transformer: For power transformers
-- load: For electrical loads
-- cloud: For cloud-based systems
-- on-premise: For on-premise systems
-- wireless: For wireless communication
-- rs485: For RS485 communication
-- ethernet: For ethernet communication
-- auth-meter: For authority/utility meters
-- meter-memory: For meters with memory capability
+- Layer 1: auth-meter (top income supply only)
+- Layer 2: smart-meter, meter, memory-meter (submeters for services like lighting, HVAC, etc.)
+- Layer 3: ethernet, rs485, wireless, on-premise (for local communication)
+- Layer 4: cloud (remote connectivity)
+- label: for visual comments or section headers (not editable by the user)
 
-Connection points: top(t), right(r), bottom(b), left(l)
+Connection points: top, right, bottom, left
 
 Layout Guidelines:
 1. Nodes should be organized in horizontal rows:
@@ -37,10 +36,12 @@ Layout Guidelines:
    - Row 3 (y=3): Cloud nodes and on-premise systems
 
 Connection Rules:
-- Authority meters should connect to smart meters
+- In EMS system always use Smart meter.
 - Smart meters should connect to ethernet or wireless
 - Ethernet/wireless should connect to cloud or onPremise
 - RS485 can be used for direct meter connections
+- Never put main-meter and authority meter in same row. main meter not required unless mentioned by customer
+- Previus message commands can be repetad again with just minor changes.
 
 ${existingDiagram ? `Existing diagram data:
 ${JSON.stringify(existingDiagram, null, 2)}
@@ -49,41 +50,31 @@ Please analyze the existing diagram and suggest modifications based on the user'
 
 For NCC Section J compliance questions, provide detailed explanations about the requirements and how they apply to this specific project.
 
-Example Responses:
-
-1. For creating a new diagram:
-"I'll help you create a basic metering system. Here's what we'll set up:
-1. First, let's add an authority meter at position (1,1):
-   add,auth-meter,1,1
-2. Then add a smart meter at position (1,2):
-   add,smart-meter,1,2
-3. Add an ethernet connection at position (2,2):
-   add,ethernet,2,2
-4. Connect the authority meter to the smart meter:
-   connect,1,1,bottom,1,2,top
-5. Connect the smart meter to the ethernet:
-   connect,1,2,right,2,2,left
-
-This creates a basic metering system with authority meter → smart meter → ethernet connectivity."
-
-2. For modifying an existing diagram:
-"I'll help you add cloud connectivity to your existing system:
-1. First, let's add a cloud node at position (2,3):
-   add,cloud,2,3
-2. Connect the ethernet to the cloud:
-   connect,2,2,bottom,2,3,top
-
-This adds cloud connectivity to your existing ethernet connection."
-
-3. For NCC Section J compliance:
-"Based on your building type (${project.buildingType}) and floor area (${project.floorArea} m²), here are the relevant NCC Section J requirements:
-1. Energy metering requirements: [specific requirements]
-2. Monitoring system requirements: [specific requirements]
-3. Compliance verification: [specific requirements]
-
-Would you like me to help you implement these requirements in your metering system?"
-
-Provide clear, step-by-step instructions with explanations for each command.`;
+Example goal:
+Design a compliant energy metering system for a 5,000 m² commercial building in NCC Climate Zone 5, meeting Section J requirements for submetering and data communication.
+if user ask for generic or sample send sample output without any changes.
+Sample Output:
+{delete-all}
+{add,label,1,0, section j compliant metering system}
+{add,auth-meter,4,1, authority meter}
+{add,label,1,2, submetering layer}
+{add,smart-meter,3,3, lighting}
+{add,smart-meter,5,3, hvac}
+{add,smart-meter,7,3, hot water}
+{add,label,1,4, communication layer}
+{add,ethernet,5,4, network}
+{add,on-premise,2,4, gateway}
+{add,label,1,5, cloud interface}
+{add,cloud,5,5, cloud}
+{connect,4,1,bottom,3,3,top}
+{connect,4,1,bottom,5,3,top}
+{connect,4,1,bottom,7,3,top}
+{connect,3,3,bottom,5,4,top}
+{connect,5,3,bottom,5,4,top}
+{connect,7,3,bottom,5,4,top}
+{connect,5,4,bottom,5,5,top}
+{connect,5,4,left,2,4,right}
+`;
 };
 
 module.exports = {

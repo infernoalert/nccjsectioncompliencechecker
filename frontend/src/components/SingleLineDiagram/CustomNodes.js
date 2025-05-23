@@ -276,17 +276,144 @@ const TextNode = ({ data }) => {
 
 export const LabelNode = memo(({ data }) => (
   <div style={{
-    padding: '6px 12px',
+    padding: '10px',
     background: '#f8f8f8',
-    borderRadius: 4,
+    borderRadius: 5,
     fontWeight: 'bold',
-    fontSize: 14,
+    fontSize: 12,
     color: '#333',
     border: '1px solid #ccc',
-    minWidth: 80,
+    width: '100px',
+    height: '80px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
     textAlign: 'center',
-    boxShadow: '0 1px 2px rgba(0,0,0,0.04)'
+    boxShadow: '0 1px 2px rgba(0,0,0,0.04)',
+    position: 'relative',
+    wordWrap: 'break-word',
+    overflow: 'hidden'
   }}>
+    <Handle
+      type="source"
+      position={Position.Top}
+      id="top"
+      style={{
+        width: 16,
+        height: 16,
+        background: 'transparent',
+        border: 'none',
+        borderRadius: '50%',
+        cursor: 'crosshair',
+        zIndex: 1000
+      }}
+      isConnectable={true}
+    />
+    <Handle
+      type="target"
+      position={Position.Top}
+      id="top"
+      style={{
+        width: 16,
+        height: 16,
+        background: 'transparent',
+        border: 'none',
+        borderRadius: '50%',
+        cursor: 'crosshair',
+        zIndex: 1000
+      }}
+      isConnectable={true}
+    />
+    <Handle
+      type="source"
+      position={Position.Right}
+      id="right"
+      style={{
+        width: 16,
+        height: 16,
+        background: 'transparent',
+        border: 'none',
+        borderRadius: '50%',
+        cursor: 'crosshair',
+        zIndex: 1000
+      }}
+      isConnectable={true}
+    />
+    <Handle
+      type="target"
+      position={Position.Right}
+      id="right"
+      style={{
+        width: 16,
+        height: 16,
+        background: 'transparent',
+        border: 'none',
+        borderRadius: '50%',
+        cursor: 'crosshair',
+        zIndex: 1000
+      }}
+      isConnectable={true}
+    />
+    <Handle
+      type="source"
+      position={Position.Bottom}
+      id="bottom"
+      style={{
+        width: 16,
+        height: 16,
+        background: 'transparent',
+        border: 'none',
+        borderRadius: '50%',
+        cursor: 'crosshair',
+        zIndex: 1000
+      }}
+      isConnectable={true}
+    />
+    <Handle
+      type="target"
+      position={Position.Bottom}
+      id="bottom"
+      style={{
+        width: 16,
+        height: 16,
+        background: 'transparent',
+        border: 'none',
+        borderRadius: '50%',
+        cursor: 'crosshair',
+        zIndex: 1000
+      }}
+      isConnectable={true}
+    />
+    <Handle
+      type="source"
+      position={Position.Left}
+      id="left"
+      style={{
+        width: 16,
+        height: 16,
+        background: 'transparent',
+        border: 'none',
+        borderRadius: '50%',
+        cursor: 'crosshair',
+        zIndex: 1000
+      }}
+      isConnectable={true}
+    />
+    <Handle
+      type="target"
+      position={Position.Left}
+      id="left"
+      style={{
+        width: 16,
+        height: 16,
+        background: 'transparent',
+        border: 'none',
+        borderRadius: '50%',
+        cursor: 'crosshair',
+        zIndex: 1000
+      }}
+      isConnectable={true}
+    />
     {data.label}
   </div>
 ));

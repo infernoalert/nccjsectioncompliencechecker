@@ -15,7 +15,8 @@ import Navbar from './components/Navbar';
 import Presentation from './static/Presentation';
 import UserList from './components/UserList';
 import CreateUser from './components/CreateUser';
-import ChatInterface from './components/ChatInterface';
+import NccChatInterface from './components/NccChatInterface';
+import DiagramChatInterface from './components/DiagramChatInterface';
 import SingleLineDiagram from './components/SingleLineDiagram/SingleLineDiagram';
 import { useSelector } from 'react-redux';
 import './styles/print.css';
@@ -164,7 +165,7 @@ function App() {
             path="/projects/:id/chat"
             element={
               <ProtectedRoute>
-                <ChatInterface />
+                <NccChatInterface />
               </ProtectedRoute>
             }
           />

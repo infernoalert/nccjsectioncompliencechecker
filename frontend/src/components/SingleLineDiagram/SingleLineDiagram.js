@@ -50,7 +50,7 @@ import {
   TextNodeComponent,
   LabelNode
 } from './CustomNodes';
-import ChatDiagramGenerator from './ChatDiagramGenerator';
+import DiagramChatInterface from '../DiagramChatInterface';
 
 // Move nodeTypes outside of component and memoize it
 const nodeTypes = {
@@ -544,7 +544,7 @@ const SingleLineDiagramInner = () => {
         backgroundColor: '#f5f5f5',
         p: 2
       }}>
-        <ChatDiagramGenerator onDiagramGenerated={handleDiagramGenerated} />
+        <DiagramChatInterface onDiagramGenerated={handleDiagramGenerated} />
       </Box>
     </Box>
   );

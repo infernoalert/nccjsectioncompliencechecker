@@ -58,12 +58,12 @@ const CONNECTION_POINTS = {
 
 // Grid configuration
 const GRID_CONFIG = {
-  cellSize: 150, // Increased from 150 to 165 (10% more) to create more space between nodes
+  cellSize: 150, // Increased from 100 to 150 to create more space between nodes
   startX: 100,   // Starting X position
   startY: 100    // Starting Y position
 };
 
-const ChatDiagramGenerator = ({ onDiagramGenerated, isAdmin = false }) => {
+const ChatDiagramGenerator = ({ onDiagramGenerated }) => {
   const { id: projectId } = useParams();
   const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -72,17 +72,6 @@ const ChatDiagramGenerator = ({ onDiagramGenerated, isAdmin = false }) => {
   const [testInput, setTestInput] = useState('');
   const [localDiagram, setLocalDiagram] = useState({ nodes: [], edges: [] });
   const chatEndRef = useRef(null);
-
-  // --- New: AI Chat UI for non-admins ---
-  const [chatInput, setChatInput] = useState('');
-  const [aiChatHistory, setAiChatHistory] = useState([]); // {role: 'user'|'ai', content: string}
-  const [aiLoading, setAiLoading] = useState(false);
-
-  // --- AI Diagram Command Interface (for all users) ---
-  const [aiRawResponse, setAiRawResponse] = useState('');
-
-  // Remove AI command block output box. Only show input and send button for AI prompt.
-  const [aiInput, setAiInput] = useState('');
 
   // Convert diagram state to commands
   const diagramToCommands = (diagram) => {
@@ -112,7 +101,7 @@ const ChatDiagramGenerator = ({ onDiagramGenerated, isAdmin = false }) => {
   const calculatePosition = (x, y) => {
     return {
       x: GRID_CONFIG.startX + (parseInt(x) - 1) * GRID_CONFIG.cellSize,
-      y: GRID_CONFIG.startY +100+ (parseInt(y) - 1) * GRID_CONFIG.cellSize
+      y: GRID_CONFIG.startY + (parseInt(y) - 1) * GRID_CONFIG.cellSize
     };
   };
 
@@ -617,69 +606,6 @@ const ChatDiagramGenerator = ({ onDiagramGenerated, isAdmin = false }) => {
     initializeDiagram();
   }, []);
 
-  // Handler for AI prompt
-  const handleAiPrompt = async () => {
-    if (!aiInput.trim()) return;
-    setAiLoading(true);
-    try {
-      const response = await axios.post('/api/chat', {
-        projectId,
-        message: aiInput,
-        history: []
-      });
-      const aiText = response.data.response;
-      // Extract and execute all { ... } commands
-      const commands = [];
-      const regex = /\{([^}]+)\}/g;
-      let match;
-      while ((match = regex.exec(aiText)) !== null) {
-        commands.push(match[1]);
-      }
-      if (commands.length > 0) {
-        const newDiagram = commandsToDiagram(commands, localDiagram);
-        setLocalDiagram(newDiagram);
-        onDiagramGenerated(newDiagram);
-      }
-    } catch (err) {
-      // Optionally handle error (e.g., show a snackbar)
-    } finally {
-      setAiLoading(false);
-      setAiInput('');
-    }
-  };
-
-  // --- UI for non-admins: Only input and send button ---
-  if (!isAdmin) {
-    return (
-      <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', backgroundColor: '#fff', borderRadius: 1, boxShadow: 1 }}>
-        <Box sx={{ flex: 1 }} />
-        <Divider />
-        <Box sx={{ p: 2 }}>
-          <Box sx={{ display: 'flex', gap: 1 }}>
-            <TextField
-              fullWidth
-              value={aiInput}
-              onChange={e => setAiInput(e.target.value)}
-              placeholder="Describe the diagram changes you want..."
-              disabled={aiLoading}
-              size="small"
-              onKeyDown={e => { if (e.key === 'Enter' && !aiLoading) handleAiPrompt(); }}
-            />
-            <IconButton
-              onClick={handleAiPrompt}
-              color="primary"
-              disabled={aiLoading || !aiInput.trim()}
-              sx={{ alignSelf: 'flex-end', backgroundColor: 'primary.main', color: 'white', '&:hover': { backgroundColor: 'primary.dark' } }}
-            >
-              {aiLoading ? <CircularProgress size={24} color="inherit" /> : <SendIcon />}
-            </IconButton>
-          </Box>
-        </Box>
-      </Box>
-    );
-  }
-
-  // Admin: render TEMPORARY TEST INTERFACE and AI input (no output box)
   return (
     <Box sx={{ 
       height: '100%', 
@@ -689,87 +615,136 @@ const ChatDiagramGenerator = ({ onDiagramGenerated, isAdmin = false }) => {
       borderRadius: 1,
       boxShadow: 1
     }}>
-      {/* TEMPORARY TEST INTERFACE - ONLY VISIBLE TO ADMIN */}
-      <>
-        <Box sx={{ 
-          p: 2, 
-          borderBottom: 1, 
-          borderColor: 'divider',
-          backgroundColor: '#fff3e0'
-        }}>
-          <Typography variant="subtitle2" color="warning.main" sx={{ mb: 1 }}>
-            [TEMPORARY TEST INTERFACE - WILL BE REMOVED]
-          </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-            Commands (separate multiple commands with |):
-            <br />- add,nodeType,x,y[,label]
-            <br />- delete,x,y
-            <br />- connect,x1,y1,point1,x2,y2,point2
-            <br />- disconnect,x1,y1,point1,x2,y2,point2
-            <br />Connection points: top(t), right(r), bottom(b), left(l)
-            <br />Example: add,smart-meter,1,1,"Main Meter" | add,meter,2,1 | connect,1,1,right,2,1,left
-          </Typography>
-          <Box sx={{ display: 'flex', gap: 1 }}>
-            <TextField
-              fullWidth
-              value={testInput}
-              onChange={(e) => setTestInput(e.target.value)}
-              placeholder='Example: add,smart-meter,1,1,"Main Meter" | add,meter,2,1 | connect,1,1,right,2,1,left'
-              size="small"
-              multiline
-              rows={3}
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: 1
-                }
-              }}
-            />
-            <Button
-              variant="contained"
-              color="warning"
-              onClick={handleTestSubmit}
-              size="small"
-            >
-              Test
-            </Button>
-          </Box>
-        </Box>
-        <Box sx={{ p: 2, borderBottom: 1, borderColor: 'divider' }}>
-          <Typography variant="h6">
-            Command Interface
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Available commands: add, delete, connect, disconnect
-          </Typography>
-          <Typography variant="body2" color="text.secondary">
-            Example: add smartmeter 1 2
-          </Typography>
-        </Box>
-      </>
-      <Box sx={{ flex: 1, overflow: 'auto', p: 2, display: 'flex', flexDirection: 'column', gap: 2 }}>
-        {/* No AI output box here */}
-      </Box>
-      <Divider />
-      <Box sx={{ p: 2 }}>
+      <Box sx={{ 
+        p: 2, 
+        borderBottom: 1, 
+        borderColor: 'divider',
+        backgroundColor: '#fff3e0'
+      }}>
+        <Typography variant="subtitle2" color="warning.main" sx={{ mb: 1 }}>
+          [TEMPORARY TEST INTERFACE - WILL BE REMOVED]
+        </Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+          Commands (separate multiple commands with |):
+          <br />- add,nodeType,x,y[,label]
+          <br />- delete,x,y
+          <br />- connect,x1,y1,point1,x2,y2,point2
+          <br />- disconnect,x1,y1,point1,x2,y2,point2
+          <br />Connection points: top(t), right(r), bottom(b), left(l)
+          <br />Example: add,smart-meter,1,1,"Main Meter" | add,meter,2,1 | connect,1,1,right,2,1,left
+        </Typography>
         <Box sx={{ display: 'flex', gap: 1 }}>
           <TextField
             fullWidth
-            value={aiInput}
-            onChange={e => setAiInput(e.target.value)}
-            placeholder="Describe the diagram changes you want..."
-            disabled={aiLoading}
+            value={testInput}
+            onChange={(e) => setTestInput(e.target.value)}
+            placeholder='Example: add,smart-meter,1,1,"Main Meter" | add,meter,2,1 | connect,1,1,right,2,1,left'
             size="small"
-            onKeyDown={e => { if (e.key === 'Enter' && !aiLoading) handleAiPrompt(); }}
+            multiline
+            rows={3}
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                borderRadius: 1
+              }
+            }}
           />
-          <IconButton
-            onClick={handleAiPrompt}
-            color="primary"
-            disabled={aiLoading || !aiInput.trim()}
-            sx={{ alignSelf: 'flex-end', backgroundColor: 'primary.main', color: 'white', '&:hover': { backgroundColor: 'primary.dark' } }}
+          <Button
+            variant="contained"
+            color="warning"
+            onClick={handleTestSubmit}
+            size="small"
           >
-            {aiLoading ? <CircularProgress size={24} color="inherit" /> : <SendIcon />}
-          </IconButton>
+            Test
+          </Button>
         </Box>
+      </Box>
+
+      <Box sx={{ p: 2, borderBottom: 1, borderColor: 'divider' }}>
+        <Typography variant="h6">
+          Command Interface
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          Available commands: add, delete, connect, disconnect
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          Example: add smartmeter 1 2
+        </Typography>
+      </Box>
+
+      <Box sx={{ 
+        flex: 1, 
+        overflow: 'auto', 
+        p: 2,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 2
+      }}>
+        {chatHistory.map((msg, index) => (
+          <Box
+            key={index}
+            sx={{
+              display: 'flex',
+              justifyContent: msg.type === 'user' ? 'flex-end' : 'flex-start',
+              mb: 1
+            }}
+          >
+            <Paper
+              sx={{
+                p: 2,
+                maxWidth: '80%',
+                backgroundColor: msg.type === 'user' ? '#e3f2fd' : 
+                              msg.type === 'error' ? '#ffebee' : '#f5f5f5',
+                borderRadius: 2
+              }}
+            >
+              <Typography variant="body1">
+                {msg.content}
+              </Typography>
+            </Paper>
+          </Box>
+        ))}
+        <div ref={chatEndRef} />
+      </Box>
+
+      <Divider />
+
+      <Box sx={{ p: 2 }}>
+        <form onSubmit={handleSubmit}>
+          <Box sx={{ display: 'flex', gap: 1 }}>
+            <TextField
+              fullWidth
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="Enter command (e.g., add smartmeter 1 2)..."
+              disabled={isLoading}
+              size="small"
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: 2
+                }
+              }}
+            />
+            <IconButton 
+              type="submit" 
+              color="primary" 
+              disabled={isLoading || !message.trim()}
+              sx={{ 
+                alignSelf: 'flex-end',
+                backgroundColor: 'primary.main',
+                color: 'white',
+                '&:hover': {
+                  backgroundColor: 'primary.dark'
+                }
+              }}
+            >
+              {isLoading ? (
+                <CircularProgress size={24} color="inherit" />
+              ) : (
+                <SendIcon />
+              )}
+            </IconButton>
+          </Box>
+        </form>
       </Box>
     </Box>
   );
