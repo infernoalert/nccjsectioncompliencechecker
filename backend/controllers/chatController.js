@@ -1,5 +1,7 @@
 const OpenAI = require('openai');
 const Project = require('../models/Project');
+const { getSystemMessage } = require('../config/openaiMessages');
+const axios = require('axios');
 
 // Debug logging
 console.log('OpenAI API Key available:', !!process.env.OPENAI_API_KEY);
@@ -45,15 +47,23 @@ exports.chatWithAI = async (req, res) => {
       floorArea: `${project.floorArea} m²`
     });
 
-    // Create system message with project context
-    const systemMessage = `You are an AI assistant helping with NCC Section J compliance for a building project. Do not provide any information about the project other than the NCC Section J compliance. Answer any question not related to NCC section J compliance.
-    Project details:
-    - Building Type: ${project.buildingType}
-    - Building Classification: ${project.buildingClassification?.classType || 'Not specified'}
-    - Location: ${project.location}
-    - Floor Area: ${project.floorArea} m²
-    
-    Focus on the project detail and providing accurate information. mention project details in your answer. Reject answers that are not related to NCC section J compliance.`;
+    // Get existing diagram if available
+    let existingDiagram = null;
+    try {
+      const diagramResponse = await axios.get(`/api/projects/${projectId}/diagram`, {
+        headers: {
+          'Authorization': `Bearer ${req.headers.authorization?.split(' ')[1]}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      existingDiagram = diagramResponse.data.data;
+    } catch (error) {
+      console.log('No existing diagram found or error fetching diagram:', error.message);
+    }
+
+    // Create system message with project context and diagram instructions
+    const systemMessage = getSystemMessage(project, existingDiagram);
+
     const completion = await openai.chat.completions.create({
       messages: [
         { role: "system", content: systemMessage },

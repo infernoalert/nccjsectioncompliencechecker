@@ -1253,48 +1253,4 @@ Call it J6 HVAC and put it before j7xxx use same methode, as j7xxx
 
 
 +++++++++++++++++++++++++++++++++++++++++++++
-accepted contentType
-
-paragraph - For text paragraphs
-heading - For headings (h3-h6)
-list - For lists (which we're already using)
-paragraphList - For multiple paragraphs
-keyValue - For key-value pairs
-table - For tables
-button - For buttons
-note - For notes
-
-
-Create a new provider class implementing the AnalyticsProvider interface
-Add it to the providers array in createAnalyticsConfig
-For example, to add Hotjar in the future:
-class HotjarProvider implements AnalyticsProvider {
-  private hotjarId: string;
-
-  constructor(hotjarId: string) {
-    this.hotjarId = hotjarId;
-  }
-
-  initialize(): void {
-    // Hotjar initialization code
-  }
-
-  trackEvent(event: AnalyticsEvent): void {
-    // Hotjar event tracking
-  }
-
-  trackPageView(url: string): void {
-    // Hotjar page view tracking
-  }
-}
-
-// Then in createAnalyticsConfig:
-export const createAnalyticsConfig = (ga4MeasurementId: string, hotjarId: string): AnalyticsConfig => ({
-  enabled: process.env.NODE_ENV === 'production',
-  providers: [
-    new GA4Provider(ga4MeasurementId),
-    new HotjarProvider(hotjarId)
-  ],
-});
-
-
+"add,authority-meter,4,-8": Invalid node type: authority-meter. Available types: smart-meter, smartmeter, meter, transformer, load, cloud, wireless, rs485, ethernet, on-premise, onpremise, auth-meter, authmeter, meter-memory, metermemory

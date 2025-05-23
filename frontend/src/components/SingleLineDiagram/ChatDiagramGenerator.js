@@ -68,58 +68,171 @@ const ChatDiagramGenerator = ({ onDiagramGenerated }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [chatHistory, setChatHistory] = useState([]);
-  const chatEndRef = useRef(null);
   const [testInput, setTestInput] = useState('');
+  const [localDiagram, setLocalDiagram] = useState({ nodes: [], edges: [] });
+  const chatEndRef = useRef(null);
+
+  // Convert diagram state to commands
+  const diagramToCommands = (diagram) => {
+    const commands = [];
+    
+    // First add all nodes
+    diagram.nodes.forEach(node => {
+      const nodeType = Object.entries(NODE_TYPES).find(([key, value]) => value === node.type)?.[0];
+      if (nodeType) {
+        commands.push(`add,${nodeType},${node.position.x},${node.position.y}`);
+      }
+    });
+
+    // Then add all connections
+    diagram.edges.forEach(edge => {
+      const sourceNode = diagram.nodes.find(n => n.id === edge.source);
+      const targetNode = diagram.nodes.find(n => n.id === edge.target);
+      if (sourceNode && targetNode) {
+        commands.push(`connect,${sourceNode.position.x},${sourceNode.position.y},${edge.sourceHandle},${targetNode.position.x},${targetNode.position.y},${edge.targetHandle}`);
+      }
+    });
+
+    return commands;
+  };
+
+  // Convert grid coordinates to pixel positions
+  const calculatePosition = (x, y) => {
+    return {
+      x: GRID_CONFIG.startX + (parseInt(x) - 1) * GRID_CONFIG.cellSize,
+      y: GRID_CONFIG.startY + (parseInt(y) - 1) * GRID_CONFIG.cellSize
+    };
+  };
+
+  // Convert commands to diagram state
+  const commandsToDiagram = (commands, currentState) => {
+    const newDiagram = { 
+      nodes: [...currentState.nodes], 
+      edges: [...currentState.edges] 
+    };
+    
+    commands.forEach(cmd => {
+      const parts = cmd.split(',').map(part => part.trim().toLowerCase());
+      const command = parts[0];
+      
+      if (command === 'add') {
+        const [_, nodeType, x, y, customLabel] = parts;
+        const type = NODE_TYPES[nodeType];
+        if (type) {
+          const nodeId = `${type}-${Date.now()}`;
+          const position = calculatePosition(x, y);
+          // Use custom label if provided, otherwise use default label
+          const label = customLabel ? customLabel : 
+            nodeType.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+          
+          newDiagram.nodes.push({
+            id: nodeId,
+            type: type,
+            position,
+            data: { 
+              label,
+              showHandles: false
+            },
+            width: 100,
+            height: 87
+          });
+        }
+      } else if (command === 'connect') {
+        const [_, x1, y1, point1, x2, y2, point2] = parts;
+        const sourceNode = newDiagram.nodes.find(n => 
+          n.position.x === calculatePosition(x1, y1).x && 
+          n.position.y === calculatePosition(x1, y1).y
+        );
+        const targetNode = newDiagram.nodes.find(n => 
+          n.position.x === calculatePosition(x2, y2).x && 
+          n.position.y === calculatePosition(x2, y2).y
+        );
+        
+        if (sourceNode && targetNode) {
+          newDiagram.edges.push({
+            id: `e${sourceNode.id}-${targetNode.id}-${Date.now()}`,
+            source: sourceNode.id,
+            target: targetNode.id,
+            sourceHandle: point1,
+            targetHandle: point2,
+            type: 'step',
+            style: { stroke: '#000', strokeWidth: 2 },
+            animated: false,
+            markerEnd: { type: 'arrowclosed', width: 20, height: 20 }
+          });
+        }
+      } else if (command === 'delete') {
+        const [_, x, y] = parts;
+        const position = calculatePosition(x, y);
+        const nodeToDelete = newDiagram.nodes.find(n => 
+          n.position.x === position.x && 
+          n.position.y === position.y
+        );
+        if (nodeToDelete) {
+          newDiagram.nodes = newDiagram.nodes.filter(n => n.id !== nodeToDelete.id);
+          newDiagram.edges = newDiagram.edges.filter(e => 
+            e.source !== nodeToDelete.id && e.target !== nodeToDelete.id
+          );
+        }
+      } else if (command === 'delete-all') {
+        newDiagram.nodes = [];
+        newDiagram.edges = [];
+      }
+    });
+
+    return newDiagram;
+  };
 
   const handleTestSubmit = async () => {
     if (!testInput.trim()) return;
 
     try {
-      // Add test input to chat history
       setChatHistory(prev => [...prev, { 
         type: 'user', 
         content: `[TEST] ${testInput}`
       }]);
 
-      // Split input into multiple commands by pipe
-      const commands = testInput.split('|').map(cmd => cmd.trim()).filter(cmd => cmd);
-      
-      // Process each command
-      let currentNodes = await getCurrentDiagram();
-      let currentEdges = await getCurrentEdges();
-      let allMessages = [];
+      const commands = testInput
+        .split(/[|{}\[\]]/)
+        .map(cmd => cmd.trim())
+        .filter(cmd => cmd);
 
+      let currentDiagram = { ...localDiagram };
+      
       for (const cmd of commands) {
         try {
-          // Parse the command and its arguments
           const parts = cmd.split(',').map(part => part.trim().toLowerCase());
           const command = parts[0];
           const args = parts.slice(1);
 
           validateCommand(command, args);
-          const result = await executeCommand(command, args, currentNodes, currentEdges);
           
-          currentNodes = result.nodes;
-          currentEdges = result.edges;
-          allMessages.push(result.message);
+          // Update local diagram state using current state
+          const newDiagram = commandsToDiagram([cmd], currentDiagram);
+          currentDiagram = newDiagram;
+          setLocalDiagram(newDiagram);
+          
+          // Update visual diagram
+          onDiagramGenerated(newDiagram);
+
+          setChatHistory(prev => [...prev, { 
+            type: 'ai', 
+            content: `Executed: ${cmd}`
+          }]);
+
+          await new Promise(resolve => setTimeout(resolve, 100));
         } catch (error) {
-          allMessages.push(`Error in command "${cmd}": ${error.message}`);
-          // Continue with next command even if one fails
+          const errorMessage = `Error in command "${cmd}": ${error.message}`;
+          setChatHistory(prev => [...prev, { 
+            type: 'error', 
+            content: errorMessage
+          }]);
+          continue;
         }
       }
 
-      // Add all messages to chat history
-      setChatHistory(prev => [...prev, { 
-        type: 'ai', 
-        content: allMessages.join('\n')
-      }]);
-
-      // Update diagram with final state
-      onDiagramGenerated({ nodes: currentNodes, edges: currentEdges });
-
     } catch (error) {
       console.error('Command execution error:', error);
-      
       setChatHistory(prev => [...prev, { 
         type: 'error', 
         content: error.message || 'Error executing commands'
@@ -150,8 +263,8 @@ const ChatDiagramGenerator = ({ onDiagramGenerated }) => {
         break;
 
       case COMMANDS.ADD:
-        if (args.length !== 3) {
-          throw new Error(`Add command requires 3 arguments: nodeType,x,y. Received: ${args.join(',')}`);
+        if (args.length < 3 || args.length > 4) {
+          throw new Error(`Add command requires 3-4 arguments: nodeType,x,y[,label]. Received: ${args.join(',')}`);
         }
         if (!NODE_TYPES[args[0]]) {
           throw new Error(`Invalid node type: ${args[0]}. Available types: ${Object.keys(NODE_TYPES).join(', ')}`);
@@ -196,15 +309,8 @@ const ChatDiagramGenerator = ({ onDiagramGenerated }) => {
     }
   };
 
-  const calculatePosition = (x, y) => {
-    return {
-      x: GRID_CONFIG.startX + (x - 1) * GRID_CONFIG.cellSize,
-      y: GRID_CONFIG.startY + (y - 1) * GRID_CONFIG.cellSize
-    };
-  };
-
   const findNodeAtPosition = (nodes, x, y) => {
-    const position = calculatePosition(parseInt(x), parseInt(y));
+    const position = calculatePosition(x, y);
     return nodes.find(node => 
       Math.abs(node.position.x - position.x) < GRID_CONFIG.cellSize / 2 &&
       Math.abs(node.position.y - position.y) < GRID_CONFIG.cellSize / 2
@@ -234,7 +340,7 @@ const ChatDiagramGenerator = ({ onDiagramGenerated }) => {
         break;
 
       case COMMANDS.ADD: {
-        const [nodeType, x, y] = args;
+        const [nodeType, x, y, customLabel] = args;
         const position = calculatePosition(parseInt(x), parseInt(y));
         const nodeId = `${NODE_TYPES[nodeType]}-${Date.now()}`;
         
@@ -243,7 +349,8 @@ const ChatDiagramGenerator = ({ onDiagramGenerated }) => {
           type: NODE_TYPES[nodeType],
           position,
           data: { 
-            label: nodeType.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
+            label: customLabel ? customLabel : 
+              nodeType.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
             showHandles: false
           }
         };
@@ -447,6 +554,28 @@ const ChatDiagramGenerator = ({ onDiagramGenerated }) => {
     }
   };
 
+  // Add useEffect to initialize local diagram state
+  useEffect(() => {
+    const initializeDiagram = async () => {
+      try {
+        const nodes = await getCurrentDiagram();
+        const edges = await getCurrentEdges();
+        // Convert any existing nodes to use grid positions
+        const convertedNodes = nodes.map(node => ({
+          ...node,
+          position: {
+            x: GRID_CONFIG.startX + (node.position.x - 1) * GRID_CONFIG.cellSize,
+            y: GRID_CONFIG.startY + (node.position.y - 1) * GRID_CONFIG.cellSize
+          }
+        }));
+        setLocalDiagram({ nodes: convertedNodes, edges });
+      } catch (error) {
+        console.error('Error initializing diagram:', error);
+      }
+    };
+    initializeDiagram();
+  }, []);
+
   return (
     <Box sx={{ 
       height: '100%', 
@@ -467,19 +596,19 @@ const ChatDiagramGenerator = ({ onDiagramGenerated }) => {
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
           Commands (separate multiple commands with |):
-          <br />- add,nodeType,x,y
+          <br />- add,nodeType,x,y[,label]
           <br />- delete,x,y
           <br />- connect,x1,y1,point1,x2,y2,point2
           <br />- disconnect,x1,y1,point1,x2,y2,point2
           <br />Connection points: top(t), right(r), bottom(b), left(l)
-          <br />Example: add,smart-meter,1,1 | add,meter,2,1 | connect,1,1,right,2,1,left
+          <br />Example: add,smart-meter,1,1,"Main Meter" | add,meter,2,1 | connect,1,1,right,2,1,left
         </Typography>
         <Box sx={{ display: 'flex', gap: 1 }}>
           <TextField
             fullWidth
             value={testInput}
             onChange={(e) => setTestInput(e.target.value)}
-            placeholder="Example: add,smart-meter,1,1 | add,meter,2,1 | connect,1,1,right,2,1,left"
+            placeholder='Example: add,smart-meter,1,1,"Main Meter" | add,meter,2,1 | connect,1,1,right,2,1,left'
             size="small"
             multiline
             rows={3}
