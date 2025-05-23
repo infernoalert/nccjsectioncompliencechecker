@@ -456,6 +456,19 @@ const SingleLineDiagramInner = () => {
           nodeTypes={memoizedNodeTypes}
           fitView
           attributionPosition="bottom-left"
+          connectionMode="loose"
+          snapToGrid={true}
+          snapGrid={[15, 15]}
+          defaultEdgeOptions={{
+            type: 'step',
+            style: { stroke: '#000', strokeWidth: 2 },
+            animated: false,
+            markerEnd: {
+              type: 'arrowclosed',
+              width: 20,
+              height: 20,
+            },
+          }}
         >
           <Controls />
           <MiniMap />

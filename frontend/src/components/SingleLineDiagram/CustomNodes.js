@@ -52,8 +52,8 @@ const CustomNode = ({ data, type }) => {
   };
 
   const handleStyle = {
-    width: 12,
-    height: 12,
+    width: 16,
+    height: 16,
     background: data.showHandles ? '#555' : 'transparent',
     border: data.showHandles ? '2px solid #333' : 'none',
     borderRadius: '50%',
@@ -183,25 +183,24 @@ const TextNode = ({ data }) => {
   };
 
   const handleStyle = {
-    width: 12,
-    height: 12,
+    width: 16,
+    height: 16,
     background: data.showHandles ? '#555' : 'transparent',
     border: data.showHandles ? '2px solid #333' : 'none',
     borderRadius: '50%',
     cursor: 'crosshair',
     zIndex: 1000,
+    opacity: data.showHandles ? 1 : 0.5,
+    transition: 'all 0.2s ease',
+    '&:hover': {
+      background: '#777',
+      transform: 'scale(1.2)',
+    }
   };
 
   return (
     <div style={{ padding: 10, background: 'white', borderRadius: 5, minWidth: '150px', position: 'relative' }}>
       <Handle
-        type="source"
-        position={Position.Top}
-        id="top"
-        style={handleStyle}
-        isConnectable={true}
-      />
-      <Handle
         type="target"
         position={Position.Top}
         id="top"
@@ -216,30 +215,9 @@ const TextNode = ({ data }) => {
         isConnectable={true}
       />
       <Handle
-        type="target"
-        position={Position.Right}
-        id="right"
-        style={handleStyle}
-        isConnectable={true}
-      />
-      <Handle
         type="source"
         position={Position.Bottom}
         id="bottom"
-        style={handleStyle}
-        isConnectable={true}
-      />
-      <Handle
-        type="target"
-        position={Position.Bottom}
-        id="bottom"
-        style={handleStyle}
-        isConnectable={true}
-      />
-      <Handle
-        type="source"
-        position={Position.Left}
-        id="left"
         style={handleStyle}
         isConnectable={true}
       />
