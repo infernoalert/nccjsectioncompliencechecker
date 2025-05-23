@@ -47,7 +47,8 @@ import {
   WirelessNode,
   RS485Node,
   EthernetNode,
-  TextNodeComponent
+  TextNodeComponent,
+  LabelNode
 } from './CustomNodes';
 import ChatDiagramGenerator from './ChatDiagramGenerator';
 
@@ -65,6 +66,7 @@ const nodeTypes = {
   rs485: RS485Node,
   ethernet: EthernetNode,
   text: TextNodeComponent,
+  label: LabelNode
 };
 
 const initialNodes = [

@@ -274,6 +274,23 @@ const TextNode = ({ data }) => {
   );
 };
 
+export const LabelNode = memo(({ data }) => (
+  <div style={{
+    padding: '6px 12px',
+    background: '#f8f8f8',
+    borderRadius: 4,
+    fontWeight: 'bold',
+    fontSize: 14,
+    color: '#333',
+    border: '1px solid #ccc',
+    minWidth: 80,
+    textAlign: 'center',
+    boxShadow: '0 1px 2px rgba(0,0,0,0.04)'
+  }}>
+    {data.label}
+  </div>
+));
+
 // Export memoized versions of CustomNode for each type
 export const TransformerNode = memo((props) => <CustomNode {...props} type="transformer" />);
 export const LoadNode = memo((props) => <CustomNode {...props} type="load" />);

@@ -40,7 +40,8 @@ const NODE_TYPES = {
   'auth-meter': 'authorityMeter',
   'authmeter': 'authorityMeter',
   'meter-memory': 'meterMemory',
-  'metermemory': 'meterMemory'
+  'metermemory': 'meterMemory',
+  'label': 'label'
 };
 
 // Connection points mapping
@@ -116,26 +117,55 @@ const ChatDiagramGenerator = ({ onDiagramGenerated }) => {
       const command = parts[0];
       
       if (command === 'add') {
-        const [_, nodeType, x, y, customLabel] = parts;
+        const [_, nodeType, xRaw, yRaw, customLabelRaw] = parts;
+        // Parse x and y as numbers and validate
+        const x = parseInt(xRaw, 10);
+        const y = parseInt(yRaw, 10);
+        if (isNaN(x) || isNaN(y) || x < 1 || y < 1 || x > 100 || y > 100) {
+          console.warn('Invalid x or y for add command:', { xRaw, yRaw, x, y });
+          return;
+        }
+        // Clean up customLabel
+        let customLabel = customLabelRaw;
+        if (customLabel && typeof customLabel === 'string') {
+          customLabel = customLabel.trim();
+          if ((customLabel.startsWith('"') && customLabel.endsWith('"')) || (customLabel.startsWith("'") && customLabel.endsWith("'"))) {
+            customLabel = customLabel.slice(1, -1);
+          }
+        }
         const type = NODE_TYPES[nodeType];
         if (type) {
           const nodeId = `${type}-${Date.now()}`;
           const position = calculatePosition(x, y);
-          // Use custom label if provided, otherwise use default label
-          const label = customLabel ? customLabel : 
-            nodeType.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-          
-          newDiagram.nodes.push({
-            id: nodeId,
-            type: type,
-            position,
-            data: { 
-              label,
-              showHandles: false
-            },
-            width: 100,
-            height: 87
-          });
+          console.log('Adding node:', { type, x, y, position, customLabel });
+          if (type === 'label') {
+            newDiagram.nodes.push({
+              id: nodeId,
+              type: type,
+              position,
+              data: {
+                label: customLabel || 'Label',
+                showHandles: false
+              },
+              width: 100,
+              height: 40
+            });
+          } else {
+            // Use custom label if provided, otherwise use default label
+            const label = customLabel ? customLabel : 
+              nodeType.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+            newDiagram.nodes.push({
+              id: nodeId,
+              type: type,
+              position,
+              data: { 
+                label,
+                showHandles: false
+              },
+              width: 100,
+              height: 87
+            });
+          }
         }
       } else if (command === 'connect') {
         const [_, x1, y1, point1, x2, y2, point2] = parts;
