@@ -13,6 +13,7 @@ const locationRoutes = require('./routes/locationRoutes');
 const healthRoutes = require('./routes/healthRoutes');
 const j6hvacRoutes = require('./routes/j6hvac_reportRoutes');
 const chatRoutes = require('./routes/chatRoutes');
+const conversationRoutes = require('./routes/conversationRoutes');
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.use('/api/building-classes', buildingClassRoutes);
 app.use('/api/locations', locationRoutes);
 app.use('/api/j6hvac', j6hvacRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api/conversations', conversationRoutes);
 
 // Error handling
 app.use(errorHandler);

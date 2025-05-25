@@ -1257,6 +1257,7 @@ Call it J6 HVAC and put it before j7xxx use same methode, as j7xxx
 
 
 -----------Delete// ... existing code ...
+enum: ['initial', 'design', 'review', 'final'], // Add more steps as needed
 I want to add a new model called Conversations , it relates to project and the goal is just and only just to save the conversation related to diagram chat controller @diagramChatController.js 
 the final concept is to have different API step call to design as a result I think minimum we need conversationHistory
 currentStep which shows which step or in other word which api we are talking
