@@ -1257,6 +1257,10 @@ Call it J6 HVAC and put it before j7xxx use same methode, as j7xxx
 
 
 -----------Delete// ... existing code ...
+I want to add a new model called Conversations , it relates to project and the goal is just and only just to save the conversation related to diagram chat controller @diagramChatController.js 
+the final concept is to have different API step call to design as a result I think minimum we need conversationHistory
+currentStep which shows which step or in other word which api we are talking
+ isComplete , is shows if this step complete or not, we want to finish one step, which is one step of design and then go to next step which is another step of design. in fact using one step API for design was not suvvess full
 /**
  * @swagger
  * /chatWithAI:
