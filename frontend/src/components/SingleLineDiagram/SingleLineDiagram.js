@@ -1,19 +1,17 @@
-import React, { useState, useCallback, useRef, useEffect, useMemo } from 'react';
+import React, { useState, useCallback, useEffect, useMemo } from 'react';
 import ReactFlow, {
   MiniMap,
   Controls,
   Background,
   useNodesState,
   useEdgesState,
-  addEdge,
   Panel,
   ReactFlowProvider,
   useReactFlow,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import { Button, Box, Paper, Typography, Snackbar, Alert, CircularProgress } from '@mui/material';
+import { Button, Box } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import PowerIcon from '@mui/icons-material/Power';
 import ElectricBoltIcon from '@mui/icons-material/ElectricBolt';
 import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import TransformIcon from '@mui/icons-material/Transform';
@@ -28,11 +26,11 @@ import WifiIcon from '@mui/icons-material/Wifi';
 import SettingsInputComponentIcon from '@mui/icons-material/SettingsInputComponent';
 import RouterIcon from '@mui/icons-material/Router';
 import SaveIcon from '@mui/icons-material/Save';
-import UploadIcon from '@mui/icons-material/Upload';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import MenuOpenIcon from '@mui/icons-material/MenuOpen';
+import MenuIcon from '@mui/icons-material/Menu';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { 
@@ -51,6 +49,7 @@ import {
   LabelNode
 } from './CustomNodes';
 import DiagramChatInterface from '../DiagramChatInterface';
+import CircularProgress from '@mui/material/CircularProgress';
 
 // Move nodeTypes outside of component and memoize it
 const nodeTypes = {
@@ -68,26 +67,6 @@ const nodeTypes = {
   text: TextNodeComponent,
   label: LabelNode
 };
-
-const initialNodes = [
-  {
-    id: '2',
-    type: 'transformer',
-    data: { label: 'Transformer' },
-    position: { x: 250, y: 125 },
-  },
-  {
-    id: '3',
-    type: 'load',
-    data: { label: 'Load' },
-    position: { x: 250, y: 225 },
-  },
-];
-
-const initialEdges = [
-  { id: 'e1-2', source: '1', target: '2' },
-  { id: 'e2-3', source: '2', target: '3' },
-];
 
 const componentTypes = [
   { type: 'text', label: 'Text Note', icon: <EditIcon /> },
@@ -112,12 +91,10 @@ const SingleLineDiagramInner = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [selectedElements, setSelectedElements] = useState([]);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
-  const fileInputRef = useRef(null);
-  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
   const [isSaving, setIsSaving] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   const [showHandles, setShowHandles] = useState(false);
   const { getNodes, setNodes: setFlowNodes, getEdges, setEdges: setFlowEdges } = useReactFlow();
+  const [showAssistantPanel, setShowAssistantPanel] = useState(true);
 
   // Memoize the nodeTypes to prevent recreation
   const memoizedNodeTypes = useMemo(() => nodeTypes, []);
@@ -126,21 +103,17 @@ const SingleLineDiagramInner = () => {
   useEffect(() => {
     const loadDiagram = async () => {
       if (!projectId) return;
-
-      setIsLoading(true);
       try {
         const token = localStorage.getItem('token');
         if (!token) {
           throw new Error('Authentication token not found. Please log in again.');
         }
-
         const response = await axios.get(`/api/projects/${projectId}/diagram`, {
           headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
           }
         });
-
         if (response.data.success && response.data.data) {
           setNodes(response.data.data.nodes || []);
           setEdges(response.data.data.edges || []);
@@ -150,21 +123,17 @@ const SingleLineDiagramInner = () => {
         }
       } catch (error) {
         console.error('Error loading diagram:', error);
-        // If it's a 404, it means no diagram exists yet - that's okay
         if (error.response?.status !== 404) {
-          setSnackbar({
-            open: true,
-            message: error.response?.data?.error || error.message || 'Error loading diagram',
-            severity: 'error'
-          });
+          // setSnackbar({
+          //   open: true,
+          //   message: error.response?.data?.error || error.message || 'Error loading diagram',
+          //   severity: 'error'
+          // });
         }
-      } finally {
-        setIsLoading(false);
       }
     };
-
     loadDiagram();
-  }, [projectId, reactFlowInstance]);
+  }, [projectId, reactFlowInstance, setNodes, setEdges]);
 
   const onConnect = useCallback(
     (params) => {
@@ -288,78 +257,13 @@ const SingleLineDiagramInner = () => {
     );
   }, [showHandles, setNodes]);
 
-  const onExport = useCallback(() => {
-    if (reactFlowInstance) {
-      const flow = {
-        nodes: nodes.map(node => ({
-          ...node,
-          position: node.position,
-          data: { ...node.data }
-        })),
-        edges: edges.map(edge => ({
-          ...edge,
-          source: edge.source,
-          target: edge.target,
-          type: edge.type,
-          style: edge.style,
-          animated: edge.animated,
-          markerEnd: edge.markerEnd
-        }))
-      };
-
-      const jsonString = JSON.stringify(flow, null, 2);
-      const blob = new Blob([jsonString], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = 'single-line-diagram.json';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-    }
-  }, [nodes, edges, reactFlowInstance]);
-
-  const onImport = useCallback((event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        try {
-          const flow = JSON.parse(e.target.result);
-          if (flow.nodes && flow.edges) {
-            setNodes(flow.nodes);
-            setEdges(flow.edges);
-            if (reactFlowInstance) {
-              reactFlowInstance.fitView();
-            }
-          }
-        } catch (error) {
-          console.error('Error importing diagram:', error);
-          setSnackbar({
-            open: true,
-            message: 'Error importing diagram. Please make sure the file is valid.',
-            severity: 'error'
-          });
-        }
-      };
-      reader.readAsText(file);
-    }
-    // Reset the file input
-    event.target.value = '';
-  }, [setNodes, setEdges, reactFlowInstance]);
-
-  const handleImportClick = useCallback(() => {
-    fileInputRef.current?.click();
-  }, []);
-
   const onSave = useCallback(async () => {
     if (!projectId) {
-      setSnackbar({
-        open: true,
-        message: 'No project ID found. Please save from within a project.',
-        severity: 'error'
-      });
+      // setSnackbar({
+      //   open: true,
+      //   message: 'No project ID found. Please save from within a project.',
+      //   severity: 'error'
+      // });
       return;
     }
 
@@ -400,27 +304,23 @@ const SingleLineDiagramInner = () => {
       );
       
       if (response.data.success) {
-        setSnackbar({
-          open: true,
-          message: 'Diagram saved successfully!',
-          severity: 'success'
-        });
+        // setSnackbar({
+        //   open: true,
+        //   message: 'Diagram saved successfully!',
+        //   severity: 'success'
+        // });
       }
     } catch (error) {
       console.error('Error saving diagram:', error);
-      setSnackbar({
-        open: true,
-        message: error.response?.data?.error || error.message || 'Error saving diagram',
-        severity: 'error'
-      });
+      // setSnackbar({
+      //   open: true,
+      //   message: error.response?.data?.error || error.message || 'Error saving diagram',
+      //   severity: 'error'
+      // });
     } finally {
       setIsSaving(false);
     }
   }, [nodes, edges, projectId]);
-
-  const handleCloseSnackbar = () => {
-    setSnackbar({ ...snackbar, open: false });
-  };
 
   const handleDiagramGenerated = useCallback((diagramData) => {
     setNodes(diagramData.nodes || []);
@@ -428,7 +328,7 @@ const SingleLineDiagramInner = () => {
     if (reactFlowInstance) {
       reactFlowInstance.fitView();
     }
-  }, [reactFlowInstance]);
+  }, [setNodes, setEdges, reactFlowInstance]);
 
   return (
     <Box sx={{ 
@@ -439,10 +339,11 @@ const SingleLineDiagramInner = () => {
     }}>
       {/* Left side - Diagram */}
       <Box sx={{ 
-        flex: 1,
+        flex: showAssistantPanel ? 1 : '1 1 100%',
         height: '100%',
         position: 'relative',
-        borderRight: '1px solid #e0e0e0'
+        borderRight: showAssistantPanel ? '1px solid #e0e0e0' : 'none',
+        transition: 'flex 0.3s',
       }}>
         <ReactFlow
           nodes={nodes}
@@ -476,7 +377,18 @@ const SingleLineDiagramInner = () => {
           <MiniMap />
           <Background />
           <Panel position="top-left">
-            <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', p: 1 }}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: 1,
+                rowGap: 1.5,
+                p: 1,
+                justifyContent: { xs: 'center', sm: 'flex-start' },
+                maxWidth: { xs: '100vw', sm: 900, md: 1200 },
+                overflowX: 'auto',
+              }}
+            >
               {componentTypes.map((component) => (
                 <Button
                   key={component.type}
@@ -488,8 +400,12 @@ const SingleLineDiagramInner = () => {
                     event.dataTransfer.effectAllowed = 'move';
                   }}
                   draggable
-                  sx={{ 
+                  sx={{
                     textTransform: 'none',
+                    minWidth: { xs: 80, sm: 120 },
+                    px: { xs: 1, sm: 2 },
+                    fontSize: { xs: '0.75rem', sm: '0.9rem' },
+                    mb: 0.5,
                     '&:hover': {
                       backgroundColor: 'rgba(0, 0, 0, 0.04)'
                     }
@@ -502,50 +418,87 @@ const SingleLineDiagramInner = () => {
           </Panel>
           <Panel position="top-right">
             <Box sx={{ display: 'flex', gap: 1 }}>
-              <Button
-                variant="outlined"
-                size="small"
-                onClick={onDelete}
-                disabled={selectedElements.length === 0}
-                startIcon={<DeleteIcon />}
-                sx={{ textTransform: 'none' }}
-              >
-                Delete Selected
-              </Button>
-              <Button
-                variant="outlined"
-                size="small"
-                onClick={() => setShowHandles(!showHandles)}
-                startIcon={showHandles ? <VisibilityOffIcon /> : <VisibilityIcon />}
-                sx={{ textTransform: 'none' }}
-              >
-                {showHandles ? 'Hide Handles' : 'Show Handles'}
-              </Button>
-              <Button
-                variant="contained"
-                size="small"
-                onClick={onSave}
-                disabled={isSaving}
-                startIcon={isSaving ? <CircularProgress size={20} /> : <SaveIcon />}
-                sx={{ textTransform: 'none' }}
-              >
-                {isSaving ? 'Saving...' : 'Save Diagram'}
-              </Button>
+              {/* Removed Show Handles from here */}
             </Box>
           </Panel>
         </ReactFlow>
+        <Box
+          sx={{
+            display: 'flex',
+            gap: 2,
+            justifyContent: 'flex-end',
+            alignItems: 'center',
+            width: '100%',
+            p: 2,
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            zIndex: 10,
+            background: 'rgba(255,255,255,0.85)',
+            borderTop: '1px solid #e0e0e0'
+          }}
+        >
+          <Button
+            variant="outlined"
+            size="small"
+            onClick={onDelete}
+            disabled={selectedElements.length === 0}
+            startIcon={<DeleteIcon />}
+            sx={{ textTransform: 'none' }}
+          >
+            Delete Selected
+          </Button>
+          <Button
+            variant="outlined"
+            size="small"
+            onClick={() => setShowHandles(!showHandles)}
+            startIcon={showHandles ? <VisibilityOffIcon /> : <VisibilityIcon />}
+            sx={{ textTransform: 'none' }}
+          >
+            {showHandles ? 'Hide Handles' : 'Show Handles'}
+          </Button>
+          <Button
+            variant="contained"
+            size="small"
+            onClick={onSave}
+            disabled={isSaving}
+            startIcon={isSaving ? <CircularProgress size={20} /> : <SaveIcon />}
+            sx={{ textTransform: 'none' }}
+          >
+            {isSaving ? 'Saving...' : 'Save Diagram'}
+          </Button>
+          <Button
+            variant="outlined"
+            size="small"
+            onClick={() => setShowAssistantPanel((prev) => !prev)}
+            startIcon={showAssistantPanel ? <MenuOpenIcon /> : <MenuIcon />}
+            sx={{ textTransform: 'none' }}
+          >
+            {showAssistantPanel ? 'Hide Assistant' : 'Show Assistant'}
+          </Button>
+        </Box>
       </Box>
 
       {/* Right side - Chat */}
-      <Box sx={{ 
-        width: '400px',
-        height: '100%',
-        overflow: 'auto',
-        backgroundColor: '#f5f5f5',
-        p: 2
-      }}>
-        <DiagramChatInterface onDiagramGenerated={handleDiagramGenerated} />
-      </Box>
+      {showAssistantPanel && (
+        <Box
+          sx={{
+            width: { xs: '100vw', sm: 650, md: 700 },
+            minWidth: 400,
+            maxWidth: 900,
+            height: '100%',
+            overflowY: 'auto',
+            backgroundColor: '#f5f5f5',
+            p: { xs: 1, sm: 2 },
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'stretch',
+            boxSizing: 'border-box'
+          }}
+        >
+          <DiagramChatInterface onDiagramGenerated={handleDiagramGenerated} />
+        </Box>
+      )}
     </Box>
   );
 };

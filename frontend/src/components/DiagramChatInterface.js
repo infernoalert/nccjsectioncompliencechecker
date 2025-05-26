@@ -1,11 +1,49 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Box, TextField, Button, Paper, Typography, CircularProgress, Container } from '@mui/material';
+import { 
+  Box, 
+  TextField, 
+  Button, 
+  Paper, 
+  Typography, 
+  CircularProgress, 
+  Container,
+  Stepper,
+  Step,
+  StepLabel,
+  Alert,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Tooltip
+} from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import WarningIcon from '@mui/icons-material/Warning';
+import InfoIcon from '@mui/icons-material/Info';
+import { useTheme } from '@mui/material/styles';
 
 const API_URL = process.env.NODE_ENV === 'production' 
   ? 'https://api.payamamerian.com' 
   : 'http://localhost:5000';
+
+// Step definitions
+const STEPS = {
+  INITIAL: 'initial',
+  BOM: 'bom',
+  DESIGN: 'design',
+  REVIEW: 'review',
+  FINAL: 'final'
+};
+
+const STEP_LABELS = {
+  [STEPS.INITIAL]: 'Initial Requirements',
+  [STEPS.BOM]: 'Bill of Materials',
+  [STEPS.DESIGN]: 'System Design',
+  [STEPS.REVIEW]: 'Design Review',
+  [STEPS.FINAL]: 'Final Approval'
+};
 
 // Node types mapping
 const NODE_TYPES = {
@@ -31,6 +69,14 @@ const DiagramChatInterface = ({ onDiagramGenerated }) => {
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
   const [localDiagram, setLocalDiagram] = useState({ nodes: [], edges: [] });
+  const [currentStep, setCurrentStep] = useState(STEPS.INITIAL);
+  const [stepValidation, setStepValidation] = useState({});
+  const [stepConfirmation, setStepConfirmation] = useState({});
+  const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
+  const [confirmationNotes, setConfirmationNotes] = useState('');
+  const [stepRequirements, setStepRequirements] = useState(null);
+  const [stepData, setStepData] = useState({});
+  const theme = useTheme();
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -38,6 +84,19 @@ const DiagramChatInterface = ({ onDiagramGenerated }) => {
 
   useEffect(() => {
     scrollToBottom();
+  }, [messages]);
+
+  // Update stepRequirements and stepData when chat response changes
+  useEffect(() => {
+    // Placeholder: update these from the latest chat response or backend
+    // For now, just set from the last message if available
+    const lastMsg = messages[messages.length - 1];
+    if (lastMsg && lastMsg.stepRequirements) {
+      setStepRequirements(lastMsg.stepRequirements);
+    }
+    if (lastMsg && lastMsg.extractedData) {
+      setStepData(lastMsg.extractedData);
+    }
   }, [messages]);
 
   const processCommand = (cmd, currentState) => {
@@ -51,7 +110,7 @@ const DiagramChatInterface = ({ onDiagramGenerated }) => {
           return currentState;
         }
         
-        const [_, type, x, y, label] = parts;
+        const [, type, x, y, label] = parts;
         const nodeType = NODE_TYPES[type];
         if (!nodeType) {
           console.warn(`Unknown node type: ${type}. Available types:`, Object.keys(NODE_TYPES));
@@ -94,7 +153,7 @@ const DiagramChatInterface = ({ onDiagramGenerated }) => {
           return currentState;
         }
         
-        const [_, x1, y1, point1, x2, y2, point2] = parts;
+        const [, x1, y1, point1, x2, y2, point2] = parts;
         const pos1 = {
           x: parseInt(x1) * 100,
           y: parseInt(y1) * 100
@@ -148,6 +207,61 @@ const DiagramChatInterface = ({ onDiagramGenerated }) => {
     }
   };
 
+  const handleStepValidation = async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/chat/validate`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({
+          conversationId: id,
+          validationData: localDiagram
+        })
+      });
+
+      const data = await response.json();
+      setStepValidation(prev => ({
+        ...prev,
+        [currentStep]: data
+      }));
+
+      if (data.valid) {
+        setShowConfirmationDialog(true);
+      }
+    } catch (error) {
+      console.error('Validation error:', error);
+    }
+  };
+
+  const handleStepConfirmation = async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/chat/confirm`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({
+          conversationId: id,
+          notes: confirmationNotes
+        })
+      });
+
+      const data = await response.json();
+      setStepConfirmation(prev => ({
+        ...prev,
+        [currentStep]: data
+      }));
+
+      setShowConfirmationDialog(false);
+      setConfirmationNotes('');
+    } catch (error) {
+      console.error('Confirmation error:', error);
+    }
+  };
+
   const handleSendMessage = async () => {
     if (!inputMessage.trim()) return;
 
@@ -169,35 +283,40 @@ const DiagramChatInterface = ({ onDiagramGenerated }) => {
           history: messages
             .slice(-2)
             .map((msg, i) => msg.role === 'user' ? { user: msg.content, ai: messages[i+1]?.content || '' } : null)
-            .filter(Boolean)
+            .filter(Boolean),
+          currentStep
         })
       });
 
       const data = await response.json();
       
       if (response.ok) {
-        // Extract the human-readable response (text before any commands)
+        // Update current step if changed
+        if (data.currentStep && data.currentStep !== currentStep) {
+          setCurrentStep(data.currentStep);
+        }
+
+        // Extract the human-readable response
         const humanResponse = data.response.split('{')[0].trim();
         setMessages(prev => [...prev, { role: 'assistant', content: humanResponse }]);
         
-        // Extract and process commands
-        const commands = [];
-        const regex = /\{([^}]+)\}/g;
-        let match;
-        while ((match = regex.exec(data.response)) !== null) {
-          commands.push(match[1]);
-        }
+        // Process commands if in design step
+        if (currentStep === STEPS.DESIGN) {
+          const commands = [];
+          const regex = /\{([^}]+)\}/g;
+          let match;
+          while ((match = regex.exec(data.response)) !== null) {
+            commands.push(match[1]);
+          }
 
-        // Process commands one by one
-        if (commands.length > 0 && onDiagramGenerated) {
-          let updatedDiagram = { ...localDiagram };
-          
-          for (const cmd of commands) {
-            updatedDiagram = processCommand(cmd, updatedDiagram);
-            setLocalDiagram(updatedDiagram);
-            onDiagramGenerated(updatedDiagram);
-            // Add a small delay between commands
-            await new Promise(resolve => setTimeout(resolve, 100));
+          if (commands.length > 0 && onDiagramGenerated) {
+            let updatedDiagram = { ...localDiagram };
+            for (const cmd of commands) {
+              updatedDiagram = processCommand(cmd, updatedDiagram);
+              setLocalDiagram(updatedDiagram);
+              onDiagramGenerated(updatedDiagram);
+              await new Promise(resolve => setTimeout(resolve, 100));
+            }
           }
         }
       } else {
@@ -221,12 +340,55 @@ const DiagramChatInterface = ({ onDiagramGenerated }) => {
     }
   };
 
+  const getStepStatus = (step) => {
+    if (step === currentStep) return 'active';
+    if (stepConfirmation[step]?.confirmed) return 'completed';
+    if (stepValidation[step]?.valid) return 'validated';
+    return 'pending';
+  };
+
+  const getStepIcon = (step) => {
+    const status = getStepStatus(step);
+    switch (status) {
+      case 'completed':
+        return <CheckCircleIcon color="success" />;
+      case 'validated':
+        return <WarningIcon color="warning" />;
+      case 'active':
+        return <InfoIcon color="primary" />;
+      default:
+        return null;
+    }
+  };
+
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Paper sx={{ p: 3, height: '80vh', display: 'flex', flexDirection: 'column' }}>
         <Typography variant="h5" gutterBottom>
           Diagram Chat Assistant
         </Typography>
+
+        {/* Step Progress */}
+        <Stepper activeStep={Object.keys(STEPS).indexOf(currentStep)} sx={{ mb: 3 }}>
+          {Object.values(STEPS).map((step) => (
+            <Step key={step} completed={getStepStatus(step) === 'completed'}>
+              <StepLabel
+                StepIconComponent={() => getStepIcon(step)}
+                optional={
+                  step === currentStep && stepValidation[step]?.errors?.length > 0 && (
+                    <Alert severity="error" sx={{ mt: 1 }}>
+                      {stepValidation[step].errors.join(', ')}
+                    </Alert>
+                  )
+                }
+              >
+                {STEP_LABELS[step]}
+              </StepLabel>
+            </Step>
+          ))}
+        </Stepper>
+
+        {/* Chat Interface */}
         <Box 
           sx={{ 
             flex: 1, 
@@ -266,6 +428,38 @@ const DiagramChatInterface = ({ onDiagramGenerated }) => {
           <div ref={messagesEndRef} />
         </Box>
         
+        {/* Step Requirements and Values Section */}
+        {stepRequirements && (
+          <Box sx={{ mt: 2, mb: 2, p: 2, border: `1px solid ${theme.palette.divider}`, borderRadius: 1, background: theme.palette.background.paper }}>
+            <Typography variant="h6" sx={{ mb: 1 }}>Current Step: {STEP_LABELS[currentStep]}</Typography>
+            {stepRequirements.requiredFields.map(field => (
+              <Box key={field.id} sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                <Typography sx={{ minWidth: 180 }}>{field.description}:</Typography>
+                <Typography
+                  sx={{
+                    color: stepData?.[field.id] !== undefined ? 'text.primary' : 'error.main',
+                    fontWeight: stepData?.[field.id] !== undefined ? 'normal' : 'bold'
+                  }}
+                >
+                  {stepData?.[field.id] !== undefined
+                    ? String(stepData[field.id])
+                    : 'Required'}
+                </Typography>
+              </Box>
+            ))}
+            <Button
+              variant="contained"
+              color="primary"
+              disabled={!stepRequirements.requiredFields.every(field => stepData?.[field.id] !== undefined)}
+              onClick={handleStepConfirmation}
+              sx={{ mt: 2 }}
+            >
+              Confirm Step Values
+            </Button>
+          </Box>
+        )}
+
+        {/* Input Area */}
         <Box sx={{ display: 'flex', gap: 1 }}>
           <TextField
             fullWidth
@@ -274,7 +468,7 @@ const DiagramChatInterface = ({ onDiagramGenerated }) => {
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder="Describe the diagram changes you want..."
+            placeholder={`Describe the ${currentStep} changes you want...`}
             variant="outlined"
             size="small"
           />
@@ -287,8 +481,42 @@ const DiagramChatInterface = ({ onDiagramGenerated }) => {
           >
             Send
           </Button>
+          {currentStep === STEPS.DESIGN && (
+            <Tooltip title="Validate current design">
+              <Button
+                variant="outlined"
+                color="secondary"
+                onClick={handleStepValidation}
+                disabled={isLoading}
+              >
+                Validate
+              </Button>
+            </Tooltip>
+          )}
         </Box>
       </Paper>
+
+      {/* Confirmation Dialog */}
+      <Dialog open={showConfirmationDialog} onClose={() => setShowConfirmationDialog(false)}>
+        <DialogTitle>Confirm Step Completion</DialogTitle>
+        <DialogContent>
+          <TextField
+            fullWidth
+            multiline
+            rows={4}
+            value={confirmationNotes}
+            onChange={(e) => setConfirmationNotes(e.target.value)}
+            placeholder="Add any notes about this step..."
+            sx={{ mt: 2 }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShowConfirmationDialog(false)}>Cancel</Button>
+          <Button onClick={handleStepConfirmation} variant="contained" color="primary">
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };
