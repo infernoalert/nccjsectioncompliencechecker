@@ -1,4 +1,7 @@
-const STEP_REQUIREMENTS = {
+const StepRequirement = require('../models/StepRequirement');
+
+// Keep the static configuration as fallback
+const STATIC_STEP_REQUIREMENTS = {
   initial: {
     requiredFields: [
       {
@@ -6,18 +9,6 @@ const STEP_REQUIREMENTS = {
         type: 'boolean',
         description: 'Whether billing functionality is required',
         validation: (value) => typeof value === 'boolean'
-      },
-      {
-        id: 'market_connection',
-        type: 'boolean',
-        description: 'Whether the project needs to be connected to the market',
-        validation: (value) => typeof value === 'boolean'
-      },
-      {
-        id: 'ancillary_plants',
-        type: 'array',
-        description: 'List of ancillary plants in the project',
-        validation: (value) => Array.isArray(value) && value.length > 0
       },
       {
         id: 'building_type',
@@ -31,7 +22,8 @@ const STEP_REQUIREMENTS = {
         description: 'Building classification according to NCC',
         validation: (value) => typeof value === 'string' && value.length > 0
       }
-    ]
+    ],
+    requirementMessage: 'Specify whether billing functionality is required for this project.'
   },
   bom: {
     requiredFields: [
@@ -47,7 +39,8 @@ const STEP_REQUIREMENTS = {
         description: 'Detailed specifications for each component',
         validation: (value) => typeof value === 'object' && Object.keys(value).length > 0
       }
-    ]
+    ],
+    requirementMessage: 'Provide the bill of materials for the project.'
   },
   design: {
     requiredFields: [
@@ -63,7 +56,8 @@ const STEP_REQUIREMENTS = {
         description: 'All connections between components',
         validation: (value) => Array.isArray(value) && value.length > 0
       }
-    ]
+    ],
+    requirementMessage: 'Design the complete EMS diagram and specify all connections.'
   },
   review: {
     requiredFields: [
@@ -79,7 +73,8 @@ const STEP_REQUIREMENTS = {
         description: 'List of optimization suggestions',
         validation: (value) => Array.isArray(value)
       }
-    ]
+    ],
+    requirementMessage: 'Please review if billing functionality is required for this project.'
   },
   final: {
     requiredFields: [
@@ -95,41 +90,54 @@ const STEP_REQUIREMENTS = {
         description: 'Required documentation list',
         validation: (value) => typeof value === 'object' && value.requirements
       }
-    ]
+    ],
+    requirementMessage: 'Provide the final implementation plan and documentation.'
   }
 };
 
-const validateStepRequirements = (step, data) => {
-  const requirements = STEP_REQUIREMENTS[step];
-  if (!requirements) return { valid: false, errors: ['Invalid step'] };
+// Function to get step requirements from database
+const getStepRequirements = async (step) => {
+  try {
+    const stepRequirement = await StepRequirement.findOne({ step });
+    if (!stepRequirement) {
+      // Fallback to static configuration if not found in database
+      return STATIC_STEP_REQUIREMENTS[step];
+    }
 
+    // Convert validation string back to function
+    const requirements = {
+      requiredFields: stepRequirement.requiredFields.map(field => ({
+        ...field,
+        validation: new Function('value', `return ${field.validation}`)
+      })),
+      requirementMessage: stepRequirement.requirementMessage
+    };
+
+    return requirements;
+  } catch (error) {
+    console.error('Error fetching step requirements:', error);
+    // Fallback to static configuration on error
+    return STATIC_STEP_REQUIREMENTS[step];
+  }
+};
+
+function validateStepRequirements(step, data) {
+  if (!data || typeof data !== 'object') {
+    return { valid: false, errors: ['No data provided'] };
+  }
+  const reqs = STATIC_STEP_REQUIREMENTS[step]?.requiredFields || [];
   const errors = [];
-  const validatedData = {};
-
-  for (const field of requirements.requiredFields) {
-    const value = data[field.id];
-    
-    if (value === undefined) {
-      errors.push(`Missing required field: ${field.description}`);
-      continue;
+  for (const field of reqs) {
+    if (data[field.id] === undefined || data[field.id] === null) {
+      errors.push(`${field.description || field.id} is required`);
     }
-
-    if (!field.validation(value)) {
-      errors.push(`Invalid value for ${field.description}`);
-      continue;
-    }
-
-    validatedData[field.id] = value;
+    // Add more field-specific validation here if needed
   }
-
-  return {
-    valid: errors.length === 0,
-    errors,
-    validatedData
-  };
-};
+  return { valid: errors.length === 0, errors };
+}
 
 module.exports = {
-  STEP_REQUIREMENTS,
-  validateStepRequirements
+  getStepRequirements,
+  validateStepRequirements,
+  STATIC_STEP_REQUIREMENTS
 }; 

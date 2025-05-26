@@ -1,7 +1,11 @@
 const mongoose = require('mongoose');
 
 const stepDataSchema = new mongoose.Schema({
-  billing_required: Boolean,
+  // Billing is required for the initial step, default is false (not required)
+  billing_required: {
+    type: Boolean,
+    default: false
+  },
   market_connection: Boolean,
   ancillary_plants: [String],
   building_type: String,
@@ -84,9 +88,9 @@ conversationSchema.pre('save', function(next) {
 });
 
 // Method to validate current step
-conversationSchema.methods.validateCurrentStep = function(validationData) {
+conversationSchema.methods.validateCurrentStep = async function(validationData) {
   const { validateStepRequirements } = require('../config/stepRequirements');
-  const validation = validateStepRequirements(this.currentStep, validationData);
+  const validation = await validateStepRequirements(this.currentStep, validationData);
   
   this.stepValidation.set(this.currentStep, {
     isValid: validation.valid,
@@ -130,6 +134,14 @@ conversationSchema.methods.canTransitionToNextStep = function() {
   const confirmation = this.stepConfirmation.get(this.currentStep);
 
   return validation?.isValid && confirmation?.confirmed;
+};
+
+// Add a method to update billing_required only when a specific message from AI is received
+conversationSchema.methods.updateBillingRequired = function(newValue) {
+  // Only update if the value is explicitly provided by AI
+  if (typeof newValue === 'boolean') {
+    this.stepData.billing_required = newValue;
+  }
 };
 
 const Conversation = mongoose.model('Conversation', conversationSchema);

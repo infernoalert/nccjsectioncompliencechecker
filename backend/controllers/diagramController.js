@@ -1,7 +1,12 @@
 const OpenAI = require('openai');
 const Project = require('../models/Project');
 const DiagramService = require('../services/diagramService');
-const { getInterpretChatSystemMessage, getGenerateLayoutSystemMessage } = require('../config/openaiMessages');
+const { getInitialConfig } = require('../config/initialConfig');
+const { getBOMConfig } = require('../config/bomConfig');
+const { getDesignConfig } = require('../config/designConfig');
+const { getReviewConfig } = require('../config/reviewConfig');
+const { getFinalConfig } = require('../config/finalConfig');
+const { STEPS } = require('../config/steps');
 const fs = require('fs').promises;
 const path = require('path');
 
@@ -85,6 +90,24 @@ const saveDiagramData = async (projectId, diagramData) => {
   }
 };
 
+// Add a helper to select the config for the current step
+const getStepConfig = (step, project, existingDiagram) => {
+  switch (step) {
+    case STEPS.INITIAL:
+      return getInitialConfig(project);
+    case STEPS.BOM:
+      return getBOMConfig(project);
+    case STEPS.DESIGN:
+      return getDesignConfig(project, existingDiagram);
+    case STEPS.REVIEW:
+      return getReviewConfig(project, existingDiagram);
+    case STEPS.FINAL:
+      return getFinalConfig(project, existingDiagram);
+    default:
+      return getInitialConfig(project);
+  }
+};
+
 // Step 1: Interpretation API - Convert chat to structured design plan
 const interpretChat = async (req, res) => {
   try {
@@ -145,12 +168,12 @@ const interpretChat = async (req, res) => {
     }
 
     try {
-      const systemMessage = getInterpretChatSystemMessage(project, existingDiagram);
-      console.log('System message length:', systemMessage.length);
+      const stepConfig = getStepConfig(currentStep, project, existingDiagram);
+      console.log('System message length:', stepConfig.role.length);
 
       // Prepare messages array with chat history
       const messages = [
-        { role: 'system', content: systemMessage },
+        { role: 'system', content: stepConfig.role },
         ...(chatHistory || []),
         { role: 'user', content: message }
       ];

@@ -16,7 +16,8 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  Tooltip
+  Tooltip,
+  Popover
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
@@ -43,6 +44,42 @@ const STEP_LABELS = {
   [STEPS.DESIGN]: 'System Design',
   [STEPS.REVIEW]: 'Design Review',
   [STEPS.FINAL]: 'Final Approval'
+};
+
+// Add this after the STEP_LABELS constant
+const TEST_STEP_REQUIREMENTS = {
+  initial: {
+    requiredFields: [
+      { id: 'billing_required', description: 'Billing Required', type: 'boolean' },
+      { id: 'building_type', description: 'Building Type', type: 'string' },
+      { id: 'building_classification', description: 'Building Classification', type: 'string' }
+    ],
+    requirementMessage: 'Please provide the initial project requirements'
+  },
+  bom: {
+    requiredFields: [
+      { id: 'meter_count', description: 'Number of Meters', type: 'number' },
+      { id: 'system_type', description: 'System Type', type: 'string' }
+    ],
+    requirementMessage: 'Please specify the bill of materials details'
+  },
+  design: {
+    requiredFields: [
+      { id: 'layout_type', description: 'Layout Type', type: 'string' },
+      { id: 'connection_type', description: 'Connection Type', type: 'string' }
+    ],
+    requirementMessage: 'Please provide the system design specifications'
+  }
+};
+
+const TEST_STEP_DATA = {
+  billing_required: true,
+  building_type: 'Commercial',
+  building_classification: 'Class A',
+  meter_count: 10,
+  system_type: 'Advanced',
+  layout_type: 'Grid',
+  connection_type: 'Wireless'
 };
 
 // Node types mapping
@@ -77,6 +114,9 @@ const DiagramChatInterface = ({ onDiagramGenerated }) => {
   const [stepRequirements, setStepRequirements] = useState(null);
   const [stepData, setStepData] = useState({});
   const theme = useTheme();
+  // Popup state
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [selectedStep, setSelectedStep] = useState(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -98,6 +138,64 @@ const DiagramChatInterface = ({ onDiagramGenerated }) => {
       setStepData(lastMsg.extractedData);
     }
   }, [messages]);
+
+  // Update the useEffect for stepRequirements
+  useEffect(() => {
+    const fetchStepRequirements = async () => {
+      try {
+        const response = await fetch(`${API_URL}/api/chat/step-requirements`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setStepRequirements(data);
+        } else {
+          // Fallback to test data if API fails
+          console.warn('Using test data as fallback');
+          setStepRequirements(TEST_STEP_REQUIREMENTS);
+        }
+      } catch (error) {
+        console.error('Error fetching step requirements:', error);
+        setStepRequirements(TEST_STEP_REQUIREMENTS);
+      }
+    };
+
+    fetchStepRequirements();
+  }, []);
+
+  // Update the useEffect for stepData
+  useEffect(() => {
+    const fetchStepData = async () => {
+      try {
+        const response = await fetch(`${API_URL}/api/chat/step-data/${id}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setStepData(data);
+        } else {
+          // Fallback to test data if API fails
+          console.warn('Using test data as fallback');
+          setStepData(TEST_STEP_DATA);
+        }
+      } catch (error) {
+        console.error('Error fetching step data:', error);
+        setStepData(TEST_STEP_DATA);
+      }
+    };
+
+    fetchStepData();
+  }, [id]);
 
   const processCommand = (cmd, currentState) => {
     try {
@@ -361,6 +459,27 @@ const DiagramChatInterface = ({ onDiagramGenerated }) => {
     }
   };
 
+  // Handler for step label click
+  const handleStepLabelClick = (event, step) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setAnchorEl(event.currentTarget);
+    setSelectedStep(step);
+  };
+
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
+    setSelectedStep(null);
+  };
+
+  // Helper to get requirements for a step
+  const getStepReq = (step) => {
+    if (!step) return null;
+    if (stepRequirements && stepRequirements[step]) return stepRequirements[step];
+    if (stepRequirements && stepRequirements.requiredFields) return stepRequirements;
+    return null;
+  };
+
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Paper sx={{ p: 3, height: '80vh', display: 'flex', flexDirection: 'column' }}>
@@ -369,10 +488,20 @@ const DiagramChatInterface = ({ onDiagramGenerated }) => {
         </Typography>
 
         {/* Step Progress */}
-        <Stepper activeStep={Object.keys(STEPS).indexOf(currentStep)} sx={{ mb: 3 }}>
+        <Stepper activeStep={Object.keys(STEPS).indexOf(currentStep)} sx={{ mb: 3, overflowX: 'auto' }}>
           {Object.values(STEPS).map((step) => (
             <Step key={step} completed={getStepStatus(step) === 'completed'}>
               <StepLabel
+                onClick={(e) => handleStepLabelClick(e, step)}
+                sx={{
+                  cursor: 'pointer',
+                  bgcolor: step === currentStep ? 'success.light' : 'inherit',
+                  borderRadius: 1,
+                  px: 1,
+                  '&:hover': { bgcolor: step === currentStep ? 'success.main' : 'grey.100' },
+                  color: step === currentStep ? 'white' : 'inherit',
+                  transition: 'background 0.2s',
+                }}
                 StepIconComponent={() => getStepIcon(step)}
                 optional={
                   step === currentStep && stepValidation[step]?.errors?.length > 0 && (
@@ -387,6 +516,101 @@ const DiagramChatInterface = ({ onDiagramGenerated }) => {
             </Step>
           ))}
         </Stepper>
+
+        {/* Step Requirements Popover */}
+        <Popover
+          open={Boolean(anchorEl)}
+          anchorEl={anchorEl}
+          onClose={handlePopoverClose}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+          transformOrigin={{ vertical: 'top', horizontal: 'left' }}
+          PaperProps={{
+            sx: {
+              maxHeight: '80vh',
+              overflow: 'auto',
+              minWidth: 300
+            }
+          }}
+        >
+          <Box sx={{ p: 2 }}>
+            <Typography variant="h6" gutterBottom>
+              {STEP_LABELS[selectedStep]} Requirements
+            </Typography>
+            
+            {/* Requirement Message */}
+            {(stepRequirements?.[selectedStep]?.requirementMessage || TEST_STEP_REQUIREMENTS[selectedStep]?.requirementMessage) && (
+              <Box sx={{
+                display: 'flex',
+                alignItems: 'flex-start',
+                backgroundColor: theme => theme.palette.info.light,
+                color: theme => theme.palette.info.contrastText,
+                borderRadius: 1,
+                p: 1.5,
+                mb: 2,
+                boxShadow: 1
+              }}>
+                <InfoIcon sx={{ mr: 1, mt: 0.2 }} fontSize="small" />
+                <Typography variant="body2">
+                  {stepRequirements?.[selectedStep]?.requirementMessage || 
+                   TEST_STEP_REQUIREMENTS[selectedStep]?.requirementMessage}
+                </Typography>
+              </Box>
+            )}
+
+            {/* Required Fields */}
+            {(stepRequirements?.[selectedStep]?.requiredFields || TEST_STEP_REQUIREMENTS[selectedStep]?.requiredFields)?.map(field => (
+              <Box 
+                key={field.id} 
+                sx={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  mb: 1.5,
+                  p: 1,
+                  backgroundColor: theme => theme.palette.grey[50],
+                  borderRadius: 1
+                }}
+              >
+                <Typography 
+                  sx={{ 
+                    minWidth: 180,
+                    fontWeight: 'medium'
+                  }}
+                >
+                  {field.description}:
+                </Typography>
+                <Typography
+                  sx={{
+                    color: (stepData?.[field.id] !== undefined || TEST_STEP_DATA[field.id] !== undefined) 
+                      ? 'text.primary' 
+                      : 'error.main',
+                    fontWeight: (stepData?.[field.id] !== undefined || TEST_STEP_DATA[field.id] !== undefined) 
+                      ? 'normal' 
+                      : 'bold',
+                    ml: 1
+                  }}
+                >
+                  {(stepData?.[field.id] !== undefined || TEST_STEP_DATA[field.id] !== undefined)
+                    ? String(stepData?.[field.id] ?? TEST_STEP_DATA[field.id])
+                    : 'Required'}
+                </Typography>
+              </Box>
+            ))}
+
+            <Button
+              variant="contained"
+              color="primary"
+              disabled={
+                !(stepRequirements?.[selectedStep]?.requiredFields || TEST_STEP_REQUIREMENTS[selectedStep]?.requiredFields)?.every(
+                  field => (stepData?.[field.id] !== undefined || TEST_STEP_DATA[field.id] !== undefined)
+                )
+              }
+              onClick={handleStepConfirmation}
+              sx={{ mt: 2, width: '100%' }}
+            >
+              Confirm Step Values
+            </Button>
+          </Box>
+        </Popover>
 
         {/* Chat Interface */}
         <Box 
@@ -428,37 +652,6 @@ const DiagramChatInterface = ({ onDiagramGenerated }) => {
           <div ref={messagesEndRef} />
         </Box>
         
-        {/* Step Requirements and Values Section */}
-        {stepRequirements && (
-          <Box sx={{ mt: 2, mb: 2, p: 2, border: `1px solid ${theme.palette.divider}`, borderRadius: 1, background: theme.palette.background.paper }}>
-            <Typography variant="h6" sx={{ mb: 1 }}>Current Step: {STEP_LABELS[currentStep]}</Typography>
-            {stepRequirements.requiredFields.map(field => (
-              <Box key={field.id} sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                <Typography sx={{ minWidth: 180 }}>{field.description}:</Typography>
-                <Typography
-                  sx={{
-                    color: stepData?.[field.id] !== undefined ? 'text.primary' : 'error.main',
-                    fontWeight: stepData?.[field.id] !== undefined ? 'normal' : 'bold'
-                  }}
-                >
-                  {stepData?.[field.id] !== undefined
-                    ? String(stepData[field.id])
-                    : 'Required'}
-                </Typography>
-              </Box>
-            ))}
-            <Button
-              variant="contained"
-              color="primary"
-              disabled={!stepRequirements.requiredFields.every(field => stepData?.[field.id] !== undefined)}
-              onClick={handleStepConfirmation}
-              sx={{ mt: 2 }}
-            >
-              Confirm Step Values
-            </Button>
-          </Box>
-        )}
-
         {/* Input Area */}
         <Box sx={{ display: 'flex', gap: 1 }}>
           <TextField
