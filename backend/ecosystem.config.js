@@ -24,7 +24,7 @@ module.exports = {
         DEBUG: 'app:*',
         MONGO_PATH: 'localhost',
         MONGO_PORT: '27017',
-        MONGO_DATABASE: 'ncc-onestepback',
+        MONGO_DATABASE: 'ncc-compliance',
         MONGO_USER: 'admin',
         MONGO_PASSWORD: 'admin'
       },

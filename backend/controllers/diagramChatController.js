@@ -6,18 +6,30 @@ const axios = require('axios');
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
+// Step mapping
+const STEP_KEY_TO_NUMBER = {
+  initial: 1,
+  bom: 2,
+  design: 3,
+  review: 4,
+  final: 5
+};
+
 // POST /api/projects/:projectId/steps/:stepNumber/chat
 exports.chatWithAI = async (req, res) => {
   try {
     const { projectId, stepNumber } = req.params;
     const { message } = req.body;
+    
     if (!projectId || !stepNumber || !message) {
       return res.status(400).json({ message: 'Missing required fields' });
     }
 
     // Find project
     const project = await Project.findById(projectId);
-    if (!project) return res.status(404).json({ message: 'Project not found' });
+    if (!project) {
+      return res.status(404).json({ message: 'Project not found' });
+    }
 
     // Find or create conversation
     let conversation = await Conversation.findOne({ project: projectId });
@@ -25,7 +37,7 @@ exports.chatWithAI = async (req, res) => {
       conversation = new Conversation({
         project: projectId,
         messages: [],
-        stepData: {},
+        stepData: new Map(),
         currentStep: stepNumber
       });
     }
@@ -34,74 +46,82 @@ exports.chatWithAI = async (req, res) => {
     conversation.messages.push({
       step: stepNumber,
       role: 'user',
-      content: message
+      content: message,
+      timestamp: new Date()
     });
 
-    // Build prompt for AI
-    const stepConfig = getStepConfig(stepNumber, project, null); // Pass diagram if needed
-    const history = conversation.messages
-      .filter(m => m.step === stepNumber)
-      .map(m => ({ role: m.role, content: m.content }));
-    const messages = [
-      { role: 'system', content: stepConfig.role },
-      ...history,
-      { role: 'user', content: message }
-    ];
+    try {
+      // Build prompt for AI
+      const stepConfig = getStepConfig(stepNumber, project, null);
+      const history = conversation.messages
+        .filter(m => m.step === stepNumber)
+        .map(m => ({ 
+          role: m.role === 'ai' ? 'assistant' : m.role, 
+          content: m.content 
+        }));
+      
+      const messages = [
+        { role: 'system', content: stepConfig.role },
+        ...history,
+        { role: 'user', content: message }
+      ];
 
-    // Call OpenAI
-    const completion = await openai.chat.completions.create({
-      messages,
-      model: 'gpt-4',
-      temperature: 0.7,
-      max_tokens: 2000
-    });
-    const aiResponse = completion.choices[0].message.content;
+      // Call OpenAI
+      const completion = await openai.chat.completions.create({
+        messages,
+        model: 'gpt-4',
+        temperature: 0.7,
+        max_tokens: 2000
+      });
+      
+      const aiResponse = completion.choices[0].message.content;
 
-    // Store AI message
-    conversation.messages.push({
-      step: stepNumber,
-      role: 'ai',
-      content: aiResponse
-    });
+      // Store AI message
+      conversation.messages.push({
+        step: stepNumber,
+        role: 'ai', // Keep as 'ai' in our database
+        content: aiResponse,
+        timestamp: new Date()
+      });
 
-    // Parse backend JSON block from AI response (if any)
-    let backendUpdate = null;
-    const jsonMatch = aiResponse.match(/```json([\s\S]*?)```/);
-    if (jsonMatch) {
-      try {
-        backendUpdate = JSON.parse(jsonMatch[1]);
-        // Update stepData for this step (support Map or plain object)
-        if (conversation.stepData instanceof Map || (typeof conversation.stepData.set === 'function' && typeof conversation.stepData.get === 'function')) {
+      // Parse backend JSON block from AI response (if any)
+      let backendUpdate = null;
+      const jsonMatch = aiResponse.match(/```json([\s\S]*?)```/);
+      if (jsonMatch) {
+        try {
+          backendUpdate = JSON.parse(jsonMatch[1]);
           conversation.stepData.set(stepNumber, backendUpdate);
-        } else {
-          conversation.stepData[stepNumber] = backendUpdate;
+        } catch (e) {
+          console.error('Error parsing JSON from AI response:', e);
         }
-      } catch (e) {
-        // Ignore parse errors, just don't update stepData
       }
-    }
 
-    conversation.currentStep = stepNumber;
-    conversation.updatedAt = new Date();
-    await conversation.save();
+      conversation.currentStep = stepNumber;
+      conversation.updatedAt = new Date();
+      await conversation.save();
 
-    // Return only the user-facing part of the AI response (strip code blocks)
-    const userFacing = aiResponse.replace(/```[\s\S]*?```/g, '').trim();
-    // Support Map or plain object for stepData
-    let stepDataForStep;
-    if (conversation.stepData instanceof Map || (typeof conversation.stepData.get === 'function')) {
-      stepDataForStep = conversation.stepData.get(stepNumber) || {};
-    } else {
-      stepDataForStep = conversation.stepData[stepNumber] || {};
+      // Return only the user-facing part of the AI response (strip code blocks)
+      const userFacing = aiResponse.replace(/```[\s\S]*?```/g, '').trim();
+      
+      res.json({
+        response: userFacing,
+        stepData: conversation.stepData.get(stepNumber) || {},
+        conversationId: conversation._id,
+        currentStep: conversation.currentStep
+      });
+    } catch (error) {
+      console.error('Error in OpenAI call or response processing:', error);
+      res.status(500).json({ 
+        message: 'Error processing AI response', 
+        error: error.message 
+      });
     }
-    res.json({
-      response: userFacing,
-      stepData: stepDataForStep,
-      conversationId: conversation._id,
-      currentStep: conversation.currentStep
-    });
   } catch (error) {
-    res.status(500).json({ message: 'Error processing chat request', error: error.message });
+    console.error('Error in chatWithAI:', error);
+    res.status(500).json({ 
+      message: 'Error processing chat request', 
+      error: error.message 
+    });
   }
 };
 
@@ -130,7 +150,11 @@ exports.updateConversationStep = async (req, res) => {
       }
     });
   } catch (error) {
-    res.status(500).json({ message: 'Error updating conversation step', error: error.message });
+    console.error('Error in updateConversationStep:', error);
+    res.status(500).json({ 
+      message: 'Error updating conversation step', 
+      error: error.message 
+    });
   }
 };
 
