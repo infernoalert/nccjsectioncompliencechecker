@@ -6,7 +6,6 @@ const { getBOMConfig } = require('../config/bomConfig');
 const { getDesignConfig } = require('../config/designConfig');
 const { getReviewConfig } = require('../config/reviewConfig');
 const { getFinalConfig } = require('../config/finalConfig');
-const { STEPS } = require('../config/steps');
 const fs = require('fs').promises;
 const path = require('path');
 

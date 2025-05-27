@@ -46,42 +46,6 @@ const STEP_LABELS = {
   [STEPS.FINAL]: 'Final Approval'
 };
 
-// Add this after the STEP_LABELS constant
-const TEST_STEP_REQUIREMENTS = {
-  initial: {
-    requiredFields: [
-      { id: 'billing_required', description: 'Billing Required', type: 'boolean' },
-      { id: 'building_type', description: 'Building Type', type: 'string' },
-      { id: 'building_classification', description: 'Building Classification', type: 'string' }
-    ],
-    requirementMessage: 'Please provide the initial project requirements'
-  },
-  bom: {
-    requiredFields: [
-      { id: 'meter_count', description: 'Number of Meters', type: 'number' },
-      { id: 'system_type', description: 'System Type', type: 'string' }
-    ],
-    requirementMessage: 'Please specify the bill of materials details'
-  },
-  design: {
-    requiredFields: [
-      { id: 'layout_type', description: 'Layout Type', type: 'string' },
-      { id: 'connection_type', description: 'Connection Type', type: 'string' }
-    ],
-    requirementMessage: 'Please provide the system design specifications'
-  }
-};
-
-const TEST_STEP_DATA = {
-  billing_required: true,
-  building_type: 'Commercial',
-  building_classification: 'Class A',
-  meter_count: 10,
-  system_type: 'Advanced',
-  layout_type: 'Grid',
-  connection_type: 'Wireless'
-};
-
 // Node types mapping
 const NODE_TYPES = {
   'smart-meter': 'smartMeter',
@@ -99,14 +63,14 @@ const NODE_TYPES = {
   'label': 'label'
 };
 
-const DiagramChatInterface = ({ onDiagramGenerated }) => {
+const DiagramChatInterface = ({ onDiagramGenerated, onStepChange, currentStep: initialStep }) => {
   const { id } = useParams();
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
   const [localDiagram, setLocalDiagram] = useState({ nodes: [], edges: [] });
-  const [currentStep, setCurrentStep] = useState(STEPS.INITIAL);
+  const [currentStep, setCurrentStep] = useState(initialStep || STEPS.INITIAL);
   const [stepValidation, setStepValidation] = useState({});
   const [stepConfirmation, setStepConfirmation] = useState({});
   const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
@@ -118,6 +82,20 @@ const DiagramChatInterface = ({ onDiagramGenerated }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedStep, setSelectedStep] = useState(null);
 
+  // Update currentStep when initialStep changes
+  useEffect(() => {
+    if (initialStep && initialStep !== currentStep) {
+      setCurrentStep(initialStep);
+    }
+  }, [initialStep]);
+
+  // Notify parent of step changes
+  useEffect(() => {
+    if (onStepChange) {
+      onStepChange(currentStep);
+    }
+  }, [currentStep, onStepChange]);
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -128,8 +106,6 @@ const DiagramChatInterface = ({ onDiagramGenerated }) => {
 
   // Update stepRequirements and stepData when chat response changes
   useEffect(() => {
-    // Placeholder: update these from the latest chat response or backend
-    // For now, just set from the last message if available
     const lastMsg = messages[messages.length - 1];
     if (lastMsg && lastMsg.stepRequirements) {
       setStepRequirements(lastMsg.stepRequirements);
@@ -139,182 +115,40 @@ const DiagramChatInterface = ({ onDiagramGenerated }) => {
     }
   }, [messages]);
 
-  // Update the useEffect for stepRequirements
+  // Add a useEffect to fetch step requirements for the current step
   useEffect(() => {
-    const fetchStepRequirements = async () => {
+    async function fetchStepRequirements() {
+      if (!id || !currentStep) return;
       try {
-        const response = await fetch(`${API_URL}/api/chat/step-requirements`, {
-          method: 'GET',
+        const response = await fetch(`${API_URL}/api/projects/${id}/steps/current`, {
           headers: {
-            'Content-Type': 'application/json',
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
         });
-
-        if (response.ok) {
-          const data = await response.json();
-          setStepRequirements(data);
-        } else {
-          // Fallback to test data if API fails
-          console.warn('Using test data as fallback');
-          setStepRequirements(TEST_STEP_REQUIREMENTS);
+        const data = await response.json();
+        console.log('Backend step data response:', data); // Debug log
+        if (data.stepRequirements) {
+          setStepRequirements(data.stepRequirements);
+        }
+        if (data.stepData) {
+          setStepData(data.stepData);
         }
       } catch (error) {
-        console.error('Error fetching step requirements:', error);
-        setStepRequirements(TEST_STEP_REQUIREMENTS);
+        setStepRequirements([]);
       }
-    };
-
-    fetchStepRequirements();
-  }, []);
-
-  // Update the useEffect for stepData
-  useEffect(() => {
-    const fetchStepData = async () => {
-      try {
-        const response = await fetch(`${API_URL}/api/chat/step-data/${id}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          setStepData(data);
-        } else {
-          // Fallback to test data if API fails
-          console.warn('Using test data as fallback');
-          setStepData(TEST_STEP_DATA);
-        }
-      } catch (error) {
-        console.error('Error fetching step data:', error);
-        setStepData(TEST_STEP_DATA);
-      }
-    };
-
-    fetchStepData();
-  }, [id]);
-
-  const processCommand = (cmd, currentState) => {
-    try {
-      const parts = cmd.split(',').map(part => part.trim());
-      const command = parts[0];
-      
-      if (command === 'add') {
-        if (parts.length < 4) {
-          console.warn('Invalid add command format. Expected: add,type,x,y[,label]');
-          return currentState;
-        }
-        
-        const [, type, x, y, label] = parts;
-        const nodeType = NODE_TYPES[type];
-        if (!nodeType) {
-          console.warn(`Unknown node type: ${type}. Available types:`, Object.keys(NODE_TYPES));
-          return currentState;
-        }
-        
-        console.log('Adding new node:', { type: nodeType, x, y, label });
-        
-        const nodeId = `node-${Date.now()}`;
-        const position = {
-          x: parseInt(x) * 100,
-          y: parseInt(y) * 100
-        };
-        
-        const newNode = {
-          id: nodeId,
-          type: nodeType,
-          position,
-          data: { 
-            label: label || type,
-            width: 100,
-            height: 100,
-            showHandles: false
-          }
-        };
-        
-        return {
-          nodes: [...currentState.nodes, newNode],
-          edges: currentState.edges
-        };
-      } else if (command === 'delete-all') {
-        console.log('Deleting all nodes and edges');
-        return {
-          nodes: [],
-          edges: []
-        };
-      } else if (command === 'connect') {
-        if (parts.length !== 7) {
-          console.warn('Invalid connect command format. Expected: connect,x1,y1,point1,x2,y2,point2');
-          return currentState;
-        }
-        
-        const [, x1, y1, point1, x2, y2, point2] = parts;
-        const pos1 = {
-          x: parseInt(x1) * 100,
-          y: parseInt(y1) * 100
-        };
-        const pos2 = {
-          x: parseInt(x2) * 100,
-          y: parseInt(y2) * 100
-        };
-
-        const sourceNode = currentState.nodes.find(n => 
-          Math.abs(n.position.x - pos1.x) < 1 && 
-          Math.abs(n.position.y - pos1.y) < 1
-        );
-        const targetNode = currentState.nodes.find(n => 
-          Math.abs(n.position.x - pos2.x) < 1 && 
-          Math.abs(n.position.y - pos2.y) < 1
-        );
-
-        if (!sourceNode || !targetNode) {
-          console.warn('Could not find source or target node for connection');
-          return currentState;
-        }
-
-        const newEdge = {
-          id: `e${sourceNode.id}-${targetNode.id}-${Date.now()}`,
-          source: sourceNode.id,
-          target: targetNode.id,
-          sourceHandle: point1,
-          targetHandle: point2,
-          type: 'step',
-          style: { stroke: '#000', strokeWidth: 2 },
-          animated: false,
-          markerEnd: {
-            type: 'arrowclosed',
-            width: 20,
-            height: 20
-          }
-        };
-
-        return {
-          nodes: currentState.nodes,
-          edges: [...currentState.edges, newEdge]
-        };
-      } else {
-        console.warn(`Unknown command: ${command}`);
-        return currentState;
-      }
-    } catch (error) {
-      console.error('Error processing command:', error);
-      return currentState;
     }
-  };
+    fetchStepRequirements();
+  }, [id, currentStep]);
 
   const handleStepValidation = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/chat/validate`, {
+      const response = await fetch(`${API_URL}/api/projects/${id}/steps/${currentStep}/validate`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify({
-          conversationId: id,
           validationData: localDiagram
         })
       });
@@ -335,14 +169,13 @@ const DiagramChatInterface = ({ onDiagramGenerated }) => {
 
   const handleStepConfirmation = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/chat/confirm`, {
+      const response = await fetch(`${API_URL}/api/projects/${id}/steps/${currentStep}/confirm`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify({
-          conversationId: id,
           notes: confirmationNotes
         })
       });
@@ -362,70 +195,40 @@ const DiagramChatInterface = ({ onDiagramGenerated }) => {
 
   const handleSendMessage = async () => {
     if (!inputMessage.trim()) return;
-
     const userMessage = inputMessage;
     setInputMessage('');
-    setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
+    setMessages(prev => [...prev, { role: 'user', content: userMessage, step: currentStep }]);
     setIsLoading(true);
-
     try {
-      const response = await fetch(`${API_URL}/api/chat`, {
+      const response = await fetch(`${API_URL}/api/projects/${id}/steps/${currentStep}/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
-        body: JSON.stringify({
-          projectId: id,
-          message: userMessage,
-          history: messages
-            .slice(-2)
-            .map((msg, i) => msg.role === 'user' ? { user: msg.content, ai: messages[i+1]?.content || '' } : null)
-            .filter(Boolean),
-          currentStep
-        })
+        body: JSON.stringify({ message: userMessage })
       });
-
       const data = await response.json();
-      
       if (response.ok) {
-        // Update current step if changed
+        setMessages(prev => [...prev, { 
+          role: 'ai', 
+          content: data.response, 
+          step: currentStep,
+          stepRequirements: data.stepRequirements,
+          extractedData: data.stepData
+        }]);
+        if (data.stepData) setStepData(data.stepData);
         if (data.currentStep && data.currentStep !== currentStep) {
           setCurrentStep(data.currentStep);
-        }
-
-        // Extract the human-readable response
-        const humanResponse = data.response.split('{')[0].trim();
-        setMessages(prev => [...prev, { role: 'assistant', content: humanResponse }]);
-        
-        // Process commands if in design step
-        if (currentStep === STEPS.DESIGN) {
-          const commands = [];
-          const regex = /\{([^}]+)\}/g;
-          let match;
-          while ((match = regex.exec(data.response)) !== null) {
-            commands.push(match[1]);
-          }
-
-          if (commands.length > 0 && onDiagramGenerated) {
-            let updatedDiagram = { ...localDiagram };
-            for (const cmd of commands) {
-              updatedDiagram = processCommand(cmd, updatedDiagram);
-              setLocalDiagram(updatedDiagram);
-              onDiagramGenerated(updatedDiagram);
-              await new Promise(resolve => setTimeout(resolve, 100));
-            }
+          if (onStepChange) {
+            onStepChange(data.currentStep);
           }
         }
       } else {
-        throw new Error(data.message || 'Failed to get response');
+        setMessages(prev => [...prev, { role: 'ai', content: data.message || 'Error from AI', step: currentStep }]);
       }
     } catch (error) {
-      console.error('Chat error:', error);
-      setMessages(prev => [...prev, { 
-        role: 'assistant', 
-        content: 'Sorry, there was an error processing your request. Please try again.' 
-      }]);
+      setMessages(prev => [...prev, { role: 'ai', content: 'Sorry, there was an error processing your request. Please try again.', step: currentStep }]);
     } finally {
       setIsLoading(false);
     }
@@ -455,14 +258,11 @@ const DiagramChatInterface = ({ onDiagramGenerated }) => {
       case 'active':
         return <InfoIcon color="primary" />;
       default:
-        return null;
+        return <InfoIcon color="disabled" />;
     }
   };
 
-  // Handler for step label click
   const handleStepLabelClick = (event, step) => {
-    event.preventDefault();
-    event.stopPropagation();
     setAnchorEl(event.currentTarget);
     setSelectedStep(step);
   };
@@ -472,13 +272,8 @@ const DiagramChatInterface = ({ onDiagramGenerated }) => {
     setSelectedStep(null);
   };
 
-  // Helper to get requirements for a step
-  const getStepReq = (step) => {
-    if (!step) return null;
-    if (stepRequirements && stepRequirements[step]) return stepRequirements[step];
-    if (stepRequirements && stepRequirements.requiredFields) return stepRequirements;
-    return null;
-  };
+  // Before rendering the popup, define:
+  const currentStepData = stepData[currentStep] || stepData;
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
@@ -522,86 +317,41 @@ const DiagramChatInterface = ({ onDiagramGenerated }) => {
           open={Boolean(anchorEl)}
           anchorEl={anchorEl}
           onClose={handlePopoverClose}
-          anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-          transformOrigin={{ vertical: 'top', horizontal: 'left' }}
-          PaperProps={{
-            sx: {
-              maxHeight: '80vh',
-              overflow: 'auto',
-              minWidth: 300
-            }
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'center',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
           }}
         >
-          <Box sx={{ p: 2 }}>
+          <Box sx={{ p: 2, maxWidth: 400 }}>
             <Typography variant="h6" gutterBottom>
               {STEP_LABELS[selectedStep]} Requirements
             </Typography>
-            
-            {/* Requirement Message */}
-            {(stepRequirements?.[selectedStep]?.requirementMessage || TEST_STEP_REQUIREMENTS[selectedStep]?.requirementMessage) && (
-              <Box sx={{
-                display: 'flex',
-                alignItems: 'flex-start',
-                backgroundColor: theme => theme.palette.info.light,
-                color: theme => theme.palette.info.contrastText,
-                borderRadius: 1,
-                p: 1.5,
-                mb: 2,
-                boxShadow: 1
-              }}>
-                <InfoIcon sx={{ mr: 1, mt: 0.2 }} fontSize="small" />
-                <Typography variant="body2">
-                  {stepRequirements?.[selectedStep]?.requirementMessage || 
-                   TEST_STEP_REQUIREMENTS[selectedStep]?.requirementMessage}
-                </Typography>
-              </Box>
+            {stepRequirements && stepRequirements.length > 0 ? (
+              stepRequirements.map((field, index) => (
+                <Box key={index} sx={{ mb: 2 }}>
+                  <Typography variant="subtitle2" color="text.secondary">
+                    {field.label}
+                  </Typography>
+                  <Typography variant="body2">
+                    {field.type === 'boolean'
+                      ? (stepData[field.id] === true ? 'Yes' : stepData[field.id] === false ? 'No' : 'Not provided')
+                      : (stepData[field.id] ?? 'Not provided')}
+                  </Typography>
+                </Box>
+              ))
+            ) : (
+              <Typography variant="body2" color="text.secondary">No requirements defined for this step.</Typography>
             )}
-
-            {/* Required Fields */}
-            {(stepRequirements?.[selectedStep]?.requiredFields || TEST_STEP_REQUIREMENTS[selectedStep]?.requiredFields)?.map(field => (
-              <Box 
-                key={field.id} 
-                sx={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  mb: 1.5,
-                  p: 1,
-                  backgroundColor: theme => theme.palette.grey[50],
-                  borderRadius: 1
-                }}
-              >
-                <Typography 
-                  sx={{ 
-                    minWidth: 180,
-                    fontWeight: 'medium'
-                  }}
-                >
-                  {field.description}:
-                </Typography>
-                <Typography
-                  sx={{
-                    color: (stepData?.[field.id] !== undefined || TEST_STEP_DATA[field.id] !== undefined) 
-                      ? 'text.primary' 
-                      : 'error.main',
-                    fontWeight: (stepData?.[field.id] !== undefined || TEST_STEP_DATA[field.id] !== undefined) 
-                      ? 'normal' 
-                      : 'bold',
-                    ml: 1
-                  }}
-                >
-                  {(stepData?.[field.id] !== undefined || TEST_STEP_DATA[field.id] !== undefined)
-                    ? String(stepData?.[field.id] ?? TEST_STEP_DATA[field.id])
-                    : 'Required'}
-                </Typography>
-              </Box>
-            ))}
-
             <Button
               variant="contained"
               color="primary"
               disabled={
-                !(stepRequirements?.[selectedStep]?.requiredFields || TEST_STEP_REQUIREMENTS[selectedStep]?.requiredFields)?.every(
-                  field => (stepData?.[field.id] !== undefined || TEST_STEP_DATA[field.id] !== undefined)
+                !stepRequirements || !stepRequirements.every(
+                  field => stepData[field.id] !== undefined
                 )
               }
               onClick={handleStepConfirmation}
@@ -653,7 +403,7 @@ const DiagramChatInterface = ({ onDiagramGenerated }) => {
         </Box>
         
         {/* Input Area */}
-        <Box sx={{ display: 'flex', gap: 1 }}>
+        <Box sx={{ display: 'flex', gap: 1, alignItems: 'flex-start' }}>
           <TextField
             fullWidth
             multiline

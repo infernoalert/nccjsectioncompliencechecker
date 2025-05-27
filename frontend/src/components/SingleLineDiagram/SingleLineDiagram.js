@@ -51,6 +51,10 @@ import {
 import DiagramChatInterface from '../DiagramChatInterface';
 import CircularProgress from '@mui/material/CircularProgress';
 
+const API_URL = process.env.NODE_ENV === 'production' 
+  ? 'https://api.payamamerian.com' 
+  : 'http://localhost:5000';
+
 // Move nodeTypes outside of component and memoize it
 const nodeTypes = {
   transformer: TransformerNode,
@@ -86,7 +90,7 @@ const componentTypes = [
 ];
 
 const SingleLineDiagramInner = () => {
-  const { id: projectId } = useParams();
+  const { id } = useParams();
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [selectedElements, setSelectedElements] = useState([]);
@@ -95,28 +99,25 @@ const SingleLineDiagramInner = () => {
   const [showHandles, setShowHandles] = useState(false);
   const { getNodes, setNodes: setFlowNodes, getEdges, setEdges: setFlowEdges } = useReactFlow();
   const [showAssistantPanel, setShowAssistantPanel] = useState(true);
+  const [currentStep, setCurrentStep] = useState('initial'); // Default to initial step
 
   // Memoize the nodeTypes to prevent recreation
   const memoizedNodeTypes = useMemo(() => nodeTypes, []);
 
-  // Load diagram when component mounts or projectId changes
+  // Load diagram when component mounts or projectId/currentStep changes
   useEffect(() => {
     const loadDiagram = async () => {
-      if (!projectId) return;
+      if (!id || !currentStep) return;
       try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          throw new Error('Authentication token not found. Please log in again.');
-        }
-        const response = await axios.get(`/api/projects/${projectId}/diagram`, {
+        const response = await axios.get(`${API_URL}/api/projects/${id}/steps/${currentStep}/diagram`, {
           headers: {
-            'Authorization': `Bearer ${token}`,
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
             'Content-Type': 'application/json'
           }
         });
-        if (response.data.success && response.data.data) {
-          setNodes(response.data.data.nodes || []);
-          setEdges(response.data.data.edges || []);
+        if (response.data) {
+          setNodes(response.data.nodes || []);
+          setEdges(response.data.edges || []);
           if (reactFlowInstance) {
             reactFlowInstance.fitView();
           }
@@ -133,7 +134,7 @@ const SingleLineDiagramInner = () => {
       }
     };
     loadDiagram();
-  }, [projectId, reactFlowInstance, setNodes, setEdges]);
+  }, [id, currentStep, reactFlowInstance, setNodes, setEdges]);
 
   const onConnect = useCallback(
     (params) => {
@@ -257,11 +258,11 @@ const SingleLineDiagramInner = () => {
     );
   }, [showHandles, setNodes]);
 
-  const onSave = useCallback(async () => {
-    if (!projectId) {
+  const onSave = async () => {
+    if (!id || !currentStep) {
       // setSnackbar({
       //   open: true,
-      //   message: 'No project ID found. Please save from within a project.',
+      //   message: 'No project ID or current step found. Please save from within a project.',
       //   severity: 'error'
       // });
       return;
@@ -269,47 +270,20 @@ const SingleLineDiagramInner = () => {
 
     setIsSaving(true);
     try {
-      const flow = {
-        nodes: nodes.map(node => ({
-          ...node,
-          position: node.position,
-          data: { ...node.data }
-        })),
-        edges: edges.map(edge => ({
-          ...edge,
-          source: edge.source,
-          target: edge.target,
-          type: edge.type,
-          style: edge.style,
-          animated: edge.animated,
-          markerEnd: edge.markerEnd
-        }))
-      };
-
-      // Get the token from localStorage
-      const token = localStorage.getItem('token');
-      if (!token) {
-        throw new Error('Authentication token not found. Please log in again.');
-      }
-
-      const response = await axios.post(
-        `/api/projects/${projectId}/diagram`,
-        flow,
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
+      await axios.post(`${API_URL}/api/projects/${id}/steps/${currentStep}/diagram`, {
+        nodes,
+        edges
+      }, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
         }
-      );
-      
-      if (response.data.success) {
-        // setSnackbar({
-        //   open: true,
-        //   message: 'Diagram saved successfully!',
-        //   severity: 'success'
-        // });
-      }
+      });
+      // setSnackbar({
+      //   open: true,
+      //   message: 'Diagram saved successfully!',
+      //   severity: 'success'
+      // });
     } catch (error) {
       console.error('Error saving diagram:', error);
       // setSnackbar({
@@ -320,7 +294,7 @@ const SingleLineDiagramInner = () => {
     } finally {
       setIsSaving(false);
     }
-  }, [nodes, edges, projectId]);
+  };
 
   const handleDiagramGenerated = useCallback((diagramData) => {
     setNodes(diagramData.nodes || []);
@@ -329,6 +303,10 @@ const SingleLineDiagramInner = () => {
       reactFlowInstance.fitView();
     }
   }, [setNodes, setEdges, reactFlowInstance]);
+
+  const handleStepChange = useCallback((newStep) => {
+    setCurrentStep(newStep);
+  }, []);
 
   return (
     <Box sx={{ 
@@ -496,7 +474,11 @@ const SingleLineDiagramInner = () => {
             boxSizing: 'border-box'
           }}
         >
-          <DiagramChatInterface onDiagramGenerated={handleDiagramGenerated} />
+          <DiagramChatInterface 
+            onDiagramGenerated={handleDiagramGenerated} 
+            onStepChange={handleStepChange}
+            currentStep={currentStep}
+          />
         </Box>
       )}
     </Box>

@@ -1257,6 +1257,19 @@ Call it J6 HVAC and put it before j7xxx use same methode, as j7xxx
 
 
 -----------Delete// ... existing code ...
+
+GET /api/projects/:projectId/steps/:stepId
+GET /api/projects/:projectId/steps/initial-requirements
+GET /api/projects/:projectId/requirements
+
+tooo messy and complicated ; lets simplify the conversation service together
+all the service needs to be re structured and code be re write again 
+1- step: there are some step and some parameter related to steps ; on backend in a json file we can define step and its requirements. each step has a number and the next number show next step. by default when the page load for first time it is 1 but when confirm by user go to step 2 and so on 
+2- AI - each step has its own specific Config file e.g @initialConfig.js which explain AI what to do
+3- AI messages need to be stored in DB and each API conversation include previus conversation includes users message and answer 
+4- some messages interpret from bakend and we can ask in config file that you can send a message to the system , it must be at the end and ust be in json format.
+5- the json format received from AI is not and and should not for the user - it is just and only just for backend to update the step requirements. in front end user can see it 
+
 enum: ['initial', 'design', 'review', 'final'], // Add more steps as needed
 I want to add a new model called Conversations , it relates to project and the goal is just and only just to save the conversation related to diagram chat controller @diagramChatController.js 
 the final concept is to have different API step call to design as a result I think minimum we need conversationHistory

@@ -1,0 +1,28 @@
+[
+  {
+    "step": 1,
+    "name": "Initial Requirements",
+    "fields": [
+      { "id": "billingRequired", "type": "boolean", "label": "Billing Required" },
+      { "id": "buildingType", "type": "string", "label": "Building Type" },
+      { "id": "buildingClassification", "type": "string", "label": "Building Classification" }
+    ],
+    "next": 2
+  },
+  {
+    "step": 2,
+    "name": "Bill of Materials",
+    "fields": [
+      { "id": "materialsList", "type": "array", "label": "Materials List" }
+    ],
+    "next": 3
+  },
+  {
+    "step": 3,
+    "name": "System Design",
+    "fields": [
+      { "id": "layoutType", "type": "string", "label": "Layout Type" }
+    ],
+    "next": null
+  }
+] 
