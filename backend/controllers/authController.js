@@ -17,7 +17,7 @@ exports.register = async (req, res, next) => {
             console.log('Admin registration blocked. Value:', process.env.ALLOW_ADMIN_REGISTRATION);
             return res.status(403).json({
                 success: false,
-                error: 'Forbidden'
+                error: 'Admin registration is not allowed'
             });
         }
 
@@ -26,7 +26,7 @@ exports.register = async (req, res, next) => {
         if (userExists) {
             return res.status(400).json({
                 success: false,
-                error: 'User already exists'
+                error: 'User with this email already exists'
             });
         }
 
@@ -34,11 +34,12 @@ exports.register = async (req, res, next) => {
         const user = await User.create({
             email,
             password,
-            role: role || 'user' // Default to user role if not specified
+            role: role || 'user', // Default to user role if not specified
+            name: email.split('@')[0] // Use email prefix as name
         });
 
         // Generate token
-        const token = generateToken(user);
+        const token = user.getSignedJwtToken();
 
         res.status(201).json({
             success: true,
@@ -46,11 +47,18 @@ exports.register = async (req, res, next) => {
             user: {
                 id: user._id,
                 email: user.email,
+                name: user.name,
                 role: user.role
             }
         });
     } catch (error) {
         console.error('Registration error:', error);
+        if (error.name === 'ValidationError') {
+            return res.status(400).json({
+                success: false,
+                error: Object.values(error.errors).map(err => err.message).join(', ')
+            });
+        }
         next(error);
     }
 };
@@ -81,15 +89,15 @@ exports.login = async (req, res, next) => {
         }
 
         // Generate token
-        const token = generateToken(user);
+        const token = user.getSignedJwtToken();
 
         res.status(200).json({
             success: true,
             token,
             user: {
                 id: user._id,
-                username: user.username,
                 email: user.email,
+                name: user.name,
                 role: user.role
             }
         });

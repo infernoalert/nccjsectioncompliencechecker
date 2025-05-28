@@ -16,17 +16,13 @@ const { protect } = require('../middleware/auth');
  *           schema:
  *             type: object
  *             required:
- *               - username
  *               - email
  *               - password
  *             properties:
- *               username:
- *                 type: string
- *                 description: User's username (will be used as name if not provided)
  *               email:
  *                 type: string
  *                 format: email
- *                 description: User's email
+ *                 description: User's email address
  *               password:
  *                 type: string
  *                 format: password
@@ -80,13 +76,13 @@ router.post('/login', login);
  * @swagger
  * /api/auth/me:
  *   get:
- *     summary: Get current user
+ *     summary: Get current user profile
  *     tags: [Auth]
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: Current user data
+ *         description: User profile retrieved successfully
  *       401:
  *         description: Not authorized
  */
