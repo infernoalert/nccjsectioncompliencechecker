@@ -176,7 +176,7 @@ class AssistantManager {
         // Handle different function calls based on the current step
         let output;
         switch (functionName) {
-          case 'update_billing':
+          case 'billingRequired':
             output = { success: true, value: functionArgs.value };
             break;
           case 'update_bom':

@@ -117,12 +117,40 @@ router.get('/projects/:projectId/steps/current', async (req, res) => {
  *                 stepData:
  *                   type: object
  */
-router.post('/projects/:projectId/steps/:stepNumber', (req, res) => {
+router.post('/projects/:projectId/steps/:stepNumber', async (req, res) => {
   const { projectId, stepNumber } = req.params;
-  const data = req.body;
+  const update = req.body;
+
+  // Find the step definition and requirements
+  const stepDef = steps.find(s => s.step === Number(stepNumber));
+  const stepRequirements = stepDef ? stepDef.fields : [];
+
+  // Get existing step data (from memory for now)
   if (!projectSteps[projectId]) projectSteps[projectId] = { currentStep: Number(stepNumber), stepData: {} };
-  projectSteps[projectId].stepData[stepNumber] = data;
-  res.json({ success: true, stepData: data });
+  const existingStepData = projectSteps[projectId].stepData[stepNumber] || {};
+
+  // LOGGING
+  console.log('--- Step Update Request ---');
+  console.log('Project:', projectId, 'Step:', stepNumber);
+  console.log('Existing Step Data:', JSON.stringify(existingStepData));
+  console.log('Incoming Update:', JSON.stringify(update));
+
+  // Merge update with existing data
+  const mergedStepData = { ...existingStepData, ...update };
+
+  // Ensure all required fields are present
+  stepRequirements.forEach(req => {
+    if (!(req.id in mergedStepData)) {
+      mergedStepData[req.id] = null; // or a sensible default
+    }
+  });
+
+  // LOGGING
+  console.log('Merged Step Data (to be saved):', JSON.stringify(mergedStepData));
+
+  // Save merged data
+  projectSteps[projectId].stepData[stepNumber] = mergedStepData;
+  res.json({ success: true, stepData: mergedStepData });
 });
 
 /**

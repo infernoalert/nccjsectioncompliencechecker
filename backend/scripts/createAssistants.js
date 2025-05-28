@@ -27,7 +27,7 @@ Example response format:
 
 \`\`\`json
 {
-  "name": "update_billing",
+  "name": "billingRequired",
   "arguments": {
     "value": true
   }
@@ -41,7 +41,7 @@ The JSON block MUST be wrapped in \`\`\`json and \`\`\` tags and MUST follow thi
       {
         type: "function",
         function: {
-          name: "update_billing",
+          name: "billingRequired",
           description: "Update the billing status for the project",
           parameters: {
             type: "object",

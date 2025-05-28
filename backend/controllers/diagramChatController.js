@@ -1,6 +1,7 @@
 const Project = require('../models/Project');
 const Conversation = require('../models/Conversation');
 const assistantManager = require('../services/assistantManager');
+const steps = require('../data/steps.json');
 
 /**
  * @swagger
@@ -142,21 +143,60 @@ exports.chatWithAI = async (req, res) => {
         try {
           backendUpdate = JSON.parse(jsonMatch[1]);
           console.log('Parsed JSON:', backendUpdate); // Log the parsed JSON
-          conversation.stepData.set(stepNumber, backendUpdate);
+          // LOGGING: Before updating stepData
+          const oldStepData = conversation.stepData.get(stepNumber) || {};
+          console.log('--- Conversation Step Update ---');
+          console.log('Project:', projectId, 'Step:', stepNumber);
+          console.log('Existing Step Data:', JSON.stringify(oldStepData));
+          console.log('Incoming Update:', JSON.stringify(backendUpdate));
+
+          // Find the step definition and requirements
+          const stepDef = steps.find(s => s.step === Number(stepNumber) || s.step === stepNumber);
+          const stepRequirements = stepDef ? stepDef.fields : [];
+
+          // Merge update with existing data
+          const mergedStepData = { ...oldStepData, ...backendUpdate };
+
+          // If backendUpdate is a function call format, apply it
+          if (
+            backendUpdate &&
+            typeof backendUpdate === 'object' &&
+            backendUpdate.name &&
+            backendUpdate.arguments &&
+            'value' in backendUpdate.arguments
+          ) {
+            mergedStepData[backendUpdate.name] = backendUpdate.arguments.value;
+            delete mergedStepData.name;
+            delete mergedStepData.arguments;
+          }
+
+          // Ensure all required fields are present
+          stepRequirements.forEach(req => {
+            if (!(req.id in mergedStepData)) {
+              mergedStepData[req.id] = null; // or a sensible default
+            }
+          });
+
+          // LOGGING: After merge
+          console.log('Merged Step Data (to be saved):', JSON.stringify(mergedStepData));
+
+          conversation.stepData.set(stepNumber, mergedStepData);
+          // LOGGING: After update
+          console.log('Saved Step Data:', JSON.stringify(conversation.stepData.get(stepNumber)));
         } catch (e) {
           console.error('Error parsing JSON from AI response:', e);
         }
       }
 
       // Also check for function calls
-      const functionMatch = response.message.match(/```json\s*{\s*"name":\s*"update_billing"[^}]*}\s*```/);
+      const functionMatch = response.message.match(/```json\s*{\s*"name":\s*"billingRequired"[^}]*}\s*```/);
       console.log('Function Match:', functionMatch); // Log if function call was found
       
       if (functionMatch) {
         try {
           const functionCall = JSON.parse(functionMatch[0].replace(/```json\s*|\s*```/g, ''));
           console.log('Parsed Function Call:', functionCall); // Log the parsed function call
-          if (functionCall.name === 'update_billing' && typeof functionCall.arguments?.value === 'boolean') {
+          if (functionCall.name === 'billingRequired' && typeof functionCall.arguments?.value === 'boolean') {
             conversation.stepData.set(stepNumber, { billing_required: functionCall.arguments.value });
           }
         } catch (e) {
