@@ -200,15 +200,22 @@ const DiagramChatInterface = ({ onDiagramGenerated, onStepChange, currentStep: i
     setMessages(prev => [...prev, { role: 'user', content: userMessage, step: currentStep }]);
     setIsLoading(true);
     try {
+      const token = localStorage.getItem('token');
+      console.log('Token:', token); // Debug token
+      
       const response = await fetch(`${API_URL}/api/projects/${id}/steps/${currentStep}/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({ message: userMessage })
       });
+      
+      console.log('Response status:', response.status); // Debug response status
       const data = await response.json();
+      console.log('Response data:', data); // Debug response data
+      
       if (response.ok) {
         setMessages(prev => [...prev, { 
           role: 'ai', 
@@ -228,6 +235,7 @@ const DiagramChatInterface = ({ onDiagramGenerated, onStepChange, currentStep: i
         setMessages(prev => [...prev, { role: 'ai', content: data.message || 'Error from AI', step: currentStep }]);
       }
     } catch (error) {
+      console.error('Chat error:', error); // Debug error
       setMessages(prev => [...prev, { role: 'ai', content: 'Sorry, there was an error processing your request. Please try again.', step: currentStep }]);
     } finally {
       setIsLoading(false);

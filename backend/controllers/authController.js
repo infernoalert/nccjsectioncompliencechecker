@@ -6,9 +6,9 @@ const { generateToken } = require('../utils/jwt');
 // @access  Public
 exports.register = async (req, res, next) => {
     try {
-        const { username, email, password, role } = req.body;
+        const { email, password, role } = req.body;
         
-        console.log('Registration request:', { username, email, role });
+        console.log('Registration request:', { email, role });
         console.log('ALLOW_ADMIN_REGISTRATION:', process.env.ALLOW_ADMIN_REGISTRATION);
         console.log('Type of ALLOW_ADMIN_REGISTRATION:', typeof process.env.ALLOW_ADMIN_REGISTRATION);
 
@@ -22,7 +22,7 @@ exports.register = async (req, res, next) => {
         }
 
         // Check if user already exists
-        const userExists = await User.findOne({ $or: [{ email }, { username }] });
+        const userExists = await User.findOne({ email });
         if (userExists) {
             return res.status(400).json({
                 success: false,
@@ -32,8 +32,6 @@ exports.register = async (req, res, next) => {
 
         // Create user
         const user = await User.create({
-            name: username, // Use username as name if not provided
-            username,
             email,
             password,
             role: role || 'user' // Default to user role if not specified
@@ -47,7 +45,6 @@ exports.register = async (req, res, next) => {
             token,
             user: {
                 id: user._id,
-                username: user.username,
                 email: user.email,
                 role: user.role
             }

@@ -20,7 +20,6 @@ import {
   Edit as EditIcon,
   Assessment as AssessmentIcon,
   Delete as DeleteIcon,
-  Chat as ChatIcon,
   Draw as DrawIcon,
 } from '@mui/icons-material';
 import { fetchProject, deleteProject } from '../store/slices/projectSlice';
@@ -92,14 +91,6 @@ const ProjectDetails = () => {
             {currentProject.name}
           </Typography>
           <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-            <Button
-              variant="contained"
-              color="info"
-              startIcon={<ChatIcon />}
-              onClick={() => navigate(`/projects/${id}/chat`)}
-            >
-              Chat with AI
-            </Button>
             <Button
               variant="contained"
               color="secondary"

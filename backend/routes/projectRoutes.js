@@ -14,7 +14,7 @@ const {
 } = require('../controllers/elemental_provision_controller');
 const { getAllBuildingTypes } = require('../utils/mappingUtils');
 const diagramService = require('../services/diagramService');
-const { interpretChat, generateDiagramLayout } = require('../controllers/diagramController');
+const { interpretChat } = require('../controllers/diagramController');
 
 /**
  * @swagger
@@ -320,6 +320,68 @@ const { interpretChat, generateDiagramLayout } = require('../controllers/diagram
  *         description: Not authorized
  */
 
+/**
+ * @swagger
+ * /api/projects/{id}/interpret-chat:
+ *   post:
+ *     summary: Interpret chat message and generate diagram using AI Assistant
+ *     tags: [Projects]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Project ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - message
+ *             properties:
+ *               message:
+ *                 type: string
+ *                 description: The chat message to interpret
+ *               isGenericRequest:
+ *                 type: boolean
+ *                 description: Whether this is a generic request (will use EMS template if true)
+ *     responses:
+ *       200:
+ *         description: Diagram generated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               oneOf:
+ *                 - type: object
+ *                   properties:
+ *                     nodes:
+ *                       type: array
+ *                       items:
+ *                         $ref: '#/components/schemas/Diagram/properties/nodes/items'
+ *                     edges:
+ *                       type: array
+ *                       items:
+ *                         $ref: '#/components/schemas/Diagram/properties/edges/items'
+ *                 - type: object
+ *                   properties:
+ *                     message:
+ *                       type: string
+ *                       description: Assistant's response message
+ *       400:
+ *         description: Invalid input
+ *       401:
+ *         description: Not authorized
+ *       404:
+ *         description: Project not found
+ *       500:
+ *         description: Server error during diagram generation
+ */
+
 // Building types route - MUST be defined BEFORE the /:id routes
 router.get('/building-types', protect, getBuildingTypes);
 router.get('/locations', protect, getLocations);
@@ -377,6 +439,5 @@ router.delete('/:id/diagram', protect, async (req, res) => {
 
 // Diagram generation routes
 router.post('/:id/interpret-chat', protect, interpretChat);
-router.post('/:id/generate-layout', protect, generateDiagramLayout);
 
 module.exports = router; 

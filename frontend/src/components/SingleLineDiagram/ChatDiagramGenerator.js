@@ -622,10 +622,9 @@ const ChatDiagramGenerator = ({ onDiagramGenerated, isAdmin = false }) => {
     if (!aiInput.trim()) return;
     setAiLoading(true);
     try {
-      const response = await axios.post('/api/chat', {
-        projectId,
-        message: aiInput,
-        history: []
+      const response = await axios.post(`/api/projects/${projectId}/chat/${currentStep}`, {
+        message: chatInput,
+        isGenericRequest: false
       });
       const aiText = response.data.response;
       // Extract and execute all { ... } commands

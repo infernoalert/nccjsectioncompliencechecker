@@ -1262,6 +1262,34 @@ GET /api/projects/:projectId/steps/:stepId
 GET /api/projects/:projectId/steps/initial-requirements
 GET /api/projects/:projectId/requirements
 
+
+a) Assistant Creation:
+Create 5 different assistants (one for each step):
+Initial Assistant
+BOM Assistant
+Design Assistant
+Review Assistant
+Final Assistant
+b) Assistant Configuration:
+Each assistant will need:
+A specific system message based on the current step configuration
+Tools/functions to handle JSON responses
+Instructions for maintaining conversation context
+Specific knowledge about their step's requirements
+c) Implementation Changes Needed:
+Create a new service to manage assistants:
+Create/retrieve assistants
+Handle thread management
+Process assistant responses
+Modify the conversation model to include:
+Assistant ID
+Thread ID
+Step-specific metadata
+Update the chat controller to:
+Use the appropriate assistant based on the step
+Maintain thread context
+Handle JSON responses in a structured way
+
 tooo messy and complicated ; lets simplify the conversation service together
 all the service needs to be re structured and code be re write again 
 1- step: there are some step and some parameter related to steps ; on backend in a json file we can define step and its requirements. each step has a number and the next number show next step. by default when the page load for first time it is 1 but when confirm by user go to step 2 and so on 
@@ -1270,61 +1298,3 @@ all the service needs to be re structured and code be re write again
 4- some messages interpret from bakend and we can ask in config file that you can send a message to the system , it must be at the end and ust be in json format.
 5- the json format received from AI is not and and should not for the user - it is just and only just for backend to update the step requirements. in front end user can see it 
 
-enum: ['initial', 'design', 'review', 'final'], // Add more steps as needed
-I want to add a new model called Conversations , it relates to project and the goal is just and only just to save the conversation related to diagram chat controller @diagramChatController.js 
-the final concept is to have different API step call to design as a result I think minimum we need conversationHistory
-currentStep which shows which step or in other word which api we are talking
- isComplete , is shows if this step complete or not, we want to finish one step, which is one step of design and then go to next step which is another step of design. in fact using one step API for design was not suvvess full
-/**
- * @swagger
- * /chatWithAI:
- *   post:
- *     summary: Chat with the AI to generate EMS diagram commands (TEMPORARY TEST ENDPOINT)
- *     description: |
- *       Sends a natural language message and project context to the AI, which responds with diagram commands and explanations. This endpoint is for testing and will be removed in production.
- *     tags:
- *       - AI
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               projectId:
- *                 type: string
- *                 description: The project ID to provide context for the AI.
- *               message:
- *                 type: string
- *                 description: The user's natural language request.
- *               history:
- *                 type: array
- *                 description: Previous user/AI exchanges for context (optional).
- *                 items:
- *                   type: object
- *                   properties:
- *                     user:
- *                       type: string
- *                     ai:
- *                       type: string
- *     responses:
- *       200:
- *         description: AI response with commands and/or explanations.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 response:
- *                   type: string
- *                   description: The AI's response (may include commands in curly braces).
- *       400:
- *         description: Missing required fields or bad request.
- *       401:
- *         description: Unauthorized (missing or invalid token).
- *       500:
- *         description: Server error or OpenAI error.
- */
-// ... existing code ...

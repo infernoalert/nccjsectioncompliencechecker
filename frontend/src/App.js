@@ -15,8 +15,6 @@ import Navbar from './components/Navbar';
 import Presentation from './static/Presentation';
 import UserList from './components/UserList';
 import CreateUser from './components/CreateUser';
-import NccChatInterface from './components/NccChatInterface';
-import DiagramChatInterface from './components/DiagramChatInterface';
 import SingleLineDiagram from './components/SingleLineDiagram/SingleLineDiagram';
 import { useSelector } from 'react-redux';
 import './styles/print.css';
@@ -158,14 +156,6 @@ function App() {
             element={
               <ProtectedRoute roles={['admin']}>
                 <CreateUser />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/projects/:id/chat"
-            element={
-              <ProtectedRoute>
-                <NccChatInterface />
               </ProtectedRoute>
             }
           />

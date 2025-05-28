@@ -4,6 +4,7 @@ const steps = require('../data/steps.json');
 const projectSteps = require('../data/projectSteps');
 const diagramChatController = require('../controllers/diagramChatController');
 const Conversation = require('../models/Conversation');
+const { protect } = require('../middleware/auth');
 
 // Add mapping from step keys to step numbers
 const STEP_KEY_TO_NUMBER = {
@@ -220,7 +221,7 @@ router.get('/projects/:projectId/steps/:stepNumber/diagram', (req, res) => {
 });
 
 // Add chatWithAI endpoint for step-based chat
-router.post('/projects/:projectId/steps/:stepNumber/chat', diagramChatController.chatWithAI);
+router.post('/projects/:projectId/steps/:stepNumber/chat', protect, diagramChatController.chatWithAI);
 
 router.get('/steps-test', (req, res) => {
   res.json({ message: 'Steps route is working!' });

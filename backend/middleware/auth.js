@@ -23,8 +23,16 @@ const protect = async (req, res, next) => {
             // Verify token
             const decoded = verifyToken(token);
             
-            // Get user from token
-            const user = await User.findById(decoded.id).select('-password');
+            // Get user from token - try both id and _id
+            const userId = decoded._id || decoded.id;
+            if (!userId) {
+                return res.status(401).json({
+                    success: false,
+                    error: 'Invalid token format'
+                });
+            }
+
+            const user = await User.findById(userId).select('-password');
             
             if (!user) {
                 return res.status(401).json({
@@ -37,6 +45,7 @@ const protect = async (req, res, next) => {
             req.user = user;
             next();
         } catch (error) {
+            console.error('Token verification error:', error);
             return res.status(401).json({
                 success: false,
                 error: 'Not authorized to access this route'

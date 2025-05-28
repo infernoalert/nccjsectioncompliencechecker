@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const UserSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: [true, 'Please add a name']
+        required: false
     },
     email: {
         type: String,
@@ -30,7 +30,25 @@ const UserSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
+    },
+    // Assistant thread information
+    assistantThread: {
+        threadId: {
+            type: String,
+            default: null
+        },
+        currentStep: {
+            type: String,
+            enum: ['initial', 'bom', 'design', 'review', 'final'],
+            default: 'initial'
+        },
+        lastUpdated: {
+            type: Date,
+            default: Date.now
+        }
     }
+}, {
+    timestamps: true
 });
 
 // Encrypt password using bcrypt
