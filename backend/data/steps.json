@@ -17,11 +17,32 @@
           { "id": "internalTransportDevices", "type": "boolean", "label": "Internal Transport Devices" },
           { "id": "renewableEnergy", "type": "boolean", "label": "Renewable Energy" },
           { "id": "evChargingEquipment", "type": "boolean", "label": "Electric Vehicle Charging Equipment" },
-          { "id": "batterySystems", "type": "boolean", "label": "Battery Systems" },
-          { "id": "otherAncillaryPlant", "type": "boolean", "label": "Other Ancillary Plant" }
+          { "id": "batterySystems", "type": "boolean", "label": "Battery Systems" }
         ]
       },
-      { "id": "sharedAreasCount", "type": "integer", "label": "Number of Shared Areas > 500m²" }
+      {
+        "id": "ancillaryPlants",
+        "type": "array",
+        "label": "Other Ancillary Plants",
+        "maxItems": 50,
+        "items": {
+          "type": "object",
+          "properties": {
+            "exists": { "type": "boolean", "label": "Plant Exists" },
+            "name": { "type": "string", "label": "Plant Name" }
+          }
+        }
+      },
+      { 
+        "id": "sharedAreasCount", 
+        "type": "integer", 
+        "label": "Number of Shared Areas > 500m²",
+        "condition": {
+          "field": "buildingType",
+          "value": "Class_2",
+          "operator": "equals"
+        }
+      }
     ],
     "next": 2
   },
