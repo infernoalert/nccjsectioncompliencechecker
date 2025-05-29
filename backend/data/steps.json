@@ -3,9 +3,25 @@
     "step": 1,
     "name": "Initial Requirements",
     "fields": [
-      { "id": "billingRequired", "type": "boolean", "label": "Billing Required" },
       { "id": "buildingType", "type": "string", "label": "Building Type" },
-      { "id": "buildingClassification", "type": "string", "label": "Building Classification" }
+      { "id": "size", "type": "string", "label": "Building Size" },
+      { 
+        "id": "buildingServices", 
+        "type": "array", 
+        "label": "Building Services",
+        "items": [
+          { "id": "airConditioning", "type": "boolean", "label": "Air Conditioning" },
+          { "id": "artificialLighting", "type": "boolean", "label": "Artificial Lighting" },
+          { "id": "appliancePower", "type": "boolean", "label": "Appliance Power" },
+          { "id": "centralHotWaterSupply", "type": "boolean", "label": "Central Hot Water Supply" },
+          { "id": "internalTransportDevices", "type": "boolean", "label": "Internal Transport Devices" },
+          { "id": "renewableEnergy", "type": "boolean", "label": "Renewable Energy" },
+          { "id": "evChargingEquipment", "type": "boolean", "label": "Electric Vehicle Charging Equipment" },
+          { "id": "batterySystems", "type": "boolean", "label": "Battery Systems" },
+          { "id": "otherAncillaryPlant", "type": "boolean", "label": "Other Ancillary Plant" }
+        ]
+      },
+      { "id": "sharedAreasCount", "type": "integer", "label": "Number of Shared Areas > 500m²" }
     ],
     "next": 2
   },
