@@ -176,8 +176,15 @@ class AssistantManager {
         // Handle different function calls based on the current step
         let output;
         switch (functionName) {
-          case 'billingRequired':
-            output = { success: true, value: functionArgs.value };
+          case 'update_initial_requirements':
+            output = { 
+              success: true, 
+              buildingType: functionArgs.buildingType,
+              size: functionArgs.size,
+              buildingServices: functionArgs.buildingServices,
+              ancillaryPlants: functionArgs.ancillaryPlants || [],
+              sharedAreasCount: functionArgs.sharedAreasCount
+            };
             break;
           case 'update_bom':
             output = { success: true, bom_items: functionArgs.bom_items };

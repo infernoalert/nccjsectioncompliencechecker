@@ -347,6 +347,12 @@ const DiagramChatInterface = ({ onDiagramGenerated, onStepChange, currentStep: i
                   <Typography variant="body2">
                     {field.type === 'boolean'
                       ? (stepData[field.id] === true ? 'Yes' : stepData[field.id] === false ? 'No' : 'Not provided')
+                      : field.type === 'array' && field.id === 'buildingServices'
+                      ? Object.entries(stepData[field.id] || {}).map(([key, value]) => (
+                          <Box key={key} sx={{ ml: 2 }}>
+                            {key.replace(/([A-Z])/g, ' $1').trim()}: {value ? 'Yes' : 'No'}
+                          </Box>
+                        ))
                       : (stepData[field.id] ?? 'Not provided')}
                   </Typography>
                 </Box>

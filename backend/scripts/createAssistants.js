@@ -11,28 +11,51 @@ const assistantConfigs = {
     name: "Initial Requirements Assistant",
     instructions: `You are an expert in electrical metering systems and NCC Section J compliance.
 Your task is to:
-1. Understand the project requirements of billing and metering
-2. Ask clarifying questions about the billing needs
-3. Explain that billing is not part of NCC requirements but important part of occupancy
+1. Understand the project requirements and building specifications
+2. The building type and size are already provided from the project data
+3. Ask clarifying questions about:
+   - Required building services (air conditioning, lighting, etc.)
+   - Any ancillary plants
+   - Number of shared areas (for Class 2 buildings)
 
 IMPORTANT - Response Format:
-When the user confirms they need billing and metering, you MUST respond with this EXACT format:
+When updating the initial requirements, you MUST respond with this EXACT format:
 
 1. A brief confirmation message
 2. A JSON code block with the function call
 3. Any additional helpful information
 
 Example response format:
-"I understand you need billing and metering for your project.
+"I'll update the initial requirements with these details.
 
 \`\`\`json
 {
-  "name": "billingRequired",
+  "name": "update_initial_requirements",
   "arguments": {
-    "value": true
+    "buildingType": "Class_2",  // This comes from project data
+    "size": "medium",          // This comes from project data
+    "buildingServices": {
+      "airConditioning": true,
+      "artificialLighting": true,
+      "appliancePower": true,
+      "centralHotWaterSupply": false,
+      "internalTransportDevices": false,
+      "renewableEnergy": true,
+      "evChargingEquipment": false,
+      "batterySystems": false
+    },
+    "ancillaryPlants": [
+      {
+        "exists": true,
+        "name": "Emergency Generator"
+      }
+    ],
+    "sharedAreasCount": 2
   }
 }
 \`\`\`
+
+Note: The buildingType and size values should be taken from the project data, not set by the assistant.
 
 Would you like me to help you with anything else?"
 
@@ -41,17 +64,48 @@ The JSON block MUST be wrapped in \`\`\`json and \`\`\` tags and MUST follow thi
       {
         type: "function",
         function: {
-          name: "billingRequired",
-          description: "Update the billing status for the project",
+          name: "update_initial_requirements",
+          description: "Update the initial requirements for the project",
           parameters: {
             type: "object",
             properties: {
-              value: {
-                type: "boolean",
-                description: "Whether billing is required"
+              buildingType: { 
+                type: "string",
+                description: "The type of building (e.g., Class_2, Class_4) - comes from project data"
+              },
+              size: { 
+                type: "string",
+                description: "The size of the building - comes from project data"
+              },
+              buildingServices: {
+                type: "object",
+                properties: {
+                  airConditioning: { type: "boolean" },
+                  artificialLighting: { type: "boolean" },
+                  appliancePower: { type: "boolean" },
+                  centralHotWaterSupply: { type: "boolean" },
+                  internalTransportDevices: { type: "boolean" },
+                  renewableEnergy: { type: "boolean" },
+                  evChargingEquipment: { type: "boolean" },
+                  batterySystems: { type: "boolean" }
+                }
+              },
+              ancillaryPlants: {
+                type: "array",
+                items: {
+                  type: "object",
+                  properties: {
+                    exists: { type: "boolean" },
+                    name: { type: "string" }
+                  }
+                }
+              },
+              sharedAreasCount: {
+                type: "integer",
+                description: "Number of shared areas > 500m² (for Class 2 buildings)"
               }
             },
-            required: ["value"]
+            required: ["buildingType", "size", "buildingServices"]
           }
         }
       }

@@ -2,10 +2,20 @@ const Conversation = require('../models/Conversation');
 
 function getInitialStepDataFromProject(project) {
   return {
-    billingRequired: project.billingRequired ?? false,
-    buildingType: project.buildingType,
-    buildingClassification: project.buildingClassification?.classType || project.buildingClassification,
-    // Add more fields as needed
+    buildingType: project.buildingType || null,
+    size: project.floorArea || null,
+    buildingServices: {
+      airConditioning: false,
+      artificialLighting: false,
+      appliancePower: false,
+      centralHotWaterSupply: false,
+      internalTransportDevices: false,
+      renewableEnergy: false,
+      evChargingEquipment: false,
+      batterySystems: false
+    },
+    ancillaryPlants: [],
+    sharedAreasCount: project.buildingType === 'Class_2' ? 0 : null
   };
 }
 
