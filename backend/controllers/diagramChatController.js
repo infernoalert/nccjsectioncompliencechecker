@@ -2,6 +2,7 @@ const Project = require('../models/Project');
 const Conversation = require('../models/Conversation');
 const assistantManager = require('../services/assistantManager');
 const steps = require('../data/steps.json');
+const { normalizeResponse } = require('../utils/responseNormalizer');
 
 /**
  * @swagger
@@ -74,162 +75,152 @@ const steps = require('../data/steps.json');
  *       500:
  *         description: Server error
  */
-exports.chatWithAI = async (req, res) => {
+
+// Add this function before chatWithAI
+async function getAIResponse(conversation, step, userId) {
+  console.log('\n=== Getting AI Response ===');
+  console.log('Conversation:', conversation._id);
+  console.log('Step:', step);
+  console.log('User ID:', userId);
+
   try {
-    const { projectId, stepNumber } = req.params;
-    const { message } = req.body;
-    
-    // Add proper user check
-    if (!req.user || !req.user._id) {
-      return res.status(401).json({ message: 'User not authenticated' });
-    }
-    
-    const userId = req.user._id; // Changed from req.user.id to req.user._id
-    
-    if (!projectId || !stepNumber || !message) {
-      return res.status(400).json({ message: 'Missing required fields' });
+    // Get or create thread for this conversation
+    let threadId = conversation.threadId;
+    if (!threadId) {
+      console.log('Creating new thread for conversation');
+      threadId = await assistantManager.getOrCreateThread(userId);
+      conversation.threadId = threadId;
+      await conversation.save();
     }
 
-    // Find project
+    // Send message to assistant
+    const response = await assistantManager.sendMessage(userId, lastMessage.content);
+    console.log('Assistant response received');
+
+    return response.message;
+  } catch (error) {
+    console.error('Error getting AI response:', error);
+    throw error;
+  }
+}
+
+exports.chatWithAI = async (req, res) => {
+  console.log('\n=== New Chat Request ===');
+  console.log('Request Params:', req.params);
+  console.log('Request Body:', req.body);
+
+  try {
+    // Authentication check
+    if (!req.user) {
+      console.log('Authentication Error: No user found in request');
+      return res.status(401).json({ error: 'Authentication required' });
+    }
+
+    const userId = req.user._id;
+    console.log('Authenticated User ID:', userId);
+
+    // Validate request
+    const { projectId, stepNumber } = req.params;
+    const { message, step } = req.body;
+
+    // Use step from body or params
+    const currentStep = step || stepNumber;
+
+    if (!projectId || !message || !currentStep) {
+      console.log('Validation Error: Missing required fields');
+      return res.status(400).json({ 
+        error: 'Missing required fields',
+        received: { projectId, message, step: currentStep }
+      });
+    }
+
+    // Get project
     const project = await Project.findById(projectId);
     if (!project) {
-      return res.status(404).json({ message: 'Project not found' });
+      console.log('Project not found:', projectId);
+      return res.status(404).json({ error: 'Project not found' });
     }
+    console.log('Found project:', project.name);
 
-    // Find or create conversation
+    // Get or create conversation
     let conversation = await Conversation.findOne({ project: projectId });
     if (!conversation) {
+      console.log('Creating new conversation for project');
       conversation = new Conversation({
         project: projectId,
         messages: [],
-        stepData: new Map(),
-        currentStep: stepNumber
+        stepData: {},
+        currentStep: currentStep
       });
+    } else {
+      console.log('Found existing conversation');
+      console.log('Current step data:', JSON.stringify(conversation.stepData.get(currentStep), null, 2));
     }
 
-    // Store user message
-    conversation.messages.push({
-      step: stepNumber,
+    // Add user message
+    const userMessage = {
       role: 'user',
       content: message,
-      timestamp: new Date()
-    });
+      timestamp: new Date(),
+      step: currentStep
+    };
+    conversation.messages.push(userMessage);
+    console.log('Added user message:', userMessage);
 
-    try {
-      // Update user's current step if needed
-      if (conversation.currentStep !== stepNumber) {
-        await assistantManager.updateUserStep(userId, stepNumber);
-        conversation.currentStep = stepNumber;
-      }
+    // Build project info string
+    const projectInfo = `Project Info:\n- Name: ${project.name}\n- Building Type: ${project.buildingType}\n- Classification: ${project.buildingClassification}\n- Floor Area: ${project.floorArea}\n`;
+    // Prepend project info to the user message for the AI
+    const aiInput = `${projectInfo}\nUser: ${message}`;
 
-      // Send message to assistant
-      const response = await assistantManager.sendMessage(userId, message);
-      console.log('AI Response:', response.message); // Log the full AI response
+    // Get AI response
+    console.log('\n=== Getting AI Response ===');
+    const aiResult = await assistantManager.sendMessage(userId, aiInput);
+    console.log('Raw AI Response:', aiResult);
+    const aiResponse = aiResult.message; // Extract the string
 
-      // Store AI message
-      conversation.messages.push({
-        step: stepNumber,
-        role: 'ai',
-        content: response.message,
-        timestamp: new Date()
-      });
+    // Process AI response
+    console.log('\n=== Processing AI Response ===');
+    let stepData = conversation.stepData.get(currentStep) || {};
+    console.log('Current step data:', JSON.stringify(stepData, null, 2));
 
-      // Parse JSON block from AI response (if any)
-      let backendUpdate = null;
-      const jsonMatch = response.message.match(/```json([\s\S]*?)```/);
-      console.log('JSON Match:', jsonMatch); // Log if JSON block was found
-      
-      if (jsonMatch) {
-        try {
-          backendUpdate = JSON.parse(jsonMatch[1]);
-          console.log('Parsed JSON:', backendUpdate); // Log the parsed JSON
-          // LOGGING: Before updating stepData
-          const oldStepData = conversation.stepData.get(stepNumber) || {};
-          console.log('--- Conversation Step Update ---');
-          console.log('Project:', projectId, 'Step:', stepNumber);
-          console.log('Existing Step Data:', JSON.stringify(oldStepData));
-          console.log('Incoming Update:', JSON.stringify(backendUpdate));
+    // Always send the full AI response text to the normalizer, ignore JSON parsing
+    console.log('Normalizing AI response from text');
+    const normalizedData = normalizeResponse(aiResponse, stepData);
+    console.log('Normalized data:', JSON.stringify(normalizedData, null, 2));
+    stepData = { ...stepData, ...normalizedData.arguments };
 
-          // Find the step definition and requirements
-          const stepDef = steps.find(s => s.step === Number(stepNumber) || s.step === stepNumber);
-          const stepRequirements = stepDef ? stepDef.fields : [];
+    // Update step data
+    conversation.stepData.set(currentStep, stepData);
+    console.log('Updated step data:', JSON.stringify(stepData, null, 2));
 
-          // Merge update with existing data
-          const mergedStepData = { ...oldStepData, ...backendUpdate };
+    // Add AI message (keeping the original response text)
+    const aiMessage = {
+      role: 'ai',
+      content: aiResponse,
+      timestamp: new Date(),
+      step: currentStep
+    };
+    conversation.messages.push(aiMessage);
+    console.log('Added AI message:', aiMessage);
 
-          // If backendUpdate is a function call format, apply it
-          if (
-            backendUpdate &&
-            typeof backendUpdate === 'object' &&
-            backendUpdate.name &&
-            backendUpdate.arguments &&
-            'value' in backendUpdate.arguments
-          ) {
-            mergedStepData[backendUpdate.name] = backendUpdate.arguments.value;
-            delete mergedStepData.name;
-            delete mergedStepData.arguments;
-          }
+    // Save conversation
+    await conversation.save();
+    console.log('Saved conversation with updated step data');
 
-          // Ensure all required fields are present
-          stepRequirements.forEach(req => {
-            if (!(req.id in mergedStepData)) {
-              mergedStepData[req.id] = null; // or a sensible default
-            }
-          });
+    // Send response
+    const response = {
+      message: aiResponse,
+      stepData: stepData,
+      currentStep: currentStep
+    };
+    console.log('\n=== Sending Response ===');
+    console.log('Response:', JSON.stringify(response, null, 2));
+    console.log('=== Chat Request Complete ===\n');
 
-          // LOGGING: After merge
-          console.log('Merged Step Data (to be saved):', JSON.stringify(mergedStepData));
-
-          conversation.stepData.set(stepNumber, mergedStepData);
-          // LOGGING: After update
-          console.log('Saved Step Data:', JSON.stringify(conversation.stepData.get(stepNumber)));
-        } catch (e) {
-          console.error('Error parsing JSON from AI response:', e);
-        }
-      }
-
-      // Also check for function calls
-      const functionMatch = response.message.match(/```json\s*{\s*"name":\s*"billingRequired"[^}]*}\s*```/);
-      console.log('Function Match:', functionMatch); // Log if function call was found
-      
-      if (functionMatch) {
-        try {
-          const functionCall = JSON.parse(functionMatch[0].replace(/```json\s*|\s*```/g, ''));
-          console.log('Parsed Function Call:', functionCall); // Log the parsed function call
-          if (functionCall.name === 'billingRequired' && typeof functionCall.arguments?.value === 'boolean') {
-            conversation.stepData.set(stepNumber, { billing_required: functionCall.arguments.value });
-          }
-        } catch (e) {
-          console.error('Error parsing function call:', e);
-        }
-      }
-
-      conversation.updatedAt = new Date();
-      await conversation.save();
-
-      // Return only the user-facing part of the AI response (strip code blocks)
-      const userFacing = response.message.replace(/```[\s\S]*?```/g, '').trim();
-      
-      res.json({
-        response: userFacing,
-        stepData: conversation.stepData.get(stepNumber) || {},
-        conversationId: conversation._id,
-        currentStep: conversation.currentStep,
-        threadId: response.threadId
-      });
-    } catch (error) {
-      console.error('Error in OpenAI call or response processing:', error);
-      res.status(500).json({ 
-        message: 'Error processing AI response', 
-        error: error.message 
-      });
-    }
+    res.json(response);
   } catch (error) {
     console.error('Error in chatWithAI:', error);
-    res.status(500).json({ 
-      message: 'Error processing chat request', 
-      error: error.message 
-    });
+    res.status(500).json({ error: 'Internal server error' });
   }
 };
 

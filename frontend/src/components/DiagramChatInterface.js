@@ -219,7 +219,7 @@ const DiagramChatInterface = ({ onDiagramGenerated, onStepChange, currentStep: i
       if (response.ok) {
         setMessages(prev => [...prev, { 
           role: 'ai', 
-          content: data.response, 
+          content: data.message,
           step: currentStep,
           stepRequirements: data.stepRequirements,
           extractedData: data.stepData
