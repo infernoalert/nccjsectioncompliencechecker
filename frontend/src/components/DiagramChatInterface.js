@@ -12,18 +12,12 @@ import {
   Step,
   StepLabel,
   Alert,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   Tooltip,
   Popover
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import WarningIcon from '@mui/icons-material/Warning';
 import InfoIcon from '@mui/icons-material/Info';
-import { useTheme } from '@mui/material/styles';
 
 const API_URL = process.env.NODE_ENV === 'production' 
   ? 'https://api.payamamerian.com' 
@@ -38,6 +32,15 @@ const STEPS = {
   FINAL: 'final'
 };
 
+// Add mapping from step keys to step numbers
+const STEP_KEY_TO_NUMBER = {
+  initial: 1,
+  bom: 2,
+  design: 3,
+  review: 4,
+  final: 5
+};
+
 const STEP_LABELS = {
   [STEPS.INITIAL]: 'Initial Requirements',
   [STEPS.BOM]: 'Bill of Materials',
@@ -46,38 +49,17 @@ const STEP_LABELS = {
   [STEPS.FINAL]: 'Final Approval'
 };
 
-// Node types mapping
-const NODE_TYPES = {
-  'smart-meter': 'smartMeter',
-  'auth-meter': 'authorityMeter',
-  'meter-memory': 'meterMemory',
-  'on-premise': 'onPremise',
-  'rs485': 'rs485',
-  'ethernet': 'ethernet',
-  'wireless': 'wireless',
-  'cloud': 'cloud',
-  'transformer': 'transformer',
-  'load': 'load',
-  'meter': 'meter',
-  'text': 'text',
-  'label': 'label'
-};
-
 const DiagramChatInterface = ({ onDiagramGenerated, onStepChange, currentStep: initialStep }) => {
   const { id } = useParams();
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef(null);
-  const [localDiagram, setLocalDiagram] = useState({ nodes: [], edges: [] });
   const [currentStep, setCurrentStep] = useState(initialStep || STEPS.INITIAL);
   const [stepValidation, setStepValidation] = useState({});
-  const [stepConfirmation, setStepConfirmation] = useState({});
-  const [showConfirmationDialog, setShowConfirmationDialog] = useState(false);
-  const [confirmationNotes, setConfirmationNotes] = useState('');
   const [stepRequirements, setStepRequirements] = useState(null);
   const [stepData, setStepData] = useState({});
-  const theme = useTheme();
+  const [completedSteps, setCompletedSteps] = useState(new Set());
   // Popup state
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedStep, setSelectedStep] = useState(null);
@@ -87,7 +69,7 @@ const DiagramChatInterface = ({ onDiagramGenerated, onStepChange, currentStep: i
     if (initialStep && initialStep !== currentStep) {
       setCurrentStep(initialStep);
     }
-  }, [initialStep]);
+  }, [initialStep, currentStep]);
 
   // Notify parent of step changes
   useEffect(() => {
@@ -115,26 +97,22 @@ const DiagramChatInterface = ({ onDiagramGenerated, onStepChange, currentStep: i
     }
   }, [messages]);
 
-  // Add a useEffect to fetch step requirements for the current step
+  // Only fetch requirements for the current step on mount or when currentStep changes
   useEffect(() => {
     async function fetchStepRequirements() {
-      if (!id || !currentStep) return;
+      if (!id) return;
       try {
-        const response = await fetch(`${API_URL}/api/projects/${id}/steps/current`, {
+        const response = await fetch(`${API_URL}/api/projects/${id}/steps/${currentStep}`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`
           }
         });
         const data = await response.json();
-        console.log('Backend step data response:', data); // Debug log
-        if (data.stepRequirements) {
-          setStepRequirements(data.stepRequirements);
-        }
-        if (data.stepData) {
-          setStepData(data.stepData);
-        }
+        setStepRequirements(data.stepRequirements || []);
+        setStepData(data.stepData || {});
       } catch (error) {
         setStepRequirements([]);
+        setStepData({});
       }
     }
     fetchStepRequirements();
@@ -149,7 +127,7 @@ const DiagramChatInterface = ({ onDiagramGenerated, onStepChange, currentStep: i
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify({
-          validationData: localDiagram
+          validationData: {}
         })
       });
 
@@ -158,38 +136,58 @@ const DiagramChatInterface = ({ onDiagramGenerated, onStepChange, currentStep: i
         ...prev,
         [currentStep]: data
       }));
-
-      if (data.valid) {
-        setShowConfirmationDialog(true);
-      }
     } catch (error) {
       console.error('Validation error:', error);
     }
   };
 
-  const handleStepConfirmation = async () => {
+  const handleNextStep = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/projects/${id}/steps/${currentStep}/confirm`, {
+      console.log('Next Step button clicked for project:', id);
+      
+      // First, save the current step data
+      const stepNumber = STEP_KEY_TO_NUMBER[currentStep];
+      if (!stepNumber) {
+        console.error('Invalid step key:', currentStep);
+        return;
+      }
+      
+      console.log('Saving current step data for step:', stepNumber, 'Data:', stepData);
+      
+      const saveResponse = await fetch(`${API_URL}/api/projects/${id}/steps/${stepNumber}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
-        body: JSON.stringify({
-          notes: confirmationNotes
-        })
+        body: JSON.stringify(stepData)
       });
+      
+      const saveData = await saveResponse.json();
+      console.log('Save step data response:', saveData);
+      
+      if (!saveData.success) {
+        console.error('Failed to save step data:', saveData.message);
+        return;
+      }
 
-      const data = await response.json();
-      setStepConfirmation(prev => ({
-        ...prev,
-        [currentStep]: data
-      }));
-
-      setShowConfirmationDialog(false);
-      setConfirmationNotes('');
+      // Mark current step as completed
+      setCompletedSteps(prev => new Set([...prev, currentStep]));
+      
+      // Determine next step
+      const currentStepIndex = Object.values(STEPS).indexOf(currentStep);
+      const nextStep = Object.values(STEPS)[currentStepIndex + 1];
+      
+      if (nextStep) {
+        setCurrentStep(nextStep);
+        if (onStepChange) {
+          onStepChange(nextStep);
+        }
+      } else {
+        console.log('No more steps available');
+      }
     } catch (error) {
-      console.error('Confirmation error:', error);
+      console.error('Error moving to next step:', error);
     }
   };
 
@@ -251,8 +249,7 @@ const DiagramChatInterface = ({ onDiagramGenerated, onStepChange, currentStep: i
 
   const getStepStatus = (step) => {
     if (step === currentStep) return 'active';
-    if (stepConfirmation[step]?.confirmed) return 'completed';
-    if (stepValidation[step]?.valid) return 'validated';
+    if (completedSteps.has(step)) return 'completed';
     return 'pending';
   };
 
@@ -260,9 +257,7 @@ const DiagramChatInterface = ({ onDiagramGenerated, onStepChange, currentStep: i
     const status = getStepStatus(step);
     switch (status) {
       case 'completed':
-        return <CheckCircleIcon color="success" />;
-      case 'validated':
-        return <WarningIcon color="warning" />;
+        return <WarningIcon color="success" />;
       case 'active':
         return <InfoIcon color="primary" />;
       default:
@@ -270,18 +265,29 @@ const DiagramChatInterface = ({ onDiagramGenerated, onStepChange, currentStep: i
     }
   };
 
-  const handleStepLabelClick = (event, step) => {
+  const handleStepLabelClick = async (event, step) => {
     setAnchorEl(event.currentTarget);
     setSelectedStep(step);
+    // Fetch requirements/data for the clicked step
+    try {
+      const response = await fetch(`${API_URL}/api/projects/${id}/steps/${step}`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      const data = await response.json();
+      setStepRequirements(data.stepRequirements || []);
+      setStepData(data.stepData || {});
+    } catch (error) {
+      setStepRequirements([]);
+      setStepData({});
+    }
   };
 
   const handlePopoverClose = () => {
     setAnchorEl(null);
     setSelectedStep(null);
   };
-
-  // Before rendering the popup, define:
-  const currentStepData = stepData[currentStep] || stepData;
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
@@ -336,7 +342,7 @@ const DiagramChatInterface = ({ onDiagramGenerated, onStepChange, currentStep: i
         >
           <Box sx={{ p: 2, maxWidth: 400 }}>
             <Typography variant="h6" gutterBottom>
-              {STEP_LABELS[selectedStep]} Requirements
+              {selectedStep ? STEP_LABELS[selectedStep] : STEP_LABELS[currentStep]} Requirements
             </Typography>
             {stepRequirements && stepRequirements.length > 0 ? (
               stepRequirements.map((field, index) => (
@@ -368,10 +374,10 @@ const DiagramChatInterface = ({ onDiagramGenerated, onStepChange, currentStep: i
                   field => stepData[field.id] !== undefined
                 )
               }
-              onClick={handleStepConfirmation}
+              onClick={handleNextStep}
               sx={{ mt: 2, width: '100%' }}
             >
-              Confirm Step Values
+              Next Step
             </Button>
           </Box>
         </Popover>
@@ -452,28 +458,6 @@ const DiagramChatInterface = ({ onDiagramGenerated, onStepChange, currentStep: i
           )}
         </Box>
       </Paper>
-
-      {/* Confirmation Dialog */}
-      <Dialog open={showConfirmationDialog} onClose={() => setShowConfirmationDialog(false)}>
-        <DialogTitle>Confirm Step Completion</DialogTitle>
-        <DialogContent>
-          <TextField
-            fullWidth
-            multiline
-            rows={4}
-            value={confirmationNotes}
-            onChange={(e) => setConfirmationNotes(e.target.value)}
-            placeholder="Add any notes about this step..."
-            sx={{ mt: 2 }}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setShowConfirmationDialog(false)}>Cancel</Button>
-          <Button onClick={handleStepConfirmation} variant="contained" color="primary">
-            Confirm
-          </Button>
-        </DialogActions>
-      </Dialog>
     </Container>
   );
 };
