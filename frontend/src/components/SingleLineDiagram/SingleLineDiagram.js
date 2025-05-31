@@ -83,7 +83,7 @@ const componentTypes = [
   { type: 'smartMeter', label: 'Smart Meter', icon: <SmartToyIcon /> },
   { type: 'authorityMeter', label: 'Authority Meter', icon: <VerifiedUserIcon /> },
   { type: 'cloud', label: 'Cloud', icon: <CloudIcon /> },
-  { type: 'onPremise', label: 'On-Premise', icon: <StorageIcon /> },
+  { type: 'onPremise', label: 'onpremise', icon: <StorageIcon /> },
   { type: 'wireless', label: 'Wireless', icon: <WifiIcon /> },
   { type: 'rs485', label: 'RS485', icon: <SettingsInputComponentIcon /> },
   { type: 'ethernet', label: 'Ethernet', icon: <RouterIcon /> },

@@ -15,15 +15,15 @@ const CustomNode = ({ data, type }) => {
       case 'meter':
         return '/resources/meter.svg';
       case 'meterMemory':
-        return '/resources/meter-memory.svg';
+        return '/resources/metermemory.svg';
       case 'smartMeter':
-        return '/resources/smart-meter.svg';
+        return '/resources/smartmeter.svg';
       case 'authorityMeter':
-        return '/resources/authority-meter.svg';
+        return '/resources/authoritymeter.svg';
       case 'cloud':
         return '/resources/cloud.svg';
       case 'onPremise':
-        return '/resources/on-premise.svg';
+        return '/resources/onpremise.svg';
       case 'wireless':
         return '/resources/wireless.svg';
       case 'rs485':
