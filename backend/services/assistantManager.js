@@ -110,7 +110,7 @@ class AssistantManager {
     throw new Error('Run timed out');
   }
 
-  async sendMessage(userId, message) {
+  async sendMessage(userId, message, step) {
     try {
       const user = await User.findById(userId);
       if (!user) {
@@ -118,13 +118,38 @@ class AssistantManager {
       }
 
       const threadId = await this.getOrCreateThread(userId);
-      const currentStep = user.assistantThread.currentStep;
-      const assistantId = await this.getAssistantId(currentStep);
+      const assistantId = await this.getAssistantId(step);
+
+      // If this is the BOM step, include initial requirements
+      let finalMessage = message;
+      if (step === 'bom') {
+        // Get the conversation to access initial step data
+        const conversation = await Conversation.findOne({ 
+          project: user.currentProject
+        }).sort({ 'messages.timestamp': -1 });
+
+        if (conversation) {
+          const initialStepData = conversation.stepData.get('initial');
+          if (initialStepData) {
+            // Format initial requirements for the BOM assistant
+            const initialRequirements = {
+              buildingClassification: initialStepData.buildingClassification,
+              floorArea: initialStepData.floorArea,
+              buildingServices: initialStepData.buildingServices,
+              ancillaryPlants: initialStepData.ancillaryPlants,
+              sharedAreasCount: initialStepData.sharedAreasCount
+            };
+
+            // Add initial requirements to the message
+            finalMessage = `Initial Requirements:\n${JSON.stringify(initialRequirements, null, 2)}\n\nUser Message:\n${message}`;
+          }
+        }
+      }
 
       // Add message to thread
       await this.openai.beta.threads.messages.create(threadId, {
         role: 'user',
-        content: message
+        content: finalMessage
       });
 
       // Run the assistant
@@ -157,7 +182,7 @@ class AssistantManager {
       return {
         message: assistantMessages[0].content[0].text.value,
         threadId,
-        currentStep
+        currentStep: step
       };
     } catch (error) {
       console.error('Error in sendMessage:', error);

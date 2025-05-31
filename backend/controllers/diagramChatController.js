@@ -174,9 +174,9 @@ exports.chatWithAI = async (req, res) => {
 
     // Get AI response
     console.log('\n=== Getting AI Response ===');
-    const aiResult = await assistantManager.sendMessage(userId, aiInput);
+    const aiResult = await assistantManager.sendMessage(userId, aiInput, currentStep);
     console.log('Raw AI Response:', aiResult);
-    const aiResponse = aiResult.message; // Extract the string
+    const aiResponse = aiResult.message;
 
     // Process AI response
     console.log('\n=== Processing AI Response ===');

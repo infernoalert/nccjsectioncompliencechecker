@@ -5,63 +5,105 @@ const path = require('path');
 // Initialize OpenAI client
 const openai = new OpenAI({ apiKey: 'Your API Key' });
 
-// Assistant configuration for EMS step
+// Assistant configuration for BOM step
 const assistantConfig = {
-  name: "EMS Compliance Assistant",
-  instructions: `You are an expert in electrical metering systems and NCC Section J compliance.
+  name: "NCC Section J BOM Assistant",
+  instructions: `You are an expert in NCC Section J compliance and building services requirements.
 
 Your task is to:
-1. Determine if an Energy Monitoring System (EMS) is required for the project based on the total floor area.
-2. Explain the NCC requirements:
-   - For projects greater than 2500 m², an EMS is required.
-   - For projects between 500 m² and 2500 m², an EMS is suggested but not mandatory.
-   - For projects less than 500 m², an EMS is not required.
-3. Guide the user to select the proper EMS product to meet NCC requirements if applicable.
+1. Process the initial requirements from step 1:
+   - Building Classification (e.g., Class 1a)
+   - Floor Area
+   - Building Services (only focus on services marked as "true" or "yes")
+   - Any ancillary plants that exist
+2. Based on these requirements, provide:
+   - Required building services components ONLY for the services that were marked as required
+   - Detailed BOM specifications for each required service
+   - Integration requirements with EMS (if applicable)
 
-Guidelines:
-- Clearly state the compliance rule based on the user's project size.
-- If EMS is required or suggested, provide guidance on selecting a compliant EMS product.
-- Use clear, non-technical language when possible.
-- Maintain a professional and helpful tone.
-- Do not discuss other project steps or requirements.
+IMPORTANT GUIDELINES:
+- ONLY focus on building services that were marked as required (true/yes) in step 1
+- DO NOT ask about or suggest services that were marked as not required (false/no)
+- If a service was not required in step 1, do not include it in the BOM
+- For each required service, provide specific component recommendations
+- Consider the building classification and floor area in your recommendations
+
+Example of handling requirements:
+If step 1 data shows:
+{
+  "buildingServices": {
+    "airConditioning": false,
+    "artificialLighting": true,
+    "appliancePower": true,
+    "centralHotWaterSupply": false
+  }
+}
+Then:
+- DO focus on: artificial lighting and appliance power components
+- DO NOT ask about: air conditioning or hot water systems
 
 Example conversation:
-User: "Do I need an EMS for my 3000 m² building?"
-Assistant: "Yes, for buildings greater than 2500 m², an Energy Monitoring System (EMS) is required by the NCC. I can help you select a compliant EMS product. Would you like suggestions?"
+User: "What components do I need for my building?"
+Assistant: "Based on your initial requirements, I see that artificial lighting and appliance power are required. Let me help you with the specific components needed for these services. Would you like to start with the lighting system components?"
 
-User: "What about a 1000 m² building?"
-Assistant: "For buildings between 500 m² and 2500 m², an EMS is not mandatory but is suggested for better compliance and monitoring. Would you like to see recommended EMS products?"
+User: "Tell me about the lighting system"
+Assistant: "For your artificial lighting system, I'll provide a detailed component list including energy-efficient fixtures, controls, and monitoring interfaces. Would you like me to break this down by specific components?"
 
-User: "My building is 400 m²."
-Assistant: "For buildings less than 500 m², an EMS is not required by the NCC."
-
-Focus only on EMS requirements and product guidance for this step.`,
+Focus on providing BOM guidance ONLY for the services that were marked as required in step 1.`,
   tools: [
     {
       type: "function",
       function: {
-        name: "update_ems_requirement",
-        description: "Update the EMS requirement status and suggest products if needed",
+        name: "update_bom_requirements",
+        description: "Update the BOM requirements and component specifications based on initial requirements",
         parameters: {
           type: "object",
           properties: {
-            emsRequired: {
-              type: "string",
-              description: "EMS requirement status: 'required', 'suggested', or 'not_required'"
+            initialRequirements: {
+              type: "object",
+              description: "Requirements from step 1",
+              properties: {
+                buildingClassification: { type: "string" },
+                floorArea: { type: "number" },
+                buildingServices: {
+                  type: "object",
+                  properties: {
+                    airConditioning: { type: "boolean" },
+                    artificialLighting: { type: "boolean" },
+                    appliancePower: { type: "boolean" },
+                    centralHotWaterSupply: { type: "boolean" },
+                    internalTransportDevices: { type: "boolean" },
+                    renewableEnergy: { type: "boolean" },
+                    evChargingEquipment: { type: "boolean" },
+                    batterySystems: { type: "boolean" }
+                  }
+                },
+                ancillaryPlants: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      exists: { type: "boolean" },
+                      name: { type: "string" }
+                    }
+                  }
+                }
+              }
             },
-            floorArea: {
-              type: "number",
-              description: "Total floor area of the project in square meters"
-            },
-            suggestedProducts: {
+            components: {
               type: "array",
-              description: "List of suggested EMS products (if applicable)",
+              description: "List of required components for each required service",
               items: {
-                type: "string"
+                type: "object",
+                properties: {
+                  service: { type: "string" },
+                  components: { type: "array", items: { type: "string" } },
+                  specifications: { type: "object" }
+                }
               }
             }
           },
-          required: ["emsRequired", "floorArea"]
+          required: ["initialRequirements", "components"]
         }
       }
     }
@@ -86,7 +128,7 @@ async function createAssistant() {
       const existing = await fs.readFile(configPath, 'utf-8');
       config = JSON.parse(existing);
     } catch (e) {}
-    config.ems = assistant.id;
+    config.bom = assistant.id;
     await fs.writeFile(
       configPath,
       JSON.stringify(config, null, 2)
