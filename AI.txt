@@ -1253,7 +1253,7 @@ Call it J6 HVAC and put it before j7xxx use same methode, as j7xxx
 
 
 +++++++++++++++++++++++++++++++++++++++++++++
-"add,authority-meter,4,-8": Invalid node type: authority-meter. Available types: smart-meter, smartmeter, meter, transformer, load, cloud, wireless, rs485, ethernet, on-premise, onpremise, auth-meter, authmeter, meter-memory, metermemory
+"add,authority-meter,4,-8": Invalid node type: authority-meter. Available types: smart-meter, smartmeter, meter, transformer, load, cloud, wireless, rs485, ethernet, onpremise, onpremise, auth-meter, authmeter, meter-memory, metermemory
 
 
 -----------Delete// ... existing code ...

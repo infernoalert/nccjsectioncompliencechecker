@@ -34,12 +34,9 @@ const NODE_TYPES = {
   'cloud': 'cloud',
   'wireless': 'wireless',
   'rs485': 'rs485',
-  'ethernet': 'ethernet',
-  'on-premise': 'onPremise',
-  'onpremise': 'onPremise',
-  'auth-meter': 'authorityMeter',
-  'authmeter': 'authorityMeter',
-  'meter-memory': 'meterMemory',
+  'ethernet': 'ethernet',  
+  'onpremise': 'onPremise',  
+  'authmeter': 'authorityMeter',  
   'metermemory': 'meterMemory',
   'label': 'label'
 };

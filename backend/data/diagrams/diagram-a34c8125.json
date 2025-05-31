@@ -70,7 +70,7 @@
         "y": -390
       },
       "data": {
-        "label": "On-Premise",
+        "label": "onpremise",
         "showHandles": false
       },
       "width": 100,
