@@ -43,17 +43,124 @@ function getInitialStepDataFromProject(project) {
   return initialData;
 }
 
+function getStep2DataFromProject(project) {
+  console.log('\n=== Step 2 Data Creation ===');
+  console.log('Project Size:', project.floorArea);
+
+  // Initialize components array
+  const components = [
+    {
+      id: 'smartmeter',
+      label: 'Smart Meter',
+      exists: false,
+      partNumber: '',
+      externalLink: ''
+    },
+    {
+      id: 'cloud',
+      label: 'Cloud',
+      exists: false,
+      partNumber: '',
+      externalLink: ''
+    },
+    {
+      id: 'wireless',
+      label: 'Wireless',
+      exists: false,
+      partNumber: '',
+      externalLink: ''
+    },
+    {
+      id: 'rs485',
+      label: 'RS485',
+      exists: false,
+      partNumber: '',
+      externalLink: ''
+    },
+    {
+      id: 'ethernet',
+      label: 'Ethernet',
+      exists: false,
+      partNumber: '',
+      externalLink: ''
+    },
+    {
+      id: 'onpremise',
+      label: 'On Premise',
+      exists: false,
+      partNumber: '',
+      externalLink: ''
+    },
+    {
+      id: 'metermemory',
+      label: 'Meter Memory',
+      exists: false,
+      partNumber: '',
+      externalLink: ''
+    },
+    {
+      id: 'meter',
+      label: 'Meter',
+      exists: false,
+      partNumber: '',
+      externalLink: ''
+    }
+  ];
+
+  // Set exists values based on project size
+  if (project.floorArea > 2500) {
+    // For projects > 2500
+    components.forEach(component => {
+      if (component.id === 'meter' || component.id === 'metermemory') {
+        component.exists = false;
+      } else {
+        component.exists = true;
+      }
+    });
+  } else if (project.floorArea >= 500 && project.floorArea <= 2500) {
+    // For projects between 500 and 2500
+    components.forEach(component => {
+      component.exists = component.id === 'metermemory';
+    });
+  } else {
+    // For projects < 500
+    components.forEach(component => {
+      component.exists = component.id === 'meter';
+    });
+  }
+
+  // Convert array to object keyed by id
+  const bomObject = {};
+  components.forEach(component => {
+    bomObject[component.id] = {
+      exists: component.exists,
+      partNumber: component.partNumber,
+      externalLink: component.externalLink
+    };
+  });
+
+  console.log('\nGenerated Step 2 Data:');
+  console.log(JSON.stringify(bomObject, null, 2));
+  console.log('=== Step 2 Data Creation Complete ===\n');
+
+  return bomObject;
+}
+
 async function seedStepDataForProject(project) {
   console.log('\n=== Seeding Step Data for Project ===');
   console.log('Project ID:', project._id);
 
   const initialStepKey = 'initial';
   const initialStepData = getInitialStepDataFromProject(project);
+  const step2Data = getStep2DataFromProject(project);
 
   const conversation = new Conversation({
     project: project._id,
     messages: [],
-    stepData: { [initialStepKey]: initialStepData },
+    stepData: { 
+      [initialStepKey]: initialStepData,
+      'bom': step2Data 
+    },
     currentStep: initialStepKey
   });
 

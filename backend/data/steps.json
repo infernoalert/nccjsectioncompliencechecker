@@ -51,84 +51,83 @@
     "name": "Bill of Materials",
     "fields": [
       {
-        "id": "emsGroup",
+        "id": "smartmeter",
         "type": "object",
-        "label": "EMS Components",
-        "condition": {
-          "field": "size",
-          "value": 2500,
-          "operator": "greaterThan"
-        },
+        "label": "Smart Meter",
         "properties": {
-          "smartmeter": {
-            "exists": { "type": "boolean", "label": "Smart Meter Exists" },
-            "partNumber": { "type": "string", "label": "Part Number" },
-            "externalLink": { "type": "string", "label": "External Link" }
-          },
-          "cloud": {
-            "exists": { "type": "boolean", "label": "Cloud Exists" },
-            "partNumber": { "type": "string", "label": "Part Number" },
-            "externalLink": { "type": "string", "label": "External Link" }
-          },
-          "wireless": {
-            "exists": { "type": "boolean", "label": "Wireless Exists" },
-            "partNumber": { "type": "string", "label": "Part Number" },
-            "externalLink": { "type": "string", "label": "External Link" }
-          },
-          "rs485": {
-            "exists": { "type": "boolean", "label": "RS485 Exists" },
-            "partNumber": { "type": "string", "label": "Part Number" },
-            "externalLink": { "type": "string", "label": "External Link" }
-          },
-          "ethernet": {
-            "exists": { "type": "boolean", "label": "Ethernet Exists" },
-            "partNumber": { "type": "string", "label": "Part Number" },
-            "externalLink": { "type": "string", "label": "External Link" }
-          },
-          "onpremise": {
-            "exists": { "type": "boolean", "label": "On Premise Exists" },
-            "partNumber": { "type": "string", "label": "Part Number" },
-            "externalLink": { "type": "string", "label": "External Link" }
-          },
-          "metermemory": {
-            "exists": { "type": "boolean", "label": "Meter Memory Exists" },
-            "partNumber": { "type": "string", "label": "Part Number" },
-            "externalLink": { "type": "string", "label": "External Link" }
-          }
+          "exists": { "type": "boolean", "label": "Smart Meter Exists" },
+          "partNumber": { "type": "string", "label": "Part Number" },
+          "externalLink": { "type": "string", "label": "External Link" }
         }
       },
       {
-        "id": "memoryMeterGroup",
+        "id": "cloud",
         "type": "object",
-        "label": "Memory Meter Components",
-        "condition": {
-          "field": "size",
-          "value": [500, 2500],
-          "operator": "between"
-        },
+        "label": "Cloud",
         "properties": {
-          "metermemory": {
-            "exists": { "type": "boolean", "label": "Meter Memory Exists" },
-            "partNumber": { "type": "string", "label": "Part Number" },
-            "externalLink": { "type": "string", "label": "External Link" }
-          }
+          "exists": { "type": "boolean", "label": "Cloud Exists" },
+          "partNumber": { "type": "string", "label": "Part Number" },
+          "externalLink": { "type": "string", "label": "External Link" }
         }
       },
       {
-        "id": "generalGroup",
+        "id": "wireless",
         "type": "object",
-        "label": "General Components",
-        "condition": {
-          "field": "size",
-          "value": 500,
-          "operator": "lessThan"
-        },
+        "label": "Wireless",
         "properties": {
-          "meter": {
-            "exists": { "type": "boolean", "label": "Meter Exists" },
-            "partNumber": { "type": "string", "label": "Part Number" },
-            "externalLink": { "type": "string", "label": "External Link" }
-          }
+          "exists": { "type": "boolean", "label": "Wireless Exists" },
+          "partNumber": { "type": "string", "label": "Part Number" },
+          "externalLink": { "type": "string", "label": "External Link" }
+        }
+      },
+      {
+        "id": "rs485",
+        "type": "object",
+        "label": "RS485",
+        "properties": {
+          "exists": { "type": "boolean", "label": "RS485 Exists" },
+          "partNumber": { "type": "string", "label": "Part Number" },
+          "externalLink": { "type": "string", "label": "External Link" }
+        }
+      },
+      {
+        "id": "ethernet",
+        "type": "object",
+        "label": "Ethernet",
+        "properties": {
+          "exists": { "type": "boolean", "label": "Ethernet Exists" },
+          "partNumber": { "type": "string", "label": "Part Number" },
+          "externalLink": { "type": "string", "label": "External Link" }
+        }
+      },
+      {
+        "id": "onpremise",
+        "type": "object",
+        "label": "On Premise",
+        "properties": {
+          "exists": { "type": "boolean", "label": "On Premise Exists" },
+          "partNumber": { "type": "string", "label": "Part Number" },
+          "externalLink": { "type": "string", "label": "External Link" }
+        }
+      },
+      {
+        "id": "metermemory",
+        "type": "object",
+        "label": "Meter Memory",
+        "properties": {
+          "exists": { "type": "boolean", "label": "Meter Memory Exists" },
+          "partNumber": { "type": "string", "label": "Part Number" },
+          "externalLink": { "type": "string", "label": "External Link" }
+        }
+      },
+      {
+        "id": "meter",
+        "type": "object",
+        "label": "Meter",
+        "properties": {
+          "exists": { "type": "boolean", "label": "Meter Exists" },
+          "partNumber": { "type": "string", "label": "Part Number" },
+          "externalLink": { "type": "string", "label": "External Link" }
         }
       }
     ],
