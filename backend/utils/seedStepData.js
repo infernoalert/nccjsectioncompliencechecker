@@ -43,7 +43,6 @@ function getInitialStepDataFromProject(project) {
   return initialData;
 }
 
-<<<<<<< HEAD
 function getStep2DataFromProject(project) {
   console.log('\n=== Step 2 Data Creation ===');
   console.log('Project Size:', project.floorArea);
@@ -145,7 +144,8 @@ function getStep2DataFromProject(project) {
   console.log('=== Step 2 Data Creation Complete ===\n');
 
   return bomObject;
-=======
+}
+
 function getBomStepData() {
   console.log('\n=== BOM Step Data Creation ===');
   
@@ -158,7 +158,6 @@ function getBomStepData() {
   console.log('=== BOM Step Data Creation Complete ===\n');
 
   return bomData;
->>>>>>> 4308176adfab27cea1113a6e7a3913936a0fbfae
 }
 
 async function seedStepDataForProject(project) {
@@ -170,26 +169,16 @@ async function seedStepDataForProject(project) {
   
   // Get initial step data
   const initialStepData = getInitialStepDataFromProject(project);
-<<<<<<< HEAD
   const step2Data = getStep2DataFromProject(project);
-=======
-  
-  // Get BOM step data
   const bomStepData = getBomStepData();
->>>>>>> 4308176adfab27cea1113a6e7a3913936a0fbfae
 
   const conversation = new Conversation({
     project: project._id,
     messages: [],
-<<<<<<< HEAD
-    stepData: { 
-      [initialStepKey]: initialStepData,
-      'bom': step2Data 
-=======
     stepData: {
       [initialStepKey]: initialStepData,
+      'step2': step2Data,
       [bomStepKey]: bomStepData
->>>>>>> 4308176adfab27cea1113a6e7a3913936a0fbfae
     },
     currentStep: initialStepKey
   });
@@ -197,6 +186,7 @@ async function seedStepDataForProject(project) {
   await conversation.save();
   console.log('Saved Conversation with Step Data:');
   console.log('Initial Step:', JSON.stringify(conversation.stepData.get(initialStepKey), null, 2));
+  console.log('Step 2:', JSON.stringify(conversation.stepData.get('step2'), null, 2));
   console.log('BOM Step:', JSON.stringify(conversation.stepData.get(bomStepKey), null, 2));
   console.log('=== Step Data Seeding Complete ===\n');
 
