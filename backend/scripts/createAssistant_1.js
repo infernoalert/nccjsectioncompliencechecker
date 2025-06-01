@@ -3,7 +3,7 @@ const fs = require('fs').promises;
 const path = require('path');
 
 // Initialize OpenAI client
-const openai = new OpenAI({ apiKey: 'Your API' });
+const openai = new OpenAI({ apiKey: 'API Key' });
 
 // Assistant configuration for initial step
 const assistantConfig = {

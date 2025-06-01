@@ -2,6 +2,7 @@ const OpenAI = require('openai');
 const User = require('../models/User');
 const fs = require('fs').promises;
 const path = require('path');
+const Project = require('../models/Project');
 
 class AssistantManager {
   constructor() {
@@ -110,7 +111,7 @@ class AssistantManager {
     throw new Error('Run timed out');
   }
 
-  async sendMessage(userId, message, step) {
+  async sendMessage(userId, message, step, projectId) {
     try {
       const user = await User.findById(userId);
       if (!user) {
@@ -123,27 +124,39 @@ class AssistantManager {
       // If this is the BOM step, include initial requirements
       let finalMessage = message;
       if (step === 'bom') {
-        // Get the conversation to access initial step data
-        const conversation = await Conversation.findOne({ 
-          project: user.currentProject
-        }).sort({ 'messages.timestamp': -1 });
-
-        if (conversation) {
-          const initialStepData = conversation.stepData.get('initial');
-          if (initialStepData) {
-            // Format initial requirements for the BOM assistant
-            const initialRequirements = {
-              buildingClassification: initialStepData.buildingClassification,
-              floorArea: initialStepData.floorArea,
-              buildingServices: initialStepData.buildingServices,
-              ancillaryPlants: initialStepData.ancillaryPlants,
-              sharedAreasCount: initialStepData.sharedAreasCount
-            };
-
-            // Add initial requirements to the message
-            finalMessage = `Initial Requirements:\n${JSON.stringify(initialRequirements, null, 2)}\n\nUser Message:\n${message}`;
-          }
+        console.log('\n=== Preparing Data for BOM Agent ===');
+        // Get the project data using the provided projectId
+        const project = await Project.findById(projectId);
+        if (!project) {
+          throw new Error('Project not found');
         }
+        console.log('Project:', project.name);
+        console.log('Project ID:', project._id);
+        
+        // Get initial requirements directly from project
+        const initialRequirements = project.stepRequirements?.initial || project.stepRequirements;
+        if (!initialRequirements) {
+          console.log('No initial requirements found in project');
+          throw new Error('Initial requirements not found');
+        }
+        
+        console.log('Initial Requirements:');
+        console.log('- Building Classification:', initialRequirements.buildingClassification);
+        console.log('- Building Services:', JSON.stringify(initialRequirements.buildingServices, null, 2));
+        console.log('- Ancillary Plants:', JSON.stringify(initialRequirements.ancillaryPlants, null, 2));
+        console.log('- Shared Areas Count:', initialRequirements.sharedAreasCount);
+        
+        // Format initial requirements for the BOM assistant
+        const formattedRequirements = {
+          buildingClassification: initialRequirements.buildingClassification,
+          floorArea: initialRequirements.floorArea,
+          buildingServices: initialRequirements.buildingServices,
+          ancillaryPlants: initialRequirements.ancillaryPlants,
+          sharedAreasCount: initialRequirements.sharedAreasCount
+        };
+
+        // Add initial requirements to the message
+        finalMessage = `Initial Requirements:\n${JSON.stringify(formattedRequirements, null, 2)}\n\nUser Message:\n${message}`;
       }
 
       // Add message to thread

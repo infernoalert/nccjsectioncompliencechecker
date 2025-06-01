@@ -359,6 +359,14 @@ const DiagramChatInterface = ({ onDiagramGenerated, onStepChange, currentStep: i
                             {key.replace(/([A-Z])/g, ' $1').trim()}: {value ? 'Yes' : 'No'}
                           </Box>
                         ))
+                      : field.type === 'array' && field.id === 'ancillaryPlants'
+                      ? (stepData[field.id] || []).map((plant, index) => (
+                          <Box key={index} sx={{ ml: 2 }}>
+                            <Typography variant="body2">
+                              {plant.name} ({plant.exists ? 'Exists' : 'Not Exists'})
+                            </Typography>
+                          </Box>
+                        ))
                       : field.type === 'object' && field.properties
                       ? Object.entries(field.properties).map(([propKey, prop]) => (
                           <Box key={propKey} sx={{ ml: 2 }}>

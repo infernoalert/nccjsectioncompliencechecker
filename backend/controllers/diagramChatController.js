@@ -105,122 +105,94 @@ async function getAIResponse(conversation, step, userId) {
 }
 
 exports.chatWithAI = async (req, res) => {
-  console.log('\n=== New Chat Request ===');
-  console.log('Request Params:', req.params);
-  console.log('Request Body:', req.body);
+  console.log('\n=== Chat Request Processing ===');
+  console.log('Project ID:', req.params.projectId);
+  console.log('Step:', req.params.stepNumber);
+  console.log('User Message:', req.body.message);
 
   try {
-    // Authentication check
-    if (!req.user) {
-      console.log('Authentication Error: No user found in request');
-      return res.status(401).json({ error: 'Authentication required' });
-    }
-
-    const userId = req.user._id;
-    console.log('Authenticated User ID:', userId);
-
     // Validate request
-    const { projectId, stepNumber } = req.params;
-    const { message, step } = req.body;
-
-    // Use step from body or params
-    const currentStep = step || stepNumber;
-
-    if (!projectId || !message || !currentStep) {
-      console.log('Validation Error: Missing required fields');
-      return res.status(400).json({ 
-        error: 'Missing required fields',
-        received: { projectId, message, step: currentStep }
-      });
+    if (!req.params.projectId || !req.params.stepNumber || !req.body.message) {
+      return res.status(400).json({ message: 'Missing required fields' });
     }
 
-    // Get project
-    const project = await Project.findById(projectId);
+    // Get project and conversation
+    const project = await Project.findById(req.params.projectId);
     if (!project) {
-      console.log('Project not found:', projectId);
-      return res.status(404).json({ error: 'Project not found' });
+      return res.status(404).json({ message: 'Project not found' });
     }
-    console.log('Found project:', project.name);
+    console.log('Project:', project.name);
 
-    // Get or create conversation
-    let conversation = await Conversation.findOne({ project: projectId });
+    let conversation = await Conversation.findOne({ project: req.params.projectId });
     if (!conversation) {
-      console.log('Creating new conversation for project');
-      conversation = new Conversation({
-        project: projectId,
-        messages: [],
-        stepData: {},
-        currentStep: currentStep
-      });
-    } else {
-      console.log('Found existing conversation');
-      console.log('Current step data:', JSON.stringify(conversation.stepData.get(currentStep), null, 2));
+      conversation = new Conversation({ project: req.params.projectId });
     }
+    console.log('Conversation:', conversation ? 'Found' : 'Created new');
 
     // Add user message
     const userMessage = {
       role: 'user',
-      content: message,
+      content: req.body.message,
       timestamp: new Date(),
-      step: currentStep
+      step: req.params.stepNumber
     };
     conversation.messages.push(userMessage);
-    console.log('Added user message:', userMessage);
-
-    // Build project info string
-    const projectInfo = `Project Info:\n- Name: ${project.name}\n- Building Type: ${project.buildingType}\n- Classification: ${project.buildingClassification}\n- Floor Area: ${project.floorArea}\n`;
-    // Prepend project info to the user message for the AI
-    const aiInput = `${projectInfo}\nUser: ${message}`;
+    console.log('Added user message');
 
     // Get AI response
-    console.log('\n=== Getting AI Response ===');
-    const aiResult = await assistantManager.sendMessage(userId, aiInput, currentStep);
-    console.log('Raw AI Response:', aiResult);
-    const aiResponse = aiResult.message;
+    console.log('\n=== AI Processing ===');
+    const aiResponse = await assistantManager.sendMessage(
+      req.user._id,
+      req.body.message,
+      req.params.stepNumber,
+      req.params.projectId
+    );
+    console.log('AI Response received');
 
-    // Process AI response
-    console.log('\n=== Processing AI Response ===');
-    let stepData = conversation.stepData.get(currentStep) || {};
-    console.log('Current step data:', JSON.stringify(stepData, null, 2));
+    // Process step data
+    let stepData = conversation.stepData.get(req.params.stepNumber) || {};
+    console.log('\n=== Step Data Processing ===');
+    
+    if (req.params.stepNumber === 'initial') {
+      console.log('Processing initial step data');
+      const normalizedData = normalizeResponse(aiResponse, stepData);
+      stepData = { ...stepData, ...normalizedData.arguments };
+    } else if (req.params.stepNumber === 'bom') {
+      console.log('Processing BOM step data');
+      const initialRequirements = project.stepRequirements?.get('initial') || {};
+      stepData = {
+        buildingClassification: initialRequirements.buildingClassification,
+        buildingServices: initialRequirements.buildingServices,
+        ancillaryPlants: initialRequirements.ancillaryPlants || [],
+        sharedAreasCount: initialRequirements.sharedAreasCount
+      };
+    }
+    console.log('Step data processed');
 
-    // Always send the full AI response text to the normalizer, ignore JSON parsing
-    console.log('Normalizing AI response from text');
-    const normalizedData = normalizeResponse(aiResponse, stepData);
-    console.log('Normalized data:', JSON.stringify(normalizedData, null, 2));
-    stepData = { ...stepData, ...normalizedData.arguments };
-
-    // Update step data
-    conversation.stepData.set(currentStep, stepData);
-    console.log('Updated step data:', JSON.stringify(stepData, null, 2));
-
-    // Add AI message (keeping the original response text)
+    // Update conversation
+    conversation.stepData.set(req.params.stepNumber, stepData);
     const aiMessage = {
       role: 'ai',
-      content: aiResponse,
+      content: aiResponse.message,
       timestamp: new Date(),
-      step: currentStep
+      step: req.params.stepNumber
     };
     conversation.messages.push(aiMessage);
-    console.log('Added AI message:', aiMessage);
-
-    // Save conversation
     await conversation.save();
-    console.log('Saved conversation with updated step data');
+    console.log('Conversation updated and saved');
 
     // Send response
-    const response = {
-      message: aiResponse,
-      stepData: stepData,
-      currentStep: currentStep
-    };
     console.log('\n=== Sending Response ===');
-    console.log('Response:', JSON.stringify(response, null, 2));
+    res.json({
+      message: aiResponse.message,
+      stepData,
+      currentStep: req.params.stepNumber
+    });
     console.log('=== Chat Request Complete ===\n');
 
-    res.json(response);
   } catch (error) {
     console.error('Error in chatWithAI:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ message: 'Internal server error' });
   }
 };
 
