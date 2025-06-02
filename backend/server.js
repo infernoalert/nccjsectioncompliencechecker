@@ -7,6 +7,7 @@ const connectDB = require('./config/db');
 const errorHandler = require('./middleware/errorHandler');
 const path = require('path');
 const fs = require('fs');
+const morgan = require('morgan');
 
 // Load env vars based on environment
 const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development';
@@ -72,6 +73,7 @@ app.use(cors({
   credentials: true
 }));
 app.use(express.json());
+app.use(morgan('dev'));
 
 // Swagger Documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
@@ -108,6 +110,9 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
   }
 }));
 
+// Health check route
+app.use('/health', healthRoutes);
+
 // Mount routes
 app.use('/api/users', userRoutes);
 app.use('/api/auth', authRoutes);
@@ -119,7 +124,6 @@ app.use('/api', complianceCalculatorRoutes);
 app.use('/api', referenceDataRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/test', testRoutes);
-app.use('/health', healthRoutes);
 app.use('/api/j7lighting', j7lightingReportRoutes);
 app.use('/api/j6hvac', j6hvacReportRoutes);
 app.use('/api/chat', chatRoutes);

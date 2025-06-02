@@ -746,7 +746,7 @@ To create a new section in the NCC Section Compliance Checker, follow these step
 ### 1. Backend Setup
 Server.js
 sectionLoader.js
-App.js
+app.js deleted merge with server.js
 
 #Frontend
 ProjectDetails.js
@@ -863,7 +863,7 @@ ProjectDetails.js
    - Add Swagger documentation for the new endpoints
 
 2. **Frontend Integration**:
-   - Add the new route to `App.js`
+   - Add the new route to `app.js deleted merge with server.js`
    - Add a button/link to access the new section in `ProjectDetails.js`
    - Update navigation components if needed
 
@@ -1122,7 +1122,7 @@ sections: List of sections. (Can be empty initially).
 
 Integration:
 
-In backend/app.js, import and use the new route:
+In backend/app.js deleted merge with server.js, import and use the new route:
 
 const jxxxRoutes = require('./routes/jxxx_reportRoutes');
 app.use('/api/jxxx', jxxxRoutes);
@@ -1163,7 +1163,7 @@ Handling loading and error states.
 
 Route:
 
-Add a new route in frontend/src/App.js to display the JXXXReport component. Make sure to protect this route.
+Add a new route in frontend/src/app.js deleted merge with server.js to display the JXXXReport component. Make sure to protect this route.
 
 <PrivateRoute path="/project/:projectId/jxxx-report" component={JXXXReport} />
 
@@ -1209,7 +1209,7 @@ fileExtension: File extension for the JSON files ('.json').
 sections: List of sections. (Can be empty initially).
 use decision-tree-config.js in j7lighting folder and exactly use same methode strcture and concept, do not create other files yet
 
-In backend/app.js, import and use the new route:
+In backend/app.js deleted merge with server.js, import and use the new route:
 const j6hvavRoutes = require('./routes/j6hvac_reportRoutes');
 app.use('/api/j6hvac', j6hvacRoutes);
 use j7lighting as main sample and use exactly same structure 
@@ -1239,7 +1239,7 @@ use j7lighting as main sample and use exactly same structure
 j7lighting_reportSlice.js as main sample and use exactly same methodes and structure
 
 Route:
-Add a new route in frontend/src/App.js to display the J6hvacReport component. Make sure to protect this route.
+Add a new route in frontend/src/app.js deleted merge with server.js to display the J6hvacReport component. Make sure to protect this route.
 <PrivateRoute path="/project/:projectId/j6hvac-report" component={J6hvacReport} />
 use j7lighting as main sample and use exactly same structure 
 

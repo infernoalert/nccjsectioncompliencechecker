@@ -23,7 +23,7 @@ A full-stack application for checking NCC Section J compliance, built with Expre
 │   └── src/          # React source code
 │       ├── components/ # React components
 │       ├── store/     # Redux store and slices
-│       └── App.js     # React application entry point
+│       └── app.js deleted merge with server.js     # React application entry point
 └── mongodb-data/     # MongoDB data directory
 ```
 
