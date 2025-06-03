@@ -19,7 +19,6 @@ erDiagram
         String description
         ObjectId owner
         String buildingType
-        Object buildingClassification
         String location
         String climateZone
         Number floorArea
@@ -30,18 +29,6 @@ erDiagram
         String complianceStatus
         Date lastAssessmentDate
         ObjectId createdBy
-        Date createdAt
-        Date updatedAt
-    }
-
-    BuildingClass {
-        ObjectId _id
-        String name
-        String description
-        Map subtypes
-        Map climateZones
-        Map sizeBasedProvisions
-        Array compliancePathways
         Date createdAt
         Date updatedAt
     }
@@ -60,10 +47,23 @@ erDiagram
         Date updatedAt
     }
 
+    Electrical {
+        ObjectId _id
+        ObjectId project
+        Array loads
+        Array energyMonitoring
+        String complianceStatus
+        Date lastAssessmentDate
+        ObjectId createdBy
+        Date createdAt
+        Date updatedAt
+    }
+
     User ||--o{ Project : "owns"
     User ||--o{ Project : "creates"
     Project }o--|| ClimateZone : "belongs to"
-    Project }o--|| BuildingClass : "classified as"
+    Project ||--|| Electrical : "has"
+    User ||--o{ Electrical : "creates"
 ```
 
 ## Entity Descriptions
@@ -76,20 +76,22 @@ erDiagram
 ### Project
 - Core entity for building compliance assessment
 - Contains building specifications and compliance information
-- References User (owner and creator), ClimateZone, and BuildingClass
+- References User (owner and creator) and ClimateZone
 - Stores building fabric details and special requirements
 - Tracks compliance status and assessment history
-
-### BuildingClass
-- Defines building classifications and their requirements
-- Contains subtype-specific requirements and provisions
-- Maps climate zone-specific requirements
-- Includes size-based provisions and compliance pathways
+- Has exactly one Electrical section
 
 ### ClimateZone
 - Defines climate zones and their characteristics
 - Stores temperature, humidity, and environmental data
 - Used for determining building compliance requirements
+
+### Electrical
+- Manages electrical systems and energy monitoring
+- Contains arrays of loads and energy monitoring systems
+- Tracks compliance status for electrical systems
+- References Project and User (creator)
+- Belongs to exactly one Project
 
 ## Relationships
 
@@ -103,10 +105,15 @@ erDiagram
    - Projects must belong to a specific climate zone
    - Climate zones can have multiple projects
 
-3. Project to BuildingClass:
-   - Many-to-one relationship
-   - Projects must be classified under a building class
-   - Building classes can have multiple projects
+3. Project to Electrical:
+   - One-to-one relationship
+   - Each project has exactly one electrical section
+   - Each electrical section belongs to exactly one project
+
+4. User to Electrical:
+   - One-to-many relationship
+   - A user can create multiple electrical systems
+   - Electrical systems must have a creator
 
 ## Indexes
 
@@ -117,13 +124,14 @@ erDiagram
    - owner
    - createdBy
 
-3. BuildingClass:
-   - name
-   - climateZones.type
-
-4. ClimateZone:
+3. ClimateZone:
    - code
    - name (unique)
+
+4. Electrical:
+   - project
+   - loads.partNumber
+   - energyMonitoring.partNumber
 
 ## Notes
 
@@ -134,51 +142,6 @@ erDiagram
 - Special requirements are stored as an array of objects 
 
 ## Map Data Structures
-
-### BuildingClass Subtypes Map
-```javascript
-subtypes: {
-    [subtypeKey: String]: {
-        requirements: [String],
-        thermal_performance: Boolean,
-        energy_usage: Boolean,
-        hvac: Boolean,
-        special_requirements: Boolean,
-        compliance_pathways: [String],
-        special_requirements: {
-            [requirementKey: String]: String
-        },
-        applicable_clauses: [String]
-    }
-}
-```
-
-### BuildingClass ClimateZones Map
-```javascript
-climateZones: {
-    [zoneKey: String]: {
-        type: String,
-        insulation: String,
-        wall_r_value: String,
-        roof_r_value: String,
-        glazing: {
-            shgc: Number,
-            u_value: Number
-        }
-    }
-}
-```
-
-### BuildingClass SizeBasedProvisions Map
-```javascript
-sizeBasedProvisions: {
-    [sizeKey: String]: {
-        max_area: Number,
-        min_area: Number,
-        provisions: String
-    }
-}
-```
 
 ### Project BuildingFabric Object
 ```javascript
@@ -215,46 +178,17 @@ specialRequirements: [{
 }]
 ```
 
-### Project CompliancePathway Object
-```javascript
-compliancePathway: {
-    type: String,  // enum: ['performance', 'prescriptive', 'deemed_to_satisfy']
-    description: String,
-    status: String  // enum: ['pending', 'compliant', 'non_compliant']
-}
-```
-
 ## Map Usage Notes
 
-1. **BuildingClass Subtypes Map**
-   - Keys represent unique subtype identifiers
-   - Each subtype contains specific requirements and compliance pathways
-   - Special requirements are nested as a sub-map for detailed specifications
-
-2. **BuildingClass ClimateZones Map**
-   - Keys represent climate zone identifiers
-   - Contains zone-specific insulation and glazing requirements
-   - Includes thermal performance parameters (R-values, U-values)
-
-3. **BuildingClass SizeBasedProvisions Map**
-   - Keys represent size categories
-   - Defines area ranges and associated provisions
-   - Used for determining applicable requirements based on building size
-
-4. **Project BuildingFabric Object**
+1. **Project BuildingFabric Object**
    - Structured object (not a Map) containing building envelope details
    - Includes thermal properties for all major building elements
    - Used for compliance calculations and energy performance assessment
 
-5. **Project SpecialRequirements Array**
+2. **Project SpecialRequirements Array**
    - Array of requirement objects with type and status
    - Tracks compliance status for each special requirement
    - Supports multiple requirement types (fire, accessibility, etc.)
-
-6. **Project CompliancePathway Object**
-   - Defines the chosen compliance approach
-   - Tracks overall compliance status
-   - Includes descriptive information about the pathway
 
 ## Map Performance Considerations
 
