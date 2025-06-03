@@ -1,6 +1,31 @@
 const mongoose = require('mongoose');
 
-const SpecialRequirementSchema = new mongoose.Schema({
+// Base schema for special requirement properties
+const specialRequirementBaseSchema = {
+  trigger: {
+    type: String
+  },
+  requirements: {
+    type: Map,
+    of: mongoose.Schema.Types.Mixed
+  },
+  conditions: {
+    type: [String],
+    default: []
+  },
+  exemptions: {
+    type: Map,
+    of: mongoose.Schema.Types.Mixed,
+    default: {}
+  }
+};
+
+// Schema for embedded use (no required fields)
+const embeddedSpecialRequirementSchema = new mongoose.Schema(specialRequirementBaseSchema, { _id: false });
+
+// Schema for standalone use (with additional fields)
+const standaloneSpecialRequirementSchema = new mongoose.Schema({
+  ...specialRequirementBaseSchema,
   name: {
     type: String,
     required: [true, 'Please add a name'],
@@ -16,33 +41,23 @@ const SpecialRequirementSchema = new mongoose.Schema({
     type: Map,
     of: mongoose.Schema.Types.Mixed,
     required: true
-  },
-  conditions: {
-    type: [String],
-    default: []
-  },
-  exemptions: {
-    type: Map,
-    of: mongoose.Schema.Types.Mixed,
-    default: {}
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now
   }
+}, {
+  timestamps: true
 });
 
 // Update the updatedAt timestamp before saving
-SpecialRequirementSchema.pre('save', function(next) {
+standaloneSpecialRequirementSchema.pre('save', function(next) {
   this.updatedAt = Date.now();
   next();
 });
 
 // Create indexes
-SpecialRequirementSchema.index({ _id: 1 });
+standaloneSpecialRequirementSchema.index({ _id: 1 });
 
-module.exports = mongoose.model('SpecialRequirement', SpecialRequirementSchema); 
+// Export both schemas and the model
+module.exports = {
+  embeddedSchema: embeddedSpecialRequirementSchema,
+  schema: standaloneSpecialRequirementSchema,
+  model: mongoose.model('SpecialRequirement', standaloneSpecialRequirementSchema)
+}; 

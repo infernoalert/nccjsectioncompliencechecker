@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
-const buildingFabricSchema = new mongoose.Schema({
+// Base schema for building fabric properties
+const buildingFabricBaseSchema = {
   walls: {
     external: {
       rValueByZone: {
@@ -48,8 +49,56 @@ const buildingFabricSchema = new mongoose.Schema({
       }
     }
   }
+};
+
+// Schema for embedded use (no required fields)
+const embeddedBuildingFabricSchema = new mongoose.Schema(buildingFabricBaseSchema, { _id: false });
+
+// Schema for standalone use (with additional fields)
+const standaloneBuildingFabricSchema = new mongoose.Schema({
+  ...buildingFabricBaseSchema,
+  name: {
+    type: String,
+    required: [true, 'Please add a name'],
+    trim: true
+  },
+  description: {
+    type: String,
+    trim: true
+  },
+  buildingType: {
+    type: String,
+    required: [true, 'Building type is required']
+  },
+  climateZone: {
+    type: String,
+    required: [true, 'Climate zone is required']
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  },
+  updatedAt: {
+    type: Date,
+    default: Date.now
+  }
 }, {
   timestamps: true
 });
 
-module.exports = mongoose.model('BuildingFabric', buildingFabricSchema); 
+// Create indexes for standalone schema
+standaloneBuildingFabricSchema.index({ buildingType: 1 });
+standaloneBuildingFabricSchema.index({ climateZone: 1 });
+
+// Update the updatedAt timestamp before saving
+standaloneBuildingFabricSchema.pre('save', function(next) {
+  this.updatedAt = Date.now();
+  next();
+});
+
+// Export both schemas and the model
+module.exports = {
+  embeddedSchema: embeddedBuildingFabricSchema,
+  schema: standaloneBuildingFabricSchema,
+  model: mongoose.model('BuildingFabric', standaloneBuildingFabricSchema)
+}; 

@@ -1,6 +1,41 @@
 const mongoose = require('mongoose');
 
-const climateZoneSchema = new mongoose.Schema({
+// Base schema for climate zone properties
+const climateZoneBaseSchema = {
+  temperatureRange: {
+    min: {
+      type: Number
+    },
+    max: {
+      type: Number
+    }
+  },
+  humidityRange: {
+    min: {
+      type: Number
+    },
+    max: {
+      type: Number
+    }
+  },
+  solarRadiation: {
+    type: Number
+  },
+  windSpeed: {
+    type: Number
+  },
+  isActive: {
+    type: Boolean,
+    default: true
+  }
+};
+
+// Schema for embedded use (no required fields)
+const embeddedClimateZoneSchema = new mongoose.Schema(climateZoneBaseSchema, { _id: false });
+
+// Schema for standalone use (with additional fields)
+const standaloneClimateZoneSchema = new mongoose.Schema({
+  ...climateZoneBaseSchema,
   name: {
     type: String,
     required: [true, 'Climate zone name is required'],
@@ -44,16 +79,17 @@ const climateZoneSchema = new mongoose.Schema({
   windSpeed: {
     type: Number,
     required: [true, 'Wind speed value is required']
-  },
-  isActive: {
-    type: Boolean,
-    default: true
   }
 }, {
   timestamps: true
 });
 
-// Create index for code lookups
-climateZoneSchema.index({ code: 1 });
+// Create index for code lookups (only for standalone schema)
+standaloneClimateZoneSchema.index({ code: 1 });
 
-module.exports = mongoose.model('ClimateZone', climateZoneSchema); 
+// Export both schemas and the model
+module.exports = {
+  embeddedSchema: embeddedClimateZoneSchema,
+  schema: standaloneClimateZoneSchema,
+  model: mongoose.model('ClimateZone', standaloneClimateZoneSchema)
+}; 

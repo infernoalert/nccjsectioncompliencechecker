@@ -19,13 +19,14 @@ erDiagram
         String description
         ObjectId owner
         String buildingType
-        String location
-        String climateZone
+        Mixed location
+        Mixed climateZone
         Number floorArea
         Number totalAreaOfHabitableRooms
         Object buildingFabric
         Array specialRequirements
         Object compliancePathway
+        Object electrical
         String complianceStatus
         Date lastAssessmentDate
         ObjectId createdBy
@@ -47,23 +48,9 @@ erDiagram
         Date updatedAt
     }
 
-    Electrical {
-        ObjectId _id
-        ObjectId project
-        Array loads
-        Array energyMonitoring
-        String complianceStatus
-        Date lastAssessmentDate
-        ObjectId createdBy
-        Date createdAt
-        Date updatedAt
-    }
-
     User ||--o{ Project : "owns"
     User ||--o{ Project : "creates"
     Project }o--|| ClimateZone : "belongs to"
-    Project ||--|| Electrical : "has"
-    User ||--o{ Electrical : "creates"
 ```
 
 ## Entity Descriptions
@@ -77,21 +64,17 @@ erDiagram
 - Core entity for building compliance assessment
 - Contains building specifications and compliance information
 - References User (owner and creator) and ClimateZone
-- Stores building fabric details and special requirements
+- Stores embedded schemas for:
+  - Building fabric details
+  - Special requirements
+  - Compliance pathway
+  - Electrical systems
 - Tracks compliance status and assessment history
-- Has exactly one Electrical section
 
 ### ClimateZone
 - Defines climate zones and their characteristics
 - Stores temperature, humidity, and environmental data
 - Used for determining building compliance requirements
-
-### Electrical
-- Manages electrical systems and energy monitoring
-- Contains arrays of loads and energy monitoring systems
-- Tracks compliance status for electrical systems
-- References Project and User (creator)
-- Belongs to exactly one Project
 
 ## Relationships
 
@@ -104,16 +87,6 @@ erDiagram
    - Many-to-one relationship
    - Projects must belong to a specific climate zone
    - Climate zones can have multiple projects
-
-3. Project to Electrical:
-   - One-to-one relationship
-   - Each project has exactly one electrical section
-   - Each electrical section belongs to exactly one project
-
-4. User to Electrical:
-   - One-to-many relationship
-   - A user can create multiple electrical systems
-   - Electrical systems must have a creator
 
 ## Indexes
 
@@ -128,81 +101,130 @@ erDiagram
    - code
    - name (unique)
 
-4. Electrical:
-   - project
-   - loads.partNumber
-   - energyMonitoring.partNumber
-
 ## Notes
 
 - All entities include timestamps for creation and updates
 - Password fields are hashed before storage
 - Compliance status is tracked at both project and requirement levels
-- Building fabric details are stored as nested objects
-- Special requirements are stored as an array of objects 
+- Embedded schemas are used for complex nested data structures
+- Location and climateZone fields support both string and object values
 
-## Map Data Structures
+## Embedded Schema Structures
 
-### Project BuildingFabric Object
+### Project BuildingFabric
 ```javascript
 buildingFabric: {
     walls: {
-        material: String,
-        thickness: Number,
-        rValue: Number
+        external: {
+            rValueByZone: {
+                Zones_1_3: String,
+                Zones_4_6: String,
+                Zones_7_8: String
+            },
+            thermalBreaks: {
+                metalFramed: Boolean
+            }
+        }
     },
     roof: {
-        material: String,
-        thickness: Number,
-        rValue: Number
+        rValueByZone: {
+            Zones_1_5: String,
+            Zone_6: String,
+            Zones_7_8: String
+        },
+        solarAbsorptance: {
+            max: Number,
+            exemptZones: [String]
+        }
     },
     floor: {
-        material: String,
-        thickness: Number,
-        rValue: Number
+        rValueByZone: {
+            Zones_1_3: String,
+            Zones_4_6: String,
+            Zones_7_8: String
+        }
     },
-    windows: {
-        material: String,
-        thickness: Number,
-        uValue: Number
+    glazing: {
+        external: {
+            shgcByZone: {
+                Zones_1_3: Number,
+                Zones_4_6: Number,
+                Zones_7_8: Number
+            },
+            uValueByZone: {
+                Zones_1_3: Number,
+                Zones_4_6: Number,
+                Zones_7_8: Number
+            }
+        }
     }
 }
 ```
 
-### Project SpecialRequirements Array
+### Project SpecialRequirements
 ```javascript
 specialRequirements: [{
-    type: String,  // enum: ['fire', 'accessibility', 'acoustic', 'energy', 'other']
-    description: String,
-    status: String  // enum: ['pending', 'compliant', 'non_compliant']
+    trigger: String,
+    requirements: Map,
+    conditions: [String],
+    exemptions: Map,
+    complianceStatus: String
 }]
 ```
 
-## Map Usage Notes
+### Project CompliancePathway
+```javascript
+compliancePathway: {
+    applicability: String,
+    verification: String,
+    requirements: Map,
+    complianceStatus: String
+}
+```
 
-1. **Project BuildingFabric Object**
-   - Structured object (not a Map) containing building envelope details
-   - Includes thermal properties for all major building elements
-   - Used for compliance calculations and energy performance assessment
+### Project Electrical
+```javascript
+electrical: {
+    loads: [{
+        type: String,
+        name: String,
+        partNumber: String,
+        description: String,
+        manufacturer: String,
+        specifications: Map,
+        status: String
+    }],
+    energyMonitoring: [{
+        systemType: String,
+        name: String,
+        partNumber: String,
+        description: String,
+        manufacturer: String,
+        specifications: Map,
+        status: String,
+        connectedLoads: [ObjectId]
+    }],
+    complianceStatus: String,
+    lastAssessmentDate: Date
+}
+```
 
-2. **Project SpecialRequirements Array**
-   - Array of requirement objects with type and status
-   - Tracks compliance status for each special requirement
-   - Supports multiple requirement types (fire, accessibility, etc.)
+## Schema Usage Notes
 
-## Map Performance Considerations
+1. **Embedded Schemas**
+   - All complex nested data structures are implemented as embedded schemas
+   - Embedded schemas don't require their own collections
+   - Each embedded schema has both standalone and embedded versions
+   - Standalone versions include required fields and indexes
+   - Embedded versions omit required fields for flexibility
 
-1. **Indexing**
-   - Map keys are automatically indexed in MongoDB
-   - Consider compound indexes for frequently queried map fields
-   - Use sparse indexes for optional map fields
+2. **Mixed Type Fields**
+   - Location and climateZone fields support both string and object values
+   - Allows for backward compatibility with existing data
+   - Provides flexibility in how data is stored and queried
 
-2. **Querying**
-   - Use dot notation to query nested map fields
-   - Consider using aggregation pipeline for complex map queries
-   - Use projection to limit returned map fields
-
-3. **Updates**
-   - Use $set for updating specific map fields
-   - Use $unset to remove map fields
-   - Consider atomic operations for concurrent updates 
+3. **Performance Considerations**
+   - Embedded schemas reduce the need for joins
+   - Consider document size limits when using embedded schemas
+   - Use projection to limit returned fields
+   - Index frequently queried fields 

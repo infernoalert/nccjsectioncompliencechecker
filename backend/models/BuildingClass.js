@@ -1,18 +1,7 @@
 const mongoose = require('mongoose');
 
-const BuildingClassSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: [true, 'Please add a name'],
-    unique: true,
-    trim: true,
-    maxlength: [50, 'Name cannot be more than 50 characters']
-  },
-  description: {
-    type: String,
-    required: [true, 'Please add a description'],
-    maxlength: [500, 'Description cannot be more than 500 characters']
-  },
+// Base schema for building class properties
+const buildingClassBaseSchema = {
   subtypes: {
     type: Map,
     of: new mongoose.Schema({
@@ -56,6 +45,26 @@ const BuildingClassSchema = new mongoose.Schema({
   compliancePathways: {
     type: [String],
     default: []
+  }
+};
+
+// Schema for embedded use (no required fields)
+const embeddedBuildingClassSchema = new mongoose.Schema(buildingClassBaseSchema, { _id: false });
+
+// Schema for standalone use (with additional fields)
+const standaloneBuildingClassSchema = new mongoose.Schema({
+  ...buildingClassBaseSchema,
+  name: {
+    type: String,
+    required: [true, 'Please add a name'],
+    unique: true,
+    trim: true,
+    maxlength: [50, 'Name cannot be more than 50 characters']
+  },
+  description: {
+    type: String,
+    required: [true, 'Please add a description'],
+    maxlength: [500, 'Description cannot be more than 500 characters']
   },
   createdAt: {
     type: Date,
@@ -65,16 +74,23 @@ const BuildingClassSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   }
+}, {
+  timestamps: true
 });
 
 // Update the updatedAt timestamp before saving
-BuildingClassSchema.pre('save', function(next) {
+standaloneBuildingClassSchema.pre('save', function(next) {
   this.updatedAt = Date.now();
   next();
 });
 
-// Create indexes
-BuildingClassSchema.index({ name: 1 });
-BuildingClassSchema.index({ 'climateZones.type': 1 });
+// Create indexes for standalone schema
+standaloneBuildingClassSchema.index({ name: 1 });
+standaloneBuildingClassSchema.index({ 'climateZones.type': 1 });
 
-module.exports = mongoose.model('BuildingClass', BuildingClassSchema); 
+// Export both schemas and the model
+module.exports = {
+  embeddedSchema: embeddedBuildingClassSchema,
+  schema: standaloneBuildingClassSchema,
+  model: mongoose.model('BuildingClass', standaloneBuildingClassSchema)
+}; 

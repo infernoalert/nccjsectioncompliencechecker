@@ -1,6 +1,26 @@
 const mongoose = require('mongoose');
 
-const CompliancePathwaySchema = new mongoose.Schema({
+// Base schema for compliance pathway properties
+const compliancePathwayBaseSchema = {
+  applicability: {
+    type: String
+  },
+  verification: {
+    type: String
+  },
+  requirements: {
+    type: Map,
+    of: mongoose.Schema.Types.Mixed,
+    default: {}
+  }
+};
+
+// Schema for embedded use (no required fields)
+const embeddedCompliancePathwaySchema = new mongoose.Schema(compliancePathwayBaseSchema, { _id: false });
+
+// Schema for standalone use (with additional fields)
+const standaloneCompliancePathwaySchema = new mongoose.Schema({
+  ...compliancePathwayBaseSchema,
   name: {
     type: String,
     required: [true, 'Please add a name'],
@@ -20,29 +40,23 @@ const CompliancePathwaySchema = new mongoose.Schema({
   verification: {
     type: String,
     required: [true, 'Please add verification method']
-  },
-  requirements: {
-    type: Map,
-    of: mongoose.Schema.Types.Mixed,
-    default: {}
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now
   }
+}, {
+  timestamps: true
 });
 
 // Update the updatedAt timestamp before saving
-CompliancePathwaySchema.pre('save', function(next) {
+standaloneCompliancePathwaySchema.pre('save', function(next) {
   this.updatedAt = Date.now();
   next();
 });
 
-// Create indexes
-CompliancePathwaySchema.index({ name: 1 });
+// Create indexes for standalone schema
+standaloneCompliancePathwaySchema.index({ name: 1 });
 
-module.exports = mongoose.model('CompliancePathway', CompliancePathwaySchema); 
+// Export both schemas and the model
+module.exports = {
+  embeddedSchema: embeddedCompliancePathwaySchema,
+  schema: standaloneCompliancePathwaySchema,
+  model: mongoose.model('CompliancePathway', standaloneCompliancePathwaySchema)
+}; 

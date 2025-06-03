@@ -1,4 +1,10 @@
 const mongoose = require('mongoose');
+const { embeddedSchema: buildingFabricSchema } = require('./BuildingFabric');
+const { embeddedSchema: buildingClassSchema } = require('./BuildingClass');
+const { embeddedSchema: specialRequirementSchema } = require('./SpecialRequirement');
+const { embeddedSchema: compliancePathwaySchema } = require('./CompliancePathway');
+const { embeddedSchema: electricalSchema } = require('./Electrical');
+
 
 const projectSchema = new mongoose.Schema({
   name: {
@@ -20,25 +26,30 @@ const projectSchema = new mongoose.Schema({
     required: [true, 'Building type is required']
   },
   buildingClassification: {
-    type: {
-      classType: String,
-      name: String,
-      description: String,
-      typicalUse: String,
-      commonFeatures: [String],
-      notes: String,
-      technicalDetails: {
-        type: Object
-      }
-    }
+    type: buildingClassSchema,
+    default: () => ({})
   },
   location: {
-    type: String,
-    required: [true, 'Location is required']
+    type: mongoose.Schema.Types.Mixed,
+    required: [true, 'Location is required'],
+    validate: {
+      validator: function(value) {
+        // Allow both string and object values
+        return typeof value === 'string' || (typeof value === 'object' && value !== null);
+      },
+      message: 'Location must be either a string or an object'
+    }
   },
   climateZone: {
-    type: String,
-    required: [true, 'Climate zone is required']
+    type: mongoose.Schema.Types.Mixed,
+    required: [true, 'Climate zone is required'],
+    validate: {
+      validator: function(value) {
+        // Allow both string and object values
+        return typeof value === 'string' || (typeof value === 'object' && value !== null);
+      },
+      message: 'Climate zone must be either a string or an object'
+    }
   },
   floorArea: {
     type: Number,
@@ -61,62 +72,16 @@ const projectSchema = new mongoose.Schema({
     }
   },
   buildingFabric: {
-    type: {
-      walls: {
-        type: {
-          material: String,
-          thickness: Number,
-          rValue: Number
-        }
-      },
-      roof: {
-        type: {
-          material: String,
-          thickness: Number,
-          rValue: Number
-        }
-      },
-      floor: {
-        type: {
-          material: String,
-          thickness: Number,
-          rValue: Number
-        }
-      },
-      windows: {
-        type: {
-          material: String,
-          thickness: Number,
-          uValue: Number
-        }
-      }
-    }
+    type: buildingFabricSchema,
+    default: () => ({})
   },
   specialRequirements: {
-    type: [{
-      type: {
-        type: String,
-        enum: ['fire', 'accessibility', 'acoustic', 'energy', 'other']
-      },
-      description: String,
-      status: {
-        type: String,
-        enum: ['pending', 'compliant', 'non_compliant'],
-        default: 'pending'
-      }
-    }]
+    type: [specialRequirementSchema],
+    default: []
   },
   compliancePathway: {
-    type: {
-      type: String,
-      enum: ['performance', 'prescriptive', 'deemed_to_satisfy']
-    },
-    description: String,
-    status: {
-      type: String,
-      enum: ['pending', 'compliant', 'non_compliant'],
-      default: 'pending'
-    }
+    type: compliancePathwaySchema,
+    default: () => ({})
   },
   complianceStatus: {
     type: String,
@@ -138,6 +103,10 @@ const projectSchema = new mongoose.Schema({
   updatedAt: {
     type: Date,
     default: Date.now
+  },
+  electrical: {
+    type: electricalSchema,
+    default: () => ({})
   }
 }, {
   timestamps: true
