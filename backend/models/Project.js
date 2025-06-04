@@ -107,7 +107,33 @@ const projectSchema = new mongoose.Schema({
   electrical: {
     type: electricalSchema,
     default: () => ({})
-  }
+  },
+  files: [{
+    filename: {
+      type: String,
+      required: true
+    },
+    originalName: {
+      type: String,
+      required: true
+    },
+    path: {
+      type: String,
+      required: true
+    },
+    size: {
+      type: Number,
+      required: true
+    },
+    mimetype: {
+      type: String,
+      required: true
+    },
+    uploadedAt: {
+      type: Date,
+      default: Date.now
+    }
+  }]
 }, {
   timestamps: true
 });

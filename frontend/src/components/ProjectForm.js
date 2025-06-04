@@ -16,6 +16,11 @@ import {
   InputLabel,
   Select,
   Divider,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemSecondaryAction,
+  IconButton,
 } from '@mui/material';
 import {
   createProject,
@@ -24,6 +29,9 @@ import {
   fetchBuildingTypes,
   fetchLocations,
 } from '../store/slices/projectSlice';
+import DeleteIcon from '@mui/icons-material/Delete';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import axios from 'axios';
 
 /**
  * ProjectForm Component
@@ -61,6 +69,10 @@ const ProjectForm = () => {
     specialRequirements: [],
   });
 
+  const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [uploadError, setUploadError] = useState(null);
+  const [uploading, setUploading] = useState(false);
+
   useEffect(() => {
     // Fetch building types and locations when component mounts
     dispatch(fetchBuildingTypes());
@@ -87,6 +99,7 @@ const ProjectForm = () => {
         },
         specialRequirements: currentProject.specialRequirements || [],
       });
+      setUploadedFiles(currentProject.files || []);
     }
   }, [currentProject]);
 
@@ -110,13 +123,85 @@ const ProjectForm = () => {
     }
   };
 
+  const handleFileUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Check file type
+    if (file.type !== 'application/pdf') {
+      setUploadError('Only PDF files are allowed');
+      return;
+    }
+
+    // Check file size (2MB)
+    if (file.size > 2 * 1024 * 1024) {
+      setUploadError('File size must be less than 2MB');
+      return;
+    }
+
+    setUploading(true);
+    setUploadError(null);
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      // If we're creating a new project, store the file temporarily
+      if (!id) {
+        const tempFile = {
+          filename: Date.now() + '-' + Math.round(Math.random() * 1E9) + '.pdf',
+          originalName: file.name,
+          size: file.size,
+          mimetype: file.type,
+          file: file // Store the actual file object for later upload
+        };
+        setUploadedFiles(prev => [...prev, tempFile]);
+      } else {
+        // For existing projects, upload immediately
+        const response = await axios.post(`/api/projects/${id}/upload`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        setUploadedFiles(prev => [...prev, response.data.data.file]);
+      }
+    } catch (error) {
+      setUploadError(error.response?.data?.error || 'Error uploading file');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleFileDelete = async (filename) => {
+    try {
+      await axios.delete(`/api/projects/${id}/files/${filename}`);
+      setUploadedFiles(prev => prev.filter(file => file.filename !== filename));
+    } catch (error) {
+      setUploadError(error.response?.data?.error || 'Error deleting file');
+    }
+  };
+
   const handleSubmit = async e => {
     e.preventDefault();
     try {
       if (id) {
         await dispatch(updateProject({ id, data: formData })).unwrap();
       } else {
-        await dispatch(createProject(formData)).unwrap();
+        // For new projects, first create the project
+        const newProject = await dispatch(createProject(formData)).unwrap();
+        
+        // Then upload any pending files
+        for (const file of uploadedFiles) {
+          if (file.file) { // Check if this is a temporary file
+            const formData = new FormData();
+            formData.append('file', file.file);
+            await axios.post(`/api/projects/${newProject._id}/upload`, formData, {
+              headers: {
+                'Content-Type': 'multipart/form-data',
+              },
+            });
+          }
+        }
       }
       navigate('/projects');
     } catch (err) {
@@ -142,7 +227,7 @@ const ProjectForm = () => {
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-      <Paper sx={{ p: 3 }}>
+      <Paper elevation={3} sx={{ p: 4 }}>
         <Typography variant="h4" gutterBottom>
           {id ? 'Edit Project' : 'New Project'}
         </Typography>
@@ -269,6 +354,59 @@ const ProjectForm = () => {
                 value={formData.buildingFabric.windows}
                 onChange={handleChange}
               />
+            </Grid>
+
+            {/* File Upload Section */}
+            <Grid item xs={12}>
+              <Typography variant="h6" gutterBottom>
+                Project Files
+              </Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <input
+                accept="application/pdf"
+                style={{ display: 'none' }}
+                id="file-upload"
+                type="file"
+                onChange={handleFileUpload}
+                disabled={uploading}
+              />
+              <label htmlFor="file-upload">
+                <Button
+                  variant="contained"
+                  component="span"
+                  disabled={uploading}
+                  startIcon={<PictureAsPdfIcon />}
+                >
+                  {uploading ? 'Uploading...' : 'Upload PDF'}
+                </Button>
+              </label>
+              {uploadError && (
+                <Alert severity="error" sx={{ mt: 2 }}>
+                  {uploadError}
+                </Alert>
+              )}
+            </Grid>
+            <Grid item xs={12}>
+              <List>
+                {uploadedFiles.map((file) => (
+                  <ListItem key={file.filename}>
+                    <ListItemText
+                      primary={file.originalName}
+                      secondary={`Size: ${(file.size / 1024).toFixed(1)} KB`}
+                    />
+                    <ListItemSecondaryAction>
+                      <IconButton
+                        edge="end"
+                        aria-label="delete"
+                        onClick={() => handleFileDelete(file.filename)}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </ListItemSecondaryAction>
+                  </ListItem>
+                ))}
+              </List>
             </Grid>
 
             <Grid item xs={12}>

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -15,14 +15,22 @@ import {
   CardContent,
   CardActions,
   Divider,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemIcon,
+  IconButton,
 } from '@mui/material';
 import {
   Edit as EditIcon,
   Assessment as AssessmentIcon,
   Delete as DeleteIcon,
   Chat as ChatIcon,
+  PictureAsPdf as PictureAsPdfIcon,
+  Download as DownloadIcon,
 } from '@mui/icons-material';
 import { fetchProject, deleteProject } from '../store/slices/projectSlice';
+import axios from 'axios';
 
 /**
  * ProjectDetails Component
@@ -42,6 +50,8 @@ const ProjectDetails = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { currentProject, loading, error } = useSelector(state => state.project);
+  const [uploadError, setUploadError] = useState(null);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     dispatch(fetchProject(id));
@@ -55,6 +65,65 @@ const ProjectDetails = () => {
       } catch (err) {
         console.error('Failed to delete project:', err);
       }
+    }
+  };
+
+  const handleFileDownload = async (filename) => {
+    try {
+      const response = await axios.get(`/api/projects/${id}/files/${filename}`, {
+        responseType: 'blob'
+      });
+      
+      // Create a blob URL and trigger download
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', filename);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error('Error downloading file:', error);
+    }
+  };
+
+  const handleFileUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    // Check file type
+    if (file.type !== 'application/pdf') {
+      setUploadError('Only PDF files are allowed');
+      return;
+    }
+
+    // Check file size (2MB)
+    if (file.size > 2 * 1024 * 1024) {
+      setUploadError('File size must be less than 2MB');
+      return;
+    }
+
+    setUploading(true);
+    setUploadError(null);
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const token = localStorage.getItem('token'); // Get the auth token
+      const response = await axios.post(`/api/projects/${id}/upload`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${token}` // Add the auth token
+        },
+      });
+
+      // Refresh project data to show new file
+      dispatch(fetchProject(id));
+    } catch (error) {
+      setUploadError(error.response?.data?.error || 'Error uploading file');
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -99,6 +168,30 @@ const ProjectDetails = () => {
             >
               Chat with AI
             </Button>
+            <input
+              accept="application/pdf"
+              style={{ display: 'none' }}
+              id="file-upload"
+              type="file"
+              onChange={handleFileUpload}
+              disabled={uploading}
+            />
+            <label htmlFor="file-upload">
+              <Button
+                variant="contained"
+                color="primary"
+                component="span"
+                startIcon={<PictureAsPdfIcon />}
+                disabled={uploading}
+              >
+                {uploading ? 'Uploading...' : 'Upload PDF'}
+              </Button>
+            </label>
+            {uploadError && (
+              <Alert severity="error" sx={{ position: 'absolute', top: '100%', right: 0, mt: 1 }}>
+                {uploadError}
+              </Alert>
+            )}
             <Chip
               label={currentProject.status || 'In Progress'}
               color={currentProject.status === 'Completed' ? 'success' : 'warning'}
@@ -155,12 +248,51 @@ const ProjectDetails = () => {
               </CardContent>
             </Card>
           </Grid>
+
+          {/* Project Files Section */}
+          {currentProject.files && currentProject.files.length > 0 && (
+            <Grid item xs={12}>
+              <Card>
+                <CardContent>
+                  <Typography variant="h6" gutterBottom>
+                    Project Files
+                  </Typography>
+                  <List>
+                    {currentProject.files.map((file) => (
+                      <ListItem
+                        key={file.filename}
+                        secondaryAction={
+                          <IconButton
+                            edge="end"
+                            aria-label="download"
+                            onClick={() => handleFileDownload(file.filename)}
+                          >
+                            <DownloadIcon />
+                          </IconButton>
+                        }
+                      >
+                        <ListItemIcon>
+                          <PictureAsPdfIcon color="error" />
+                        </ListItemIcon>
+                        <ListItemText
+                          primary={file.originalName}
+                          secondary={`Size: ${(file.size / 1024).toFixed(1)} KB • Uploaded: ${new Date(
+                            file.uploadedAt
+                          ).toLocaleDateString()}`}
+                        />
+                      </ListItem>
+                    ))}
+                  </List>
+                </CardContent>
+              </Card>
+            </Grid>
+          )}
         </Grid>
 
         <Divider sx={{ my: 3 }} />
 
         {/* Action Buttons */}
-        <Box sx={{ mt: 4, display: 'flex', gap: 2 }}>
+        <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
           <Button
             variant="contained"
             color="secondary"

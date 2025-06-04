@@ -12,6 +12,11 @@ const {
   getLocations,
   generateReport
 } = require('../controllers/elemental_provision_controller');
+const {
+  uploadFile,
+  getFile,
+  deleteFile
+} = require('../controllers/fileController');
 const { getAllBuildingTypes } = require('../utils/mappingUtils');
 
 /**
@@ -276,5 +281,10 @@ router.route('/:id')
 // Additional project routes
 router.get('/:id/check-compliance', protect, checkCompliance);
 router.get('/:id/report', protect, generateReport);
+
+// File upload routes
+router.post('/:id/upload', protect, uploadFile);
+router.get('/:id/files/:filename', protect, getFile);
+router.delete('/:id/files/:filename', protect, deleteFile);
 
 module.exports = router; 
