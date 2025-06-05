@@ -1,0 +1,194 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+class User {
+    +ObjectId _id
+    +String name
+    +String email
+    +String password
+    +String role
+    +Date createdAt
+}
+
+class Project {
+    +ObjectId _id
+    +String name
+    +String description
+    +ObjectId owner
+    +String buildingType
+    +Mixed location
+    +Mixed climateZone
+    +Number floorArea
+    +Number totalAreaOfHabitableRooms
+    +BuildingFabric buildingFabric
+    +SpecialRequirement[] specialRequirements
+    +CompliancePathway compliancePathway
+    +Electrical electrical
+    +MCP mcp
+    +File[] files
+    +String complianceStatus
+    +Date lastAssessmentDate
+    +ObjectId createdBy
+    +Date createdAt
+    +Date updatedAt
+}
+
+class ClimateZone {
+    +ObjectId _id
+    +String name
+    +String code
+    +String description
+    +TemperatureRange temperatureRange
+    +HumidityRange humidityRange
+    +Number solarRadiation
+    +Number windSpeed
+    +Boolean isActive
+    +Date createdAt
+    +Date updatedAt
+}
+
+class BuildingFabric {
+    +Wall walls
+    +Roof roof
+    +Floor floor
+    +Glazing glazing
+}
+
+class Wall {
+    +ExternalWall external
+}
+
+class ExternalWall {
+    +Map rValueByZone
+    +ThermalBreaks thermalBreaks
+}
+
+class ThermalBreaks {
+    +Boolean metalFramed
+}
+
+class Roof {
+    +Map rValueByZone
+    +SolarAbsorptance solarAbsorptance
+}
+
+class SolarAbsorptance {
+    +Number max
+    +String[] exemptZones
+}
+
+class Floor {
+    +Map rValueByZone
+}
+
+class Glazing {
+    +ExternalGlazing external
+}
+
+class ExternalGlazing {
+    +Map shgcByZone
+    +Map uValueByZone
+}
+
+class SpecialRequirement {
+    +String trigger
+    +Map requirements
+    +String[] conditions
+    +Map exemptions
+    +String complianceStatus
+}
+
+class CompliancePathway {
+    +String applicability
+    +String verification
+    +Map requirements
+    +String complianceStatus
+}
+
+class Electrical {
+    +Load[] loads
+    +EnergyMonitoring[] energyMonitoring
+    +String complianceStatus
+    +Date lastAssessmentDate
+}
+
+class Load {
+    +String type
+    +String name
+    +String partNumber
+    +String description
+    +String manufacturer
+    +Map specifications
+    +String status
+}
+
+class EnergyMonitoring {
+    +String systemType
+    +String name
+    +String partNumber
+    +String description
+    +String manufacturer
+    +Map specifications
+    +String status
+    +ObjectId[] connectedLoads
+}
+
+class MCP {
+    +String currentStep
+    +Date lastUpdated
+    +History[] history
+    +AnalysisResults analysisResults
+    +String processingStatus
+}
+
+class History {
+    +String step
+    +Date timestamp
+    +String status
+    +String error
+}
+
+class AnalysisResults {
+    +Boolean hasAirConditioning
+    +Date lastAnalyzed
+    +Object rawAnalysis
+}
+
+class File {
+    +String filename
+    +String originalName
+    +String path
+    +Number size
+    +String mimetype
+    +Date uploadedAt
+}
+
+' Relationships
+User "1" -- "0..*" Project : owns
+User "1" -- "0..*" Project : creates
+Project "1" -- "1" ClimateZone : belongs to
+Project "1" -- "1" BuildingFabric : has
+Project "1" -- "*" SpecialRequirement : contains
+Project "1" -- "1" CompliancePathway : has
+Project "1" -- "1" Electrical : has
+Project "1" -- "1" MCP : has
+Project "1" -- "*" File : contains
+
+BuildingFabric "1" -- "1" Wall : has
+BuildingFabric "1" -- "1" Roof : has
+BuildingFabric "1" -- "1" Floor : has
+BuildingFabric "1" -- "1" Glazing : has
+
+Wall "1" -- "1" ExternalWall : has
+ExternalWall "1" -- "1" ThermalBreaks : has
+
+Roof "1" -- "1" SolarAbsorptance : has
+Glazing "1" -- "1" ExternalGlazing : has
+
+Electrical "1" -- "*" Load : contains
+Electrical "1" -- "*" EnergyMonitoring : contains
+
+MCP "1" -- "*" History : contains
+MCP "1" -- "1" AnalysisResults : has
+
+@enduml
