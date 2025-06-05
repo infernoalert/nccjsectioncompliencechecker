@@ -7,7 +7,18 @@ class MCPContext {
         this.analysisResults = {
             hasAirConditioning: null,
             lastAnalyzed: null,
-            rawAnalysis: null
+            rawAnalysis: null,
+            extractedData: null
+        };
+        this.jsonData = {
+            generated: false,
+            filePath: null,
+            lastGenerated: null
+        };
+        this.diagramData = {
+            generated: false,
+            filePath: null,
+            lastGenerated: null
         };
         this.processingStatus = 'IDLE';
     }
@@ -34,6 +45,22 @@ class MCPContext {
         };
     }
 
+    updateJsonData(jsonData) {
+        this.jsonData = {
+            ...this.jsonData,
+            ...jsonData,
+            lastGenerated: new Date()
+        };
+    }
+
+    updateDiagramData(diagramData) {
+        this.diagramData = {
+            ...this.diagramData,
+            ...diagramData,
+            lastGenerated: new Date()
+        };
+    }
+
     updateProcessingStatus(status) {
         this.processingStatus = status;
         this.lastUpdated = new Date();
@@ -46,6 +73,8 @@ class MCPContext {
             lastUpdated: this.lastUpdated,
             history: this.history,
             analysisResults: this.analysisResults,
+            jsonData: this.jsonData,
+            diagramData: this.diagramData,
             processingStatus: this.processingStatus
         };
     }

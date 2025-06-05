@@ -2,6 +2,8 @@ const MCPContext = require('./MCPContext');
 const FileProcessor = require('./processors/FileProcessor');
 const LLMAnalyzer = require('./processors/LLMAnalyzer');
 const ProjectUpdater = require('./processors/ProjectUpdater');
+const JSONGenerator = require('./processors/JSONGenerator');
+const DiagramGenerator = require('./processors/DiagramGenerator');
 const path = require('path');
 
 class MCPHandler {
@@ -10,6 +12,8 @@ class MCPHandler {
         this.fileProcessor = null;
         this.llmAnalyzer = new LLMAnalyzer(openaiApiKey);
         this.projectUpdater = new ProjectUpdater(projectId);
+        this.jsonGenerator = new JSONGenerator();
+        this.diagramGenerator = new DiagramGenerator();
     }
 
     async processExistingFile(filePath) {
@@ -30,6 +34,12 @@ class MCPHandler {
             
             // Step 5: Next Analysis (if needed)
             await this._handleNextAnalysis();
+
+            // Step 6: Generate JSON
+            await this._handleJsonGeneration();
+
+            // Step 7: Generate Diagram
+            await this._handleDiagramGeneration();
             
             this.context.updateProcessingStatus('COMPLETED');
             return this.context.getCurrentState();
@@ -133,6 +143,50 @@ class MCPHandler {
         
         this.context.addHistoryEntry({
             step: 'NEXT_ANALYSIS',
+            status: 'COMPLETED'
+        });
+    }
+
+    async _handleJsonGeneration() {
+        this.context.updateStep('JSON_GENERATION');
+        
+        const jsonResult = await this.jsonGenerator.generate(
+            this.context.analysisResults
+        );
+        
+        if (!jsonResult.success) {
+            throw new Error(jsonResult.error);
+        }
+        
+        this.context.updateJsonData({
+            generated: true,
+            filePath: jsonResult.filePath
+        });
+        
+        this.context.addHistoryEntry({
+            step: 'JSON_GENERATION',
+            status: 'COMPLETED'
+        });
+    }
+
+    async _handleDiagramGeneration() {
+        this.context.updateStep('DIAGRAM_GENERATION');
+        
+        const diagramResult = await this.diagramGenerator.generate(
+            this.context.jsonData.filePath
+        );
+        
+        if (!diagramResult.success) {
+            throw new Error(diagramResult.error);
+        }
+        
+        this.context.updateDiagramData({
+            generated: true,
+            filePath: diagramResult.filePath
+        });
+        
+        this.context.addHistoryEntry({
+            step: 'DIAGRAM_GENERATION',
             status: 'COMPLETED'
         });
     }
