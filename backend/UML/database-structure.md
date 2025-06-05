@@ -27,6 +27,8 @@ erDiagram
         Array specialRequirements
         Object compliancePathway
         Object electrical
+        Object mcp
+        Array files
         String complianceStatus
         Date lastAssessmentDate
         ObjectId createdBy
@@ -69,6 +71,8 @@ erDiagram
   - Special requirements
   - Compliance pathway
   - Electrical systems
+  - MCP (Model Context Protocol)
+  - Files
 - Tracks compliance status and assessment history
 
 ### ClimateZone
@@ -207,6 +211,49 @@ electrical: {
     complianceStatus: String,
     lastAssessmentDate: Date
 }
+```
+
+### Project MCP (Model Context Protocol)
+```javascript
+mcp: {
+    currentStep: {
+        type: String,
+        enum: ['FILE_UPLOAD', 'TEXT_EXTRACTION', 'INITIAL_ANALYSIS', 'PROJECT_UPDATE', 'NEXT_ANALYSIS'],
+        default: 'FILE_UPLOAD'
+    },
+    lastUpdated: Date,
+    history: [{
+        step: String,
+        timestamp: Date,
+        status: {
+            type: String,
+            enum: ['PENDING', 'COMPLETED', 'FAILED']
+        },
+        error: String
+    }],
+    analysisResults: {
+        hasAirConditioning: Boolean,
+        lastAnalyzed: Date,
+        rawAnalysis: Object
+    },
+    processingStatus: {
+        type: String,
+        enum: ['IDLE', 'PROCESSING', 'COMPLETED', 'FAILED'],
+        default: 'IDLE'
+    }
+}
+```
+
+### Project Files
+```javascript
+files: [{
+    filename: String,
+    originalName: String,
+    path: String,
+    size: Number,
+    mimetype: String,
+    uploadedAt: Date
+}]
 ```
 
 ## Schema Usage Notes

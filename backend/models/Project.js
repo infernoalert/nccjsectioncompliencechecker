@@ -4,6 +4,8 @@ const { embeddedSchema: buildingClassSchema } = require('./BuildingClass');
 const { embeddedSchema: specialRequirementSchema } = require('./SpecialRequirement');
 const { embeddedSchema: compliancePathwaySchema } = require('./CompliancePathway');
 const { embeddedSchema: electricalSchema } = require('./Electrical');
+const { embeddedSchema: mcpSchema } = require('./mcp');
+const { embeddedSchema: fileSchema } = require('./File');
 
 
 const projectSchema = new mongoose.Schema({
@@ -108,32 +110,11 @@ const projectSchema = new mongoose.Schema({
     type: electricalSchema,
     default: () => ({})
   },
-  files: [{
-    filename: {
-      type: String,
-      required: true
-    },
-    originalName: {
-      type: String,
-      required: true
-    },
-    path: {
-      type: String,
-      required: true
-    },
-    size: {
-      type: Number,
-      required: true
-    },
-    mimetype: {
-      type: String,
-      required: true
-    },
-    uploadedAt: {
-      type: Date,
-      default: Date.now
-    }
-  }]
+  mcp: {
+    type: mcpSchema,
+    default: () => ({})
+  },
+  files: [fileSchema]
 }, {
   timestamps: true
 });

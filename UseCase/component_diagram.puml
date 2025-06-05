@@ -1,0 +1,27 @@
+@startuml NCCJ Section Compliance Checker Components
+
+skinparam componentStyle uml2
+
+package "NCCJ Section Compliance Checker" {
+    [Document Upload] as Upload
+    [Document Processor] as Processor
+    [Project Data Manager\n(Updates Project Data)] as DataManager
+    [JSON Generator] as JSONGen
+    [Diagram Generator] as DiagramGen
+    [User Interface] as UI
+}
+
+cloud "External Services" {
+    [LLM Service] as LLM
+}
+
+Upload --> Processor
+Processor --> LLM
+LLM --> Processor
+Processor --> DataManager : "Sends extracted data"
+DataManager --> JSONGen : "Sends updated project data"
+JSONGen --> DiagramGen
+UI --> Upload
+DiagramGen --> UI
+
+@enduml 

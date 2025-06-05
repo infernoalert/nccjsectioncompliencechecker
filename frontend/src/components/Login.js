@@ -321,13 +321,6 @@ const Login = () => {
                 gap: { xs: 1, sm: 2 }
               }}
             >
-              <Grid item xs={12}>
-                <FeatureCard
-                  icon={AutoFixHighIcon}
-                  title="AI Document Review (Coming Soon)"
-                  description="Upload plans/specs for automatic NCC gap analysis and plain-English explanations."
-                />
-              </Grid>
             </Grid>
           </Grid>
           <Grid 

@@ -1,0 +1,36 @@
+@startuml NCCJ Section Compliance Checker Sequence
+
+actor User
+participant "System" as System
+participant "LLM Service" as LLM
+participant "Project Data" as Project
+participant "JSON Generator" as JSONGen
+participant "Diagram Generator" as DiagramGen
+
+User -> System: Upload Document
+activate System
+
+System -> LLM: Send Document
+activate LLM
+LLM --> System: Return Extracted Data
+deactivate LLM
+
+System -> Project: Update Project Data
+activate Project
+Project --> System: Confirm Update
+deactivate Project
+
+System -> JSONGen: Send Project Data
+activate JSONGen
+JSONGen --> System: Return JSON File
+deactivate JSONGen
+
+System -> DiagramGen: Send JSON File
+activate DiagramGen
+DiagramGen --> System: Return Diagram
+deactivate DiagramGen
+
+System --> User: Display Diagram
+deactivate System
+
+@enduml 

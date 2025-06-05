@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { protect } = require('../middleware/authMiddleware');
+const { protect } = require('../middleware/auth');
 const { generateJ6hvacReport } = require('../controllers/j6hvac_reportController');
 
 /**

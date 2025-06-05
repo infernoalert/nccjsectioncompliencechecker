@@ -1,0 +1,37 @@
+@startuml NCCJ Section Compliance Checker
+
+skinparam actorStyle awesome
+skinparam usecase {
+    BackgroundColor LightBlue
+    BorderColor DarkBlue
+}
+
+actor User
+actor "LLM Service" as LLM
+actor "System" as System
+actor "JSON Generator Service" as JSONGen
+actor "Diagram Generator Service" as DiagramGen
+
+rectangle "NCCJ Section Compliance Checker" {
+    usecase "Upload Document" as UC1
+    usecase "Extract Data via LLM" as UC2
+    usecase "Update Project Data" as UC3
+    usecase "Generate JSON File" as UC4
+    usecase "Generate Diagram" as UC5
+}
+
+User --> UC1
+System --> UC2
+LLM --> UC2
+System --> UC3
+System --> UC4
+JSONGen --> UC4
+System --> UC5
+DiagramGen --> UC5
+
+UC1 ..> UC2 : <<include>>
+UC2 ..> UC3 : <<include>>
+UC3 ..> UC4 : <<include>>
+UC4 ..> UC5 : <<include>>
+
+@enduml 

@@ -25,7 +25,6 @@ import {
   Edit as EditIcon,
   Assessment as AssessmentIcon,
   Delete as DeleteIcon,
-  Chat as ChatIcon,
   PictureAsPdf as PictureAsPdfIcon,
   Download as DownloadIcon,
 } from '@mui/icons-material';
@@ -160,14 +159,6 @@ const ProjectDetails = () => {
             {currentProject.name}
           </Typography>
           <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-            <Button
-              variant="contained"
-              color="info"
-              startIcon={<ChatIcon />}
-              onClick={() => navigate(`/projects/${id}/chat`)}
-            >
-              Chat with AI
-            </Button>
             <input
               accept="application/pdf"
               style={{ display: 'none' }}
