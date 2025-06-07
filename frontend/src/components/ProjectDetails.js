@@ -249,6 +249,68 @@ const ProjectDetails = () => {
             </Card>
           </Grid>
 
+          <Grid item xs={12} md={6}>
+            <Card>
+              <CardContent>
+                <Typography variant="h6" gutterBottom>
+                  Electrical Information
+                </Typography>
+                {loading ? (
+                  <Box display="flex" justifyContent="center" p={2}>
+                    <CircularProgress size={24} />
+                  </Box>
+                ) : error ? (
+                  <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>
+                ) : currentProject?.electrical ? (
+                  <>
+                    <Box sx={{ mb: 2 }}>
+                      <Typography variant="body1" component="div">
+                        <strong>Compliance Status:</strong>{' '}
+                      </Typography>
+                      <Chip 
+                        label={currentProject.electrical.complianceStatus} 
+                        color={
+                          currentProject.electrical.complianceStatus === 'compliant' ? 'success' :
+                          currentProject.electrical.complianceStatus === 'non_compliant' ? 'error' :
+                          'warning'
+                        }
+                        size="small"
+                        sx={{ mt: 1 }}
+                      />
+                    </Box>
+                    <Typography variant="body1" component="div" paragraph>
+                      <strong>Last Assessment:</strong>{' '}
+                      {currentProject.electrical.lastAssessmentDate ? 
+                        new Date(currentProject.electrical.lastAssessmentDate).toLocaleDateString() : 
+                        'Not assessed'}
+                    </Typography>
+                    <Typography variant="body1" component="div" paragraph>
+                      <strong>Total Loads:</strong>{' '}
+                      {currentProject.electrical.loads?.length || 0} loads
+                    </Typography>
+                    <Typography variant="body1" component="div" paragraph>
+                      <strong>Energy Monitoring Points:</strong>{' '}
+                      {currentProject.electrical.energyMonitoring?.length || 0} points
+                    </Typography>
+                    <Button
+                      variant="outlined"
+                      size="small"
+                      startIcon={<AssessmentIcon />}
+                      onClick={() => navigate(`/projects/${id}/electrical-details`)}
+                      sx={{ mt: 1 }}
+                    >
+                      View Detailed Electrical Data
+                    </Button>
+                  </>
+                ) : (
+                  <Typography variant="body1" color="text.secondary">
+                    No electrical data available
+                  </Typography>
+                )}
+              </CardContent>
+            </Card>
+          </Grid>
+
           {/* Project Files Section */}
           {currentProject.files && currentProject.files.length > 0 && (
             <Grid item xs={12}>
