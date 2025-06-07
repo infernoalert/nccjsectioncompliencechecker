@@ -15,7 +15,7 @@ class LLMAnalyzer {
                 messages: [
                     {
                         role: 'system',
-                        content: 'You are an expert in analyzing construction and building documents. Extract key information about air conditioning systems and other relevant details.'
+                        content: 'You are an expert compliance analyst specializing in building services. Your task is to review building documents and identify specific building services with high accuracy.'
                     },
                     {
                         role: 'user',
@@ -89,18 +89,33 @@ class LLMAnalyzer {
 
     _createAnalysisPrompt(text) {
         return `
-        Analyze the following text from a construction or building document and extract information about air conditioning systems and other relevant details:
+        You are an expert compliance analyst specializing in building services. Your task is to review the provided building document text and identify the presence of specific building services.
 
+        For each service listed below, determine if it exists or is explicitly mentioned in the document. Consider common abbreviations or alternative phrasing (e.g., "AC" for "Air Conditioning," "PV" for "Photovoltaic" in "Renewable Energy").
+
+        If a service is mentioned or clearly implied, mark it as \`true\`.
+        If a service is not mentioned anywhere in the document, or is explicitly stated as absent, mark it as \`false\`.
+
+        Do not make assumptions if information is genuinely missing. Only mark as \`true\` if there is evidence of existence.
+
+        Provide your response strictly as a JSON object, where the keys are the camelCase names of the services and the values are boolean (\`true\` or \`false\`).
+
+        Here are the services to identify:
+        - Air Conditioning
+        - Artificial Lighting
+        - Appliance Power
+        - Central Hot Water Supply
+        - Internal Transport Devices
+        - Renewable Energy
+        - EV Charging Equipment
+        - Battery Systems
+
+        ---
+        Document Text:
         ${text}
+        ---
 
-        Please provide a structured analysis with the following information:
-        1. Presence of air conditioning systems
-        2. Type of air conditioning system (if present)
-        3. Location of air conditioning units
-        4. Any specific requirements or regulations mentioned
-        5. Other relevant building systems or features
-
-        Format the response as a JSON object with these fields.
+        JSON Output:
         `;
     }
 
@@ -125,23 +140,29 @@ class LLMAnalyzer {
             // Try to parse the response as JSON
             const analysis = JSON.parse(response);
             
-            // Ensure required fields are present
+            // Ensure all required fields are present with default values
             return {
-                hasAirConditioning: analysis.hasAirConditioning || false,
-                acType: analysis.acType || null,
-                acLocation: analysis.acLocation || null,
-                requirements: analysis.requirements || [],
-                otherSystems: analysis.otherSystems || [],
+                airConditioning: analysis.airConditioning || false,
+                artificialLighting: analysis.artificialLighting || false,
+                appliancePower: analysis.appliancePower || false,
+                centralHotWaterSupply: analysis.centralHotWaterSupply || false,
+                internalTransportDevices: analysis.internalTransportDevices || false,
+                renewableEnergy: analysis.renewableEnergy || false,
+                evChargingEquipment: analysis.evChargingEquipment || false,
+                batterySystems: analysis.batterySystems || false,
                 rawAnalysis: response
             };
         } catch (error) {
-            // If parsing fails, create a basic structure
+            // If parsing fails, create a basic structure with all fields set to false
             return {
-                hasAirConditioning: false,
-                acType: null,
-                acLocation: null,
-                requirements: [],
-                otherSystems: [],
+                airConditioning: false,
+                artificialLighting: false,
+                appliancePower: false,
+                centralHotWaterSupply: false,
+                internalTransportDevices: false,
+                renewableEnergy: false,
+                evChargingEquipment: false,
+                batterySystems: false,
                 rawAnalysis: response,
                 error: 'Failed to parse analysis response'
             };
