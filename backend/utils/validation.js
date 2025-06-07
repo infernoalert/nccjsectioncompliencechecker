@@ -17,6 +17,22 @@ const validateProject = (projectData) => {
   return projectSchema.validate(projectData, { abortEarly: false });
 };
 
+const projectValueSchema = Joi.object({
+  systemType: Joi.string().required(),
+  name: Joi.string().required(),
+  partNumber: Joi.string().required(),
+  description: Joi.string(),
+  manufacturer: Joi.string(),
+  specifications: Joi.object(),
+  status: Joi.string().valid('active', 'inactive', 'maintenance'),
+  connectedLoads: Joi.array().items(Joi.string())
+});
+
+const validateProjectValue = (data) => {
+  return projectValueSchema.validate(data);
+};
+
 module.exports = {
-  validateProject
+  validateProject,
+  validateProjectValue
 }; 

@@ -64,7 +64,80 @@ const projectSchema = new mongoose.Schema({
   },
   buildingFabric: {
     type: buildingFabricSchema,
-    default: () => ({})
+    default: () => ({
+      walls: {
+        external: {
+          rValueByZone: new Map([
+            ['zone1', 0],
+            ['zone2', 0],
+            ['zone3', 0],
+            ['zone4', 0],
+            ['zone5', 0],
+            ['zone6', 0],
+            ['zone7', 0],
+            ['zone8', 0]
+          ]),
+          thermalBreaks: {
+            metalFramed: false
+          }
+        }
+      },
+      roof: {
+        rValueByZone: new Map([
+          ['zone1', 0],
+          ['zone2', 0],
+          ['zone3', 0],
+          ['zone4', 0],
+          ['zone5', 0],
+          ['zone6', 0],
+          ['zone7', 0],
+          ['zone8', 0]
+        ]),
+        solarAbsorptance: {
+          max: 0.7,
+          exemptZones: []
+        },
+        area: 0
+      },
+      floor: {
+        rValueByZone: new Map([
+          ['zone1', 0],
+          ['zone2', 0],
+          ['zone3', 0],
+          ['zone4', 0],
+          ['zone5', 0],
+          ['zone6', 0],
+          ['zone7', 0],
+          ['zone8', 0]
+        ]),
+        area: 0
+      },
+      glazing: {
+        external: {
+          uValueByZone: new Map([
+            ['zone1', 0],
+            ['zone2', 0],
+            ['zone3', 0],
+            ['zone4', 0],
+            ['zone5', 0],
+            ['zone6', 0],
+            ['zone7', 0],
+            ['zone8', 0]
+          ]),
+          shgcByZone: new Map([
+            ['zone1', 0],
+            ['zone2', 0],
+            ['zone3', 0],
+            ['zone4', 0],
+            ['zone5', 0],
+            ['zone6', 0],
+            ['zone7', 0],
+            ['zone8', 0]
+          ]),
+          area: 0
+        }
+      }
+    })
   },
   specialRequirements: {
     type: [specialRequirementSchema],
@@ -80,7 +153,17 @@ const projectSchema = new mongoose.Schema({
   },
   mcp: {
     type: mcpSchema,
-    default: () => ({})
+    default: () => ({
+      currentStep: 'initial',
+      lastUpdated: new Date(),
+      history: [],
+      analysisResults: {
+        status: 'pending',
+        results: [],
+        timestamp: new Date()
+      },
+      processingStatus: 'pending'
+    })
   },
   files: [fileSchema],
   complianceStatus: {

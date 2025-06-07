@@ -1,4 +1,5 @@
 const Project = require('../../models/Project');
+const { model: EnergyMonitoring } = require('../../models/EnergyMonitoring');
 
 class ProjectUpdater {
     constructor(projectId) {
@@ -17,7 +18,16 @@ class ProjectUpdater {
                 return false;
             }
 
-            // Additional validation can be added here
+            // Validate energy monitoring data if present
+            if (analysis.energyMonitoring) {
+                const requiredFields = ['systemType', 'name', 'partNumber'];
+                for (const field of requiredFields) {
+                    if (!analysis.energyMonitoring[field]) {
+                        return false;
+                    }
+                }
+            }
+
             return true;
         } catch (error) {
             console.error('Validation error:', error);
@@ -45,6 +55,29 @@ class ProjectUpdater {
                 rawAnalysis: analysis.rawAnalysis
             };
 
+            // Handle energy monitoring data
+            if (analysis.energyMonitoring) {
+                const energyMonitoringData = new EnergyMonitoring({
+                    systemType: analysis.energyMonitoring.systemType,
+                    name: analysis.energyMonitoring.name,
+                    partNumber: analysis.energyMonitoring.partNumber,
+                    description: analysis.energyMonitoring.description,
+                    manufacturer: analysis.energyMonitoring.manufacturer,
+                    specifications: analysis.energyMonitoring.specifications,
+                    status: 'active'
+                });
+
+                // Update or create energy monitoring record
+                await EnergyMonitoring.findOneAndUpdate(
+                    { partNumber: energyMonitoringData.partNumber },
+                    energyMonitoringData,
+                    { upsert: true, new: true }
+                );
+
+                // Link energy monitoring to project
+                project.energyMonitoring = energyMonitoringData._id;
+            }
+
             // Add any additional analysis if present
             if (analysis.additionalAnalysis) {
                 project.analysisResults.additionalAnalysis = analysis.additionalAnalysis;
@@ -71,7 +104,9 @@ class ProjectUpdater {
 
     async getProjectStatus() {
         try {
-            const project = await Project.findById(this.projectId);
+            const project = await Project.findById(this.projectId)
+                .populate('energyMonitoring');
+            
             if (!project) {
                 throw new Error('Project not found');
             }
@@ -80,7 +115,8 @@ class ProjectUpdater {
                 success: true,
                 status: project.status,
                 lastUpdated: project.lastUpdated,
-                analysisResults: project.analysisResults
+                analysisResults: project.analysisResults,
+                energyMonitoring: project.energyMonitoring
             };
         } catch (error) {
             return {

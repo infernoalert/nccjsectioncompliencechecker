@@ -1,6 +1,27 @@
 {
+  "name": "nccj-section-compliance-checker",
+  "version": "1.0.0",
+  "description": "NCCJ Section Compliance Checker",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch"
+  },
   "dependencies": {
     "@mui/icons-material": "^7.0.2",
-    "uuid": "^11.1.0"
+    "uuid": "^11.1.0",
+    "mongoose": "^7.0.0",
+    "openai": "^4.0.0"
+  },
+  "devDependencies": {
+    "jest": "^29.0.0",
+    "@babel/core": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "babel-jest": "^29.0.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": ["**/tests/**/*.test.js"],
+    "setupFiles": ["./backend/tests/setup.js"]
   }
 }

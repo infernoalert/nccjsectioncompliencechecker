@@ -79,7 +79,23 @@ exports.getProject = asyncHandler(async (req, res) => {
 // @route   POST /api/projects
 // @access  Private
 exports.createProject = asyncHandler(async (req, res) => {
-  const { name, description, buildingType, location, floorArea } = req.body;
+  const { name, description, buildingType, location, floorArea, totalAreaOfHabitableRooms } = req.body;
+
+  // Validate required fields
+  if (!name || !buildingType || !location || !floorArea) {
+    return res.status(400).json({
+      success: false,
+      error: 'Missing required fields: name, buildingType, location, and floorArea are required'
+    });
+  }
+
+  // Validate floor area
+  if (isNaN(floorArea) || floorArea <= 0) {
+    return res.status(400).json({
+      success: false,
+      error: 'Floor area must be a positive number'
+    });
+  }
 
   // Validate building type using the decision tree
   let buildingClassification;
@@ -95,9 +111,10 @@ exports.createProject = asyncHandler(async (req, res) => {
       technicalDetails: classificationInfo.technicalDetails
     };
   } catch (error) {
+    console.error('Error validating building type:', error);
     return res.status(400).json({
       success: false,
-      error: 'Invalid building type'
+      error: error.message || 'Invalid building type'
     });
   }
 
@@ -106,34 +123,55 @@ exports.createProject = asyncHandler(async (req, res) => {
   try {
     climateZone = await getClimateZoneByLocation(location);
   } catch (error) {
+    console.error('Error validating location:', error);
     return res.status(400).json({
       success: false,
-      error: 'Invalid location or could not determine climate zone'
+      error: error.message || 'Invalid location or could not determine climate zone'
     });
   }
 
-  const project = new Project({
-    name,
-    description,
-    owner: req.user._id,
-    createdBy: req.user._id,
-    buildingType,
-    buildingClassification,
-    location,
-    climateZone,
-    floorArea,
-    totalAreaOfHabitableRooms: req.body.totalAreaOfHabitableRooms
-  });
+  // Validate totalAreaOfHabitableRooms for Class_2 and Class_4 buildings
+  if (buildingClassification.classType === 'Class_2' || buildingClassification.classType === 'Class_4') {
+    if (!totalAreaOfHabitableRooms || isNaN(totalAreaOfHabitableRooms) || totalAreaOfHabitableRooms < 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'Total area of habitable rooms is required for Class 2 and Class 4 buildings'
+      });
+    }
+  }
 
-  await project.save();
+  try {
+    const project = new Project({
+      name,
+      description,
+      owner: req.user._id,
+      createdBy: req.user._id,
+      buildingType,
+      buildingClassification,
+      location,
+      climateZone,
+      floorArea,
+      totalAreaOfHabitableRooms: buildingClassification.classType === 'Class_2' || buildingClassification.classType === 'Class_4' 
+        ? totalAreaOfHabitableRooms 
+        : null
+    });
 
-  // Seed initial step data for the project
-  await seedStepDataForProject(project);
+    await project.save();
 
-  res.status(201).json({
-    success: true,
-    data: project
-  });
+    // Seed initial step data for the project
+    await seedStepDataForProject(project);
+
+    res.status(201).json({
+      success: true,
+      data: project
+    });
+  } catch (error) {
+    console.error('Error creating project:', error);
+    res.status(400).json({
+      success: false,
+      error: error.message || 'Error creating project'
+    });
+  }
 });
 
 // @desc    Update a project

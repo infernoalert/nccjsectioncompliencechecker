@@ -63,6 +63,7 @@ const j7lightingReportRoutes = require('./routes/j7lighting_reportRoutes');
 const j6hvacReportRoutes = require('./routes/j6hvac_reportRoutes');
 const stepRoutes = require('./routes/stepRoutes');
 const diagramChatRoutes = require('./routes/diagramChatRoutes');
+const projectValueRoutes = require('./routes/projectValueRoutes');
 
 const app = express();
 
@@ -130,6 +131,7 @@ app.use('/api/j7lighting', j7lightingReportRoutes);
 app.use('/api/j6hvac', j6hvacReportRoutes);
 app.use('/api', stepRoutes);
 app.use('/api', diagramChatRoutes);
+app.use('/api/projects', projectValueRoutes);
 
 // Basic route
 app.get('/', (req, res) => {

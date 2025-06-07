@@ -96,9 +96,35 @@ class LLMAnalyzer {
         If a service is mentioned or clearly implied, mark it as \`true\`.
         If a service is not mentioned anywhere in the document, or is explicitly stated as absent, mark it as \`false\`.
 
+        For any identified energy monitoring systems, provide detailed information including:
+        - System type
+        - Name/model
+        - Part number
+        - Description
+        - Manufacturer
+        - Technical specifications
+
         Do not make assumptions if information is genuinely missing. Only mark as \`true\` if there is evidence of existence.
 
-        Provide your response strictly as a JSON object, where the keys are the camelCase names of the services and the values are boolean (\`true\` or \`false\`).
+        Provide your response strictly as a JSON object with the following structure:
+        {
+            "airConditioning": boolean,
+            "artificialLighting": boolean,
+            "appliancePower": boolean,
+            "centralHotWaterSupply": boolean,
+            "internalTransportDevices": boolean,
+            "renewableEnergy": boolean,
+            "evChargingEquipment": boolean,
+            "batterySystems": boolean,
+            "energyMonitoring": {
+                "systemType": string,
+                "name": string,
+                "partNumber": string,
+                "description": string,
+                "manufacturer": string,
+                "specifications": object
+            }
+        }
 
         Here are the services to identify:
         - Air Conditioning
@@ -150,6 +176,7 @@ class LLMAnalyzer {
                 renewableEnergy: analysis.renewableEnergy || false,
                 evChargingEquipment: analysis.evChargingEquipment || false,
                 batterySystems: analysis.batterySystems || false,
+                energyMonitoring: analysis.energyMonitoring || null,
                 rawAnalysis: response
             };
         } catch (error) {
@@ -163,6 +190,7 @@ class LLMAnalyzer {
                 renewableEnergy: false,
                 evChargingEquipment: false,
                 batterySystems: false,
+                energyMonitoring: null,
                 rawAnalysis: response,
                 error: 'Failed to parse analysis response'
             };

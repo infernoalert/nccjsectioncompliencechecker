@@ -51,7 +51,8 @@ const getBuildingClassification = (buildingType) => {
     // First, get the NCC classification from the mapping
     const buildingTypeInfo = buildingTypeMapping.buildingTypes.find(type => type.id === buildingType);
     if (!buildingTypeInfo) {
-      throw new Error(`Building type not found: ${buildingType}`);
+      console.error(`Building type not found: ${buildingType}`);
+      throw new Error(`Invalid building type: ${buildingType}`);
     }
 
     // Then, get the detailed classification information
@@ -66,7 +67,8 @@ const getBuildingClassification = (buildingType) => {
       );
       
       if (!partialMatch) {
-        throw new Error(`Classification details not found for: ${buildingTypeInfo.nccClassification}`);
+        console.error(`Classification details not found for: ${buildingTypeInfo.nccClassification}`);
+        throw new Error(`Invalid building classification: ${buildingTypeInfo.nccClassification}`);
       }
       
       // Use the partial match
@@ -109,22 +111,35 @@ const getBuildingClassification = (buildingType) => {
 
 /**
  * Get climate zone based on location
- * @param {string} location - The location of the building
- * @returns {string} The climate zone
+ * @param {string|Object} location - The location of the building (can be ID or object)
+ * @returns {Object} The climate zone information
  */
 const getClimateZoneByLocation = (location) => {
   try {
+    // Handle both string (ID) and object inputs
+    const locationId = typeof location === 'object' ? location.id : location;
+    
+    if (!locationId) {
+      throw new Error('Location ID is required');
+    }
+
     // Find the location in the mapping file
-    const locationData = locationToClimateZone.locations.find(loc => loc.id === location);
+    const locationData = locationToClimateZone.locations.find(loc => loc.id === locationId);
     
     if (!locationData) {
-      throw new Error(`Location not found: ${location}`);
+      console.error(`Location not found: ${locationId}`);
+      throw new Error(`Invalid location: ${locationId}`);
     }
     
-    // Return the climate zone
-    return locationData.climateZone;
+    // Return the climate zone information
+    return {
+      id: locationData.climateZone,
+      name: locationData.climateZoneName || locationData.climateZone,
+      description: locationData.description || `Climate Zone ${locationData.climateZone}`
+    };
   } catch (error) {
-    throw new Error(`Error getting climate zone: ${error.message}`);
+    console.error('Error in getClimateZoneByLocation:', error);
+    throw error;
   }
 };
 
