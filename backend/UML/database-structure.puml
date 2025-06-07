@@ -31,6 +31,13 @@ class Project {
     +ObjectId createdBy
     +Date createdAt
     +Date updatedAt
+    +Diagram diagram
+}
+
+class Diagram {
+    +String fileName
+    +Date lastModified
+    +Number version
 }
 
 class ClimateZone {
@@ -173,6 +180,7 @@ Project "1" -- "1" CompliancePathway : has
 Project "1" -- "1" Electrical : has
 Project "1" -- "1" MCP : has
 Project "1" -- "*" File : contains
+Project "1" -- "1" Diagram : has
 
 BuildingFabric "1" -- "1" Wall : has
 BuildingFabric "1" -- "1" Roof : has

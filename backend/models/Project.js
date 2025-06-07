@@ -1,12 +1,10 @@
 const mongoose = require('mongoose');
 const { embeddedSchema: buildingFabricSchema } = require('./BuildingFabric');
-const { embeddedSchema: buildingClassSchema } = require('./BuildingClass');
 const { embeddedSchema: specialRequirementSchema } = require('./SpecialRequirement');
 const { embeddedSchema: compliancePathwaySchema } = require('./CompliancePathway');
 const { embeddedSchema: electricalSchema } = require('./Electrical');
 const { embeddedSchema: mcpSchema } = require('./mcp');
 const { embeddedSchema: fileSchema } = require('./File');
-
 
 const projectSchema = new mongoose.Schema({
   name: {
@@ -27,16 +25,11 @@ const projectSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Building type is required']
   },
-  buildingClassification: {
-    type: buildingClassSchema,
-    default: () => ({})
-  },
   location: {
     type: mongoose.Schema.Types.Mixed,
     required: [true, 'Location is required'],
     validate: {
       validator: function(value) {
-        // Allow both string and object values
         return typeof value === 'string' || (typeof value === 'object' && value !== null);
       },
       message: 'Location must be either a string or an object'
@@ -47,7 +40,6 @@ const projectSchema = new mongoose.Schema({
     required: [true, 'Climate zone is required'],
     validate: {
       validator: function(value) {
-        // Allow both string and object values
         return typeof value === 'string' || (typeof value === 'object' && value !== null);
       },
       message: 'Climate zone must be either a string or an object'
@@ -64,10 +56,7 @@ const projectSchema = new mongoose.Schema({
     default: null,
     validate: {
       validator: function(value) {
-        // If the value is null, it's valid (for non-Class_2 and non-Class_4 buildings)
         if (value === null) return true;
-        
-        // For Class_2 and Class_4 buildings, the value must be a positive number
         return value > 0;
       },
       message: 'Total area of habitable rooms must be a positive number for Class_2 and Class_4 buildings'
@@ -85,6 +74,15 @@ const projectSchema = new mongoose.Schema({
     type: compliancePathwaySchema,
     default: () => ({})
   },
+  electrical: {
+    type: electricalSchema,
+    default: () => ({})
+  },
+  mcp: {
+    type: mcpSchema,
+    default: () => ({})
+  },
+  files: [fileSchema],
   complianceStatus: {
     type: String,
     enum: ['pending', 'compliant', 'non_compliant'],
@@ -98,23 +96,6 @@ const projectSchema = new mongoose.Schema({
     ref: 'User',
     required: true
   },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now
-  },
-  electrical: {
-    type: electricalSchema,
-    default: () => ({})
-  },
-  mcp: {
-    type: mcpSchema,
-    default: () => ({})
-  },
-  files: [fileSchema],
   diagram: {
     fileName: {
       type: String,
@@ -128,45 +109,6 @@ const projectSchema = new mongoose.Schema({
       type: Number,
       default: 1
     }
-  },
-  stepRequirements: {
-    type: Map,
-    of: {
-      initial: {
-        buildingClassification: {
-          classType: String,
-          name: String,
-          description: String
-        },
-        floorArea: Number,
-        buildingServices: [String],
-        ancillaryPlants: [String],
-        sharedAreasCount: Number
-      },
-      bom: {
-        items: [{
-          name: String,
-          quantity: Number,
-          unit: String,
-          specifications: Object
-        }]
-      },
-      design: {
-        nodes: [Object],
-        edges: [Object],
-        layout: Object
-      },
-      review: {
-        complianceStatus: String,
-        issues: [String],
-        recommendations: [String]
-      },
-      final: {
-        summary: String,
-        documentation: [String]
-      }
-    },
-    default: new Map()
   }
 }, {
   timestamps: true
@@ -186,7 +128,6 @@ projectSchema.pre('save', function(next) {
       this.size = 'large';
     }
   }
-  this.updatedAt = Date.now();
   next();
 });
 

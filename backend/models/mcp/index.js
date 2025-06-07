@@ -1,31 +1,32 @@
 const mongoose = require('mongoose');
-const mcpHistorySchema = require('./historySchema');
-const analysisResultsSchema = require('./analysisResultsSchema');
+const { embeddedSchema: historySchema } = require('../History');
+const { embeddedSchema: analysisResultsSchema } = require('../AnalysisResults');
 
 const mcpSchema = new mongoose.Schema({
   currentStep: {
     type: String,
-    enum: ['FILE_UPLOAD', 'TEXT_EXTRACTION', 'INITIAL_ANALYSIS', 'PROJECT_UPDATE', 'NEXT_ANALYSIS'],
-    default: 'FILE_UPLOAD'
+    required: true
   },
   lastUpdated: {
     type: Date,
     default: Date.now
   },
-  history: [mcpHistorySchema],
+  history: [{
+    type: historySchema
+  }],
   analysisResults: {
     type: analysisResultsSchema,
-    default: () => ({})
+    required: true
   },
   processingStatus: {
     type: String,
-    enum: ['IDLE', 'PROCESSING', 'COMPLETED', 'FAILED'],
-    default: 'IDLE'
+    enum: ['pending', 'processing', 'completed', 'error'],
+    default: 'pending'
   }
-});
+}, { _id: false });
 
-// Export both the model and the embedded schema
 module.exports = {
-  model: mongoose.model('MCP', mcpSchema),
-  embeddedSchema: mcpSchema
+  embeddedSchema: mcpSchema,
+  schema: new mongoose.Schema(mcpSchema),
+  model: mongoose.model('MCP', mcpSchema)
 }; 
