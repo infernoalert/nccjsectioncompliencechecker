@@ -7,7 +7,6 @@ const CreateUser = () => {
   const dispatch = useDispatch();
   const { loading, error } = useSelector(state => state.user);
   const [formData, setFormData] = useState({
-    username: '',
     email: '',
     password: '',
   });
@@ -22,7 +21,7 @@ const CreateUser = () => {
   const handleSubmit = e => {
     e.preventDefault();
     dispatch(createUser(formData));
-    setFormData({ username: '', email: '', password: '' });
+    setFormData({ email: '', password: '' });
   };
 
   const handleClearError = () => {
@@ -30,25 +29,16 @@ const CreateUser = () => {
   };
 
   return (
-    <Paper sx={{ p: 3, maxWidth: 400, mx: 'auto', mt: 4 }}>
+    <Paper sx={{ p: 3, maxWidth: 600, mx: 'auto', mt: 4 }}>
       <Typography variant="h5" gutterBottom>
         Create New User
       </Typography>
       {error && (
         <Alert severity="error" onClose={handleClearError} sx={{ mb: 2 }}>
-          {typeof error === 'object' ? error.message : error}
+          {error}
         </Alert>
       )}
       <form onSubmit={handleSubmit}>
-        <TextField
-          fullWidth
-          label="Username"
-          name="username"
-          value={formData.username}
-          onChange={handleChange}
-          margin="normal"
-          required
-        />
         <TextField
           fullWidth
           label="Email"
@@ -74,7 +64,7 @@ const CreateUser = () => {
           variant="contained"
           color="primary"
           fullWidth
-          sx={{ mt: 2 }}
+          sx={{ mt: 3 }}
           disabled={loading}
         >
           {loading ? <CircularProgress size={24} /> : 'Create User'}

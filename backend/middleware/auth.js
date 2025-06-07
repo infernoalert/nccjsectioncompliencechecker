@@ -15,7 +15,7 @@ const protect = async (req, res, next) => {
         if (!token) {
             return res.status(401).json({
                 success: false,
-                error: 'Not authorized to access this route'
+                error: 'No token provided. Please log in to access this route'
             });
         }
 
@@ -23,13 +23,22 @@ const protect = async (req, res, next) => {
             // Verify token
             const decoded = verifyToken(token);
             
-            // Get user from token
-            const user = await User.findById(decoded.id).select('-password');
+            // Get user from token - try both id and _id
+            const userId = decoded._id || decoded.id;
+            if (!userId) {
+                return res.status(401).json({
+                    success: false,
+                    error: 'Invalid token format: missing user ID'
+                });
+            }
+
+            // Get user and explicitly select password if needed
+            const user = await User.findById(userId);
             
             if (!user) {
                 return res.status(401).json({
                     success: false,
-                    error: 'User not found'
+                    error: 'User not found. Please log in again'
                 });
             }
 
@@ -37,19 +46,28 @@ const protect = async (req, res, next) => {
             req.user = user;
             next();
         } catch (error) {
+            console.error('Token verification error:', error);
             return res.status(401).json({
                 success: false,
-                error: 'Not authorized to access this route'
+                error: 'Invalid or expired token. Please log in again'
             });
         }
     } catch (error) {
+        console.error('Auth middleware error:', error);
         next(error);
     }
 };
 
-// Authorize by role
+// Grant access to specific roles
 const authorize = (...roles) => {
     return (req, res, next) => {
+        if (!req.user) {
+            return res.status(401).json({
+                success: false,
+                error: 'User not authenticated'
+            });
+        }
+
         if (!roles.includes(req.user.role)) {
             return res.status(403).json({
                 success: false,
@@ -60,7 +78,4 @@ const authorize = (...roles) => {
     };
 };
 
-module.exports = {
-    protect,
-    authorize
-}; 
+module.exports = { protect, authorize }; 

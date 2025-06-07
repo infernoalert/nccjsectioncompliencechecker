@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="60" height="30" viewBox="0 0 60 30">
+    <!-- Converted lines from the XML description -->
+    <line x1="0" y1="0" x2="10" y2="0" stroke="black" stroke-width="1"/>
+    <line x1="10" y1="0" x2="20" y2="10" stroke="black" stroke-width="1"/>
+    <line x1="20" y1="10" x2="30" y2="10" stroke="black" stroke-width="1"/>
+    <line x1="30" y1="10" x2="40" y2="0" stroke="black" stroke-width="1"/>
+    <line x1="40" y1="0" x2="50" y2="0" stroke="black" stroke-width="1"/>
+    <line x1="0" y1="10" x2="10" y2="10" stroke="black" stroke-width="1"/>
+    <line x1="10" y1="10" x2="20" y2="0" stroke="black" stroke-width="1"/>
+    <line x1="20" y1="0" x2="30" y2="0" stroke="black" stroke-width="1"/>
+    <line x1="30" y1="0" x2="40" y2="10" stroke="black" stroke-width="1"/>
+    <line x1="40" y1="10" x2="50" y2="10" stroke="black" stroke-width="1"/>
+    
+    <!-- Text element -->
+    <text x="8" y="21" font-family="Sans Serif" font-size="9" fill="#000000">RS-485</text>
+</svg>

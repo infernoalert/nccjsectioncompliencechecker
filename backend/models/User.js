@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const UserSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: [true, 'Please add a name']
+        required: false
     },
     email: {
         type: String,
@@ -30,7 +30,25 @@ const UserSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
+    },
+    // Assistant thread information
+    assistantThread: {
+        threadId: {
+            type: String,
+            default: null
+        },
+        currentStep: {
+            type: String,
+            enum: ['initial', 'bom', 'design', 'review', 'final'],
+            default: 'initial'
+        },
+        lastUpdated: {
+            type: Date,
+            default: Date.now
+        }
     }
+}, {
+    timestamps: true
 });
 
 // Encrypt password using bcrypt
@@ -46,7 +64,7 @@ UserSchema.pre('save', async function(next) {
 // Sign JWT and return
 UserSchema.methods.getSignedJwtToken = function() {
     return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
-        expiresIn: process.env.JWT_EXPIRE
+        expiresIn: '30d' // Set a default expiration of 30 days
     });
 };
 

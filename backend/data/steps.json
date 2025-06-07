@@ -1,0 +1,144 @@
+[
+  {
+    "step": 1,
+    "name": "Initial Requirements",
+    "fields": [
+      { "id": "buildingType", "type": "string", "label": "Building Type" },
+      { "id": "size", "type": "string", "label": "Building Size" },
+      { 
+        "id": "buildingServices", 
+        "type": "array", 
+        "label": "Building Services",
+        "items": [
+          { "id": "airConditioning", "type": "boolean", "label": "Air Conditioning" },
+          { "id": "artificialLighting", "type": "boolean", "label": "Artificial Lighting" },
+          { "id": "appliancePower", "type": "boolean", "label": "Appliance Power" },
+          { "id": "centralHotWaterSupply", "type": "boolean", "label": "Central Hot Water Supply" },
+          { "id": "internalTransportDevices", "type": "boolean", "label": "Internal Transport Devices" },
+          { "id": "renewableEnergy", "type": "boolean", "label": "Renewable Energy" },
+          { "id": "evChargingEquipment", "type": "boolean", "label": "Electric Vehicle Charging Equipment" },
+          { "id": "batterySystems", "type": "boolean", "label": "Battery Systems" }
+        ]
+      },
+      {
+        "id": "ancillaryPlants",
+        "type": "array",
+        "label": "Other Ancillary Plants",
+        "maxItems": 50,
+        "items": {
+          "type": "object",
+          "properties": {
+            "exists": { "type": "boolean", "label": "Plant Exists" },
+            "name": { "type": "string", "label": "Plant Name" }
+          }
+        }
+      },
+      { 
+        "id": "sharedAreasCount", 
+        "type": "integer", 
+        "label": "Number of Shared Areas > 500m²",
+        "condition": {
+          "field": "buildingType",
+          "value": "Class_2",
+          "operator": "equals"
+        }
+      }
+    ],
+    "next": 2
+  },
+  {
+    "step": 2,
+    "name": "Bill of Materials",
+    "fields": [
+      {
+        "id": "smartmeter",
+        "type": "object",
+        "label": "Smart Meter",
+        "properties": {
+          "exists": { "type": "boolean", "label": "Smart Meter Exists" },
+          "partNumber": { "type": "string", "label": "Part Number" },
+          "externalLink": { "type": "string", "label": "External Link" }
+        }
+      },
+      {
+        "id": "cloud",
+        "type": "object",
+        "label": "Cloud",
+        "properties": {
+          "exists": { "type": "boolean", "label": "Cloud Exists" },
+          "partNumber": { "type": "string", "label": "Part Number" },
+          "externalLink": { "type": "string", "label": "External Link" }
+        }
+      },
+      {
+        "id": "wireless",
+        "type": "object",
+        "label": "Wireless",
+        "properties": {
+          "exists": { "type": "boolean", "label": "Wireless Exists" },
+          "partNumber": { "type": "string", "label": "Part Number" },
+          "externalLink": { "type": "string", "label": "External Link" }
+        }
+      },
+      {
+        "id": "rs485",
+        "type": "object",
+        "label": "RS485",
+        "properties": {
+          "exists": { "type": "boolean", "label": "RS485 Exists" },
+          "partNumber": { "type": "string", "label": "Part Number" },
+          "externalLink": { "type": "string", "label": "External Link" }
+        }
+      },
+      {
+        "id": "ethernet",
+        "type": "object",
+        "label": "Ethernet",
+        "properties": {
+          "exists": { "type": "boolean", "label": "Ethernet Exists" },
+          "partNumber": { "type": "string", "label": "Part Number" },
+          "externalLink": { "type": "string", "label": "External Link" }
+        }
+      },
+      {
+        "id": "onpremise",
+        "type": "object",
+        "label": "On Premise",
+        "properties": {
+          "exists": { "type": "boolean", "label": "On Premise Exists" },
+          "partNumber": { "type": "string", "label": "Part Number" },
+          "externalLink": { "type": "string", "label": "External Link" }
+        }
+      },
+      {
+        "id": "metermemory",
+        "type": "object",
+        "label": "Meter Memory",
+        "properties": {
+          "exists": { "type": "boolean", "label": "Meter Memory Exists" },
+          "partNumber": { "type": "string", "label": "Part Number" },
+          "externalLink": { "type": "string", "label": "External Link" }
+        }
+      },
+      {
+        "id": "meter",
+        "type": "object",
+        "label": "Meter",
+        "properties": {
+          "exists": { "type": "boolean", "label": "Meter Exists" },
+          "partNumber": { "type": "string", "label": "Part Number" },
+          "externalLink": { "type": "string", "label": "External Link" }
+        }
+      }
+    ],
+    "next": 3
+  },
+  {
+    "step": 3,
+    "name": "System Design",
+    "fields": [
+      { "id": "layoutType", "type": "string", "label": "Layout Type" }
+    ],
+    "next": null
+  }
+] 

@@ -15,6 +15,7 @@ import Navbar from './components/Navbar';
 import Presentation from './static/Presentation';
 import UserList from './components/UserList';
 import CreateUser from './components/CreateUser';
+import SingleLineDiagram from './components/SingleLineDiagram/SingleLineDiagram';
 import { useSelector } from 'react-redux';
 import './styles/print.css';
 import J7LightingReport from './components/reports/J7LightingReport';
@@ -155,6 +156,14 @@ function App() {
             element={
               <ProtectedRoute roles={['admin']}>
                 <CreateUser />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/projects/:id/diagram"
+            element={
+              <ProtectedRoute>
+                <SingleLineDiagram />
               </ProtectedRoute>
             }
           />

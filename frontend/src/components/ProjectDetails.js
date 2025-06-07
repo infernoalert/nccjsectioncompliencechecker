@@ -27,6 +27,7 @@ import {
   Delete as DeleteIcon,
   PictureAsPdf as PictureAsPdfIcon,
   Download as DownloadIcon,
+  Draw as DrawIcon,
 } from '@mui/icons-material';
 import { fetchProject, deleteProject } from '../store/slices/projectSlice';
 import axios from 'axios';
@@ -183,6 +184,14 @@ const ProjectDetails = () => {
                 {uploadError}
               </Alert>
             )}
+            <Button
+              variant="contained"
+              color="secondary"
+              startIcon={<DrawIcon />}
+              onClick={() => navigate(`/projects/${id}/diagram`)}
+            >
+              Draw Diagram
+            </Button>
             <Chip
               label={currentProject.status || 'In Progress'}
               color={currentProject.status === 'Completed' ? 'success' : 'warning'}

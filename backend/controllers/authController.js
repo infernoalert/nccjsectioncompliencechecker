@@ -6,9 +6,9 @@ const { generateToken } = require('../utils/jwt');
 // @access  Public
 exports.register = async (req, res, next) => {
     try {
-        const { username, email, password, role } = req.body;
+        const { email, password, role } = req.body;
         
-        console.log('Registration request:', { username, email, role });
+        console.log('Registration request:', { email, role });
         console.log('ALLOW_ADMIN_REGISTRATION:', process.env.ALLOW_ADMIN_REGISTRATION);
         console.log('Type of ALLOW_ADMIN_REGISTRATION:', typeof process.env.ALLOW_ADMIN_REGISTRATION);
 
@@ -17,43 +17,48 @@ exports.register = async (req, res, next) => {
             console.log('Admin registration blocked. Value:', process.env.ALLOW_ADMIN_REGISTRATION);
             return res.status(403).json({
                 success: false,
-                error: 'Forbidden'
+                error: 'Admin registration is not allowed'
             });
         }
 
         // Check if user already exists
-        const userExists = await User.findOne({ $or: [{ email }, { username }] });
+        const userExists = await User.findOne({ email });
         if (userExists) {
             return res.status(400).json({
                 success: false,
-                error: 'User already exists'
+                error: 'User with this email already exists'
             });
         }
 
         // Create user
         const user = await User.create({
-            name: username, // Use username as name if not provided
-            username,
             email,
             password,
-            role: role || 'user' // Default to user role if not specified
+            role: role || 'user', // Default to user role if not specified
+            name: email.split('@')[0] // Use email prefix as name
         });
 
         // Generate token
-        const token = generateToken(user);
+        const token = user.getSignedJwtToken();
 
         res.status(201).json({
             success: true,
             token,
             user: {
                 id: user._id,
-                username: user.username,
                 email: user.email,
+                name: user.name,
                 role: user.role
             }
         });
     } catch (error) {
         console.error('Registration error:', error);
+        if (error.name === 'ValidationError') {
+            return res.status(400).json({
+                success: false,
+                error: Object.values(error.errors).map(err => err.message).join(', ')
+            });
+        }
         next(error);
     }
 };
@@ -84,15 +89,15 @@ exports.login = async (req, res, next) => {
         }
 
         // Generate token
-        const token = generateToken(user);
+        const token = user.getSignedJwtToken();
 
         res.status(200).json({
             success: true,
             token,
             user: {
                 id: user._id,
-                username: user.username,
                 email: user.email,
+                name: user.name,
                 role: user.role
             }
         });

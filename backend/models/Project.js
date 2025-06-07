@@ -114,7 +114,60 @@ const projectSchema = new mongoose.Schema({
     type: mcpSchema,
     default: () => ({})
   },
-  files: [fileSchema]
+  files: [fileSchema],
+  diagram: {
+    fileName: {
+      type: String,
+      default: null
+    },
+    lastModified: {
+      type: Date,
+      default: null
+    },
+    version: {
+      type: Number,
+      default: 1
+    }
+  },
+  stepRequirements: {
+    type: Map,
+    of: {
+      initial: {
+        buildingClassification: {
+          classType: String,
+          name: String,
+          description: String
+        },
+        floorArea: Number,
+        buildingServices: [String],
+        ancillaryPlants: [String],
+        sharedAreasCount: Number
+      },
+      bom: {
+        items: [{
+          name: String,
+          quantity: Number,
+          unit: String,
+          specifications: Object
+        }]
+      },
+      design: {
+        nodes: [Object],
+        edges: [Object],
+        layout: Object
+      },
+      review: {
+        complianceStatus: String,
+        issues: [String],
+        recommendations: [String]
+      },
+      final: {
+        summary: String,
+        documentation: [String]
+      }
+    },
+    default: new Map()
+  }
 }, {
   timestamps: true
 });

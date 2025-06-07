@@ -57,7 +57,7 @@ const Navbar = () => {
               )}
               <IconButton onClick={handleMenu} color="inherit">
                 <Avatar sx={{ width: 32, height: 32 }}>
-                  {user?.username?.charAt(0).toUpperCase()}
+                  {user?.email?.charAt(0).toUpperCase()}
                 </Avatar>
               </IconButton>
               <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>

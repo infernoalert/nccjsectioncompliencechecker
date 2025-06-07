@@ -25,52 +25,73 @@ const SignUp = () => {
     confirmPassword: '',
   });
 
-  const [passwordError, setPasswordError] = useState('');
-  const [emailError, setEmailError] = useState('');
+  const [validationErrors, setValidationErrors] = useState({
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
 
-  const handleChange = e => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-    // Clear errors when user types
-    if (e.target.name === 'password' || e.target.name === 'confirmPassword') {
-      setPasswordError('');
+  const validateForm = () => {
+    const errors = {
+      email: '',
+      password: '',
+      confirmPassword: '',
+    };
+    let isValid = true;
+
+    // Email validation
+    if (!formData.email) {
+      errors.email = 'Email is required';
+      isValid = false;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      errors.email = 'Please enter a valid email address';
+      isValid = false;
     }
-    if (e.target.name === 'email') {
-      setEmailError('');
+
+    // Password validation
+    if (!formData.password) {
+      errors.password = 'Password is required';
+      isValid = false;
+    } else if (formData.password.length < 6) {
+      errors.password = 'Password must be at least 6 characters long';
+      isValid = false;
     }
+
+    // Confirm password validation
+    if (!formData.confirmPassword) {
+      errors.confirmPassword = 'Please confirm your password';
+      isValid = false;
+    } else if (formData.password !== formData.confirmPassword) {
+      errors.confirmPassword = 'Passwords do not match';
+      isValid = false;
+    }
+
+    setValidationErrors(errors);
+    return isValid;
   };
 
-  const validateEmail = email => {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
+  const handleChange = e => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value,
+    }));
+    // Clear validation error when user types
+    setValidationErrors(prev => ({
+      ...prev,
+      [name]: '',
+    }));
   };
 
   const handleSubmit = async e => {
     e.preventDefault();
 
-    // Validate email
-    if (!validateEmail(formData.email)) {
-      setEmailError('Please enter a valid email address');
-      return;
-    }
-
-    // Validate password
-    if (formData.password !== formData.confirmPassword) {
-      setPasswordError('Passwords do not match');
-      return;
-    }
-
-    if (formData.password.length < 6) {
-      setPasswordError('Password must be at least 6 characters long');
+    if (!validateForm()) {
       return;
     }
 
     try {
-      // Use email as both username and email
       const userData = {
-        username: formData.email,
         email: formData.email,
         password: formData.password,
       };
@@ -78,6 +99,7 @@ const SignUp = () => {
       navigate('/');
     } catch (err) {
       // Error is handled by the reducer
+      console.error('Registration error:', err);
     }
   };
 
@@ -91,25 +113,16 @@ const SignUp = () => {
           alignItems: 'center',
         }}
       >
-        <Paper
-          elevation={3}
-          sx={{
-            padding: 4,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            width: '100%',
-          }}
-        >
-          <Typography component="h1" variant="h5">
+        <Paper elevation={3} sx={{ p: 4, width: '100%' }}>
+          <Typography component="h1" variant="h5" align="center" gutterBottom>
             Sign Up
           </Typography>
           {error && (
-            <Alert severity="error" sx={{ mt: 2, width: '100%' }}>
+            <Alert severity="error" sx={{ mb: 2 }}>
               {typeof error === 'object' ? error.message : error}
             </Alert>
           )}
-          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1, width: '100%' }}>
+          <Box component="form" onSubmit={handleSubmit} noValidate>
             <TextField
               margin="normal"
               required
@@ -121,14 +134,9 @@ const SignUp = () => {
               autoFocus
               value={formData.email}
               onChange={handleChange}
-              helperText="This will be used as both your username and email"
-              error={!!emailError}
+              error={!!validationErrors.email}
+              helperText={validationErrors.email}
             />
-            {emailError && (
-              <Alert severity="error" sx={{ mt: 2, width: '100%' }}>
-                {emailError}
-              </Alert>
-            )}
             <TextField
               margin="normal"
               required
@@ -140,6 +148,8 @@ const SignUp = () => {
               autoComplete="new-password"
               value={formData.password}
               onChange={handleChange}
+              error={!!validationErrors.password}
+              helperText={validationErrors.password}
             />
             <TextField
               margin="normal"
@@ -149,15 +159,11 @@ const SignUp = () => {
               label="Confirm Password"
               type="password"
               id="confirmPassword"
-              autoComplete="new-password"
               value={formData.confirmPassword}
               onChange={handleChange}
+              error={!!validationErrors.confirmPassword}
+              helperText={validationErrors.confirmPassword}
             />
-            {passwordError && (
-              <Alert severity="error" sx={{ mt: 2, width: '100%' }}>
-                {passwordError}
-              </Alert>
-            )}
             <Button
               type="submit"
               fullWidth
@@ -168,8 +174,8 @@ const SignUp = () => {
               {loading ? <CircularProgress size={24} /> : 'Sign Up'}
             </Button>
             <Box sx={{ textAlign: 'center' }}>
-              <Link component={RouterLink} to="/signin" variant="body2">
-                {'Already have an account? Sign In'}
+              <Link component={RouterLink} to="/login" variant="body2">
+                Already have an account? Sign in
               </Link>
             </Box>
           </Box>

@@ -1,0 +1,160 @@
+{
+  "step": "initial",
+  "systemMessage": "You are an expert in electrical metering systems and NCC Section J compliance. Your primary role is to gather and validate building service requirements.",
+  "instructions": {
+    "primary": "Gather and validate building service requirements for the project.",
+    "rules": [
+      "Always maintain a professional and helpful tone",
+      "Ask one question at a time",
+      "Confirm understanding before proceeding",
+      "Provide clear explanations for requirements",
+      "Use simple, non-technical language when possible",
+      "First determine the building classification before proceeding with other requirements"
+    ],
+    "responseFormat": {
+      "type": "natural",
+      "example": "I'll help you determine the building classification first. Could you tell me what type of building this is? For example, is it a Class 2 (apartment building), Class 5 (office building), or another classification?"
+    }
+  },
+  "normalizer": {
+    "functionName": "update_initial_requirements",
+    "patterns": {
+      "buildingClassification": {
+        "type": "string",
+        "extractors": [
+          {
+            "pattern": "Class\\s*(\\d+)",
+            "format": "Class_$1"
+          },
+          {
+            "pattern": "Building\\s*Type:?\\s*Class\\s*(\\d+)",
+            "format": "Class_$1"
+          },
+          {
+            "pattern": "Classification:?\\s*Class\\s*(\\d+)",
+            "format": "Class_$1"
+          }
+        ],
+        "defaultValue": null,
+        "validation": {
+          "enum": ["Class_1", "Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9", "Class_10"]
+        }
+      },
+      "buildingServices": {
+        "type": "object",
+        "extractors": [
+          {
+            "pattern": "([A-Za-z\\s]+):\\s*(Yes|No)",
+            "fields": {
+              "airConditioning": ["Air Conditioning", "AC", "Air Condition", "Cooling"],
+              "artificialLighting": ["Artificial Lighting", "Lighting", "Lights", "Light"],
+              "appliancePower": ["Appliance Power", "Power", "Appliances", "Equipment Power"],
+              "centralHotWaterSupply": ["Central Hot Water", "Hot Water", "Water Supply", "Water Heating"],
+              "internalTransportDevices": ["Internal Transport", "Transport", "Elevators", "Lifts", "Escalators"],
+              "renewableEnergy": ["Renewable Energy", "Solar", "Renewable", "Green Energy"],
+              "evChargingEquipment": ["EV Charging", "Electric Vehicle", "Charging", "Car Charging"],
+              "batterySystems": ["Battery Systems", "Batteries", "Battery", "Energy Storage"]
+            }
+          },
+          {
+            "pattern": "([A-Za-z\\s]+)\\s*(?:is|are)\\s*(required|needed|necessary|included)",
+            "fields": {
+              "airConditioning": ["Air Conditioning", "AC", "Air Condition", "Cooling"],
+              "artificialLighting": ["Artificial Lighting", "Lighting", "Lights", "Light"],
+              "appliancePower": ["Appliance Power", "Power", "Appliances", "Equipment Power"],
+              "centralHotWaterSupply": ["Central Hot Water", "Hot Water", "Water Supply", "Water Heating"],
+              "internalTransportDevices": ["Internal Transport", "Transport", "Elevators", "Lifts", "Escalators"],
+              "renewableEnergy": ["Renewable Energy", "Solar", "Renewable", "Green Energy"],
+              "evChargingEquipment": ["EV Charging", "Electric Vehicle", "Charging", "Car Charging"],
+              "batterySystems": ["Battery Systems", "Batteries", "Battery", "Energy Storage"]
+            }
+          }
+        ],
+        "defaultValue": false
+      },
+      "ancillaryPlants": {
+        "type": "array",
+        "extractors": [
+          {
+            "pattern": "Ancillary Plant:?\\s*([^\\n]+)",
+            "format": {
+              "exists": true,
+              "name": "$1"
+            }
+          },
+          {
+            "pattern": "Additional Plant:?\\s*([^\\n]+)",
+            "format": {
+              "exists": true,
+              "name": "$1"
+            }
+          },
+          {
+            "pattern": "([^\\n]+)\\s*(?:plant|system|equipment)",
+            "format": {
+              "exists": true,
+              "name": "$1"
+            }
+          }
+        ],
+        "defaultValue": []
+      },
+      "sharedAreasCount": {
+        "type": "integer",
+        "extractors": [
+          {
+            "pattern": "Shared Areas:?\\s*(\\d+)",
+            "format": "$1"
+          },
+          {
+            "pattern": "(\\d+)\\s*shared areas",
+            "format": "$1"
+          },
+          {
+            "pattern": "Number of shared areas:?\\s*(\\d+)",
+            "format": "$1"
+          }
+        ],
+        "defaultValue": 0
+      }
+    },
+    "requiredFields": ["buildingClassification", "buildingServices", "ancillaryPlants"],
+    "maintainExistingData": true,
+    "validation": {
+      "buildingClassification": {
+        "type": "string",
+        "required": true,
+        "enum": ["Class_1", "Class_2", "Class_3", "Class_4", "Class_5", "Class_6", "Class_7", "Class_8", "Class_9", "Class_10"]
+      },
+      "buildingServices": {
+        "type": "object",
+        "required": true,
+        "properties": {
+          "airConditioning": { "type": "boolean" },
+          "artificialLighting": { "type": "boolean" },
+          "appliancePower": { "type": "boolean" },
+          "centralHotWaterSupply": { "type": "boolean" },
+          "internalTransportDevices": { "type": "boolean" },
+          "renewableEnergy": { "type": "boolean" },
+          "evChargingEquipment": { "type": "boolean" },
+          "batterySystems": { "type": "boolean" }
+        }
+      },
+      "ancillaryPlants": {
+        "type": "array",
+        "required": true,
+        "items": {
+          "type": "object",
+          "properties": {
+            "exists": { "type": "boolean" },
+            "name": { "type": "string" }
+          }
+        }
+      },
+      "sharedAreasCount": {
+        "type": "integer",
+        "minimum": 0
+      }
+    }
+  }
+} 

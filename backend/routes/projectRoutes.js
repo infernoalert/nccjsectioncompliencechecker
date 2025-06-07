@@ -18,6 +18,8 @@ const {
   deleteFile
 } = require('../controllers/fileController');
 const { getAllBuildingTypes } = require('../utils/mappingUtils');
+const diagramService = require('../services/diagramService');
+const { interpretChat } = require('../controllers/diagramController');
 
 /**
  * @swagger
@@ -192,6 +194,65 @@ const { getAllBuildingTypes } = require('../utils/mappingUtils');
  *               type: string
  *               description: Metering description
  *
+ *     Diagram:
+ *       type: object
+ *       properties:
+ *         nodes:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               id:
+ *                 type: string
+ *               type:
+ *                 type: string
+ *               position:
+ *                 type: object
+ *                 properties:
+ *                   x:
+ *                     type: number
+ *                   y:
+ *                     type: number
+ *               data:
+ *                 type: object
+ *                 properties:
+ *                   label:
+ *                     type: string
+ *         edges:
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               id:
+ *                 type: string
+ *               source:
+ *                 type: string
+ *               target:
+ *                 type: string
+ *               type:
+ *                 type: string
+ *               style:
+ *                 type: object
+ *               animated:
+ *                 type: boolean
+ *               markerEnd:
+ *                 type: object
+ *     
+ *     DiagramResponse:
+ *       type: object
+ *       properties:
+ *         success:
+ *           type: boolean
+ *         fileName:
+ *           type: string
+ *         lastModified:
+ *           type: string
+ *           format: date-time
+ *         version:
+ *           type: number
+ *         data:
+ *           $ref: '#/components/schemas/Diagram'
+ *
  * /api/projects/{id}/report:
  *   get:
  *     summary: Generate a compliance report for a project
@@ -264,6 +325,68 @@ const { getAllBuildingTypes } = require('../utils/mappingUtils');
  *         description: Not authorized
  */
 
+/**
+ * @swagger
+ * /api/projects/{id}/interpret-chat:
+ *   post:
+ *     summary: Interpret chat message and generate diagram using AI Assistant
+ *     tags: [Projects]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Project ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - message
+ *             properties:
+ *               message:
+ *                 type: string
+ *                 description: The chat message to interpret
+ *               isGenericRequest:
+ *                 type: boolean
+ *                 description: Whether this is a generic request (will use EMS template if true)
+ *     responses:
+ *       200:
+ *         description: Diagram generated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               oneOf:
+ *                 - type: object
+ *                   properties:
+ *                     nodes:
+ *                       type: array
+ *                       items:
+ *                         $ref: '#/components/schemas/Diagram/properties/nodes/items'
+ *                     edges:
+ *                       type: array
+ *                       items:
+ *                         $ref: '#/components/schemas/Diagram/properties/edges/items'
+ *                 - type: object
+ *                   properties:
+ *                     message:
+ *                       type: string
+ *                       description: Assistant's response message
+ *       400:
+ *         description: Invalid input
+ *       401:
+ *         description: Not authorized
+ *       404:
+ *         description: Project not found
+ *       500:
+ *         description: Server error during diagram generation
+ */
+
 // Building types route - MUST be defined BEFORE the /:id routes
 router.get('/building-types', protect, getBuildingTypes);
 router.get('/locations', protect, getLocations);
@@ -286,5 +409,45 @@ router.get('/:id/report', protect, generateReport);
 router.post('/:id/upload', protect, uploadFile);
 router.get('/:id/files/:filename', protect, getFile);
 router.delete('/:id/files/:filename', protect, deleteFile);
+
+// Diagram routes
+router.post('/:id/diagram', protect, async (req, res) => {
+  try {
+    const result = await diagramService.saveDiagram(req.params.id, req.body);
+    res.json(result);
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+router.get('/:id/diagram', protect, async (req, res) => {
+  try {
+    const result = await diagramService.getDiagram(req.params.id);
+    res.json(result);
+  } catch (error) {
+    res.status(404).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+router.delete('/:id/diagram', protect, async (req, res) => {
+  try {
+    const result = await diagramService.deleteDiagram(req.params.id);
+    res.json(result);
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+// Diagram generation routes
+router.post('/:id/interpret-chat', protect, interpretChat);
 
 module.exports = router; 
