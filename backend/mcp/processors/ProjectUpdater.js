@@ -43,16 +43,16 @@ class ProjectUpdater {
                 throw new Error('Project not found');
             }
 
-            // Update project with analysis results
-            project.analysisResults = {
-                ...project.analysisResults,
+            // Update MCP analysis results
+            project.mcp.analysisResults = {
                 hasAirConditioning: analysis.hasAirConditioning,
-                acType: analysis.acType,
-                acLocation: analysis.acLocation,
-                requirements: analysis.requirements,
-                otherSystems: analysis.otherSystems,
                 lastAnalyzed: new Date(),
-                rawAnalysis: analysis.rawAnalysis
+                rawAnalysis: {
+                    acType: analysis.acType,
+                    acLocation: analysis.acLocation,
+                    requirements: analysis.requirements,
+                    otherSystems: analysis.otherSystems
+                }
             };
 
             // Handle energy monitoring data
@@ -68,24 +68,24 @@ class ProjectUpdater {
                 });
 
                 // Update or create energy monitoring record
-                await EnergyMonitoring.findOneAndUpdate(
+                const savedMonitoring = await EnergyMonitoring.findOneAndUpdate(
                     { partNumber: energyMonitoringData.partNumber },
                     energyMonitoringData,
                     { upsert: true, new: true }
                 );
 
-                // Link energy monitoring to project
-                project.energyMonitoring = energyMonitoringData._id;
+                // Add to project's electrical energy monitoring array
+                project.electrical.energyMonitoring.push(savedMonitoring._id);
             }
 
-            // Add any additional analysis if present
-            if (analysis.additionalAnalysis) {
-                project.analysisResults.additionalAnalysis = analysis.additionalAnalysis;
-            }
+            // Update MCP status
+            project.mcp.currentStep = 'analysis_complete';
+            project.mcp.lastUpdated = new Date();
+            project.mcp.processingStatus = 'completed';
 
             // Update project status
-            project.status = 'ANALYZED';
-            project.lastUpdated = new Date();
+            project.complianceStatus = 'pending';
+            project.lastAssessmentDate = new Date();
 
             // Save changes
             await project.save();
@@ -105,7 +105,7 @@ class ProjectUpdater {
     async getProjectStatus() {
         try {
             const project = await Project.findById(this.projectId)
-                .populate('energyMonitoring');
+                .populate('electrical.energyMonitoring');
             
             if (!project) {
                 throw new Error('Project not found');
@@ -113,10 +113,10 @@ class ProjectUpdater {
 
             return {
                 success: true,
-                status: project.status,
-                lastUpdated: project.lastUpdated,
-                analysisResults: project.analysisResults,
-                energyMonitoring: project.energyMonitoring
+                status: project.complianceStatus,
+                lastUpdated: project.lastAssessmentDate,
+                analysisResults: project.mcp.analysisResults,
+                energyMonitoring: project.electrical.energyMonitoring
             };
         } catch (error) {
             return {
