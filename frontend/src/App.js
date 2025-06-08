@@ -16,6 +16,7 @@ import Presentation from './static/Presentation';
 import UserList from './components/UserList';
 import CreateUser from './components/CreateUser';
 import SingleLineDiagram from './components/SingleLineDiagram/SingleLineDiagram';
+import ElectricalValues from './components/ElectricalValues';
 import { useSelector } from 'react-redux';
 import './styles/print.css';
 import J7LightingReport from './components/reports/J7LightingReport';
@@ -164,6 +165,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <SingleLineDiagram />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/projects/:id/electrical-details"
+            element={
+              <ProtectedRoute>
+                <ElectricalValues />
               </ProtectedRoute>
             }
           />

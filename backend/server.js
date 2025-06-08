@@ -59,11 +59,12 @@ const adminRoutes = require('./routes/adminRoutes');
 const testRoutes = require('./routes/testRoutes');
 const healthRoutes = require('./routes/healthRoutes');
 const EnergyMonitorReportRoutes = require('./routes/energy_monitor_reportRoutes');
-const j7lightingReportRoutes = require('./routes/j7lighting_reportRoutes');
-const j6hvacReportRoutes = require('./routes/j6hvac_reportRoutes');
+const J7LightingReportRoutes = require('./routes/j7lighting_reportRoutes');
+const J6hvacReportRoutes = require('./routes/j6hvac_reportRoutes');
 const stepRoutes = require('./routes/stepRoutes');
 const diagramChatRoutes = require('./routes/diagramChatRoutes');
 const projectValueRoutes = require('./routes/projectValueRoutes');
+const ElectricalRoutes = require('./routes/electricalRoutes');
 
 const app = express();
 
@@ -127,11 +128,12 @@ app.use('/api', referenceDataRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/test', testRoutes);
 app.use('/api/health', healthRoutes);
-app.use('/api/j7lighting', j7lightingReportRoutes);
-app.use('/api/j6hvac', j6hvacReportRoutes);
+app.use('/api/j7lighting', J7LightingReportRoutes);
+app.use('/api/j6hvac', J6hvacReportRoutes);
 app.use('/api', stepRoutes);
 app.use('/api', diagramChatRoutes);
 app.use('/api/projects', projectValueRoutes);
+app.use('/api/projects', ElectricalRoutes);
 
 // Basic route
 app.get('/', (req, res) => {
