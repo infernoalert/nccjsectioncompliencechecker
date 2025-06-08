@@ -17,16 +17,23 @@ const validateProject = (projectData) => {
   return projectSchema.validate(projectData, { abortEarly: false });
 };
 
-const projectValueSchema = Joi.object({
-  systemType: Joi.string().required(),
+const loadSchema = Joi.object({
+  type: Joi.string().valid('load').required(),
   name: Joi.string().required(),
-  partNumber: Joi.string().required(),
-  description: Joi.string(),
-  manufacturer: Joi.string(),
-  specifications: Joi.object(),
-  status: Joi.string().valid('active', 'inactive', 'maintenance'),
-  connectedLoads: Joi.array().items(Joi.string())
+  powerRating: Joi.number().required().min(0),
+  voltage: Joi.number().required().min(0),
+  current: Joi.number().required().min(0)
 });
+
+const monitoringSchema = Joi.object({
+  type: Joi.string().valid('monitoring').required(),
+  deviceId: Joi.string().required(),
+  readingType: Joi.string().required(),
+  value: Joi.number().required(),
+  unit: Joi.string().required()
+});
+
+const projectValueSchema = Joi.alternatives().try(loadSchema, monitoringSchema);
 
 const validateProjectValue = (data) => {
   return projectValueSchema.validate(data);

@@ -1,37 +1,18 @@
 const mongoose = require('mongoose');
 
 const energyMonitoringSchema = new mongoose.Schema({
-  systemType: {
+  deviceId: {
     type: String,
     required: true
   },
-  name: {
+  deviceType: {
     type: String,
     required: true
   },
-  partNumber: {
+  model: {
     type: String,
-    required: true
-  },
-  description: {
-    type: String
-  },
-  manufacturer: {
-    type: String
-  },
-  specifications: {
-    type: Map,
-    of: mongoose.Schema.Types.Mixed
-  },
-  status: {
-    type: String,
-    enum: ['active', 'inactive', 'maintenance'],
-    default: 'active'
-  },
-  connectedLoads: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Load'
-  }]
+    required: false
+  }
 }, { _id: false });
 
 module.exports = {

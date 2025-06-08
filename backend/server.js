@@ -64,7 +64,6 @@ const J6hvacReportRoutes = require('./routes/j6hvac_reportRoutes');
 const stepRoutes = require('./routes/stepRoutes');
 const diagramChatRoutes = require('./routes/diagramChatRoutes');
 const projectValueRoutes = require('./routes/projectValueRoutes');
-const ElectricalRoutes = require('./routes/electricalRoutes');
 
 const app = express();
 
@@ -133,7 +132,6 @@ app.use('/api/j6hvac', J6hvacReportRoutes);
 app.use('/api', stepRoutes);
 app.use('/api', diagramChatRoutes);
 app.use('/api/projects', projectValueRoutes);
-app.use('/api/projects', ElectricalRoutes);
 
 // Basic route
 app.get('/', (req, res) => {

@@ -12,42 +12,97 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Chip,
   Box,
   CircularProgress,
   Alert,
+  Button,
+  IconButton,
 } from '@mui/material';
 import { format } from 'date-fns';
+import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddElectricalDetails from './AddElectricalDetails';
 
 const ElectricalValues = () => {
   const { id } = useParams();
   const { token } = useSelector((state) => state.auth);
-  const [electricalData, setElectricalData] = useState(null);
+  const [values, setValues] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [openAddDialog, setOpenAddDialog] = useState(false);
+  const [editingValue, setEditingValue] = useState(null);
+
+  const fetchValues = async () => {
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      };
+      const response = await axios.get(`/api/projects/${id}/values`, config);
+      setValues(response.data.data);
+      setLoading(false);
+    } catch (err) {
+      setError('Failed to fetch values');
+      setLoading(false);
+      console.error('Error fetching values:', err);
+    }
+  };
 
   useEffect(() => {
-    const fetchElectricalData = async () => {
+    if (token) {
+      fetchValues();
+    }
+  }, [id, token]);
+
+  const handleAdd = async (data) => {
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      };
+      await axios.post(`/api/projects/${id}/values`, data, config);
+      fetchValues(); // Refresh data after adding
+    } catch (err) {
+      setError('Failed to add value');
+      console.error('Error adding value:', err);
+    }
+  };
+
+  const handleEdit = async (valueId, data) => {
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      };
+      await axios.put(`/api/projects/${id}/values/${valueId}`, data, config);
+      fetchValues(); // Refresh data after editing
+      setEditingValue(null);
+    } catch (err) {
+      setError('Failed to update value');
+      console.error('Error updating value:', err);
+    }
+  };
+
+  const handleDelete = async (valueId) => {
+    if (window.confirm('Are you sure you want to delete this value?')) {
       try {
         const config = {
           headers: {
             Authorization: `Bearer ${token}`
           }
         };
-        const response = await axios.get(`/api/projects/${id}/electrical`, config);
-        setElectricalData(response.data.data);
-        setLoading(false);
+        await axios.delete(`/api/projects/${id}/values/${valueId}`, config);
+        fetchValues(); // Refresh data after deleting
       } catch (err) {
-        setError('Failed to fetch electrical data');
-        setLoading(false);
-        console.error('Error fetching electrical data:', err);
+        setError('Failed to delete value');
+        console.error('Error deleting value:', err);
       }
-    };
-
-    if (token) {
-      fetchElectricalData();
     }
-  }, [id, token]);
+  };
 
   const getComplianceChipColor = (status) => {
     switch (status) {
@@ -78,38 +133,25 @@ const ElectricalValues = () => {
     );
   }
 
-  if (!electricalData) {
-    return (
-      <Container>
-        <Alert severity="info" sx={{ mt: 2 }}>
-          No electrical data available for this project.
-        </Alert>
-      </Container>
-    );
-  }
+  // Group values by type
+  const loads = values.filter(v => v.type === 'load');
+  const monitoring = values.filter(v => v.type === 'monitoring');
 
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
       <Paper elevation={3} sx={{ p: 3 }}>
-        <Typography variant="h4" gutterBottom>
-          Electrical Values
-        </Typography>
-
-        {/* Compliance Status */}
-        <Box mb={3}>
-          <Typography variant="h6" gutterBottom>
-            Compliance Status
+        <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
+          <Typography variant="h4">
+            Project Values
           </Typography>
-          <Chip
-            label={electricalData?.complianceStatus?.toUpperCase() || 'PENDING'}
-            color={getComplianceChipColor(electricalData?.complianceStatus)}
-            sx={{ mr: 2 }}
-          />
-          {electricalData?.lastAssessmentDate && (
-            <Typography variant="body2" color="text.secondary">
-              Last Assessment: {format(new Date(electricalData.lastAssessmentDate), 'PPP')}
-            </Typography>
-          )}
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<AddIcon />}
+            onClick={() => setOpenAddDialog(true)}
+          >
+            Add Value
+          </Button>
         </Box>
 
         {/* Loads Table */}
@@ -121,23 +163,38 @@ const ElectricalValues = () => {
             <TableHead>
               <TableRow>
                 <TableCell>Name</TableCell>
-                <TableCell>Type</TableCell>
                 <TableCell>Power Rating (kW)</TableCell>
                 <TableCell>Voltage (V)</TableCell>
                 <TableCell>Current (A)</TableCell>
+                <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {electricalData?.loads?.map((load, index) => (
-                <TableRow key={index}>
+              {loads.map((load) => (
+                <TableRow key={load._id}>
                   <TableCell>{load.name}</TableCell>
-                  <TableCell>{load.type}</TableCell>
                   <TableCell>{load.powerRating}</TableCell>
                   <TableCell>{load.voltage}</TableCell>
                   <TableCell>{load.current}</TableCell>
+                  <TableCell>
+                    <IconButton
+                      size="small"
+                      onClick={() => setEditingValue(load)}
+                      color="primary"
+                    >
+                      <EditIcon />
+                    </IconButton>
+                    <IconButton
+                      size="small"
+                      onClick={() => handleDelete(load._id)}
+                      color="error"
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
                 </TableRow>
               ))}
-              {(!electricalData?.loads || electricalData.loads.length === 0) && (
+              {loads.length === 0 && (
                 <TableRow>
                   <TableCell colSpan={5} align="center">
                     No loads data available
@@ -157,27 +214,38 @@ const ElectricalValues = () => {
             <TableHead>
               <TableRow>
                 <TableCell>Device ID</TableCell>
-                <TableCell>Reading Type</TableCell>
-                <TableCell>Value</TableCell>
-                <TableCell>Unit</TableCell>
-                <TableCell>Timestamp</TableCell>
+                <TableCell>Device Type</TableCell>
+                <TableCell>Model</TableCell>
+                <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {electricalData?.energyMonitoring?.map((monitor, index) => (
-                <TableRow key={index}>
+              {monitoring.map((monitor) => (
+                <TableRow key={monitor._id}>
                   <TableCell>{monitor.deviceId}</TableCell>
-                  <TableCell>{monitor.readingType}</TableCell>
-                  <TableCell>{monitor.value}</TableCell>
-                  <TableCell>{monitor.unit}</TableCell>
+                  <TableCell>{monitor.deviceType}</TableCell>
+                  <TableCell>{monitor.model}</TableCell>
                   <TableCell>
-                    {format(new Date(monitor.timestamp), 'PPpp')}
+                    <IconButton
+                      size="small"
+                      onClick={() => setEditingValue(monitor)}
+                      color="primary"
+                    >
+                      <EditIcon />
+                    </IconButton>
+                    <IconButton
+                      size="small"
+                      onClick={() => handleDelete(monitor._id)}
+                      color="error"
+                    >
+                      <DeleteIcon />
+                    </IconButton>
                   </TableCell>
                 </TableRow>
               ))}
-              {(!electricalData?.energyMonitoring || electricalData.energyMonitoring.length === 0) && (
+              {monitoring.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={5} align="center">
+                  <TableCell colSpan={4} align="center">
                     No energy monitoring data available
                   </TableCell>
                 </TableRow>
@@ -186,6 +254,17 @@ const ElectricalValues = () => {
           </Table>
         </TableContainer>
       </Paper>
+
+      <AddElectricalDetails
+        open={openAddDialog || editingValue !== null}
+        onClose={() => {
+          setOpenAddDialog(false);
+          setEditingValue(null);
+        }}
+        onAdd={editingValue ? (data) => handleEdit(editingValue._id, data) : handleAdd}
+        projectId={id}
+        initialData={editingValue}
+      />
     </Container>
   );
 };

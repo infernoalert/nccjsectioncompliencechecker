@@ -149,7 +149,12 @@ const projectSchema = new mongoose.Schema({
   },
   electrical: {
     type: electricalSchema,
-    default: () => ({})
+    default: () => ({
+      loads: [],
+      energyMonitoring: [],
+      complianceStatus: 'pending',
+      lastAssessmentDate: new Date()
+    })
   },
   mcp: {
     type: mcpSchema,

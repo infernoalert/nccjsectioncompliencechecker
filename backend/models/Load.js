@@ -1,32 +1,24 @@
 const mongoose = require('mongoose');
 
 const loadSchema = new mongoose.Schema({
-  type: {
-    type: String,
-    required: true
-  },
   name: {
     type: String,
     required: true
   },
-  partNumber: {
-    type: String,
-    required: true
+  powerRating: {
+    type: Number,
+    required: true,
+    min: 0
   },
-  description: {
-    type: String
+  voltage: {
+    type: Number,
+    required: true,
+    min: 0
   },
-  manufacturer: {
-    type: String
-  },
-  specifications: {
-    type: Map,
-    of: mongoose.Schema.Types.Mixed
-  },
-  status: {
-    type: String,
-    enum: ['active', 'inactive', 'maintenance'],
-    default: 'active'
+  current: {
+    type: Number,
+    required: true,
+    min: 0
   }
 }, { _id: false });
 
