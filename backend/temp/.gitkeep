@@ -1,0 +1,2 @@
+# This file ensures the temp directory is tracked in git
+# The directory is used for temporary file processing during OCR 

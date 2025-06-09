@@ -15,13 +15,17 @@ cloud "External Services" {
     [LLM Service] as LLM
 }
 
+' Initial Upload Flow
+UI --> Upload
 Upload --> Processor
+
+' Analysis Flow (always on existing files)
+UI --> Processor
 Processor --> LLM
 LLM --> Processor
 Processor --> DataManager : "Sends extracted data"
 DataManager --> JSONGen : "Sends updated project data"
 JSONGen --> DiagramGen
-UI --> Upload
 DiagramGen --> UI
 
 @enduml 

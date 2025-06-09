@@ -42,6 +42,7 @@ import {
 } from '../features/projectValue/projectValueSlice';
 import axios from 'axios';
 import { fetchProject } from '../store/slices/projectSlice';
+import { API_URL } from '../config';
 
 const ElectricalValues = () => {
   const { id } = useParams();
@@ -148,7 +149,7 @@ const ElectricalValues = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.post(`/api/projects/${id}/upload`, formData, {
+      const response = await axios.post(`${API_URL}/api/projects/${id}/upload`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           'Authorization': `Bearer ${token}`
@@ -170,7 +171,7 @@ const ElectricalValues = () => {
   const handleFileDownload = async (filename) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`/api/projects/${id}/files/${filename}`, {
+      const response = await axios.get(`${API_URL}/api/projects/${id}/files/${filename}`, {
         responseType: 'blob',
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -196,7 +197,7 @@ const ElectricalValues = () => {
     setDeleting(true);
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`/api/projects/${id}/files/${fileToDelete.filename}`, {
+      await axios.delete(`${API_URL}/api/projects/${id}/files/${fileToDelete.filename}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       setDeleteDialogOpen(false);
@@ -219,7 +220,7 @@ const ElectricalValues = () => {
     setAnalysisError(null);
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.post(`/api/projects/${id}/analyze/${file.filename}`, {}, {
+      const response = await axios.post(`${API_URL}/api/projects/${id}/analyze/${file.filename}`, {}, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       

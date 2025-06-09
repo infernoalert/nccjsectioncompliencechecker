@@ -11,7 +11,8 @@ class FileProcessor {
         this.filePath = filePath;
         this.isExistingFile = isExistingFile;
         this.fileContent = null;
-        this.tempDir = path.join(os.tmpdir(), 'pdf-processing');
+        this.tempDir = path.join(process.cwd(), 'temp', 'pdf-processing');
+        this.worker = null;
     }
 
     async validateFile() {
@@ -57,7 +58,8 @@ class FileProcessor {
                 format: 'png',
                 out_dir: this.tempDir,
                 out_prefix: 'page',
-                page: null // Convert all pages
+                page: null, // Convert all pages
+                scale: 2.0  // Increase resolution for better OCR
             };
 
             await pdfPoppler.convert(this.filePath, opts);
@@ -65,7 +67,13 @@ class FileProcessor {
             // Get list of generated image files
             const files = await fs.readdir(this.tempDir);
             return files.filter(file => file.startsWith('page') && file.endsWith('.png'))
-                       .map(file => path.join(this.tempDir, file));
+                       .map(file => path.join(this.tempDir, file))
+                       .sort((a, b) => {
+                           // Sort files by page number
+                           const numA = parseInt(a.match(/page-(\d+)/)[1]);
+                           const numB = parseInt(b.match(/page-(\d+)/)[1]);
+                           return numA - numB;
+                       });
         } catch (error) {
             throw new Error(`PDF to image conversion failed: ${error.message}`);
         }
@@ -75,34 +83,69 @@ class FileProcessor {
         try {
             const processedImagePath = imagePath.replace('.png', '_processed.png');
             
+            // Add a small delay to ensure file is fully written
+            await new Promise(resolve => setTimeout(resolve, 100));
+            
             await sharp(imagePath)
                 .grayscale() // Convert to grayscale
                 .normalize() // Normalize contrast
                 .sharpen() // Enhance edges
+                .threshold(128) // Apply threshold for better text/background separation
                 .toFile(processedImagePath);
 
+            // Add a small delay to ensure processed file is fully written
+            await new Promise(resolve => setTimeout(resolve, 100));
+            
             return processedImagePath;
         } catch (error) {
             throw new Error(`Image preprocessing failed: ${error.message}`);
         }
     }
 
+    async initializeWorker() {
+        if (!this.worker) {
+            this.worker = await createWorker('eng');
+            // Configure worker for better accuracy without OSD
+            await this.worker.setParameters({
+                tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789.,;:()[]{}<>-_=+*/\\|"\'@#$%^&!?',
+                tessedit_pageseg_mode: '3', // Fully automatic page segmentation, but no OSD
+                tessedit_ocr_engine_mode: '1' // Use LSTM only
+            });
+        }
+        return this.worker;
+    }
+
     async performOCR(imagePath) {
         try {
-            const worker = await createWorker();
-            await worker.loadLanguage('eng');
-            await worker.initialize('eng');
+            const worker = await this.initializeWorker();
+            // Add retry logic for OCR
+            let retries = 3;
+            let lastError = null;
             
-            const { data: { text } } = await worker.recognize(imagePath);
-            await worker.terminate();
+            while (retries > 0) {
+                try {
+                    const { data: { text } } = await worker.recognize(imagePath);
+                    return text;
+                } catch (error) {
+                    lastError = error;
+                    retries--;
+                    if (retries > 0) {
+                        // Wait before retrying
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+                    }
+                }
+            }
             
-            return text;
+            throw lastError || new Error('OCR failed after multiple retries');
         } catch (error) {
             throw new Error(`OCR failed: ${error.message}`);
         }
     }
 
     async extractText() {
+        let imageFiles = [];
+        let processedImagePath = null;
+        
         try {
             let combinedText = '';
             
@@ -112,20 +155,29 @@ class FileProcessor {
             const pdfText = pdfData.text;
             
             // 2. Convert PDF to images and perform OCR
-            const imageFiles = await this.convertPdfToImages();
+            imageFiles = await this.convertPdfToImages();
             let ocrText = '';
             
             for (const imageFile of imageFiles) {
-                // Preprocess image
-                const processedImagePath = await this.preprocessImage(imageFile);
-                
-                // Perform OCR
-                const pageText = await this.performOCR(processedImagePath);
-                ocrText += pageText + '\n';
-                
-                // Cleanup processed image
-                await fs.unlink(processedImagePath);
-                await fs.unlink(imageFile);
+                try {
+                    // Preprocess image
+                    processedImagePath = await this.preprocessImage(imageFile);
+                    
+                    // Perform OCR
+                    const pageText = await this.performOCR(processedImagePath);
+                    ocrText += `Page ${path.basename(imageFile).match(/page-(\d+)/)[1]}:\n${pageText}\n\n`;
+                    
+                    // Cleanup processed image
+                    if (processedImagePath) {
+                        await fs.unlink(processedImagePath).catch(() => {});
+                        processedImagePath = null;
+                    }
+                    await fs.unlink(imageFile).catch(() => {});
+                } catch (pageError) {
+                    console.error(`Error processing page ${imageFile}:`, pageError);
+                    // Continue with next page instead of failing completely
+                    continue;
+                }
             }
             
             // Combine both results
@@ -133,9 +185,6 @@ class FileProcessor {
             
             // Store combined content
             this.fileContent = combinedText;
-            
-            // Cleanup temp directory
-            await fs.rm(this.tempDir, { recursive: true, force: true });
             
             return {
                 success: true,
@@ -146,6 +195,25 @@ class FileProcessor {
                 success: false,
                 error: `Text extraction failed: ${error.message}`
             };
+        } finally {
+            // Cleanup any remaining files
+            try {
+                if (processedImagePath) {
+                    await fs.unlink(processedImagePath).catch(() => {});
+                }
+                for (const file of imageFiles) {
+                    await fs.unlink(file).catch(() => {});
+                }
+                await fs.rm(this.tempDir, { recursive: true, force: true }).catch(() => {});
+                
+                // Terminate worker if it exists
+                if (this.worker) {
+                    await this.worker.terminate();
+                    this.worker = null;
+                }
+            } catch (cleanupError) {
+                console.error('Error during cleanup:', cleanupError);
+            }
         }
     }
 

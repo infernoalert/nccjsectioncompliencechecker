@@ -141,7 +141,7 @@ const projectSchema = new mongoose.Schema({
   },
   specialRequirements: {
     type: [specialRequirementSchema],
-    default: []
+    required: false
   },
   compliancePathway: {
     type: compliancePathwaySchema,

@@ -52,9 +52,6 @@ standaloneSpecialRequirementSchema.pre('save', function(next) {
   next();
 });
 
-// Create indexes
-standaloneSpecialRequirementSchema.index({ _id: 1 });
-
 // Export both schemas and the model
 module.exports = {
   embeddedSchema: embeddedSpecialRequirementSchema,
