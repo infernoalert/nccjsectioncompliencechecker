@@ -11,6 +11,7 @@ import {
   FormControl,
   InputLabel,
   Select,
+  FormHelperText,
 } from '@mui/material';
 
 const AddElectricalDetails = ({ open, onClose, onSubmit, editingValue, onEdit }) => {
@@ -70,8 +71,8 @@ const AddElectricalDetails = ({ open, onClose, onSubmit, editingValue, onEdit })
             current: formData.current ? parseFloat(formData.current) : 0,
           }
         : {
-            deviceId: formData.deviceId,
-            deviceType: formData.deviceType,
+            deviceId: formData.deviceId || '',
+            deviceType: formData.deviceType || '',
             model: formData.model || '',
           }),
     };
@@ -161,14 +162,23 @@ const AddElectricalDetails = ({ open, onClose, onSubmit, editingValue, onEdit })
                 />
               </Grid>
               <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Device Type"
-                  name="deviceType"
-                  value={formData.deviceType}
-                  onChange={handleChange}
-                  required
-                />
+                <FormControl fullWidth required error={formData.type === 'monitoring' && !formData.deviceType}>
+                  <InputLabel>Device Type</InputLabel>
+                  <Select
+                    name="deviceType"
+                    value={formData.deviceType}
+                    onChange={handleChange}
+                    label="Device Type"
+                  >
+                    <MenuItem value="meter">Meter</MenuItem>
+                    <MenuItem value="metermemory">Meter Memory</MenuItem>
+                    <MenuItem value="smartmeter">Smart Meter</MenuItem>
+                    <MenuItem value="authorithymeter">Authority Meter</MenuItem>
+                  </Select>
+                  {formData.type === 'monitoring' && !formData.deviceType && (
+                    <FormHelperText error>Device Type is required</FormHelperText>
+                  )}
+                </FormControl>
               </Grid>
               <Grid item xs={12}>
                 <TextField
@@ -177,7 +187,6 @@ const AddElectricalDetails = ({ open, onClose, onSubmit, editingValue, onEdit })
                   name="model"
                   value={formData.model}
                   onChange={handleChange}
-                  required
                 />
               </Grid>
             </>
