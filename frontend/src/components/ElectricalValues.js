@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   Container,
   Paper,
@@ -18,104 +17,87 @@ import {
   Button,
   IconButton,
 } from '@mui/material';
-import { format } from 'date-fns';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddElectricalDetails from './AddElectricalDetails';
+import {
+  getProjectValues,
+  createProjectValue,
+  updateProjectValue,
+  deleteProjectValue
+} from '../features/projectValue/projectValueSlice';
 
 const ElectricalValues = () => {
   const { id } = useParams();
-  const { token } = useSelector((state) => state.auth);
-  const [values, setValues] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const dispatch = useDispatch();
+  const { values, isLoading, error } = useSelector((state) => state.projectValue);
   const [openAddDialog, setOpenAddDialog] = useState(false);
   const [editingValue, setEditingValue] = useState(null);
 
-  const fetchValues = async () => {
-    try {
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      };
-      const response = await axios.get(`/api/projects/${id}/values`, config);
-      setValues(response.data.data);
-      setLoading(false);
-    } catch (err) {
-      setError('Failed to fetch values');
-      setLoading(false);
-      console.error('Error fetching values:', err);
-    }
-  };
-
   useEffect(() => {
-    if (token) {
-      fetchValues();
-    }
-  }, [id, token]);
+    dispatch(getProjectValues(id));
+  }, [dispatch, id]);
 
   const handleAdd = async (data) => {
     try {
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      };
-      await axios.post(`/api/projects/${id}/values`, data, config);
-      fetchValues(); // Refresh data after adding
+      const resultAction = await dispatch(createProjectValue({ projectId: id, valueData: data }));
+      if (createProjectValue.fulfilled.match(resultAction)) {
+        dispatch(getProjectValues(id));
+      }
     } catch (err) {
-      setError('Failed to add value');
       console.error('Error adding value:', err);
     }
   };
 
   const handleEdit = async (valueId, data) => {
     try {
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      };
-      await axios.put(`/api/projects/${id}/values/${valueId}`, data, config);
-      fetchValues(); // Refresh data after editing
-      setEditingValue(null);
+      const resultAction = await dispatch(updateProjectValue({ 
+        projectId: id, 
+        valueId, 
+        valueData: data 
+      }));
+      if (updateProjectValue.fulfilled.match(resultAction)) {
+        dispatch(getProjectValues(id));
+        setEditingValue(null);
+      }
     } catch (err) {
-      setError('Failed to update value');
       console.error('Error updating value:', err);
     }
   };
 
-  const handleDelete = async (valueId) => {
-    if (window.confirm('Are you sure you want to delete this value?')) {
-      try {
-        const config = {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        };
-        await axios.delete(`/api/projects/${id}/values/${valueId}`, config);
-        fetchValues(); // Refresh data after deleting
-      } catch (err) {
-        setError('Failed to delete value');
-        console.error('Error deleting value:', err);
+  const handleDelete = async (value) => {
+    try {
+      console.log('Deleting load:', value);
+      const valueId = value._id;
+      console.log('Attempting to delete value with ID:', valueId);
+      
+      const resultAction = await dispatch(deleteProjectValue({ 
+        projectId: id, 
+        valueId: valueId 
+      }));
+
+      if (deleteProjectValue.fulfilled.match(resultAction)) {
+        dispatch(getProjectValues(id));
+      } else {
+        console.error('Error deleting value:', resultAction.error);
       }
+    } catch (error) {
+      console.error('Error deleting value:', error.message);
     }
   };
 
-  const getComplianceChipColor = (status) => {
-    switch (status) {
-      case 'compliant':
-        return 'success';
-      case 'non_compliant':
-        return 'error';
-      default:
-        return 'warning';
-    }
+  const handleEditClick = (value) => {
+    setEditingValue(value);
+    setOpenAddDialog(true);
   };
 
-  if (loading) {
+  const handleCloseDialog = () => {
+    setOpenAddDialog(false);
+    setEditingValue(null);
+  };
+
+  if (isLoading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="80vh">
         <CircularProgress />
@@ -138,11 +120,11 @@ const ElectricalValues = () => {
   const monitoring = values.filter(v => v.type === 'monitoring');
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-      <Paper elevation={3} sx={{ p: 3 }}>
-        <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-          <Typography variant="h4">
-            Project Values
+    <Container>
+      <Box sx={{ mt: 4, mb: 4 }}>
+        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+          <Typography variant="h4" component="h1">
+            Electrical Values
           </Typography>
           <Button
             variant="contained"
@@ -155,10 +137,10 @@ const ElectricalValues = () => {
         </Box>
 
         {/* Loads Table */}
-        <Typography variant="h6" gutterBottom>
+        <Typography variant="h6" sx={{ mt: 3, mb: 2 }}>
           Loads
         </Typography>
-        <TableContainer component={Paper} sx={{ mb: 4 }}>
+        <TableContainer component={Paper}>
           <Table>
             <TableHead>
               <TableRow>
@@ -178,35 +160,28 @@ const ElectricalValues = () => {
                   <TableCell>{load.current}</TableCell>
                   <TableCell>
                     <IconButton
-                      size="small"
-                      onClick={() => setEditingValue(load)}
+                      onClick={() => handleEditClick(load)}
                       color="primary"
+                      size="small"
                     >
                       <EditIcon />
                     </IconButton>
                     <IconButton
-                      size="small"
-                      onClick={() => handleDelete(load._id)}
+                      onClick={() => handleDelete(load)}
                       color="error"
+                      size="small"
                     >
                       <DeleteIcon />
                     </IconButton>
                   </TableCell>
                 </TableRow>
               ))}
-              {loads.length === 0 && (
-                <TableRow>
-                  <TableCell colSpan={5} align="center">
-                    No loads data available
-                  </TableCell>
-                </TableRow>
-              )}
             </TableBody>
           </Table>
         </TableContainer>
 
         {/* Energy Monitoring Table */}
-        <Typography variant="h6" gutterBottom>
+        <Typography variant="h6" sx={{ mt: 3, mb: 2 }}>
           Energy Monitoring
         </Typography>
         <TableContainer component={Paper}>
@@ -227,43 +202,33 @@ const ElectricalValues = () => {
                   <TableCell>{monitor.model}</TableCell>
                   <TableCell>
                     <IconButton
-                      size="small"
-                      onClick={() => setEditingValue(monitor)}
+                      onClick={() => handleEditClick(monitor)}
                       color="primary"
+                      size="small"
                     >
                       <EditIcon />
                     </IconButton>
                     <IconButton
-                      size="small"
-                      onClick={() => handleDelete(monitor._id)}
+                      onClick={() => handleDelete(monitor)}
                       color="error"
+                      size="small"
                     >
                       <DeleteIcon />
                     </IconButton>
                   </TableCell>
                 </TableRow>
               ))}
-              {monitoring.length === 0 && (
-                <TableRow>
-                  <TableCell colSpan={4} align="center">
-                    No energy monitoring data available
-                  </TableCell>
-                </TableRow>
-              )}
             </TableBody>
           </Table>
         </TableContainer>
-      </Paper>
+      </Box>
 
       <AddElectricalDetails
-        open={openAddDialog || editingValue !== null}
-        onClose={() => {
-          setOpenAddDialog(false);
-          setEditingValue(null);
-        }}
-        onAdd={editingValue ? (data) => handleEdit(editingValue._id, data) : handleAdd}
-        projectId={id}
-        initialData={editingValue}
+        open={openAddDialog}
+        onClose={handleCloseDialog}
+        onSubmit={handleAdd}
+        editingValue={editingValue}
+        onEdit={handleEdit}
       />
     </Container>
   );

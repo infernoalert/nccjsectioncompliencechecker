@@ -7,20 +7,17 @@ const loadSchema = new mongoose.Schema({
   },
   powerRating: {
     type: Number,
-    required: true,
     min: 0
   },
   voltage: {
     type: Number,
-    required: true,
     min: 0
   },
   current: {
     type: Number,
-    required: true,
     min: 0
   }
-}, { _id: false });
+});
 
 module.exports = {
   embeddedSchema: loadSchema,

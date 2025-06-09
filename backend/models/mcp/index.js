@@ -16,11 +16,11 @@ const mcpSchema = new mongoose.Schema({
   }],
   analysisResults: {
     type: analysisResultsSchema,
-    required: true
+    required: false
   },
   processingStatus: {
     type: String,
-    enum: ['pending', 'processing', 'completed', 'error'],
+    enum: ['pending', 'processing', 'completed', 'error', 'IDLE'],
     default: 'pending'
   }
 }, { _id: false });

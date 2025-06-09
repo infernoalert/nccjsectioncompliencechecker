@@ -1,14 +1,20 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { API_URL } from '../../config';
 
-const API_URL = 'http://localhost:3000/projects';
+const PROJECTS_API_URL = `${API_URL}/api/projects`;
 
 // Get all values for a project
 export const getProjectValues = createAsyncThunk(
   'projectValue/getProjectValues',
-  async (projectId, { rejectWithValue }) => {
+  async (projectId, { rejectWithValue, getState }) => {
     try {
-      const response = await axios.get(`${API_URL}/${projectId}/values`);
+      const { token } = getState().auth;
+      const response = await axios.get(`${PROJECTS_API_URL}/${projectId}/values`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
       return response.data.data;
     } catch (error) {
       return rejectWithValue(
@@ -21,9 +27,14 @@ export const getProjectValues = createAsyncThunk(
 // Create a new value
 export const createProjectValue = createAsyncThunk(
   'projectValue/createProjectValue',
-  async ({ projectId, valueData }, { rejectWithValue }) => {
+  async ({ projectId, valueData }, { rejectWithValue, getState }) => {
     try {
-      const response = await axios.post(`${API_URL}/${projectId}/values`, valueData);
+      const { token } = getState().auth;
+      const response = await axios.post(`${PROJECTS_API_URL}/${projectId}/values`, valueData, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
       return response.data.data;
     } catch (error) {
       return rejectWithValue(
@@ -36,11 +47,17 @@ export const createProjectValue = createAsyncThunk(
 // Update a value
 export const updateProjectValue = createAsyncThunk(
   'projectValue/updateProjectValue',
-  async ({ projectId, valueId, valueData }, { rejectWithValue }) => {
+  async ({ projectId, valueId, valueData }, { rejectWithValue, getState }) => {
     try {
+      const { token } = getState().auth;
       const response = await axios.put(
-        `${API_URL}/${projectId}/values/${valueId}`,
-        valueData
+        `${PROJECTS_API_URL}/${projectId}/values/${valueId}`,
+        valueData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
       );
       return response.data.data;
     } catch (error) {
@@ -54,9 +71,14 @@ export const updateProjectValue = createAsyncThunk(
 // Delete a value
 export const deleteProjectValue = createAsyncThunk(
   'projectValue/deleteProjectValue',
-  async ({ projectId, valueId }, { rejectWithValue }) => {
+  async ({ projectId, valueId }, { rejectWithValue, getState }) => {
     try {
-      await axios.delete(`${API_URL}/${projectId}/values/${valueId}`);
+      const { token } = getState().auth;
+      await axios.delete(`${PROJECTS_API_URL}/${projectId}/values/${valueId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
       return valueId;
     } catch (error) {
       return rejectWithValue(

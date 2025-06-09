@@ -13,7 +13,7 @@ const energyMonitoringSchema = new mongoose.Schema({
     type: String,
     required: false
   }
-}, { _id: false });
+});
 
 module.exports = {
   embeddedSchema: energyMonitoringSchema,

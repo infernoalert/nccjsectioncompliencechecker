@@ -7,19 +7,19 @@ const { embeddedSchema: glazingSchema } = require('./Glazing');
 const buildingFabricSchema = new mongoose.Schema({
   walls: {
     type: wallSchema,
-    required: true
+    required: false
   },
   roof: {
     type: roofSchema,
-    required: true
+    required: false
   },
   floor: {
     type: floorSchema,
-    required: true
+    required: false
   },
   glazing: {
     type: glazingSchema,
-    required: true
+    required: false
   }
 }, { _id: false });
 

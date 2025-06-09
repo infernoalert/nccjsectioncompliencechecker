@@ -13,7 +13,7 @@ import {
   Select,
 } from '@mui/material';
 
-const AddElectricalDetails = ({ open, onClose, onAdd, projectId, initialData }) => {
+const AddElectricalDetails = ({ open, onClose, onSubmit, editingValue, onEdit }) => {
   const [formData, setFormData] = useState({
     type: 'load',
     name: '',
@@ -21,23 +21,21 @@ const AddElectricalDetails = ({ open, onClose, onAdd, projectId, initialData }) 
     voltage: '',
     current: '',
     deviceId: '',
-    readingType: '',
-    value: '',
-    unit: '',
+    deviceType: '',
+    model: '',
   });
 
   useEffect(() => {
-    if (initialData) {
+    if (editingValue) {
       setFormData({
-        type: initialData.type,
-        name: initialData.name || '',
-        powerRating: initialData.powerRating || '',
-        voltage: initialData.voltage || '',
-        current: initialData.current || '',
-        deviceId: initialData.deviceId || '',
-        readingType: initialData.readingType || '',
-        value: initialData.value || '',
-        unit: initialData.unit || '',
+        type: editingValue.type,
+        name: editingValue.name || '',
+        powerRating: editingValue.powerRating || '',
+        voltage: editingValue.voltage || '',
+        current: editingValue.current || '',
+        deviceId: editingValue.deviceId || '',
+        deviceType: editingValue.deviceType || '',
+        model: editingValue.model || '',
       });
     } else {
       setFormData({
@@ -47,12 +45,11 @@ const AddElectricalDetails = ({ open, onClose, onAdd, projectId, initialData }) 
         voltage: '',
         current: '',
         deviceId: '',
-        readingType: '',
-        value: '',
-        unit: '',
+        deviceType: '',
+        model: '',
       });
     }
-  }, [initialData]);
+  }, [editingValue]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -68,26 +65,28 @@ const AddElectricalDetails = ({ open, onClose, onAdd, projectId, initialData }) 
       ...(formData.type === 'load'
         ? {
             name: formData.name,
-            powerRating: parseFloat(formData.powerRating),
-            voltage: parseFloat(formData.voltage),
-            current: parseFloat(formData.current),
+            powerRating: formData.powerRating ? parseFloat(formData.powerRating) : 0,
+            voltage: formData.voltage ? parseFloat(formData.voltage) : 0,
+            current: formData.current ? parseFloat(formData.current) : 0,
           }
         : {
             deviceId: formData.deviceId,
-            readingType: formData.readingType,
-            value: parseFloat(formData.value),
-            unit: formData.unit,
-            timestamp: new Date().toISOString(),
+            deviceType: formData.deviceType,
+            model: formData.model || '',
           }),
     };
-
-    onAdd(data);
+    console.log('Prepared form data:', data);
+    if (editingValue) {
+      onEdit(editingValue._id, data);
+    } else {
+      onSubmit(data);
+    }
     onClose();
   };
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>{initialData ? 'Edit Value' : 'Add Value'}</DialogTitle>
+      <DialogTitle>{editingValue ? 'Edit Value' : 'Add Value'}</DialogTitle>
       <DialogContent>
         <Grid container spacing={2} sx={{ mt: 1 }}>
           <Grid item xs={12}>
@@ -98,7 +97,7 @@ const AddElectricalDetails = ({ open, onClose, onAdd, projectId, initialData }) 
                 value={formData.type}
                 onChange={handleChange}
                 label="Type"
-                disabled={!!initialData}
+                disabled={!!editingValue}
               >
                 <MenuItem value="load">Load</MenuItem>
                 <MenuItem value="monitoring">Energy Monitoring</MenuItem>
@@ -126,7 +125,6 @@ const AddElectricalDetails = ({ open, onClose, onAdd, projectId, initialData }) 
                   type="number"
                   value={formData.powerRating}
                   onChange={handleChange}
-                  required
                 />
               </Grid>
               <Grid item xs={12} sm={4}>
@@ -137,7 +135,6 @@ const AddElectricalDetails = ({ open, onClose, onAdd, projectId, initialData }) 
                   type="number"
                   value={formData.voltage}
                   onChange={handleChange}
-                  required
                 />
               </Grid>
               <Grid item xs={12} sm={4}>
@@ -148,7 +145,6 @@ const AddElectricalDetails = ({ open, onClose, onAdd, projectId, initialData }) 
                   type="number"
                   value={formData.current}
                   onChange={handleChange}
-                  required
                 />
               </Grid>
             </>
@@ -167,30 +163,19 @@ const AddElectricalDetails = ({ open, onClose, onAdd, projectId, initialData }) 
               <Grid item xs={12}>
                 <TextField
                   fullWidth
-                  label="Reading Type"
-                  name="readingType"
-                  value={formData.readingType}
+                  label="Device Type"
+                  name="deviceType"
+                  value={formData.deviceType}
                   onChange={handleChange}
                   required
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12}>
                 <TextField
                   fullWidth
-                  label="Value"
-                  name="value"
-                  type="number"
-                  value={formData.value}
-                  onChange={handleChange}
-                  required
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Unit"
-                  name="unit"
-                  value={formData.unit}
+                  label="Model"
+                  name="model"
+                  value={formData.model}
                   onChange={handleChange}
                   required
                 />
@@ -202,7 +187,7 @@ const AddElectricalDetails = ({ open, onClose, onAdd, projectId, initialData }) 
       <DialogActions>
         <Button onClick={onClose}>Cancel</Button>
         <Button onClick={handleSubmit} variant="contained" color="primary">
-          {initialData ? 'Update' : 'Add'}
+          {editingValue ? 'Update' : 'Add'}
         </Button>
       </DialogActions>
     </Dialog>
