@@ -34,6 +34,7 @@
     "multer": "^2.0.1",
     "ncc-compliance-backend": "file:",
     "openai": "^4.100.0",
+    "pdf-parse": "^1.1.1",
     "pdf-poppler": "^0.2.1",
     "sharp": "^0.33.5",
     "swagger-jsdoc": "^6.2.8",

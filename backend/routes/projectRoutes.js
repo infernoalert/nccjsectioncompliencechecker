@@ -20,6 +20,10 @@ const {
 const { getAllBuildingTypes } = require('../utils/mappingUtils');
 const diagramService = require('../services/diagramService');
 const { interpretChat } = require('../controllers/diagramController');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
+const { MCPHandler } = require('../mcp');
 
 /**
  * @swagger
@@ -449,5 +453,54 @@ router.delete('/:id/diagram', protect, async (req, res) => {
 
 // Diagram generation routes
 router.post('/:id/interpret-chat', protect, interpretChat);
+
+// AI Analysis endpoint
+router.post('/:projectId/analyze/:filename', protect, async (req, res) => {
+  try {
+    const { projectId, filename } = req.params;
+    const project = await Project.findById(projectId);
+    
+    if (!project) {
+      return res.status(404).json({ error: 'Project not found' });
+    }
+
+    // Find the file in project files
+    const file = project.files.find(f => f.filename === filename);
+    if (!file) {
+      return res.status(404).json({ error: 'File not found' });
+    }
+
+    // Get the full file path
+    const filePath = path.join(__dirname, '..', 'uploads', filename);
+
+    // Initialize MCP handler with OpenAI API key
+    const mcpHandler = new MCPHandler(projectId, process.env.OPENAI_API_KEY);
+
+    // Process the file
+    const result = await mcpHandler.processExistingFile(filePath);
+
+    // Update project with analysis results
+    project.electrical = {
+      ...project.electrical,
+      complianceStatus: result.analysisResults.complianceStatus || 'pending',
+      lastAssessmentDate: new Date(),
+      loads: result.analysisResults.loads || [],
+      energyMonitoring: result.analysisResults.energyMonitoring || []
+    };
+
+    await project.save();
+
+    res.json({ 
+      message: 'Analysis completed successfully',
+      results: result
+    });
+  } catch (error) {
+    console.error('Error in AI analysis:', error);
+    res.status(500).json({ 
+      error: 'Error processing file',
+      details: error.message 
+    });
+  }
+});
 
 module.exports = router; 

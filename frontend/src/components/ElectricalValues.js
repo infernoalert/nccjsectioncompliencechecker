@@ -32,6 +32,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import DrawIcon from '@mui/icons-material/Draw';
 import DownloadIcon from '@mui/icons-material/Download';
+import SmartToyIcon from '@mui/icons-material/SmartToy';
 import AddElectricalDetails from './AddElectricalDetails';
 import {
   getProjectValues,
@@ -55,6 +56,8 @@ const ElectricalValues = () => {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [fileToDelete, setFileToDelete] = useState(null);
   const [deleting, setDeleting] = useState(false);
+  const [analyzing, setAnalyzing] = useState(false);
+  const [analysisError, setAnalysisError] = useState(null);
 
   useEffect(() => {
     dispatch(getProjectValues(id));
@@ -152,8 +155,11 @@ const ElectricalValues = () => {
         },
       });
 
-      // Refresh project data to show new file
-      dispatch(getProjectValues(id));
+      // Refresh both project values and project data to show new file
+      await Promise.all([
+        dispatch(getProjectValues(id)),
+        dispatch(fetchProject(id))
+      ]);
     } catch (error) {
       setUploadError(error.response?.data?.error || 'Error uploading file');
     } finally {
@@ -206,6 +212,24 @@ const ElectricalValues = () => {
   const handleDeleteFileCancel = () => {
     setDeleteDialogOpen(false);
     setFileToDelete(null);
+  };
+
+  const handleAIAnalysis = async (file) => {
+    setAnalyzing(true);
+    setAnalysisError(null);
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.post(`/api/projects/${id}/analyze/${file.filename}`, {}, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      
+      // Refresh project data to show updated analysis
+      dispatch(fetchProject(id));
+    } catch (error) {
+      setAnalysisError(error.response?.data?.error || 'Error analyzing file');
+    } finally {
+      setAnalyzing(false);
+    }
   };
 
   if (isLoading) {
@@ -397,6 +421,16 @@ const ElectricalValues = () => {
                     <>
                       <IconButton
                         edge="end"
+                        aria-label="analyze"
+                        onClick={() => handleAIAnalysis(file)}
+                        disabled={analyzing}
+                        color="primary"
+                        sx={{ mr: 1 }}
+                      >
+                        <SmartToyIcon />
+                      </IconButton>
+                      <IconButton
+                        edge="end"
                         aria-label="download"
                         onClick={() => handleFileDownload(file.filename)}
                       >
@@ -427,6 +461,11 @@ const ElectricalValues = () => {
           </Paper>
         ) : (
           <Typography variant="body2" color="text.secondary">No files available.</Typography>
+        )}
+        {analysisError && (
+          <Alert severity="error" sx={{ mt: 2 }}>
+            {analysisError}
+          </Alert>
         )}
       </Box>
 
