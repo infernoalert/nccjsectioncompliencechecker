@@ -26,7 +26,11 @@ class LLMAnalyzer {
                 max_tokens: 1000
             });
 
+            console.log('Raw LLM Response:', JSON.stringify(response.choices[0].message.content, null, 2));
+            
             const analysis = this._parseAnalysisResponse(response.choices[0].message.content);
+            
+            console.log('Parsed Analysis:', JSON.stringify(analysis, null, 2));
             
             return {
                 success: true,
@@ -89,60 +93,47 @@ class LLMAnalyzer {
 
     _createAnalysisPrompt(text) {
         return `
-        You are an expert compliance analyst specializing in building services. Your task is to review the provided building document text and identify the presence of specific building services.
+You are an expert compliance analyst in building services and electrical infrastructure.
 
-        For each service listed below, determine if it exists or is explicitly mentioned in the document. Consider common abbreviations or alternative phrasing (e.g., "AC" for "Air Conditioning," "PV" for "Photovoltaic" in "Renewable Energy").
+Your task is to analyze the following document text and identify **energy monitoring systems** or **electrical meters**, including smart meters or load monitoring panels.
 
-        If a service is mentioned or clearly implied, mark it as \`true\`.
-        If a service is not mentioned anywhere in the document, or is explicitly stated as absent, mark it as \`false\`.
+Devices may appear with varying labels such as "M", "M1", "HDB-CP1", "HDB-5", or others. Do **not** assume standard naming. Consider these patterns:
+- Any label starting with "M", "HDB", or "TMP"
+- Any component that likely represents a meter, smart meter, monitoring panel, or device involved in energy measurement
 
-        For any identified energy monitoring systems, provide detailed information including:
-        - System type
-        - Name/model
-        - Part number
-        - Description
-        - Manufacturer
-        - Technical specifications
+For **each** identified energy monitoring device, provide:
+- **label** (e.g., "M1", "HDB-CP1")
+- **associated board or panel** (e.g., MSSB-R-01N, TMP-3)
+- **device type** (e.g., smart meter, energy monitoring panel)
+- **description** (any available technical details)
+- **connection point** (if connected via MCCB, MSB, or DB, specify it)
 
-        Do not make assumptions if information is genuinely missing. Only mark as \`true\` if there is evidence of existence.
+Return the result as a JSON array under the key \`"energyMonitoringDevices"\`. Follow this structure exactly:
 
-        Provide your response strictly as a JSON object with the following structure:
-        {
-            "airConditioning": boolean,
-            "artificialLighting": boolean,
-            "appliancePower": boolean,
-            "centralHotWaterSupply": boolean,
-            "internalTransportDevices": boolean,
-            "renewableEnergy": boolean,
-            "evChargingEquipment": boolean,
-            "batterySystems": boolean,
-            "energyMonitoring": {
-                "systemType": string,
-                "name": string,
-                "partNumber": string,
-                "description": string,
-                "manufacturer": string,
-                "specifications": object
-            }
-        }
+{
+  "energyMonitoringDevices": [
+    {
+      "label": "M1",
+      "panel": "MSSB-B-01N",
+      "type": "smart meter",
+      "description": "Connected via 100A MCCB, used for monitoring load on MSSB",
+      "connection": "MCCB 100A, MSSB-B-01N"
+    },
+    ...
+  ]
+}
 
-        Here are the services to identify:
-        - Air Conditioning
-        - Artificial Lighting
-        - Appliance Power
-        - Central Hot Water Supply
-        - Internal Transport Devices
-        - Renewable Energy
-        - EV Charging Equipment
-        - Battery Systems
+Only include devices with sufficient evidence. If no devices are found, return:
+{
+  "energyMonitoringDevices": []
+}
 
-        ---
-        Document Text:
-        ${text}
-        ---
-
-        JSON Output:
-        `;
+Document Text:
+---
+${text}
+---
+JSON Output:
+`;
     }
 
     _createAdditionalAnalysisPrompt(currentResults) {
@@ -166,31 +157,32 @@ class LLMAnalyzer {
             // Try to parse the response as JSON
             const analysis = JSON.parse(response);
             
-            // Ensure all required fields are present with default values
+            // Ensure we have the energyMonitoringDevices array
+            if (!analysis.energyMonitoringDevices || !Array.isArray(analysis.energyMonitoringDevices)) {
+                return {
+                    energyMonitoringDevices: [],
+                    rawAnalysis: response,
+                    error: 'Invalid response format: missing energyMonitoringDevices array'
+                };
+            }
+
+            // Validate each device in the array
+            const validatedDevices = analysis.energyMonitoringDevices.map(device => ({
+                label: device.label || '',
+                panel: device.panel || '',
+                type: device.type || '',
+                description: device.description || '',
+                connection: device.connection || ''
+            }));
+
             return {
-                airConditioning: analysis.airConditioning || false,
-                artificialLighting: analysis.artificialLighting || false,
-                appliancePower: analysis.appliancePower || false,
-                centralHotWaterSupply: analysis.centralHotWaterSupply || false,
-                internalTransportDevices: analysis.internalTransportDevices || false,
-                renewableEnergy: analysis.renewableEnergy || false,
-                evChargingEquipment: analysis.evChargingEquipment || false,
-                batterySystems: analysis.batterySystems || false,
-                energyMonitoring: analysis.energyMonitoring || null,
+                energyMonitoringDevices: validatedDevices,
                 rawAnalysis: response
             };
         } catch (error) {
-            // If parsing fails, create a basic structure with all fields set to false
+            // If parsing fails, return empty array
             return {
-                airConditioning: false,
-                artificialLighting: false,
-                appliancePower: false,
-                centralHotWaterSupply: false,
-                internalTransportDevices: false,
-                renewableEnergy: false,
-                evChargingEquipment: false,
-                batterySystems: false,
-                energyMonitoring: null,
+                energyMonitoringDevices: [],
                 rawAnalysis: response,
                 error: 'Failed to parse analysis response'
             };

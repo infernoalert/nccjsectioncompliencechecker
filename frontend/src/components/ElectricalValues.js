@@ -25,6 +25,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
+  Tooltip,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
@@ -358,18 +359,48 @@ const ElectricalValues = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Device ID</TableCell>
-                <TableCell>Device Type</TableCell>
-                <TableCell>Model</TableCell>
+                <TableCell>Label</TableCell>
+                <TableCell>Panel</TableCell>
+                <TableCell>Type</TableCell>
+                <TableCell>Description</TableCell>
+                <TableCell>Connection</TableCell>
                 <TableCell>Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {monitoring.map((monitor) => (
                 <TableRow key={monitor._id}>
-                  <TableCell>{monitor.deviceId}</TableCell>
-                  <TableCell>{monitor.deviceType}</TableCell>
-                  <TableCell>{monitor.model}</TableCell>
+                  <TableCell>{monitor.label}</TableCell>
+                  <TableCell>{monitor.panel}</TableCell>
+                  <TableCell>{monitor.type}</TableCell>
+                  <TableCell>
+                    <Tooltip title={monitor.description || 'No description available'}>
+                      <Typography
+                        sx={{
+                          maxWidth: 200,
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap'
+                        }}
+                      >
+                        {monitor.description || '-'}
+                      </Typography>
+                    </Tooltip>
+                  </TableCell>
+                  <TableCell>
+                    <Tooltip title={monitor.connection || 'No connection details'}>
+                      <Typography
+                        sx={{
+                          maxWidth: 200,
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap'
+                        }}
+                      >
+                        {monitor.connection || '-'}
+                      </Typography>
+                    </Tooltip>
+                  </TableCell>
                   <TableCell>
                     <IconButton
                       onClick={() => handleEditClick(monitor)}

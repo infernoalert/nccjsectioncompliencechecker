@@ -41,3 +41,5 @@ logs
 
 backend/.env.production
 backend/uploads/*
+backend/output/json/*
+backend/output/diagrams/*

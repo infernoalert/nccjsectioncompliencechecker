@@ -32,7 +32,7 @@ exports.getProjectValues = asyncHandler(async (req, res) => {
     }),
     ...(project.electrical?.energyMonitoring || []).map(monitor => {
       const monitorObj = monitor.toObject();
-      console.log('Monitor object:', { id: monitorObj._id.toString(), deviceId: monitorObj.deviceId });
+      console.log('Monitor object:', { id: monitorObj._id.toString(), label: monitorObj.label });
       return { ...monitorObj, type: 'monitoring' };
     })
   ];
@@ -235,11 +235,13 @@ exports.createProjectValue = asyncHandler(async (req, res) => {
       success: true,
       data: { ...savedLoad.toObject(), type: 'load' }
     });
-  } else if (type === 'monitoring') {
+  } else if (type === 'monitoring' || ['smart meter', 'energy meter', 'power meter', 'current transformer', 'voltage transformer'].includes(type)) {
     const newMonitor = {
-      deviceId: data.deviceId,
-      deviceType: data.deviceType,
-      model: data.model || ''
+      label: data.label,
+      panel: data.panel,
+      type: type === 'monitoring' ? data.type : type, // Use the type directly if it's a device type
+      description: data.description || '',
+      connection: data.connection || ''
     };
     project.electrical.energyMonitoring.push(newMonitor);
     await project.save();

@@ -26,13 +26,17 @@ const loadSchema = Joi.object({
 });
 
 const monitoringSchema = Joi.object({
-  type: Joi.string().valid('monitoring').required(),
-  deviceId: Joi.string().required(),
-  deviceType: Joi.string().required(),
-  model: Joi.string().allow('').default('')
+  type: Joi.string().valid('smart meter', 'energy meter', 'power meter', 'current transformer', 'voltage transformer').required(),
+  label: Joi.string().required(),
+  panel: Joi.string().required(),
+  description: Joi.string().allow('').default(''),
+  connection: Joi.string().allow('').default('')
 });
 
-const projectValueSchema = Joi.alternatives().try(loadSchema, monitoringSchema);
+const projectValueSchema = Joi.alternatives().try(
+  loadSchema,
+  monitoringSchema
+);
 
 const validateProjectValue = (data) => {
   return projectValueSchema.validate(data);

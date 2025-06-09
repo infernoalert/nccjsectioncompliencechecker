@@ -16,38 +16,50 @@ import {
 
 const AddElectricalDetails = ({ open, onClose, onSubmit, editingValue, onEdit }) => {
   const [formData, setFormData] = useState({
-    type: 'load',
+    type: 'monitoring',
+    // Load fields
     name: '',
     powerRating: '',
     voltage: '',
     current: '',
-    deviceId: '',
+    // Monitoring fields
+    label: '',
+    panel: '',
     deviceType: '',
-    model: '',
+    description: '',
+    connection: '',
   });
 
   useEffect(() => {
     if (editingValue) {
       setFormData({
         type: editingValue.type,
+        // Load fields
         name: editingValue.name || '',
         powerRating: editingValue.powerRating || '',
         voltage: editingValue.voltage || '',
         current: editingValue.current || '',
-        deviceId: editingValue.deviceId || '',
-        deviceType: editingValue.deviceType || '',
-        model: editingValue.model || '',
+        // Monitoring fields
+        label: editingValue.label || '',
+        panel: editingValue.panel || '',
+        deviceType: editingValue.type || '',
+        description: editingValue.description || '',
+        connection: editingValue.connection || '',
       });
     } else {
       setFormData({
-        type: 'load',
+        type: 'monitoring',
+        // Load fields
         name: '',
         powerRating: '',
         voltage: '',
         current: '',
-        deviceId: '',
+        // Monitoring fields
+        label: '',
+        panel: '',
         deviceType: '',
-        model: '',
+        description: '',
+        connection: '',
       });
     }
   }, [editingValue]);
@@ -61,21 +73,22 @@ const AddElectricalDetails = ({ open, onClose, onSubmit, editingValue, onEdit })
   };
 
   const handleSubmit = () => {
-    const data = {
-      type: formData.type,
-      ...(formData.type === 'load'
-        ? {
-            name: formData.name,
-            powerRating: formData.powerRating ? parseFloat(formData.powerRating) : 0,
-            voltage: formData.voltage ? parseFloat(formData.voltage) : 0,
-            current: formData.current ? parseFloat(formData.current) : 0,
-          }
-        : {
-            deviceId: formData.deviceId || '',
-            deviceType: formData.deviceType || '',
-            model: formData.model || '',
-          }),
-    };
+    const data = formData.type === 'load'
+      ? {
+          type: 'load',
+          name: formData.name,
+          powerRating: formData.powerRating ? parseFloat(formData.powerRating) : 0,
+          voltage: formData.voltage ? parseFloat(formData.voltage) : 0,
+          current: formData.current ? parseFloat(formData.current) : 0,
+        }
+      : {
+          type: formData.deviceType,
+          label: formData.label,
+          panel: formData.panel,
+          description: formData.description || '',
+          connection: formData.connection || ''
+        };
+    
     console.log('Prepared form data:', data);
     if (editingValue) {
       onEdit(editingValue._id, data);
@@ -87,18 +100,20 @@ const AddElectricalDetails = ({ open, onClose, onSubmit, editingValue, onEdit })
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>{editingValue ? 'Edit Value' : 'Add Value'}</DialogTitle>
+      <DialogTitle>
+        {editingValue ? 'Edit ' : 'Add '}
+        {formData.type === 'load' ? 'Load' : 'Energy Monitoring Device'}
+      </DialogTitle>
       <DialogContent>
         <Grid container spacing={2} sx={{ mt: 1 }}>
           <Grid item xs={12}>
-            <FormControl fullWidth>
+            <FormControl fullWidth required>
               <InputLabel>Type</InputLabel>
               <Select
                 name="type"
                 value={formData.type}
                 onChange={handleChange}
                 label="Type"
-                disabled={!!editingValue}
               >
                 <MenuItem value="load">Load</MenuItem>
                 <MenuItem value="monitoring">Energy Monitoring</MenuItem>
@@ -154,15 +169,27 @@ const AddElectricalDetails = ({ open, onClose, onSubmit, editingValue, onEdit })
               <Grid item xs={12}>
                 <TextField
                   fullWidth
-                  label="Device ID"
-                  name="deviceId"
-                  value={formData.deviceId}
+                  label="Label"
+                  name="label"
+                  value={formData.label}
                   onChange={handleChange}
                   required
+                  placeholder="e.g., M1, SM1"
                 />
               </Grid>
               <Grid item xs={12}>
-                <FormControl fullWidth required error={formData.type === 'monitoring' && !formData.deviceType}>
+                <TextField
+                  fullWidth
+                  label="Panel"
+                  name="panel"
+                  value={formData.panel}
+                  onChange={handleChange}
+                  required
+                  placeholder="e.g., MSSB-B-01N, TMP-3"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <FormControl fullWidth required>
                   <InputLabel>Device Type</InputLabel>
                   <Select
                     name="deviceType"
@@ -170,23 +197,34 @@ const AddElectricalDetails = ({ open, onClose, onSubmit, editingValue, onEdit })
                     onChange={handleChange}
                     label="Device Type"
                   >
-                    <MenuItem value="meter">Meter</MenuItem>
-                    <MenuItem value="metermemory">Meter Memory</MenuItem>
-                    <MenuItem value="smartmeter">Smart Meter</MenuItem>
-                    <MenuItem value="authorithymeter">Authority Meter</MenuItem>
+                    <MenuItem value="smart meter">Smart Meter</MenuItem>
+                    <MenuItem value="energy meter">Energy Meter</MenuItem>
+                    <MenuItem value="power meter">Power Meter</MenuItem>
+                    <MenuItem value="current transformer">Current Transformer</MenuItem>
+                    <MenuItem value="voltage transformer">Voltage Transformer</MenuItem>
                   </Select>
-                  {formData.type === 'monitoring' && !formData.deviceType && (
-                    <FormHelperText error>Device Type is required</FormHelperText>
-                  )}
                 </FormControl>
               </Grid>
               <Grid item xs={12}>
                 <TextField
                   fullWidth
-                  label="Model"
-                  name="model"
-                  value={formData.model}
+                  label="Description"
+                  name="description"
+                  value={formData.description}
                   onChange={handleChange}
+                  multiline
+                  rows={2}
+                  placeholder="Technical details about the device"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Connection"
+                  name="connection"
+                  value={formData.connection}
+                  onChange={handleChange}
+                  placeholder="Connection details (e.g., MCCB 100A, MSSB-B-01N)"
                 />
               </Grid>
             </>
