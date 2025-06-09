@@ -159,38 +159,6 @@ const ProjectDetails = () => {
             {currentProject.name}
           </Typography>
           <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-            <input
-              accept="application/pdf"
-              style={{ display: 'none' }}
-              id="file-upload"
-              type="file"
-              onChange={handleFileUpload}
-              disabled={uploading}
-            />
-            <label htmlFor="file-upload">
-              <Button
-                variant="contained"
-                color="primary"
-                component="span"
-                startIcon={<PictureAsPdfIcon />}
-                disabled={uploading}
-              >
-                {uploading ? 'Uploading...' : 'Upload PDF'}
-              </Button>
-            </label>
-            {uploadError && (
-              <Alert severity="error" sx={{ position: 'absolute', top: '100%', right: 0, mt: 1 }}>
-                {uploadError}
-              </Alert>
-            )}
-            <Button
-              variant="contained"
-              color="secondary"
-              startIcon={<DrawIcon />}
-              onClick={() => navigate(`/projects/${id}/diagram`)}
-            >
-              Draw Diagram
-            </Button>
             <Chip
               label={currentProject.status || 'In Progress'}
               color={currentProject.status === 'Completed' ? 'success' : 'warning'}

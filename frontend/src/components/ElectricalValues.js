@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   Container,
@@ -16,10 +16,22 @@ import {
   Alert,
   Button,
   IconButton,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
+import DrawIcon from '@mui/icons-material/Draw';
+import DownloadIcon from '@mui/icons-material/Download';
 import AddElectricalDetails from './AddElectricalDetails';
 import {
   getProjectValues,
@@ -27,16 +39,28 @@ import {
   updateProjectValue,
   deleteProjectValue
 } from '../features/projectValue/projectValueSlice';
+import axios from 'axios';
+import { fetchProject } from '../store/slices/projectSlice';
 
 const ElectricalValues = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { values, isLoading, error } = useSelector((state) => state.projectValue);
   const [openAddDialog, setOpenAddDialog] = useState(false);
   const [editingValue, setEditingValue] = useState(null);
+  const [uploadError, setUploadError] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const { currentProject, loading: projectLoading, error: projectError } = useSelector(state => state.project);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [fileToDelete, setFileToDelete] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     dispatch(getProjectValues(id));
+    if (!currentProject || currentProject._id !== id) {
+      dispatch(fetchProject(id));
+    }
   }, [dispatch, id]);
 
   const handleAdd = async (data) => {
@@ -97,6 +121,93 @@ const ElectricalValues = () => {
     setEditingValue(null);
   };
 
+  const handleFileUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    // Check file type
+    if (file.type !== 'application/pdf') {
+      setUploadError('Only PDF files are allowed');
+      return;
+    }
+
+    // Check file size (2MB)
+    if (file.size > 2 * 1024 * 1024) {
+      setUploadError('File size must be less than 2MB');
+      return;
+    }
+
+    setUploading(true);
+    setUploadError(null);
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.post(`/api/projects/${id}/upload`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${token}`
+        },
+      });
+
+      // Refresh project data to show new file
+      dispatch(getProjectValues(id));
+    } catch (error) {
+      setUploadError(error.response?.data?.error || 'Error uploading file');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleFileDownload = async (filename) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`/api/projects/${id}/files/${filename}`, {
+        responseType: 'blob',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', filename);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      // Optionally handle error
+    }
+  };
+
+  const handleDeleteFileClick = (file) => {
+    setFileToDelete(file);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteFileConfirm = async () => {
+    if (!fileToDelete) return;
+    setDeleting(true);
+    try {
+      const token = localStorage.getItem('token');
+      await axios.delete(`/api/projects/${id}/files/${fileToDelete.filename}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      setDeleteDialogOpen(false);
+      setFileToDelete(null);
+      dispatch(fetchProject(id));
+    } catch (error) {
+      // Optionally show error
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  const handleDeleteFileCancel = () => {
+    setDeleteDialogOpen(false);
+    setFileToDelete(null);
+  };
+
   if (isLoading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="80vh">
@@ -126,15 +237,49 @@ const ElectricalValues = () => {
           <Typography variant="h4" component="h1">
             Electrical Values
           </Typography>
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<AddIcon />}
-            onClick={() => setOpenAddDialog(true)}
-          >
-            Add Value
-          </Button>
+          <Box sx={{ display: 'flex', gap: 2 }}>
+            <input
+              accept="application/pdf"
+              style={{ display: 'none' }}
+              id="file-upload"
+              type="file"
+              onChange={handleFileUpload}
+              disabled={uploading}
+            />
+            <label htmlFor="file-upload">
+              <Button
+                variant="contained"
+                color="primary"
+                component="span"
+                startIcon={<PictureAsPdfIcon />}
+                disabled={uploading}
+              >
+                {uploading ? 'Uploading...' : 'Upload PDF'}
+              </Button>
+            </label>
+            <Button
+              variant="contained"
+              color="secondary"
+              startIcon={<DrawIcon />}
+              onClick={() => navigate(`/projects/${id}/diagram`)}
+            >
+              Draw Diagram
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<AddIcon />}
+              onClick={() => setOpenAddDialog(true)}
+            >
+              Add Value
+            </Button>
+          </Box>
         </Box>
+        {uploadError && (
+          <Alert severity="error" sx={{ mt: 2 }}>
+            {uploadError}
+          </Alert>
+        )}
 
         {/* Loads Table */}
         <Typography variant="h6" sx={{ mt: 3, mb: 2 }}>
@@ -230,6 +375,80 @@ const ElectricalValues = () => {
         editingValue={editingValue}
         onEdit={handleEdit}
       />
+
+      {/* Project Files Section */}
+      <Box sx={{ mt: 4 }}>
+        <Typography variant="h6" gutterBottom>
+          Project Files
+        </Typography>
+        {projectLoading ? (
+          <Box display="flex" justifyContent="center" p={2}>
+            <CircularProgress size={24} />
+          </Box>
+        ) : projectError ? (
+          <Alert severity="error" sx={{ mt: 2 }}>{projectError}</Alert>
+        ) : currentProject && currentProject.files && currentProject.files.length > 0 ? (
+          <Paper>
+            <List>
+              {currentProject.files.map((file) => (
+                <ListItem
+                  key={file.filename}
+                  secondaryAction={
+                    <>
+                      <IconButton
+                        edge="end"
+                        aria-label="download"
+                        onClick={() => handleFileDownload(file.filename)}
+                      >
+                        <DownloadIcon />
+                      </IconButton>
+                      <IconButton
+                        edge="end"
+                        aria-label="delete"
+                        color="error"
+                        onClick={() => handleDeleteFileClick(file)}
+                        disabled={deleting}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </>
+                  }
+                >
+                  <ListItemIcon>
+                    <PictureAsPdfIcon color="error" />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={file.originalName}
+                    secondary={`Size: ${(file.size / 1024).toFixed(1)} KB • Uploaded: ${new Date(file.uploadedAt).toLocaleDateString()}`}
+                  />
+                </ListItem>
+              ))}
+            </List>
+          </Paper>
+        ) : (
+          <Typography variant="body2" color="text.secondary">No files available.</Typography>
+        )}
+      </Box>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog
+        open={deleteDialogOpen}
+        onClose={handleDeleteFileCancel}
+        aria-labelledby="delete-file-dialog-title"
+      >
+        <DialogTitle id="delete-file-dialog-title">Delete File</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete the file "{fileToDelete?.originalName}"? This action cannot be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDeleteFileCancel} disabled={deleting}>Cancel</Button>
+          <Button onClick={handleDeleteFileConfirm} color="error" disabled={deleting}>
+            {deleting ? 'Deleting...' : 'Delete'}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };

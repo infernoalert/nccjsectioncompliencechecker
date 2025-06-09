@@ -40,3 +40,4 @@ logs
 *.log 
 
 backend/.env.production
+backend/uploads/*
