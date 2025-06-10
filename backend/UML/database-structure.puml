@@ -130,14 +130,15 @@ class Load {
 }
 
 class EnergyMonitoring {
-    +String systemType
-    +String name
-    +String partNumber
+    +String label
+    +String panel
+    +String type
     +String description
-    +String manufacturer
-    +Map specifications
+    +String connection
     +String status
-    +ObjectId[] connectedLoads
+    +Date lastUpdated
+    +Date createdAt
+    +Date updatedAt
 }
 
 class MCP {

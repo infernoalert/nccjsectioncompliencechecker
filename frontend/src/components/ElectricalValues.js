@@ -26,6 +26,9 @@ import {
   DialogContentText,
   DialogActions,
   Tooltip,
+  Grid,
+  Card,
+  CardContent,
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
@@ -60,6 +63,7 @@ const ElectricalValues = () => {
   const [deleting, setDeleting] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
   const [analysisError, setAnalysisError] = useState(null);
+  const [processingFiles, setProcessingFiles] = useState(new Set());
 
   useEffect(() => {
     dispatch(getProjectValues(id));
@@ -219,6 +223,7 @@ const ElectricalValues = () => {
   const handleAIAnalysis = async (file) => {
     setAnalyzing(true);
     setAnalysisError(null);
+    setProcessingFiles(prev => new Set([...prev, file.filename]));
     try {
       const token = localStorage.getItem('token');
       const response = await axios.post(`${API_URL}/api/projects/${id}/analyze/${file.filename}`, {}, {
@@ -231,6 +236,11 @@ const ElectricalValues = () => {
       setAnalysisError(error.response?.data?.error || 'Error analyzing file');
     } finally {
       setAnalyzing(false);
+      setProcessingFiles(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(file.filename);
+        return newSet;
+      });
     }
   };
 
@@ -361,7 +371,7 @@ const ElectricalValues = () => {
               <TableRow>
                 <TableCell>Label</TableCell>
                 <TableCell>Panel</TableCell>
-                <TableCell>Type</TableCell>
+                <TableCell>Device Type</TableCell>
                 <TableCell>Description</TableCell>
                 <TableCell>Connection</TableCell>
                 <TableCell>Actions</TableCell>
@@ -455,8 +465,8 @@ const ElectricalValues = () => {
                         edge="end"
                         aria-label="analyze"
                         onClick={() => handleAIAnalysis(file)}
-                        disabled={analyzing}
-                        color="primary"
+                        disabled={analyzing || processingFiles.has(file.filename)}
+                        color={processingFiles.has(file.filename) ? "disabled" : "primary"}
                         sx={{ mr: 1 }}
                       >
                         <SmartToyIcon />
@@ -484,7 +494,17 @@ const ElectricalValues = () => {
                     <PictureAsPdfIcon color="error" />
                   </ListItemIcon>
                   <ListItemText
-                    primary={file.originalName}
+                    primary={
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        {file.originalName}
+                        {processingFiles.has(file.filename) && (
+                          <Typography variant="caption" color="text.secondary" sx={{ display: 'flex', alignItems: 'center' }}>
+                            <CircularProgress size={12} sx={{ mr: 1 }} />
+                            Processing...
+                          </Typography>
+                        )}
+                      </Box>
+                    }
                     secondary={`Size: ${(file.size / 1024).toFixed(1)} KB • Uploaded: ${new Date(file.uploadedAt).toLocaleDateString()}`}
                   />
                 </ListItem>

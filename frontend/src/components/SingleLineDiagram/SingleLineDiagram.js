@@ -436,7 +436,7 @@ const SingleLineDiagramInner = () => {
             {showHandles ? 'Hide Handles' : 'Show Handles'}
           </Button>
           <Button
-            variant="contained"
+            variant="outlined"
             size="small"
             onClick={onSave}
             disabled={isSaving}
@@ -444,6 +444,27 @@ const SingleLineDiagramInner = () => {
             sx={{ textTransform: 'none' }}
           >
             {isSaving ? 'Saving...' : 'Save Diagram'}
+          </Button>
+          <Button
+            variant="contained"
+            size="large"
+            startIcon={<SmartToyIcon />}
+            sx={{
+              backgroundColor: '#FF4081', // Bright pink color
+              color: 'white',
+              '&:hover': {
+                backgroundColor: '#F50057', // Darker pink on hover
+              },
+              boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
+              fontSize: '1.1rem',
+              fontWeight: 'bold',
+              padding: '8px 20px',
+              borderRadius: '8px',
+              textTransform: 'none',
+              ml: 2 // margin-left for spacing
+            }}
+          >
+            AI Draw
           </Button>
           <Button
             variant="outlined"
@@ -458,7 +479,12 @@ const SingleLineDiagramInner = () => {
       </Box>
 
       {/* Right side - Chat */}
-      {showAssistantPanel && (
+      {/* 
+        Diagram Chat Assistant section has been disabled as per requirements.
+        This section previously contained the AI-powered chat interface for diagram generation.
+        The functionality has been preserved in the code but is currently not in use.
+      */}
+      {/* {showAssistantPanel && (
         <Box
           sx={{
             width: { xs: '100vw', sm: 650, md: 700 },
@@ -480,7 +506,7 @@ const SingleLineDiagramInner = () => {
             currentStep={currentStep}
           />
         </Box>
-      )}
+      )} */}
     </Box>
   );
 };

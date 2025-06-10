@@ -74,25 +74,28 @@ class ProjectUpdater {
         // Convert to lowercase and remove special characters
         const normalized = type.toLowerCase().replace(/[_-]/g, ' ').trim();
         
-        // Map variations to standard types
+        // Map variations to accepted types
         const typeMap = {
-            'smart meter': 'smart meter',
-            'smartmeter': 'smart meter',
-            'energy meter': 'energy meter',
-            'energymeter': 'energy meter',
-            'power meter': 'power meter',
-            'powermeter': 'power meter',
-            'current transformer': 'current transformer',
-            'ct': 'current transformer',
-            'voltage transformer': 'voltage transformer',
-            'vt': 'voltage transformer',
-            'meter': 'smart meter',
-            'energy monitoring panel': 'smart meter',
-            'monitoring panel': 'smart meter',
-            'monitoringpanel': 'smart meter'
+            'smart meter': 'smart-meter',
+            'smartmeter': 'smart-meter',
+            'monitoring': 'smart-meter',
+            'monitoring panel': 'smart-meter',
+            'monitoringpanel': 'smart-meter',
+            'monitoring device': 'smart-meter',
+            'energy monitoring panel': 'smart-meter',
+            'meter': 'meter',
+            'energy meter': 'meter',
+            'power meter': 'meter',
+            'current transformer': 'meter-memory',
+            'ct': 'meter-memory',
+            'voltage transformer': 'meter-memory',
+            'vt': 'meter-memory',
+            'meter memory': 'meter-memory',
+            'auth meter': 'auth-meter',
+            'auth-meter': 'auth-meter'
         };
 
-        return typeMap[normalized] || 'smart meter'; // Default to smart meter if no match
+        return typeMap[normalized] || 'smart-meter'; // Default to smart-meter if no match
     }
 
     async updateProject(analysis) {
