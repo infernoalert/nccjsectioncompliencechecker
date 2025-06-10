@@ -3,18 +3,16 @@ const mongoose = require('mongoose');
 const energyMonitoringSchema = new mongoose.Schema({
     label: {
         type: String,
-        required: true,
-        index: true
+        required: true
     },
     panel: {
         type: String,
-        required: true,
-        index: true
+        required: true
     },
     type: {
         type: String,
         required: true,
-        enum: ['smart meter', 'energy meter', 'power meter', 'current transformer', 'voltage transformer']
+        enum: ['smart-meter', 'general-meter', 'auth-meter', 'memory-meter']
     },
     description: {
         type: String,
@@ -34,11 +32,12 @@ const energyMonitoringSchema = new mongoose.Schema({
         default: Date.now
     }
 }, {
-    timestamps: true
+    timestamps: true,
+    _id: false // Disable _id for embedded documents
 });
 
-// Compound index for unique device identification
-energyMonitoringSchema.index({ label: 1, panel: 1 }, { unique: true });
+// Remove the compound index since this is an embedded schema
+// The uniqueness will be enforced at the application level
 
 module.exports = {
     embeddedSchema: energyMonitoringSchema,

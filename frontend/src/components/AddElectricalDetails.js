@@ -197,11 +197,10 @@ const AddElectricalDetails = ({ open, onClose, onSubmit, editingValue, onEdit })
                     onChange={handleChange}
                     label="Device Type"
                   >
-                    <MenuItem value="smart meter">Smart Meter</MenuItem>
-                    <MenuItem value="energy meter">Energy Meter</MenuItem>
-                    <MenuItem value="power meter">Power Meter</MenuItem>
-                    <MenuItem value="current transformer">Current Transformer</MenuItem>
-                    <MenuItem value="voltage transformer">Voltage Transformer</MenuItem>
+                    <MenuItem value="smart-meter">Smart Meter</MenuItem>
+                    <MenuItem value="general-meter">General Meter</MenuItem>
+                    <MenuItem value="auth-meter">Auth Meter</MenuItem>
+                    <MenuItem value="memory-meter">Meter with Memory</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>

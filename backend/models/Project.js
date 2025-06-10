@@ -154,7 +154,19 @@ const projectSchema = new mongoose.Schema({
       energyMonitoring: [],
       complianceStatus: 'pending',
       lastAssessmentDate: new Date()
-    })
+    }),
+    validate: {
+      validator: function(electrical) {
+        // Ensure energyMonitoring devices have required fields
+        if (electrical && electrical.energyMonitoring) {
+          return electrical.energyMonitoring.every(device => 
+            device && device.label && device.panel
+          );
+        }
+        return true;
+      },
+      message: 'All energy monitoring devices must have both label and panel specified'
+    }
   },
   mcp: {
     type: mcpSchema,

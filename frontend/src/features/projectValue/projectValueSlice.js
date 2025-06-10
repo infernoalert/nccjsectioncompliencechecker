@@ -74,13 +74,14 @@ export const deleteProjectValue = createAsyncThunk(
   async ({ projectId, valueId }, { rejectWithValue, getState }) => {
     try {
       const { token } = getState().auth;
-      await axios.delete(`${PROJECTS_API_URL}/${projectId}/values/${valueId}`, {
+      const response = await axios.delete(`${PROJECTS_API_URL}/${projectId}/values/${valueId}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
-      return valueId;
+      return { valueId, response: response.data };
     } catch (error) {
+      console.error('Delete error:', error.response?.data || error.message);
       return rejectWithValue(
         error.response?.data?.error || 'Failed to delete electrical value'
       );
@@ -129,8 +130,17 @@ const projectValueSlice = createSlice({
         }
       })
       // Delete value
+      .addCase(deleteProjectValue.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
       .addCase(deleteProjectValue.fulfilled, (state, action) => {
-        state.values = state.values.filter((v) => v._id !== action.payload);
+        state.isLoading = false;
+        state.values = state.values.filter((v) => v._id !== action.payload.valueId);
+      })
+      .addCase(deleteProjectValue.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
       });
   },
 });

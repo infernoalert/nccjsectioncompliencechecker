@@ -7,7 +7,9 @@
   - Example: `add,smart-meter,4,-8`
   - **Accepted node types:**
     - smart-meter
-    - meter
+    - general-meter
+    - auth-meter
+    - memory-meter
     - transformer
     - load
     - cloud
@@ -15,8 +17,7 @@
     - rs485
     - ethernet
     - onpremise
-    - auth-meter
-    - meter-memory
+    -
   - Only these node types are accepted for the `add` command. Any other value will result in an error.
 
 - `delete <node-id>` - Delete a node by its ID

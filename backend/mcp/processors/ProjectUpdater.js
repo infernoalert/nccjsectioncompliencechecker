@@ -83,19 +83,18 @@ class ProjectUpdater {
             'monitoringpanel': 'smart-meter',
             'monitoring device': 'smart-meter',
             'energy monitoring panel': 'smart-meter',
-            'meter': 'meter',
-            'energy meter': 'meter',
-            'power meter': 'meter',
-            'current transformer': 'meter-memory',
-            'ct': 'meter-memory',
-            'voltage transformer': 'meter-memory',
-            'vt': 'meter-memory',
-            'meter memory': 'meter-memory',
+            'meter': 'general-meter',
+            'energy-meter': 'general-meter',
+            'energymeter': 'general-meter',
+            'power-meter': 'general-meter',
+            'powermeter': 'general-meter',           
+            'meter memory': 'memort-meter',
             'auth meter': 'auth-meter',
-            'auth-meter': 'auth-meter'
+            'auth-meter': 'auth-meter',
+            'authority meter': 'auth-meter',
         };
 
-        return typeMap[normalized] || 'smart-meter'; // Default to smart-meter if no match
+        return typeMap[normalized] || 'smart meter'; // Default to smart meter if no match
     }
 
     async updateProject(analysis) {
@@ -117,7 +116,7 @@ class ProjectUpdater {
             project.electrical.energyMonitoring = [];
 
             // Handle energy monitoring devices
-            for (const device of analysis.energyMonitoringDevices) {
+            for (const device of analysis.energyMonitoringDevices.filter(d => d.label && d.panel)) {
                 // Create new energy monitoring record with normalized type
                 const energyMonitoringData = {
                     label: device.label,

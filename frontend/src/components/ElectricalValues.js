@@ -101,22 +101,28 @@ const ElectricalValues = () => {
 
   const handleDelete = async (value) => {
     try {
-      console.log('Deleting load:', value);
-      const valueId = value._id;
-      console.log('Attempting to delete value with ID:', valueId);
-      
+      if (!value || !value._id) {
+        console.error('Invalid value object:', value);
+        return;
+      }
+
+      console.log('Deleting value:', value);
       const resultAction = await dispatch(deleteProjectValue({ 
         projectId: id, 
-        valueId: valueId 
+        valueId: value._id 
       }));
 
       if (deleteProjectValue.fulfilled.match(resultAction)) {
-        dispatch(getProjectValues(id));
-      } else {
-        console.error('Error deleting value:', resultAction.error);
+        // Success - the Redux slice will automatically update the state
+        console.log('Successfully deleted value');
+      } else if (deleteProjectValue.rejected.match(resultAction)) {
+        // Show error message
+        console.error('Failed to delete value:', resultAction.payload);
+        setUploadError(resultAction.payload || 'Failed to delete value');
       }
     } catch (error) {
-      console.error('Error deleting value:', error.message);
+      console.error('Error in delete handler:', error);
+      setUploadError(error.message || 'An error occurred while deleting');
     }
   };
 
@@ -254,9 +260,9 @@ const ElectricalValues = () => {
 
   if (error) {
     return (
-      <Container>
-        <Alert severity="error" sx={{ mt: 2 }}>
-          {error}
+      <Container maxWidth="lg" sx={{ mt: 4 }}>
+        <Alert severity="error">
+          {typeof error === 'object' ? error.message : error}
         </Alert>
       </Container>
     );

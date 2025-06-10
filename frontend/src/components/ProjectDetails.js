@@ -227,7 +227,9 @@ const ProjectDetails = () => {
                     <CircularProgress size={24} />
                   </Box>
                 ) : error ? (
-                  <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>
+                  <Alert severity="error" sx={{ mt: 2 }}>
+                    {typeof error === 'object' ? error.message : error}
+                  </Alert>
                 ) : currentProject?.electrical ? (
                   <>
                     <Box sx={{ mb: 2 }}>
@@ -269,11 +271,7 @@ const ProjectDetails = () => {
                       View Detailed Electrical Data
                     </Button>
                   </>
-                ) : (
-                  <Typography variant="body1" color="text.secondary">
-                    No electrical data available
-                  </Typography>
-                )}
+                ) : null}
               </CardContent>
             </Card>
           </Grid>

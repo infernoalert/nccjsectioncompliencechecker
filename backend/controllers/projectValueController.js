@@ -27,12 +27,18 @@ exports.getProjectValues = asyncHandler(async (req, res) => {
   const values = [
     ...(project.electrical?.loads || []).map(load => {
       const loadObj = load.toObject();
-      console.log('Load object:', { id: loadObj._id.toString(), name: loadObj.name });
+      console.log('Load object:', { 
+        id: loadObj._id ? loadObj._id.toString() : 'no-id', 
+        name: loadObj.name 
+      });
       return { ...loadObj, type: 'load' };
     }),
     ...(project.electrical?.energyMonitoring || []).map(monitor => {
       const monitorObj = monitor.toObject();
-      console.log('Monitor object:', { id: monitorObj._id.toString(), label: monitorObj.label });
+      console.log('Monitor object:', { 
+        id: monitorObj._id ? monitorObj._id.toString() : 'no-id', 
+        label: monitorObj.label 
+      });
       return { ...monitorObj, type: 'monitoring' };
     })
   ];
@@ -235,13 +241,34 @@ exports.createProjectValue = asyncHandler(async (req, res) => {
       success: true,
       data: { ...savedLoad.toObject(), type: 'load' }
     });
-  } else if (type === 'monitoring' || ['smart meter', 'energy meter', 'power meter', 'current transformer', 'voltage transformer'].includes(type)) {
+  } else if (type === 'monitoring' || ['smart-meter', 'energy meter', 'power meter', 'current transformer', 'voltage transformer'].includes(type)) {
+    // Prevent creation if label or panel is missing
+    if (!data.label || !data.panel) {
+      return res.status(400).json({
+        success: false,
+        error: 'Label and panel are required for energy monitoring devices.'
+      });
+    }
+
+    // Check for duplicate label and panel combination
+    const existingDevice = project.electrical.energyMonitoring.find(
+      device => device.label === data.label && device.panel === data.panel
+    );
+    if (existingDevice) {
+      return res.status(400).json({
+        success: false,
+        error: 'A device with this label and panel combination already exists.'
+      });
+    }
+
     const newMonitor = {
       label: data.label,
       panel: data.panel,
       type: type === 'monitoring' ? data.type : type, // Use the type directly if it's a device type
       description: data.description || '',
-      connection: data.connection || ''
+      connection: data.connection || '',
+      status: 'active',
+      lastUpdated: new Date()
     };
     project.electrical.energyMonitoring.push(newMonitor);
     await project.save();
@@ -303,6 +330,14 @@ exports.updateProjectValue = asyncHandler(async (req, res) => {
     });
   }
 
+  // Prevent update if label or panel is missing
+  if (data.label === undefined || data.panel === undefined || !data.label || !data.panel) {
+    return res.status(400).json({
+      success: false,
+      error: 'Label and panel are required for energy monitoring devices.'
+    });
+  }
+
   Object.assign(value, data);
   await project.save();
 
@@ -333,16 +368,30 @@ exports.deleteProjectValue = asyncHandler(async (req, res) => {
     });
   }
 
+  // Validate valueId
+  if (!req.params.valueId || req.params.valueId === 'undefined') {
+    return res.status(400).json({
+      success: false,
+      error: 'Invalid value ID'
+    });
+  }
+
   // Try to find and remove from both arrays
-  const loadIndex = project.electrical?.loads?.findIndex(l => l._id.toString() === req.params.valueId);
-  const monitorIndex = project.electrical?.energyMonitoring?.findIndex(m => m._id.toString() === req.params.valueId);
+  const loadIndex = project.electrical?.loads?.findIndex(l => l._id && l._id.toString() === req.params.valueId);
+  const monitorIndex = project.electrical?.energyMonitoring?.findIndex(m => m._id && m._id.toString() === req.params.valueId);
 
   console.log('Deleting value:', {
     valueId: req.params.valueId,
     loadIndex,
     monitorIndex,
-    loads: project.electrical?.loads?.map(l => ({ id: l._id.toString(), name: l.name })),
-    monitors: project.electrical?.energyMonitoring?.map(m => ({ id: m._id.toString(), deviceId: m.deviceId }))
+    loads: project.electrical?.loads?.map(l => ({ 
+      id: l._id ? l._id.toString() : 'no-id', 
+      name: l.name 
+    })),
+    monitors: project.electrical?.energyMonitoring?.map(m => ({ 
+      id: m._id ? m._id.toString() : 'no-id', 
+      deviceId: m.deviceId 
+    }))
   });
 
   if (loadIndex === -1 && monitorIndex === -1) {
@@ -356,6 +405,8 @@ exports.deleteProjectValue = asyncHandler(async (req, res) => {
     project.electrical.loads.splice(loadIndex, 1);
   } else {
     project.electrical.energyMonitoring.splice(monitorIndex, 1);
+    // Remove any devices with null/empty label or panel
+    project.electrical.energyMonitoring = project.electrical.energyMonitoring.filter(m => m.label && m.panel);
   }
 
   await project.save();

@@ -26,7 +26,7 @@ const loadSchema = Joi.object({
 });
 
 const monitoringSchema = Joi.object({
-  type: Joi.string().valid('smart meter', 'energy meter', 'power meter', 'current transformer', 'voltage transformer').required(),
+  type: Joi.string().valid('smart-meter', 'general-meter', 'auth-meter', 'smart-meter').required(),
   label: Joi.string().required(),
   panel: Joi.string().required(),
   description: Joi.string().allow('').default(''),
