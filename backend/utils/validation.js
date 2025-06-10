@@ -30,7 +30,9 @@ const monitoringSchema = Joi.object({
   label: Joi.string().required(),
   panel: Joi.string().required(),
   description: Joi.string().allow('').default(''),
-  connection: Joi.string().allow('').default('')
+  connection: Joi.string().allow('').default(''),
+  status: Joi.string().valid('active', 'inactive', 'maintenance').default('active'),
+  lastUpdated: Joi.date().default(() => new Date())
 });
 
 const projectValueSchema = Joi.alternatives().try(
@@ -44,5 +46,8 @@ const validateProjectValue = (data) => {
 
 module.exports = {
   validateProject,
-  validateProjectValue
+  validateProjectValue,
+  projectSchema,
+  loadSchema,
+  monitoringSchema
 }; 

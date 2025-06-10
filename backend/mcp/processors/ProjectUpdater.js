@@ -70,6 +70,31 @@ class ProjectUpdater {
         }
     }
 
+    _normalizeDeviceType(type) {
+        // Convert to lowercase and remove special characters
+        const normalized = type.toLowerCase().replace(/[_-]/g, ' ').trim();
+        
+        // Map variations to standard types
+        const typeMap = {
+            'smart meter': 'smart meter',
+            'smartmeter': 'smart meter',
+            'energy meter': 'energy meter',
+            'energymeter': 'energy meter',
+            'power meter': 'power meter',
+            'powermeter': 'power meter',
+            'current transformer': 'current transformer',
+            'ct': 'current transformer',
+            'voltage transformer': 'voltage transformer',
+            'vt': 'voltage transformer',
+            'meter': 'smart meter',
+            'energy monitoring panel': 'smart meter',
+            'monitoring panel': 'smart meter',
+            'monitoringpanel': 'smart meter'
+        };
+
+        return typeMap[normalized] || 'smart meter'; // Default to smart meter if no match
+    }
+
     async updateProject(analysis) {
         try {
             // Find the project
@@ -85,57 +110,44 @@ class ProjectUpdater {
                 rawAnalysis: analysis.rawAnalysis
             };
 
+            // Clear existing energy monitoring array
+            project.electrical.energyMonitoring = [];
+
             // Handle energy monitoring devices
             for (const device of analysis.energyMonitoringDevices) {
-                const energyMonitoringData = new EnergyMonitoring({
+                // Create new energy monitoring record with normalized type
+                const energyMonitoringData = {
                     label: device.label,
                     panel: device.panel,
-                    type: device.type,
+                    type: this._normalizeDeviceType(device.type),
                     description: device.description || '',
                     connection: device.connection || '',
-                    status: 'active'
-                });
+                    status: 'active',
+                    lastUpdated: new Date()
+                };
 
                 console.log('Processing device:', JSON.stringify(energyMonitoringData, null, 2));
 
-                // Update or create energy monitoring record
+                // Update or create monitoring record
                 const savedMonitoring = await EnergyMonitoring.findOneAndUpdate(
                     { label: device.label, panel: device.panel },
                     energyMonitoringData,
-                    { upsert: true, new: true }
+                    { upsert: true, new: true, setDefaultsOnInsert: true }
                 );
-
                 console.log('Saved monitoring record:', JSON.stringify(savedMonitoring, null, 2));
 
-                // Add to project's electrical energy monitoring array if not already present
-                if (!project.electrical.energyMonitoring.includes(savedMonitoring._id)) {
-                    project.electrical.energyMonitoring.push(savedMonitoring._id);
-                }
+                // Add the full monitoring object to project's electrical energy monitoring array
+                project.electrical.energyMonitoring.push(savedMonitoring);
             }
 
-            // Update MCP status
-            project.mcp.currentStep = 'analysis_complete';
-            project.mcp.lastUpdated = new Date();
-            project.mcp.processingStatus = 'completed';
-
-            // Update project status
-            project.complianceStatus = 'pending';
-            project.lastAssessmentDate = new Date();
-
-            // Save changes
+            // Save the updated project
             await project.save();
-            console.log('Project updated successfully:', JSON.stringify(project.mcp.analysisResults, null, 2));
+            console.log('Project updated successfully');
 
-            return {
-                success: true,
-                project: project
-            };
+            return project;
         } catch (error) {
-            console.error('Failed to update project:', error);
-            return {
-                success: false,
-                error: `Failed to update project: ${error.message}`
-            };
+            console.error('Error updating project:', error);
+            throw error;
         }
     }
 
