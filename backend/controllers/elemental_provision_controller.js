@@ -23,7 +23,8 @@ exports.getProjects = asyncHandler(async (req, res) => {
     .populate('climateZone')
     .populate('buildingFabric')
     .populate('specialRequirements')
-    .populate('compliancePathway');
+    .populate('compliancePathway')
+    .populate('files');
   res.json({
     success: true,
     data: projects
@@ -41,7 +42,8 @@ exports.getProject = asyncHandler(async (req, res) => {
     .populate('climateZone')
     .populate('buildingFabric')
     .populate('specialRequirements')
-    .populate('compliancePathway');
+    .populate('compliancePathway')
+    .populate('files');
 
   if (!project) {
     return res.status(404).json({
