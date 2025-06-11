@@ -139,13 +139,15 @@ const projectSchema = new mongoose.Schema({
       }
     })
   },
-  specialRequirements: {
-    type: [specialRequirementSchema],
+  specialRequirements: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'SpecialRequirement',
     required: false
-  },
+  }],
   compliancePathway: {
-    type: compliancePathwaySchema,
-    default: () => ({})
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'CompliancePathway',
+    required: false
   },
   electrical: {
     type: electricalSchema,
@@ -154,19 +156,7 @@ const projectSchema = new mongoose.Schema({
       energyMonitoring: [],
       complianceStatus: 'pending',
       lastAssessmentDate: new Date()
-    }),
-    validate: {
-      validator: function(electrical) {
-        // Ensure energyMonitoring devices have required fields
-        if (electrical && electrical.energyMonitoring) {
-          return electrical.energyMonitoring.every(device => 
-            device && device.label && device.panel
-          );
-        }
-        return true;
-      },
-      message: 'All energy monitoring devices must have both label and panel specified'
-    }
+    })
   },
   mcp: {
     type: mcpSchema,
@@ -182,7 +172,10 @@ const projectSchema = new mongoose.Schema({
       processingStatus: 'pending'
     })
   },
-  files: [fileSchema],
+  files: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'File'
+  }],
   complianceStatus: {
     type: String,
     enum: ['pending', 'compliant', 'non_compliant'],

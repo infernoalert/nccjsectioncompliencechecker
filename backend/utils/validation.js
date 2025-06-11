@@ -26,19 +26,21 @@ const loadSchema = Joi.object({
 });
 
 const monitoringSchema = Joi.object({
-  type: Joi.string().valid('smart-meter', 'general-meter', 'auth-meter', 'smart-meter').required(),
   label: Joi.string().required(),
   panel: Joi.string().required(),
+  monitoringDeviceType: Joi.string().valid('smart-meter', 'general-meter', 'auth-meter', 'memory-meter').required(),
   description: Joi.string().allow('').default(''),
   connection: Joi.string().allow('').default(''),
   status: Joi.string().valid('active', 'inactive', 'maintenance').default('active'),
   lastUpdated: Joi.date().default(() => new Date())
 });
 
-const projectValueSchema = Joi.alternatives().try(
-  loadSchema,
-  monitoringSchema
-);
+const refIdSchema = Joi.object({
+  type: Joi.string().valid('load', 'monitoring').required(),
+  refId: Joi.string().hex().length(24).required()
+});
+
+const projectValueSchema = refIdSchema;
 
 const validateProjectValue = (data) => {
   return projectValueSchema.validate(data);

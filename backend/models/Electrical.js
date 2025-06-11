@@ -4,10 +4,12 @@ const { embeddedSchema: energyMonitoringSchema } = require('./EnergyMonitoring')
 
 const electricalSchema = new mongoose.Schema({
   loads: [{
-    type: loadSchema
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Load'
   }],
   energyMonitoring: [{
-    type: energyMonitoringSchema
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'EnergyMonitoring'
   }],
   complianceStatus: {
     type: String,

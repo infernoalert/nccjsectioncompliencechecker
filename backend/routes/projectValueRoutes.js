@@ -6,7 +6,9 @@ const {
   getProjectValue,
   createProjectValue,
   updateProjectValue,
-  deleteProjectValue
+  deleteProjectValue,
+  createEnergyMonitoring,
+  createLoad
 } = require('../controllers/projectValueController');
 
 /**
@@ -255,5 +257,9 @@ router.put('/:projectId/values/:valueId', protect, updateProjectValue);
  *         description: Project or value not found
  */
 router.delete('/:projectId/values/:valueId', protect, deleteProjectValue);
+
+// Add routes for creating referenced documents
+router.post('/energy-monitoring', protect, createEnergyMonitoring);
+router.post('/load', protect, createLoad);
 
 module.exports = router; 

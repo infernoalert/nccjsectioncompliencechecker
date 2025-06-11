@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
-const energyMonitoringSchema = new mongoose.Schema({
+// Define the base schema fields
+const energyMonitoringFields = {
     label: {
         type: String,
         required: true
@@ -9,7 +10,7 @@ const energyMonitoringSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    type: {
+    monitoringDeviceType: {
         type: String,
         required: true,
         enum: ['smart-meter', 'general-meter', 'auth-meter', 'memory-meter']
@@ -31,16 +32,21 @@ const energyMonitoringSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     }
-}, {
-    timestamps: true,
-    _id: false // Disable _id for embedded documents
+};
+
+// Standalone schema (for collection, allows _id)
+const energyMonitoringSchema = new mongoose.Schema(energyMonitoringFields, {
+    timestamps: true
 });
 
-// Remove the compound index since this is an embedded schema
-// The uniqueness will be enforced at the application level
+// Embedded schema (for embedding, disables _id)
+const embeddedEnergyMonitoringSchema = new mongoose.Schema(energyMonitoringFields, {
+    timestamps: true,
+    _id: false
+});
 
 module.exports = {
-    embeddedSchema: energyMonitoringSchema,
-    schema: new mongoose.Schema(energyMonitoringSchema),
+    embeddedSchema: embeddedEnergyMonitoringSchema,
+    schema: energyMonitoringSchema,
     model: mongoose.model('EnergyMonitoring', energyMonitoringSchema)
 }; 

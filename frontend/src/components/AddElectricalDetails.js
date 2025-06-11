@@ -25,7 +25,7 @@ const AddElectricalDetails = ({ open, onClose, onSubmit, editingValue, onEdit })
     // Monitoring fields
     label: '',
     panel: '',
-    deviceType: '',
+    monitoringDeviceType: '',
     description: '',
     connection: '',
   });
@@ -42,7 +42,7 @@ const AddElectricalDetails = ({ open, onClose, onSubmit, editingValue, onEdit })
         // Monitoring fields
         label: editingValue.label || '',
         panel: editingValue.panel || '',
-        deviceType: editingValue.type || '',
+        monitoringDeviceType: editingValue.monitoringDeviceType || '',
         description: editingValue.description || '',
         connection: editingValue.connection || '',
       });
@@ -57,7 +57,7 @@ const AddElectricalDetails = ({ open, onClose, onSubmit, editingValue, onEdit })
         // Monitoring fields
         label: '',
         panel: '',
-        deviceType: '',
+        monitoringDeviceType: '',
         description: '',
         connection: '',
       });
@@ -73,6 +73,7 @@ const AddElectricalDetails = ({ open, onClose, onSubmit, editingValue, onEdit })
   };
 
   const handleSubmit = () => {
+    console.log('AddElectricalDetails handleSubmit called', formData);
     const data = formData.type === 'load'
       ? {
           type: 'load',
@@ -82,9 +83,9 @@ const AddElectricalDetails = ({ open, onClose, onSubmit, editingValue, onEdit })
           current: formData.current ? parseFloat(formData.current) : 0,
         }
       : {
-          type: formData.deviceType,
           label: formData.label,
           panel: formData.panel,
+          monitoringDeviceType: formData.monitoringDeviceType,
           description: formData.description || '',
           connection: formData.connection || ''
         };
@@ -192,15 +193,15 @@ const AddElectricalDetails = ({ open, onClose, onSubmit, editingValue, onEdit })
                 <FormControl fullWidth required>
                   <InputLabel>Device Type</InputLabel>
                   <Select
-                    name="deviceType"
-                    value={formData.deviceType}
+                    name="monitoringDeviceType"
+                    value={formData.monitoringDeviceType}
                     onChange={handleChange}
                     label="Device Type"
                   >
                     <MenuItem value="smart-meter">Smart Meter</MenuItem>
                     <MenuItem value="general-meter">General Meter</MenuItem>
-                    <MenuItem value="auth-meter">Auth Meter</MenuItem>
-                    <MenuItem value="memory-meter">Meter with Memory</MenuItem>
+                    <MenuItem value="auth-meter">Authority Meter</MenuItem>
+                    <MenuItem value="memory-meter">Memory Meter</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>

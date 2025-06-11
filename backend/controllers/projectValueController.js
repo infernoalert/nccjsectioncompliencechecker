@@ -1,12 +1,16 @@
 const asyncHandler = require('express-async-handler');
 const Project = require('../models/Project');
 const { validateProjectValue } = require('../utils/validation');
+const { model: EnergyMonitoring } = require('../models/EnergyMonitoring');
+const { model: Load } = require('../models/Load');
 
 // @desc    Get all values for a project
 // @route   GET /api/projects/:projectId/values
 // @access  Private
 exports.getProjectValues = asyncHandler(async (req, res) => {
-  const project = await Project.findById(req.params.projectId);
+  const project = await Project.findById(req.params.projectId)
+    .populate('electrical.loads')
+    .populate('electrical.energyMonitoring');
   
   if (!project) {
     return res.status(404).json({
@@ -105,7 +109,6 @@ exports.createProjectValue = asyncHandler(async (req, res) => {
   }
 
   const project = await Project.findById(req.params.projectId);
-  
   if (!project) {
     return res.status(404).json({
       success: false,
@@ -131,151 +134,21 @@ exports.createProjectValue = asyncHandler(async (req, res) => {
     };
   }
 
-  // Initialize buildingFabric if it doesn't exist
-  if (!project.buildingFabric) {
-    project.buildingFabric = {
-      walls: {
-        external: {
-          rValueByZone: new Map([
-            ['zone1', 0],
-            ['zone2', 0],
-            ['zone3', 0],
-            ['zone4', 0],
-            ['zone5', 0],
-            ['zone6', 0],
-            ['zone7', 0],
-            ['zone8', 0]
-          ]),
-          thermalBreaks: {
-            metalFramed: false
-          }
-        }
-      },
-      roof: {
-        rValueByZone: new Map([
-          ['zone1', 0],
-          ['zone2', 0],
-          ['zone3', 0],
-          ['zone4', 0],
-          ['zone5', 0],
-          ['zone6', 0],
-          ['zone7', 0],
-          ['zone8', 0]
-        ]),
-        solarAbsorptance: {
-          max: 0.7,
-          exemptZones: []
-        },
-        area: 0
-      },
-      floor: {
-        rValueByZone: new Map([
-          ['zone1', 0],
-          ['zone2', 0],
-          ['zone3', 0],
-          ['zone4', 0],
-          ['zone5', 0],
-          ['zone6', 0],
-          ['zone7', 0],
-          ['zone8', 0]
-        ]),
-        area: 0
-      },
-      glazing: {
-        external: {
-          uValueByZone: new Map([
-            ['zone1', 0],
-            ['zone2', 0],
-            ['zone3', 0],
-            ['zone4', 0],
-            ['zone5', 0],
-            ['zone6', 0],
-            ['zone7', 0],
-            ['zone8', 0]
-          ]),
-          shgcByZone: new Map([
-            ['zone1', 0],
-            ['zone2', 0],
-            ['zone3', 0],
-            ['zone4', 0],
-            ['zone5', 0],
-            ['zone6', 0],
-            ['zone7', 0],
-            ['zone8', 0]
-          ]),
-          area: 0
-        }
-      }
-    };
-  }
+  const { type, refId } = req.body;
 
-  // Initialize mcp if it doesn't exist
-  if (!project.mcp) {
-    project.mcp = {
-      currentStep: 'initial',
-      lastUpdated: new Date(),
-      history: [],
-      analysisResults: {
-        status: 'pending',
-        results: [],
-        timestamp: new Date()
-      },
-      processingStatus: 'pending'
-    };
-  }
-
-  const { type, ...data } = req.body;
-
-  // Add the new value based on type
   if (type === 'load') {
-    const newLoad = {
-      name: data.name,
-      powerRating: data.powerRating || 0,
-      voltage: data.voltage || 0,
-      current: data.current || 0
-    };
-    project.electrical.loads.push(newLoad);
+    project.electrical.loads.push(refId);
     await project.save();
-    const savedLoad = project.electrical.loads[project.electrical.loads.length - 1];
     res.status(201).json({
       success: true,
-      data: { ...savedLoad.toObject(), type: 'load' }
+      data: { _id: refId, type: 'load' }
     });
-  } else if (type === 'monitoring' || ['smart-meter', 'energy meter', 'power meter', 'current transformer', 'voltage transformer'].includes(type)) {
-    // Prevent creation if label or panel is missing
-    if (!data.label || !data.panel) {
-      return res.status(400).json({
-        success: false,
-        error: 'Label and panel are required for energy monitoring devices.'
-      });
-    }
-
-    // Check for duplicate label and panel combination
-    const existingDevice = project.electrical.energyMonitoring.find(
-      device => device.label === data.label && device.panel === data.panel
-    );
-    if (existingDevice) {
-      return res.status(400).json({
-        success: false,
-        error: 'A device with this label and panel combination already exists.'
-      });
-    }
-
-    const newMonitor = {
-      label: data.label,
-      panel: data.panel,
-      type: type === 'monitoring' ? data.type : type, // Use the type directly if it's a device type
-      description: data.description || '',
-      connection: data.connection || '',
-      status: 'active',
-      lastUpdated: new Date()
-    };
-    project.electrical.energyMonitoring.push(newMonitor);
+  } else if (type === 'monitoring') {
+    project.electrical.energyMonitoring.push(refId);
     await project.save();
-    const savedMonitor = project.electrical.energyMonitoring[project.electrical.energyMonitoring.length - 1];
     res.status(201).json({
       success: true,
-      data: { ...savedMonitor.toObject(), type: 'monitoring' }
+      data: { _id: refId, type: 'monitoring' }
     });
   } else {
     res.status(400).json({
@@ -415,4 +288,48 @@ exports.deleteProjectValue = asyncHandler(async (req, res) => {
     success: true,
     data: {}
   });
+});
+
+exports.createEnergyMonitoring = asyncHandler(async (req, res) => {
+  const { label, panel, monitoringDeviceType, description, connection } = req.body;
+  if (!label || !panel || !monitoringDeviceType) {
+    return res.status(400).json({
+      success: false,
+      error: 'Label, panel, and monitoringDeviceType are required.'
+    });
+  }
+  const existing = await EnergyMonitoring.findOne({ label, panel });
+  if (existing) {
+    return res.status(400).json({
+      success: false,
+      error: 'A device with this label and panel already exists.'
+    });
+  }
+  const device = await EnergyMonitoring.create({
+    label,
+    panel,
+    monitoringDeviceType,
+    description: description || '',
+    connection: connection || '',
+    status: 'active',
+    lastUpdated: new Date()
+  });
+  res.status(201).json({ success: true, data: device });
+});
+
+exports.createLoad = asyncHandler(async (req, res) => {
+  const { name, powerRating, voltage, current } = req.body;
+  if (!name) {
+    return res.status(400).json({
+      success: false,
+      error: 'Name is required.'
+    });
+  }
+  const load = await Load.create({
+    name,
+    powerRating: powerRating || 0,
+    voltage: voltage || 0,
+    current: current || 0
+  });
+  res.status(201).json({ success: true, data: load });
 }); 

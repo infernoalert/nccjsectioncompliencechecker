@@ -73,6 +73,7 @@ const ElectricalValues = () => {
   }, [dispatch, id]);
 
   const handleAdd = async (data) => {
+    console.log('ElectricalValues handleAdd called', data);
     try {
       const resultAction = await dispatch(createProjectValue({ projectId: id, valueData: data }));
       if (createProjectValue.fulfilled.match(resultAction)) {
