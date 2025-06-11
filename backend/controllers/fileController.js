@@ -3,6 +3,7 @@ const path = require('path');
 const fs = require('fs');
 const asyncHandler = require('express-async-handler');
 const Project = require('../models/Project');
+const { model: File } = require('../models/File');
 
 // Configure multer for file upload
 const storage = multer.diskStorage({
@@ -46,6 +47,7 @@ exports.uploadFile = asyncHandler(async (req, res) => {
   const project = await Project.findById(req.params.id);
 
   if (!project) {
+    console.log('Project not found for ID:', req.params.id);
     return res.status(404).json({
       success: false,
       error: 'Project not found'
@@ -54,6 +56,7 @@ exports.uploadFile = asyncHandler(async (req, res) => {
 
   // Check if user is the owner
   if (project.owner.toString() !== req.user._id.toString()) {
+    console.log('Unauthorized upload attempt by user:', req.user._id, 'for project:', req.params.id);
     return res.status(401).json({
       success: false,
       error: 'Not authorized to upload files for this project'
@@ -63,6 +66,7 @@ exports.uploadFile = asyncHandler(async (req, res) => {
   // Handle file upload
   upload.single('file')(req, res, async (err) => {
     if (err) {
+      console.log('Multer error:', err);
       return res.status(400).json({
         success: false,
         error: err.message
@@ -70,29 +74,44 @@ exports.uploadFile = asyncHandler(async (req, res) => {
     }
 
     if (!req.file) {
+      console.log('No file uploaded in request');
       return res.status(400).json({
         success: false,
         error: 'No file uploaded'
       });
     }
 
-    // Add file information to project
-    project.files.push({
-      filename: req.file.filename,
-      originalName: req.file.originalname,
-      path: req.file.path,
-      size: req.file.size,
-      mimetype: req.file.mimetype
-    });
+    try {
+      // Store relative path for portability
+      const relativePath = path.relative(process.cwd(), req.file.path).replace(/\\/g, '/');
+      // Create a new File document
+      const fileDoc = await File.create({
+        filename: req.file.filename,
+        originalName: req.file.originalname,
+        path: relativePath,
+        size: req.file.size,
+        mimetype: req.file.mimetype
+      });
+      console.log('Created File document:', fileDoc);
 
-    await project.save();
+      // Add file reference to project
+      project.files.push(fileDoc._id);
+      await project.save();
+      console.log('Updated Project with new file:', project);
 
-    res.status(200).json({
-      success: true,
-      data: {
-        file: project.files[project.files.length - 1]
-      }
-    });
+      console.log('Returning file in response:', fileDoc);
+      res.status(200).json({
+        success: true,
+        data: {
+          file: fileDoc
+        }
+      });
+    } catch (error) {
+      // Clean up the uploaded file if database operation fails
+      fs.unlinkSync(req.file.path);
+      console.log('Error during file upload, cleaned up file:', req.file.path, 'Error:', error);
+      throw error;
+    }
   });
 });
 
@@ -117,7 +136,7 @@ exports.getFile = asyncHandler(async (req, res) => {
     });
   }
 
-  const file = project.files.find(f => f.filename === req.params.filename);
+  const file = await File.findOne({ filename: req.params.filename });
 
   if (!file) {
     return res.status(404).json({
@@ -126,7 +145,7 @@ exports.getFile = asyncHandler(async (req, res) => {
     });
   }
 
-  res.sendFile(file.path);
+  res.sendFile(path.resolve(process.cwd(), file.path));
 });
 
 // @desc    Delete a file from a project
@@ -150,9 +169,9 @@ exports.deleteFile = asyncHandler(async (req, res) => {
     });
   }
 
-  const fileIndex = project.files.findIndex(f => f.filename === req.params.filename);
+  const file = await File.findOne({ filename: req.params.filename });
 
-  if (fileIndex === -1) {
+  if (!file) {
     return res.status(404).json({
       success: false,
       error: 'File not found'
@@ -160,12 +179,14 @@ exports.deleteFile = asyncHandler(async (req, res) => {
   }
 
   // Delete file from filesystem
-  const file = project.files[fileIndex];
-  fs.unlinkSync(file.path);
+  fs.unlinkSync(path.resolve(process.cwd(), file.path));
 
-  // Remove file from project
-  project.files.splice(fileIndex, 1);
+  // Remove file reference from project
+  project.files = project.files.filter(f => f.toString() !== file._id.toString());
   await project.save();
+
+  // Delete file document
+  await file.deleteOne();
 
   res.status(200).json({
     success: true,
