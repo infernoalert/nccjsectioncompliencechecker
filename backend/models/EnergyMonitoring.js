@@ -4,11 +4,13 @@ const mongoose = require('mongoose');
 const energyMonitoringFields = {
     label: {
         type: String,
-        required: true
+        required: true,
+        index: true  // Keep index for performance but not unique
     },
     panel: {
         type: String,
-        required: true
+        required: true,
+        index: true  // Keep index for performance but not unique
     },
     monitoringDeviceType: {
         type: String,
@@ -38,6 +40,9 @@ const energyMonitoringFields = {
 const energyMonitoringSchema = new mongoose.Schema(energyMonitoringFields, {
     timestamps: true
 });
+
+// Remove any existing unique indexes
+energyMonitoringSchema.index({ label: 1, panel: 1 }, { unique: false });
 
 // Embedded schema (for embedding, disables _id)
 const embeddedEnergyMonitoringSchema = new mongoose.Schema(energyMonitoringFields, {

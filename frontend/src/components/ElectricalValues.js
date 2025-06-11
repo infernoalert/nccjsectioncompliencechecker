@@ -389,7 +389,7 @@ const ElectricalValues = () => {
                 <TableRow key={monitor._id}>
                   <TableCell>{monitor.label}</TableCell>
                   <TableCell>{monitor.panel}</TableCell>
-                  <TableCell>{monitor.type}</TableCell>
+                  <TableCell>{monitor.monitoringDeviceType}</TableCell>
                   <TableCell>
                     <Tooltip title={monitor.description || 'No description available'}>
                       <Typography

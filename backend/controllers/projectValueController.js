@@ -298,13 +298,6 @@ exports.createEnergyMonitoring = asyncHandler(async (req, res) => {
       error: 'Label, panel, and monitoringDeviceType are required.'
     });
   }
-  const existing = await EnergyMonitoring.findOne({ label, panel });
-  if (existing) {
-    return res.status(400).json({
-      success: false,
-      error: 'A device with this label and panel already exists.'
-    });
-  }
   const device = await EnergyMonitoring.create({
     label,
     panel,
