@@ -2,19 +2,27 @@ const MCPContext = require('./MCPContext');
 const FileProcessor = require('./processors/FileProcessor');
 const LLMAnalyzer = require('./processors/LLMAnalyzer');
 const ProjectUpdater = require('./processors/ProjectUpdater');
-const JSONGenerator = require('./processors/JSONGenerator');
-const DiagramGenerator = require('./processors/DiagramGenerator');
 const path = require('path');
 const fs = require('fs').promises;
 
+/**
+ * MCP (Model Context Protocol) Handler
+ * 
+ * Updated process flow (simplified):
+ * 1. FILE_INITIALIZATION - Initialize and validate file processor
+ * 2. TEXT_EXTRACTION - Extract text content from the uploaded file
+ * 3. INITIAL_ANALYSIS - Analyze text using LLM to identify energy monitoring devices
+ * 4. PROJECT_UPDATE - Update project data with analyzed devices
+ * 5. NEXT_ANALYSIS - Perform additional analysis if needed
+ * 
+ * Process completes after project data update - no JSON/diagram generation required
+ */
 class MCPHandler {
     constructor(projectId, openaiApiKey) {
         this.context = new MCPContext(projectId);
         this.fileProcessor = null;
         this.llmAnalyzer = new LLMAnalyzer(openaiApiKey);
         this.projectUpdater = new ProjectUpdater(projectId);
-        this.jsonGenerator = new JSONGenerator();
-        this.diagramGenerator = new DiagramGenerator();
         this.processLockFile = path.join(__dirname, '..', 'temp', `mcp-lock-${projectId}.lock`);
     }
 
@@ -63,14 +71,9 @@ class MCPHandler {
             
             // Step 5: Next Analysis (if needed)
             await this._handleNextAnalysis();
-
-            // Step 6: Generate JSON
-            await this._handleJsonGeneration();
-
-            // Step 7: Generate Diagram
-            await this._handleDiagramGeneration();
             
-            console.log('MCP Process completed successfully');
+            // Process completed - project data has been updated
+            console.log('MCP Process completed successfully - project data updated');
             
             this.context.updateProcessingStatus('COMPLETED');
             return this.context.getCurrentState();
@@ -194,50 +197,6 @@ class MCPHandler {
         
         this.context.addHistoryEntry({
             step: 'NEXT_ANALYSIS',
-            status: 'COMPLETED'
-        });
-    }
-
-    async _handleJsonGeneration() {
-        this.context.updateStep('JSON_GENERATION');
-        
-        const jsonResult = await this.jsonGenerator.generate(
-            this.context.analysisResults
-        );
-        
-        if (!jsonResult.success) {
-            throw new Error(jsonResult.error);
-        }
-        
-        this.context.updateJsonData({
-            generated: true,
-            filePath: jsonResult.filePath
-        });
-        
-        this.context.addHistoryEntry({
-            step: 'JSON_GENERATION',
-            status: 'COMPLETED'
-        });
-    }
-
-    async _handleDiagramGeneration() {
-        this.context.updateStep('DIAGRAM_GENERATION');
-        
-        const diagramResult = await this.diagramGenerator.generate(
-            this.context.jsonData.filePath
-        );
-        
-        if (!diagramResult.success) {
-            throw new Error(diagramResult.error);
-        }
-        
-        this.context.updateDiagramData({
-            generated: true,
-            filePath: diagramResult.filePath
-        });
-        
-        this.context.addHistoryEntry({
-            step: 'DIAGRAM_GENERATION',
             status: 'COMPLETED'
         });
     }

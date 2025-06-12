@@ -10,16 +10,6 @@ class MCPContext {
             rawAnalysis: null,
             extractedData: null
         };
-        this.jsonData = {
-            generated: false,
-            filePath: null,
-            lastGenerated: null
-        };
-        this.diagramData = {
-            generated: false,
-            filePath: null,
-            lastGenerated: null
-        };
         this.processingStatus = 'IDLE';
     }
 
@@ -33,7 +23,8 @@ class MCPContext {
             step: entry.step,
             timestamp: new Date(),
             status: entry.status || 'PENDING',
-            error: entry.error || null
+            error: entry.error || null,
+            metadata: entry.metadata || null
         });
     }
 
@@ -42,22 +33,6 @@ class MCPContext {
             ...this.analysisResults,
             ...results,
             lastAnalyzed: new Date()
-        };
-    }
-
-    updateJsonData(jsonData) {
-        this.jsonData = {
-            ...this.jsonData,
-            ...jsonData,
-            lastGenerated: new Date()
-        };
-    }
-
-    updateDiagramData(diagramData) {
-        this.diagramData = {
-            ...this.diagramData,
-            ...diagramData,
-            lastGenerated: new Date()
         };
     }
 
@@ -73,8 +48,6 @@ class MCPContext {
             lastUpdated: this.lastUpdated,
             history: this.history,
             analysisResults: this.analysisResults,
-            jsonData: this.jsonData,
-            diagramData: this.diagramData,
             processingStatus: this.processingStatus
         };
     }

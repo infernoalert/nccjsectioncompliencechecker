@@ -1,6 +1,16 @@
 const Project = require('../../models/Project');
 const { model: EnergyMonitoring } = require('../../models/EnergyMonitoring');
 
+/**
+ * ProjectUpdater - MVP Version
+ * 
+ * Current approach (temporary):
+ * - Uses default device type for all devices during MCP process
+ * - Actual device type assignment handled by separate deviceTypeUpdater.js
+ * - This ensures clean separation and avoids normalizer issues
+ * 
+ * TODO: Later can integrate proper normalizer when it's fixed
+ */
 class ProjectUpdater {
     constructor(projectId) {
         this.projectId = projectId;
@@ -70,32 +80,10 @@ class ProjectUpdater {
         }
     }
 
-    _normalizeDeviceType(type) {
-        // Convert to lowercase and remove special characters
-        const normalized = type.toLowerCase().replace(/[_-]/g, ' ').trim();
-        
-        // Map variations to accepted types
-        const typeMap = {
-            'smart meter': 'smart-meter',
-            'smartmeter': 'smart-meter',
-            'monitoring': 'smart-meter',
-            'monitoring panel': 'smart-meter',
-            'monitoringpanel': 'smart-meter',
-            'monitoring device': 'smart-meter',
-            'energy monitoring panel': 'smart-meter',
-            'meter': 'general-meter',
-            'energy-meter': 'general-meter',
-            'energymeter': 'general-meter',
-            'power-meter': 'general-meter',
-            'powermeter': 'general-meter',           
-            'meter memory': 'memory-meter',
-            'auth meter': 'auth-meter',
-            'auth-meter': 'auth-meter',
-            'authority meter': 'auth-meter',
-            'energy monitoring device': 'smart-meter'
-        };
-
-        return typeMap[normalized] || 'smart meter'; // Default to smart meter if no match
+    _getDefaultDeviceType() {
+        // MVP Solution: Use default type, actual type assignment handled by deviceTypeUpdater.js
+        // TODO: Remove this when normalizer is fixed
+        return 'general-meter'; // Default type - will be updated by deviceTypeUpdater.js
     }
 
     async updateProject(analysis) {
@@ -136,11 +124,11 @@ class ProjectUpdater {
             // Handle energy monitoring devices one by one (like manual add)
             console.log('Processing energy monitoring devices:', analysis.energyMonitoringDevices.length);
             for (const device of analysis.energyMonitoringDevices.filter(d => d.label && d.panel)) {
-                // Create new energy monitoring record with normalized type
+                // Create new energy monitoring record with default type (MVP solution)
                 const energyMonitoringData = {
                     label: device.label,
                     panel: device.panel,
-                    monitoringDeviceType: this._normalizeDeviceType(device.type),
+                    monitoringDeviceType: this._getDefaultDeviceType(), // Will be updated by deviceTypeUpdater.js
                     description: device.description || '',
                     connection: device.connection || '',
                     status: 'active',
@@ -150,7 +138,7 @@ class ProjectUpdater {
                 console.log('Creating/updating device:', {
                     label: energyMonitoringData.label,
                     panel: energyMonitoringData.panel,
-                    type: energyMonitoringData.monitoringDeviceType
+                    type: energyMonitoringData.monitoringDeviceType + ' (default - will be updated by deviceTypeUpdater)'
                 });
 
                 // Update or create monitoring record
