@@ -9,8 +9,10 @@ const { model: Load } = require('../models/Load');
 // @access  Private
 exports.getProjectValues = asyncHandler(async (req, res) => {
   const project = await Project.findById(req.params.projectId)
-    .populate('electrical.loads')
-    .populate('electrical.energyMonitoring');
+    .populate({ path: 'electrical.energyMonitoring', model: 'EnergyMonitoring' })
+    .populate({ path: 'electrical.loads', model: 'Load' });
+  
+  console.log('Fetched project.electrical.energyMonitoring:', project.electrical.energyMonitoring);
   
   if (!project) {
     return res.status(404).json({
@@ -30,20 +32,18 @@ exports.getProjectValues = asyncHandler(async (req, res) => {
   // Combine loads and energy monitoring values
   const values = [
     ...(project.electrical?.loads || []).map(load => {
-      const loadObj = load.toObject();
       console.log('Load object:', { 
-        id: loadObj._id ? loadObj._id.toString() : 'no-id', 
-        name: loadObj.name 
+        id: load._id ? load._id.toString() : 'no-id', 
+        name: load.name 
       });
-      return { ...loadObj, type: 'load' };
+      return { ...load.toObject(), type: 'load' };
     }),
     ...(project.electrical?.energyMonitoring || []).map(monitor => {
-      const monitorObj = monitor.toObject();
       console.log('Monitor object:', { 
-        id: monitorObj._id ? monitorObj._id.toString() : 'no-id', 
-        label: monitorObj.label 
+        id: monitor._id ? monitor._id.toString() : 'no-id', 
+        label: monitor.label 
       });
-      return { ...monitorObj, type: 'monitoring' };
+      return { ...monitor.toObject(), type: 'monitoring' };
     })
   ];
 
@@ -162,14 +162,6 @@ exports.createProjectValue = asyncHandler(async (req, res) => {
 // @route   PUT /api/projects/:projectId/values/:valueId
 // @access  Private
 exports.updateProjectValue = asyncHandler(async (req, res) => {
-  const { error } = validateProjectValue(req.body);
-  if (error) {
-    return res.status(400).json({
-      success: false,
-      error: error.details[0].message
-    });
-  }
-
   const project = await Project.findById(req.params.projectId);
   
   if (!project) {
@@ -188,36 +180,59 @@ exports.updateProjectValue = asyncHandler(async (req, res) => {
   }
 
   const { type, ...data } = req.body;
-  let value;
 
   if (type === 'load') {
-    value = project.electrical?.loads?.id(req.params.valueId);
-  } else if (type === 'monitoring') {
-    value = project.electrical?.energyMonitoring?.id(req.params.valueId);
-  }
-  
-  if (!value) {
-    return res.status(404).json({
-      success: false,
-      error: 'Value not found'
-    });
-  }
+    // Update Load document directly
+    const updatedLoad = await Load.findByIdAndUpdate(
+      req.params.valueId,
+      data,
+      { new: true, runValidators: true }
+    );
+    
+    if (!updatedLoad) {
+      return res.status(404).json({
+        success: false,
+        error: 'Load not found'
+      });
+    }
 
-  // Prevent update if label or panel is missing
-  if (data.label === undefined || data.panel === undefined || !data.label || !data.panel) {
+    res.status(200).json({
+      success: true,
+      data: { ...updatedLoad.toObject(), type: 'load' }
+    });
+  } else if (type === 'monitoring') {
+    // Prevent update if label or panel is missing
+    if (!data.label || !data.panel) {
+      return res.status(400).json({
+        success: false,
+        error: 'Label and panel are required for energy monitoring devices.'
+      });
+    }
+
+    // Update EnergyMonitoring document directly
+    const updatedMonitoring = await EnergyMonitoring.findByIdAndUpdate(
+      req.params.valueId,
+      data,
+      { new: true, runValidators: true }
+    );
+    
+    if (!updatedMonitoring) {
+      return res.status(404).json({
+        success: false,
+        error: 'Energy monitoring device not found'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: { ...updatedMonitoring.toObject(), type: 'monitoring' }
+    });
+  } else {
     return res.status(400).json({
       success: false,
-      error: 'Label and panel are required for energy monitoring devices.'
+      error: 'Invalid type specified'
     });
   }
-
-  Object.assign(value, data);
-  await project.save();
-
-  res.status(200).json({
-    success: true,
-    data: { ...value.toObject(), type }
-  });
 });
 
 // @desc    Delete a value
@@ -241,52 +256,48 @@ exports.deleteProjectValue = asyncHandler(async (req, res) => {
     });
   }
 
-  // Validate valueId
-  if (!req.params.valueId || req.params.valueId === 'undefined') {
-    return res.status(400).json({
-      success: false,
-      error: 'Invalid value ID'
+  const valueId = req.params.valueId;
+
+  // Check if it's a load
+  const loadExists = await Load.findById(valueId);
+  if (loadExists) {
+    // Delete the Load document
+    await Load.findByIdAndDelete(valueId);
+    
+    // Remove from project's loads array
+    project.electrical.loads = project.electrical.loads.filter(
+      id => id.toString() !== valueId
+    );
+    await project.save();
+
+    return res.status(200).json({
+      success: true,
+      message: 'Load deleted successfully'
     });
   }
 
-  // Try to find and remove from both arrays
-  const loadIndex = project.electrical?.loads?.findIndex(l => l._id && l._id.toString() === req.params.valueId);
-  const monitorIndex = project.electrical?.energyMonitoring?.findIndex(m => m._id && m._id.toString() === req.params.valueId);
+  // Check if it's an energy monitoring device
+  const monitoringExists = await EnergyMonitoring.findById(valueId);
+  if (monitoringExists) {
+    // Delete the EnergyMonitoring document
+    await EnergyMonitoring.findByIdAndDelete(valueId);
+    
+    // Remove from project's energyMonitoring array
+    project.electrical.energyMonitoring = project.electrical.energyMonitoring.filter(
+      id => id.toString() !== valueId
+    );
+    await project.save();
 
-  console.log('Deleting value:', {
-    valueId: req.params.valueId,
-    loadIndex,
-    monitorIndex,
-    loads: project.electrical?.loads?.map(l => ({ 
-      id: l._id ? l._id.toString() : 'no-id', 
-      name: l.name 
-    })),
-    monitors: project.electrical?.energyMonitoring?.map(m => ({ 
-      id: m._id ? m._id.toString() : 'no-id', 
-      deviceId: m.deviceId 
-    }))
-  });
-
-  if (loadIndex === -1 && monitorIndex === -1) {
-    return res.status(404).json({
-      success: false,
-      error: 'Value not found'
+    return res.status(200).json({
+      success: true,
+      message: 'Energy monitoring device deleted successfully'
     });
   }
 
-  if (loadIndex !== -1) {
-    project.electrical.loads.splice(loadIndex, 1);
-  } else {
-    project.electrical.energyMonitoring.splice(monitorIndex, 1);
-    // Remove any devices with null/empty label or panel
-    project.electrical.energyMonitoring = project.electrical.energyMonitoring.filter(m => m.label && m.panel);
-  }
-
-  await project.save();
-
-  res.status(200).json({
-    success: true,
-    data: {}
+  // If neither found
+  return res.status(404).json({
+    success: false,
+    error: 'Value not found'
   });
 });
 

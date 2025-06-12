@@ -83,6 +83,7 @@ const AddElectricalDetails = ({ open, onClose, onSubmit, editingValue, onEdit })
           current: formData.current ? parseFloat(formData.current) : 0,
         }
       : {
+          type: 'monitoring',
           label: formData.label,
           panel: formData.panel,
           monitoringDeviceType: formData.monitoringDeviceType,

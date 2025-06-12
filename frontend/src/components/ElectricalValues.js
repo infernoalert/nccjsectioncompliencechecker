@@ -102,7 +102,10 @@ const ElectricalValues = () => {
 
   const handleDelete = async (value) => {
     try {
-      if (!value || !value._id) {
+      // Handle both plain objects and Mongoose document objects
+      const valueId = value._id || value._doc?._id;
+      
+      if (!value || !valueId) {
         console.error('Invalid value object:', value);
         return;
       }
@@ -110,7 +113,7 @@ const ElectricalValues = () => {
       console.log('Deleting value:', value);
       const resultAction = await dispatch(deleteProjectValue({ 
         projectId: id, 
-        valueId: value._id 
+        valueId: valueId 
       }));
 
       if (deleteProjectValue.fulfilled.match(resultAction)) {
@@ -128,7 +131,9 @@ const ElectricalValues = () => {
   };
 
   const handleEditClick = (value) => {
-    setEditingValue(value);
+    // Extract the actual data from Mongoose document if needed
+    const cleanValue = value._doc ? { ...value._doc, type: value.type } : value;
+    setEditingValue(cleanValue);
     setOpenAddDialog(true);
   };
 
@@ -387,9 +392,9 @@ const ElectricalValues = () => {
             <TableBody>
               {monitoring.map((monitor) => (
                 <TableRow key={monitor._id}>
-                  <TableCell>{monitor.label}</TableCell>
-                  <TableCell>{monitor.panel}</TableCell>
-                  <TableCell>{monitor.monitoringDeviceType}</TableCell>
+                  <TableCell>{monitor.label || '-'}</TableCell>
+                  <TableCell>{monitor.panel || '-'}</TableCell>
+                  <TableCell>{monitor.monitoringDeviceType || '-'}</TableCell>
                   <TableCell>
                     <Tooltip title={monitor.description || 'No description available'}>
                       <Typography

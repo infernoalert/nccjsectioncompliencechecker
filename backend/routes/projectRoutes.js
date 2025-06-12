@@ -459,7 +459,7 @@ router.post('/:id/interpret-chat', protect, interpretChat);
 router.post('/:projectId/analyze/:filename', protect, async (req, res) => {
   try {
     const { projectId, filename } = req.params;
-    const project = await Project.findById(projectId);
+    const project = await Project.findById(projectId).populate('files');
     
     if (!project) {
       return res.status(404).json({ error: 'Project not found' });
@@ -471,8 +471,8 @@ router.post('/:projectId/analyze/:filename', protect, async (req, res) => {
       return res.status(404).json({ error: 'File not found' });
     }
 
-    // Get the full file path
-    const filePath = path.join(__dirname, '..', 'uploads', filename);
+    // Get the full file path using the file's path property
+    const filePath = path.join(process.cwd(), file.path);
 
     // Initialize MCP handler with OpenAI API key
     const mcpHandler = new MCPHandler(projectId, process.env.OPENAI_API_KEY);
@@ -480,16 +480,23 @@ router.post('/:projectId/analyze/:filename', protect, async (req, res) => {
     // Process the file
     const result = await mcpHandler.processExistingFile(filePath);
 
-    // Update project with analysis results
-    project.electrical = {
-      ...project.electrical,
-      complianceStatus: result.analysisResults.complianceStatus || 'pending',
-      lastAssessmentDate: new Date(),
-      loads: result.analysisResults.loads || [],
-      energyMonitoring: result.analysisResults.energyMonitoring || []
-    };
+    // Update project with analysis results using findOneAndUpdate to avoid version conflicts
+    const updatedProject = await Project.findOneAndUpdate(
+      { _id: projectId },
+      {
+        $set: {
+          'electrical.complianceStatus': result.analysisResults.complianceStatus || 'pending',
+          'electrical.lastAssessmentDate': new Date(),
+          'electrical.loads': result.analysisResults.loads || [],
+          'electrical.energyMonitoring': result.analysisResults.energyMonitoring || []
+        }
+      },
+      { new: true, runValidators: true }
+    );
 
-    await project.save();
+    if (!updatedProject) {
+      return res.status(404).json({ error: 'Project not found during update' });
+    }
 
     res.json({ 
       message: 'Analysis completed successfully',

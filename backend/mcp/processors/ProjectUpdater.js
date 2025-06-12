@@ -88,10 +88,11 @@ class ProjectUpdater {
             'energymeter': 'general-meter',
             'power-meter': 'general-meter',
             'powermeter': 'general-meter',           
-            'meter memory': 'memort-meter',
+            'meter memory': 'memory-meter',
             'auth meter': 'auth-meter',
             'auth-meter': 'auth-meter',
             'authority meter': 'auth-meter',
+            'energy monitoring device': 'smart-meter'
         };
 
         return typeMap[normalized] || 'smart meter'; // Default to smart meter if no match
@@ -99,11 +100,18 @@ class ProjectUpdater {
 
     async updateProject(analysis) {
         try {
+            console.log('Starting project update for project:', this.projectId);
+            
             // Find the project
             const project = await Project.findById(this.projectId);
             if (!project) {
                 throw new Error('Project not found');
             }
+            console.log('Found project:', { 
+                id: project._id, 
+                name: project.name,
+                floorArea: project.floorArea 
+            });
 
             // Update MCP analysis results
             project.mcp.analysisResults = {
@@ -113,22 +121,28 @@ class ProjectUpdater {
             };
 
             // Clear existing energy monitoring array
+            console.log('Clearing existing energy monitoring array');
             project.electrical.energyMonitoring = [];
 
             // Handle energy monitoring devices
+            console.log('Processing energy monitoring devices:', analysis.energyMonitoringDevices.length);
             for (const device of analysis.energyMonitoringDevices.filter(d => d.label && d.panel)) {
                 // Create new energy monitoring record with normalized type
                 const energyMonitoringData = {
                     label: device.label,
                     panel: device.panel,
-                    type: this._normalizeDeviceType(device.type),
+                    monitoringDeviceType: this._normalizeDeviceType(device.type),
                     description: device.description || '',
                     connection: device.connection || '',
                     status: 'active',
                     lastUpdated: new Date()
                 };
 
-                console.log('Processing device:', JSON.stringify(energyMonitoringData, null, 2));
+                console.log('Creating/updating device:', {
+                    label: energyMonitoringData.label,
+                    panel: energyMonitoringData.panel,
+                    type: energyMonitoringData.monitoringDeviceType
+                });
 
                 // Update or create monitoring record
                 const savedMonitoring = await EnergyMonitoring.findOneAndUpdate(
@@ -136,13 +150,21 @@ class ProjectUpdater {
                     energyMonitoringData,
                     { upsert: true, new: true, setDefaultsOnInsert: true }
                 );
-                console.log('Saved monitoring record:', JSON.stringify(savedMonitoring, null, 2));
+                console.log('Saved monitoring record:', {
+                    id: savedMonitoring._id,
+                    label: savedMonitoring.label,
+                    type: savedMonitoring.monitoringDeviceType
+                });
 
-                // Add the full monitoring object to project's electrical energy monitoring array
-                project.electrical.energyMonitoring.push(savedMonitoring);
+                // Add only the _id to project's electrical energy monitoring array
+                project.electrical.energyMonitoring.push(savedMonitoring._id);
             }
 
             // Save the updated project
+            console.log('About to save project with devices:', {
+                deviceCount: project.electrical.energyMonitoring.length,
+                deviceIds: project.electrical.energyMonitoring
+            });
             await project.save();
             console.log('Project updated successfully');
 

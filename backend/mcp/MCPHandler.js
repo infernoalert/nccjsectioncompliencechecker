@@ -41,9 +41,12 @@ class MCPHandler {
             // Step 7: Generate Diagram
             await this._handleDiagramGeneration();
             
+            console.log('MCP Process completed successfully');
+            
             this.context.updateProcessingStatus('COMPLETED');
             return this.context.getCurrentState();
         } catch (error) {
+            console.error('MCP Process failed:', error);
             this.context.updateProcessingStatus('FAILED');
             this.context.addHistoryEntry({
                 step: this.context.currentStep,

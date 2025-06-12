@@ -43,7 +43,9 @@ exports.getProject = asyncHandler(async (req, res) => {
     .populate('buildingFabric')
     .populate('specialRequirements')
     .populate('compliancePathway')
-    .populate('files');
+    .populate('files')
+    .populate('electrical.energyMonitoring')
+    .populate('electrical.loads');
 
   if (!project) {
     return res.status(404).json({
