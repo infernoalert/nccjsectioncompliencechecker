@@ -113,18 +113,27 @@ class ProjectUpdater {
                 floorArea: project.floorArea 
             });
 
-            // Update MCP analysis results
+            // Update MCP analysis results first
             project.mcp.analysisResults = {
                 lastAnalyzed: new Date(),
                 energyMonitoringDevices: analysis.energyMonitoringDevices,
                 rawAnalysis: analysis.rawAnalysis
             };
+            project.markModified('mcp.analysisResults');
+            await project.save();
+            console.log('MCP analysis results saved');
 
-            // Clear existing energy monitoring array
+            // Check if we already have devices (to prevent double processing)
+            const existingDeviceCount = project.electrical.energyMonitoring.length;
+            console.log('Existing energy monitoring devices:', existingDeviceCount);
+            
+            // Clear existing energy monitoring array (but don't save yet)
             console.log('Clearing existing energy monitoring array');
             project.electrical.energyMonitoring = [];
+            project.markModified('electrical.energyMonitoring');
+            console.log('Energy monitoring array cleared (not saved yet)');
 
-            // Handle energy monitoring devices
+            // Handle energy monitoring devices one by one (like manual add)
             console.log('Processing energy monitoring devices:', analysis.energyMonitoringDevices.length);
             for (const device of analysis.energyMonitoringDevices.filter(d => d.label && d.panel)) {
                 // Create new energy monitoring record with normalized type
@@ -156,22 +165,83 @@ class ProjectUpdater {
                     type: savedMonitoring.monitoringDeviceType
                 });
 
-                // Add only the _id to project's electrical energy monitoring array
+                // Add to project (but don't save yet)
                 project.electrical.energyMonitoring.push(savedMonitoring._id);
+                project.markModified('electrical.energyMonitoring');
+                
+                console.log('Added device to project, current count:', project.electrical.energyMonitoring.length);
             }
 
-            // Save the updated project
-            console.log('About to save project with devices:', {
+            // Save the project with all devices at once
+            console.log('About to save project with', project.electrical.energyMonitoring.length, 'devices');
+            await project.save();
+            console.log('Project saved with all devices');
+
+            // Immediately verify the save worked
+            const immediateCheck = await Project.findById(this.projectId);
+            console.log('IMMEDIATE POST-SAVE CHECK - energyMonitoring count:', immediateCheck.electrical.energyMonitoring.length);
+
+            console.log('All devices processed successfully:', {
                 deviceCount: project.electrical.energyMonitoring.length,
                 deviceIds: project.electrical.energyMonitoring
             });
-            await project.save();
-            console.log('Project updated successfully');
+
+            // Wait a moment to ensure database write is fully committed
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // Check again after delay
+            const delayedCheck = await Project.findById(this.projectId);
+            console.log('DELAYED CHECK (500ms later) - energyMonitoring count:', delayedCheck.electrical.energyMonitoring.length);
 
             return project;
         } catch (error) {
             console.error('Error updating project:', error);
             throw error;
+        }
+    }
+
+    async verifyProjectUpdate(projectId) {
+        try {
+            console.log('Verifying project update for:', projectId);
+            
+            // Wait a moment for database to fully sync
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            // Force a fresh read from database (bypass any caching)
+            const project = await Project.findById(projectId)
+                .populate('electrical.energyMonitoring')
+                .lean(false)  // Ensure we get a full mongoose document
+                .exec();      // Force execution
+            
+            if (!project) {
+                throw new Error('Project not found during verification');
+            }
+            
+            console.log('Verification - Energy monitoring devices found:', {
+                count: project.electrical.energyMonitoring.length,
+                devices: project.electrical.energyMonitoring.map(d => ({
+                    id: d._id,
+                    label: d.label,
+                    panel: d.panel
+                }))
+            });
+            
+            // Check the raw project document without populate
+            const rawProject = await Project.findById(projectId);
+            console.log('VERIFICATION - Raw project energyMonitoring ObjectIds:', rawProject.electrical.energyMonitoring);
+            console.log('VERIFICATION - Raw project energyMonitoring count:', rawProject.electrical.energyMonitoring.length);
+            
+            return {
+                success: true,
+                deviceCount: project.electrical.energyMonitoring.length,
+                devices: project.electrical.energyMonitoring
+            };
+        } catch (error) {
+            console.error('Verification failed:', error);
+            return {
+                success: false,
+                error: error.message
+            };
         }
     }
 

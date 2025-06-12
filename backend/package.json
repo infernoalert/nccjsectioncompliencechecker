@@ -6,8 +6,8 @@
   "scripts": {
     "start": "cross-env NODE_ENV=production node server.js",
     "start:prod": "cross-env NODE_ENV=production node server.js",
-    "dev": "cross-env NODE_ENV=development nodemon server.js",
-    "start:dev": "cross-env NODE_ENV=development nodemon server.js",
+    "dev": "cross-env NODE_ENV=development nodemon --config nodemon.json server.js",
+    "start:dev": "cross-env NODE_ENV=development nodemon --config nodemon.json server.js",
     "test": "jest",
     "pm2:start": "cross-env NODE_ENV=production pm2 start ecosystem.config.js --env production",
     "pm2:stop": "pm2 stop all",

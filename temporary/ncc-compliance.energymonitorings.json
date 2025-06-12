@@ -1,0 +1,294 @@
+[{
+  "_id": {
+    "$oid": "684a4880f24e8c3220c61925"
+  },
+  "label": "m1",
+  "panel": "msb1",
+  "monitoringDeviceType": "smart-meter",
+  "description": "",
+  "connection": "",
+  "status": "active",
+  "lastUpdated": {
+    "$date": "2025-06-12T03:24:48.546Z"
+  },
+  "createdAt": {
+    "$date": "2025-06-12T03:24:48.547Z"
+  },
+  "updatedAt": {
+    "$date": "2025-06-12T03:24:48.547Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "684a48a6a2089ea441a30c83"
+  },
+  "label": "HDB-CP1",
+  "panel": "Refer Sheet-X for meter panel schematic",
+  "__v": 0,
+  "connection": "MCCB",
+  "createdAt": {
+    "$date": "2025-06-12T03:25:26.317Z"
+  },
+  "description": "Connected via MCCB, details unspecified",
+  "lastUpdated": {
+    "$date": "2025-06-12T03:25:26.316Z"
+  },
+  "monitoringDeviceType": "smart-meter",
+  "status": "active",
+  "updatedAt": {
+    "$date": "2025-06-12T03:25:26.317Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "684a48a6a2089ea441a30c84"
+  },
+  "label": "HDB-5",
+  "panel": "Unknown",
+  "__v": 0,
+  "connection": "MCCB",
+  "createdAt": {
+    "$date": "2025-06-12T03:25:26.326Z"
+  },
+  "description": "Connected via MCCB, specific details not provided",
+  "lastUpdated": {
+    "$date": "2025-06-12T03:25:26.325Z"
+  },
+  "monitoringDeviceType": "general-meter",
+  "status": "active",
+  "updatedAt": {
+    "$date": "2025-06-12T03:25:26.326Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "684a48a6a2089ea441a30c85"
+  },
+  "label": "HDB-1",
+  "panel": "Unknown",
+  "__v": 0,
+  "connection": "MCCB",
+  "createdAt": {
+    "$date": "2025-06-12T03:25:26.331Z"
+  },
+  "description": "Connected via MCCB, specific details not provided",
+  "lastUpdated": {
+    "$date": "2025-06-12T03:25:26.330Z"
+  },
+  "monitoringDeviceType": "general-meter",
+  "status": "active",
+  "updatedAt": {
+    "$date": "2025-06-12T03:25:26.331Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "684a48a6a2089ea441a30c86"
+  },
+  "label": "HDB-2",
+  "panel": "Unknown",
+  "__v": 0,
+  "connection": "MCCB",
+  "createdAt": {
+    "$date": "2025-06-12T03:25:26.336Z"
+  },
+  "description": "Connected via MCCB, specific details not provided",
+  "lastUpdated": {
+    "$date": "2025-06-12T03:25:26.335Z"
+  },
+  "monitoringDeviceType": "general-meter",
+  "status": "active",
+  "updatedAt": {
+    "$date": "2025-06-12T03:25:26.336Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "684a48a6a2089ea441a30c87"
+  },
+  "panel": "Refer Sheet-X for meter panel schematic",
+  "label": "TMP-4",
+  "__v": 0,
+  "connection": "MCCB",
+  "createdAt": {
+    "$date": "2025-06-12T03:25:26.341Z"
+  },
+  "description": "Connected via MCCB, details unspecified",
+  "lastUpdated": {
+    "$date": "2025-06-12T03:25:26.341Z"
+  },
+  "monitoringDeviceType": "smart-meter",
+  "status": "active",
+  "updatedAt": {
+    "$date": "2025-06-12T03:25:26.341Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "684a48a6a2089ea441a30c88"
+  },
+  "label": "HDB-3",
+  "panel": "Unknown",
+  "__v": 0,
+  "connection": "MCCB",
+  "createdAt": {
+    "$date": "2025-06-12T03:25:26.346Z"
+  },
+  "description": "Connected via MCCB, specific details not provided",
+  "lastUpdated": {
+    "$date": "2025-06-12T03:25:26.345Z"
+  },
+  "monitoringDeviceType": "general-meter",
+  "status": "active",
+  "updatedAt": {
+    "$date": "2025-06-12T03:25:26.346Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "684a48a6a2089ea441a30c89"
+  },
+  "panel": "Unknown",
+  "label": "HDB-6",
+  "__v": 0,
+  "connection": "MCCB",
+  "createdAt": {
+    "$date": "2025-06-12T03:25:26.349Z"
+  },
+  "description": "Connected via MCCB, specific details not provided",
+  "lastUpdated": {
+    "$date": "2025-06-12T03:25:26.349Z"
+  },
+  "monitoringDeviceType": "general-meter",
+  "status": "active",
+  "updatedAt": {
+    "$date": "2025-06-12T03:25:26.349Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "684a48a6a2089ea441a30c8a"
+  },
+  "label": "HDB-4",
+  "panel": "Unknown",
+  "__v": 0,
+  "connection": "MCCB",
+  "createdAt": {
+    "$date": "2025-06-12T03:25:26.356Z"
+  },
+  "description": "Connected via MCCB, specific details not provided",
+  "lastUpdated": {
+    "$date": "2025-06-12T03:25:26.355Z"
+  },
+  "monitoringDeviceType": "general-meter",
+  "status": "active",
+  "updatedAt": {
+    "$date": "2025-06-12T03:25:26.356Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "684a48a6a2089ea441a30c8b"
+  },
+  "label": "M1",
+  "panel": "MSSB-B-01N",
+  "__v": 0,
+  "connection": "MCCB 100A, MSSB-B-01N",
+  "createdAt": {
+    "$date": "2025-06-12T03:25:26.361Z"
+  },
+  "description": "Connected via 100A MCCB, used for monitoring load on MSSB",
+  "lastUpdated": {
+    "$date": "2025-06-12T03:25:26.360Z"
+  },
+  "monitoringDeviceType": "smart-meter",
+  "status": "active",
+  "updatedAt": {
+    "$date": "2025-06-12T03:25:26.361Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "684a48a6a2089ea441a30c8c"
+  },
+  "panel": "MSSB-G-01N",
+  "label": "M2",
+  "__v": 0,
+  "connection": "MCCB",
+  "createdAt": {
+    "$date": "2025-06-12T03:25:26.365Z"
+  },
+  "description": "Connected via MCCB, specific details not provided",
+  "lastUpdated": {
+    "$date": "2025-06-12T03:25:26.364Z"
+  },
+  "monitoringDeviceType": "smart-meter",
+  "status": "active",
+  "updatedAt": {
+    "$date": "2025-06-12T03:25:26.365Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "684a48a6a2089ea441a30c8d"
+  },
+  "label": "M3",
+  "panel": "MSSB-R-01N",
+  "__v": 0,
+  "connection": "MCCB",
+  "createdAt": {
+    "$date": "2025-06-12T03:25:26.370Z"
+  },
+  "description": "Connected via MCCB, specific details not provided",
+  "lastUpdated": {
+    "$date": "2025-06-12T03:25:26.369Z"
+  },
+  "monitoringDeviceType": "smart-meter",
+  "status": "active",
+  "updatedAt": {
+    "$date": "2025-06-12T03:25:26.370Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "684a48a6a2089ea441a30c8e"
+  },
+  "label": "M4",
+  "panel": "MSSB-R-02N",
+  "__v": 0,
+  "connection": "MCCB",
+  "createdAt": {
+    "$date": "2025-06-12T03:25:26.374Z"
+  },
+  "description": "Connected via MCCB, specific details not provided",
+  "lastUpdated": {
+    "$date": "2025-06-12T03:25:26.374Z"
+  },
+  "monitoringDeviceType": "smart-meter",
+  "status": "active",
+  "updatedAt": {
+    "$date": "2025-06-12T03:25:26.374Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "684a48a6a2089ea441a30c8f"
+  },
+  "panel": "MSSB-R-03N",
+  "label": "M5",
+  "__v": 0,
+  "connection": "MCCB",
+  "createdAt": {
+    "$date": "2025-06-12T03:25:26.378Z"
+  },
+  "description": "Connected via MCCB, specific details not provided",
+  "lastUpdated": {
+    "$date": "2025-06-12T03:25:26.378Z"
+  },
+  "monitoringDeviceType": "smart-meter",
+  "status": "active",
+  "updatedAt": {
+    "$date": "2025-06-12T03:25:26.378Z"
+  }
+}]

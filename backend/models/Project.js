@@ -151,12 +151,14 @@ const projectSchema = new mongoose.Schema({
   },
   electrical: {
     type: electricalSchema,
-    default: () => ({
-      loads: [],
-      energyMonitoring: [],
-      complianceStatus: 'pending',
-      lastAssessmentDate: new Date()
-    })
+    default: function() {
+      return {
+        loads: [],
+        energyMonitoring: [],
+        complianceStatus: 'pending',
+        lastAssessmentDate: new Date()
+      };
+    }
   },
   mcp: {
     type: mcpSchema,

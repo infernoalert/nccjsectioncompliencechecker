@@ -8,11 +8,25 @@ const { model: Load } = require('../models/Load');
 // @route   GET /api/projects/:projectId/values
 // @access  Private
 exports.getProjectValues = asyncHandler(async (req, res) => {
-  const project = await Project.findById(req.params.projectId)
-    .populate({ path: 'electrical.energyMonitoring', model: 'EnergyMonitoring' })
-    .populate({ path: 'electrical.loads', model: 'Load' });
+  console.log('=== DEBUG: getProjectValues called ===');
+  console.log('Project ID from params:', req.params.projectId);
   
-  console.log('Fetched project.electrical.energyMonitoring:', project.electrical.energyMonitoring);
+  // First, get the project without populate to see the raw ObjectIds
+  const rawProject = await Project.findById(req.params.projectId);
+  console.log('Raw project found:', !!rawProject);
+  console.log('Raw project _id:', rawProject?._id);
+  console.log('Raw project electrical exists:', !!rawProject?.electrical);
+  console.log('Raw project electrical.energyMonitoring:', rawProject?.electrical?.energyMonitoring);
+  console.log('Raw project electrical.energyMonitoring length:', rawProject?.electrical?.energyMonitoring?.length);
+  
+  // Now try to populate
+  const project = await Project.findById(req.params.projectId)
+    .populate('electrical.energyMonitoring')
+    .populate('electrical.loads');
+  
+  console.log('After populate - project.electrical.energyMonitoring:', project.electrical.energyMonitoring);
+  console.log('Populate result type:', typeof project.electrical.energyMonitoring);
+  console.log('Populate result length:', project.electrical.energyMonitoring?.length);
   
   if (!project) {
     return res.status(404).json({

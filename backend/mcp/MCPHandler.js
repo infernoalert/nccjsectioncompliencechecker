@@ -5,6 +5,7 @@ const ProjectUpdater = require('./processors/ProjectUpdater');
 const JSONGenerator = require('./processors/JSONGenerator');
 const DiagramGenerator = require('./processors/DiagramGenerator');
 const path = require('path');
+const fs = require('fs').promises;
 
 class MCPHandler {
     constructor(projectId, openaiApiKey) {
@@ -14,10 +15,38 @@ class MCPHandler {
         this.projectUpdater = new ProjectUpdater(projectId);
         this.jsonGenerator = new JSONGenerator();
         this.diagramGenerator = new DiagramGenerator();
+        this.processLockFile = path.join(__dirname, '..', 'temp', `mcp-lock-${projectId}.lock`);
+    }
+
+    async _createProcessLock() {
+        try {
+            const tempDir = path.dirname(this.processLockFile);
+            await fs.mkdir(tempDir, { recursive: true });
+            await fs.writeFile(this.processLockFile, JSON.stringify({
+                projectId: this.context.projectId,
+                timestamp: new Date().toISOString(),
+                pid: process.pid
+            }));
+            console.log('MCP process lock created:', this.processLockFile);
+        } catch (error) {
+            console.warn('Failed to create process lock:', error.message);
+        }
+    }
+
+    async _removeProcessLock() {
+        try {
+            await fs.unlink(this.processLockFile);
+            console.log('MCP process lock removed:', this.processLockFile);
+        } catch (error) {
+            console.warn('Failed to remove process lock:', error.message);
+        }
     }
 
     async processExistingFile(filePath) {
         try {
+            // Create process lock to prevent nodemon interference
+            await this._createProcessLock();
+            
             this.context.updateProcessingStatus('PROCESSING');
             
             // Step 1: Initialize File Processor with existing file
@@ -54,6 +83,9 @@ class MCPHandler {
                 error: error.message
             });
             throw error;
+        } finally {
+            // Always remove process lock
+            await this._removeProcessLock();
         }
     }
 
@@ -120,9 +152,25 @@ class MCPHandler {
         
         await this.projectUpdater.updateProject(analysis);
         
+        // Verify the update was successful
+        const verification = await this.projectUpdater.verifyProjectUpdate(this.context.projectId);
+        if (!verification.success) {
+            console.error('Project update verification failed:', verification.error);
+            throw new Error(`Project update verification failed: ${verification.error}`);
+        }
+        
+        console.log('Project update verified successfully:', {
+            deviceCount: verification.deviceCount,
+            devices: verification.devices.map(d => d.label).join(', ')
+        });
+        
         this.context.addHistoryEntry({
             step: 'PROJECT_UPDATE',
-            status: 'COMPLETED'
+            status: 'COMPLETED',
+            metadata: {
+                deviceCount: verification.deviceCount,
+                verificationStatus: 'PASSED'
+            }
         });
     }
 

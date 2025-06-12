@@ -154,8 +154,18 @@ JSON Output:
 
     _parseAnalysisResponse(response) {
         try {
-            // Try to parse the response as JSON
-            const analysis = JSON.parse(response);
+            // Clean the response by removing markdown code blocks if present
+            let cleanedResponse = response;
+            if (response.includes('```json')) {
+                cleanedResponse = response.split('```json')[1].split('```')[0].trim();
+            } else if (response.includes('```')) {
+                cleanedResponse = response.split('```')[1].split('```')[0].trim();
+            }
+            
+            console.log('Cleaned JSON response:', cleanedResponse);
+            
+            // Try to parse the cleaned response as JSON
+            const analysis = JSON.parse(cleanedResponse);
             
             // Ensure we have the energyMonitoringDevices array
             if (!analysis.energyMonitoringDevices || !Array.isArray(analysis.energyMonitoringDevices)) {
@@ -181,6 +191,8 @@ JSON Output:
             };
         } catch (error) {
             // If parsing fails, return empty array
+            console.error('Failed to parse LLM response:', error);
+            console.error('Raw response:', response);
             return {
                 energyMonitoringDevices: [],
                 rawAnalysis: response,

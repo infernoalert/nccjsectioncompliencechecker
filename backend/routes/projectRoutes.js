@@ -477,26 +477,8 @@ router.post('/:projectId/analyze/:filename', protect, async (req, res) => {
     // Initialize MCP handler with OpenAI API key
     const mcpHandler = new MCPHandler(projectId, process.env.OPENAI_API_KEY);
 
-    // Process the file
+    // Process the file - MCP handles all project updates internally
     const result = await mcpHandler.processExistingFile(filePath);
-
-    // Update project with analysis results using findOneAndUpdate to avoid version conflicts
-    const updatedProject = await Project.findOneAndUpdate(
-      { _id: projectId },
-      {
-        $set: {
-          'electrical.complianceStatus': result.analysisResults.complianceStatus || 'pending',
-          'electrical.lastAssessmentDate': new Date(),
-          'electrical.loads': result.analysisResults.loads || [],
-          'electrical.energyMonitoring': result.analysisResults.energyMonitoring || []
-        }
-      },
-      { new: true, runValidators: true }
-    );
-
-    if (!updatedProject) {
-      return res.status(404).json({ error: 'Project not found during update' });
-    }
 
     res.json({ 
       message: 'Analysis completed successfully',

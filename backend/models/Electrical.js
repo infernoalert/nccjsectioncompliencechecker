@@ -23,6 +23,5 @@ const electricalSchema = new mongoose.Schema({
 
 module.exports = {
   embeddedSchema: electricalSchema,
-  schema: new mongoose.Schema(electricalSchema),
-  model: mongoose.model('Electrical', electricalSchema)
+  schema: new mongoose.Schema(electricalSchema)
 }; 
