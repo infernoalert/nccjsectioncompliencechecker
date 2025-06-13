@@ -308,6 +308,94 @@ const SingleLineDiagramInner = () => {
     setCurrentStep(newStep);
   }, []);
 
+  // Handle AI Draw button click
+  const handleAiDraw = async () => {
+    setIsSaving(true); // Reuse the saving state for loading indicator
+    
+    try {
+      // Call the energy diagram generate API
+      const response = await axios.post(`${API_URL}/api/projects/${id}/energy-diagram/generate`, {
+        saveToFile: false
+      }, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.data.success) {
+        const { commands } = response.data;
+        
+        // Convert commands to ReactFlow format
+        const commandNodes = [];
+        const commandEdges = [];
+        let nodeCounter = 1;
+
+        // Process commands to create nodes and edges
+        commands.forEach(cmd => {
+          const parts = cmd.split(',').map(part => part.trim());
+          const command = parts[0];
+          
+          if (command === 'add') {
+            const [_, nodeType, xRaw, yRaw] = parts;
+            const x = parseInt(xRaw, 10);
+            const y = parseInt(yRaw, 10);
+            
+            // Convert grid coordinates to pixel positions
+            const position = {
+              x: 100 + (x - 1) * 150,
+              y: 100 + (y - 1) * 150
+            };
+
+            // Map backend node types to frontend node types
+            const nodeTypeMapping = {
+              'cloud': 'cloud',
+              'onpremise': 'onPremise',
+              'smart-meter': 'smartMeter',
+              'general-meter': 'meter',
+              'memory-meter': 'meterMemory',
+              'auth-meter': 'authorityMeter'
+            };
+
+            const frontendNodeType = nodeTypeMapping[nodeType] || nodeType;
+            
+            commandNodes.push({
+              id: `${frontendNodeType}-${nodeCounter++}`,
+              type: frontendNodeType,
+              position,
+              data: { 
+                label: nodeType.split('-').map(word => 
+                  word.charAt(0).toUpperCase() + word.slice(1)
+                ).join(' '),
+                showHandles: showHandles
+              },
+              width: 100,
+              height: 87
+            });
+          }
+        });
+
+        // Update the diagram
+        setNodes(commandNodes);
+        setEdges(commandEdges);
+        
+        if (reactFlowInstance) {
+          reactFlowInstance.fitView();
+        }
+
+        console.log('✅ AI Draw completed successfully');
+      } else {
+        throw new Error(response.data.error || 'Failed to generate diagram');
+      }
+    } catch (error) {
+      console.error('Error calling energy diagram API:', error);
+      // You could add a snackbar or alert here for user feedback
+      alert(`Error generating diagram: ${error.response?.data?.error || error.message}`);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   return (
     <Box sx={{ 
       display: 'flex', 
@@ -448,7 +536,9 @@ const SingleLineDiagramInner = () => {
           <Button
             variant="contained"
             size="large"
-            startIcon={<SmartToyIcon />}
+            onClick={handleAiDraw}
+            disabled={isSaving}
+            startIcon={isSaving ? <CircularProgress size={20} color="inherit" /> : <SmartToyIcon />}
             sx={{
               backgroundColor: '#FF4081', // Bright pink color
               color: 'white',
@@ -464,7 +554,7 @@ const SingleLineDiagramInner = () => {
               ml: 2 // margin-left for spacing
             }}
           >
-            AI Draw
+            {isSaving ? 'Generating...' : 'AI Draw'}
           </Button>
           <Button
             variant="outlined"
