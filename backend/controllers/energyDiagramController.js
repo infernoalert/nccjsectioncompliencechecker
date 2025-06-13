@@ -16,8 +16,8 @@ class EnergyDiagramController {
             const { projectId } = req.params;
             const { saveToFile = false } = req.body;
 
-            // Find project
-            const project = await Project.findById(projectId);
+            // Find project and populate energy monitoring data
+            const project = await Project.findById(projectId).populate('electrical.energyMonitoring');
             if (!project) {
                 return res.status(404).json({
                     success: false,
@@ -28,17 +28,20 @@ class EnergyDiagramController {
             // Get energy monitoring data from project
             let energyMonitoringData = [];
             
-            // Check if project has embedded energy monitoring data
-            if (project.energyMonitoring && project.energyMonitoring.length > 0) {
-                energyMonitoringData = project.energyMonitoring;
+            // Check if project has energy monitoring data in electrical.energyMonitoring
+            if (project.electrical && project.electrical.energyMonitoring && project.electrical.energyMonitoring.length > 0) {
+                energyMonitoringData = project.electrical.energyMonitoring;
             } else {
                 // Fallback to separate collection (if exists)
                 energyMonitoringData = await EnergyMonitoring.find({ projectId });
             }
 
             if (energyMonitoringData.length === 0) {
-                // Use sample data for demonstration
-                energyMonitoringData = this.diagramGenerator.generateSampleData();
+                return res.status(400).json({
+                    success: false,
+                    error: 'No energy monitoring devices found for this project',
+                    message: 'Please add energy monitoring devices to the project before generating a diagram'
+                });
             }
 
             // Generate diagram commands
@@ -99,6 +102,14 @@ class EnergyDiagramController {
                 });
             }
 
+            if (energyMonitoringData.length === 0) {
+                return res.status(400).json({
+                    success: false,
+                    error: 'No energy monitoring devices provided',
+                    message: 'energyMonitoringData array cannot be empty'
+                });
+            }
+
             // Generate diagram commands
             const result = await this.diagramGenerator.generateDiagramCommands(
                 energyMonitoringData,
@@ -141,32 +152,6 @@ class EnergyDiagramController {
     }
 
     /**
-     * Get sample energy monitoring data for testing
-     * GET /api/energy-diagram/sample-data
-     */
-    async getSampleData(req, res) {
-        try {
-            const sampleData = this.diagramGenerator.generateSampleData();
-            
-            res.json({
-                success: true,
-                sampleData,
-                description: 'Sample energy monitoring data for testing diagram generation'
-            });
-
-        } catch (error) {
-            console.error('Error getting sample data:', error);
-            res.status(500).json({
-                success: false,
-                error: 'Failed to get sample data',
-                details: error.message
-            });
-        }
-    }
-
-
-
-    /**
      * Validate energy monitoring data structure
      * POST /api/energy-diagram/validate
      */
@@ -182,7 +167,7 @@ class EnergyDiagramController {
             }
 
             const validationResults = [];
-            const supportedTypes = Object.keys(this.diagramGenerator.nodeTypes);
+            const supportedMeterTypes = ['smart-meter', 'general-meter', 'auth-meter', 'memory-meter'];
 
             energyMonitoringData.forEach((meter, index) => {
                 const validation = {
@@ -203,10 +188,14 @@ class EnergyDiagramController {
                     validation.warnings.push('label is recommended for better diagram readability');
                 }
 
+                if (!meter.panel) {
+                    validation.warnings.push('panel information is recommended for device identification');
+                }
+
                 // Check if device type is supported
-                if (meter.monitoringDeviceType && !supportedTypes.includes(meter.monitoringDeviceType)) {
+                if (meter.monitoringDeviceType && !supportedMeterTypes.includes(meter.monitoringDeviceType)) {
                     validation.valid = false;
-                    validation.errors.push(`Unsupported device type: ${meter.monitoringDeviceType}. Supported types: ${supportedTypes.join(', ')}`);
+                    validation.errors.push(`Unsupported device type: ${meter.monitoringDeviceType}. Supported types: ${supportedMeterTypes.join(', ')}`);
                 }
 
                 validationResults.push(validation);
@@ -227,7 +216,7 @@ class EnergyDiagramController {
                     warningCount
                 },
                 validationResults,
-                supportedDeviceTypes: supportedTypes
+                supportedDeviceTypes: supportedMeterTypes
             });
 
         } catch (error) {
@@ -247,6 +236,5 @@ const energyDiagramController = new EnergyDiagramController();
 module.exports = {
     generateFromProject: energyDiagramController.generateFromProject.bind(energyDiagramController),
     generateFromData: energyDiagramController.generateFromData.bind(energyDiagramController),
-    getSampleData: energyDiagramController.getSampleData.bind(energyDiagramController),
     validateData: energyDiagramController.validateData.bind(energyDiagramController)
 }; 

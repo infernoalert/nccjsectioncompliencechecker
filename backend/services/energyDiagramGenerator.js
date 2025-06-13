@@ -3,7 +3,7 @@ const path = require('path');
 
 class EnergyDiagramGenerator {
     constructor() {
-        // Define node types and their properties
+        // Define node types and their properties (based on diagram-programming-language.md)
         this.nodeTypes = {
             'smart-meter': { 
                 type: 'smart-meter', 
@@ -50,6 +50,21 @@ class EnergyDiagramGenerator {
                 color: '#E91E63'
             }
         };
+
+        // Supported device types from diagram programming language
+        this.supportedDeviceTypes = [
+            'smart-meter',      // Smart energy meter
+            'general-meter',    // General purpose meter  
+            'auth-meter',       // Authorization meter
+            'memory-meter',     // Memory/storage meter
+            'transformer',      // Electrical transformer
+            'load',            // Electrical load
+            'cloud',           // Cloud infrastructure
+            'wireless',        // Wireless connection
+            'rs485',           // RS485 connection
+            'ethernet',        // Ethernet connection
+            'onpremise'        // On-premise infrastructure
+        ];
 
         // Define connection types between nodes
         this.connectionTypes = {
@@ -168,7 +183,7 @@ class EnergyDiagramGenerator {
         energyMonitoringData.forEach((meter, index) => {
             const meterType = meter.monitoringDeviceType;
             if (!this.nodeTypes[meterType]) {
-                console.warn(`Unknown meter type: ${meterType}`);
+                console.warn(`Unknown meter type: ${meterType}. Skipping device: ${meter.label || 'Unknown'}`);
                 return;
             }
 
@@ -181,12 +196,12 @@ class EnergyDiagramGenerator {
             // Generate unique node ID
             const nodeId = `${meterType}-${nodeCounter++}`;
             
-            // Add meter node
+            // Add meter node with device type
             commands.push(`add,${meterType},${position.x},${position.y}`);
             
-            // Set label property
-            const label = meter.label || `${meterType.replace('-', ' ').toUpperCase()}`;
-            commands.push(`set-property,${nodeId},label,${label}`);
+            // Use the label from database as the display text for the device
+            const deviceLabel = meter.label || `${meterType.replace('-', ' ').toUpperCase()}`;
+            commands.push(`set-property,${nodeId},label,${deviceLabel}`);
             
             // Set panel property if available
             if (meter.panel) {
@@ -196,6 +211,16 @@ class EnergyDiagramGenerator {
             // Set description if available
             if (meter.description) {
                 commands.push(`set-property,${nodeId},description,${meter.description}`);
+            }
+
+            // Set status if available
+            if (meter.status) {
+                commands.push(`set-property,${nodeId},status,${meter.status}`);
+            }
+
+            // Set connection type if available
+            if (meter.connection) {
+                commands.push(`set-property,${nodeId},connection,${meter.connection}`);
             }
 
             // Store position and ID
@@ -312,15 +337,26 @@ class EnergyDiagramGenerator {
      * Generate metadata for the diagram
      */
     generateMetadata(energyMonitoringData, projectData) {
+        const meterTypes = [...new Set(energyMonitoringData.map(m => m.monitoringDeviceType))];
+        const totalDevices = energyMonitoringData.length;
+        
         return {
             generatedAt: new Date().toISOString(),
             version: '1.0',
             diagramType: 'energy-monitoring',
-            nodeCount: energyMonitoringData.length + 2, // +2 for cloud and onpremise
-            meterTypes: [...new Set(energyMonitoringData.map(m => m.monitoringDeviceType))],
+            nodeCount: totalDevices + 2, // +2 for cloud and onpremise
+            meterTypes: meterTypes,
+            deviceCount: totalDevices,
             projectId: projectData.projectId,
             projectName: projectData.projectName,
-            generator: 'EnergyDiagramGenerator'
+            generator: 'EnergyDiagramGenerator',
+            devices: energyMonitoringData.map(device => ({
+                id: device._id,
+                label: device.label,
+                type: device.monitoringDeviceType,
+                panel: device.panel,
+                status: device.status
+            }))
         };
     }
 
@@ -347,41 +383,6 @@ class EnergyDiagramGenerator {
 
         await fs.writeFile(filePath, JSON.stringify(diagramData, null, 2), 'utf8');
         return { filePath, filename, diagramData };
-    }
-
-    /**
-     * Generate sample data for testing
-     */
-    generateSampleData() {
-        return [
-            {
-                _id: '1',
-                label: 'Main Smart Meter',
-                panel: 'Panel A',
-                monitoringDeviceType: 'smart-meter',
-                description: 'Primary energy monitoring device',
-                connection: 'wireless',
-                status: 'active'
-            },
-            {
-                _id: '2',
-                label: 'Secondary General Meter',
-                panel: 'Panel B',
-                monitoringDeviceType: 'general-meter',
-                description: 'Secondary monitoring point',
-                connection: 'rs485',
-                status: 'active'
-            },
-            {
-                _id: '3',
-                label: 'Memory Meter Unit',
-                panel: 'Panel C',
-                monitoringDeviceType: 'memory-meter',
-                description: 'Data logging meter',
-                connection: 'rs485',
-                status: 'active'
-            }
-        ];
     }
 }
 

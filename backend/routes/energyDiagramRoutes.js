@@ -321,41 +321,7 @@ router.post('/projects/:projectId/energy-diagram/generate', energyDiagramControl
  */
 router.post('/energy-diagram/generate', energyDiagramController.generateFromData);
 
-/**
- * @swagger
- * /api/energy-diagram/sample-data:
- *   get:
- *     summary: Get sample energy monitoring data for testing
- *     description: |
- *       Returns sample energy monitoring data that can be used for testing the diagram generator.
- *       Includes examples of different device types with proper structure.
- *     tags: [Energy Diagram Generator]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: Sample data retrieved successfully
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 sampleData:
- *                   type: array
- *                   items:
- *                     $ref: '#/components/schemas/EnergyMonitoringDevice'
- *                 description:
- *                   type: string
- *                   example: "Sample energy monitoring data for testing diagram generation"
- *       401:
- *         description: Not authorized
- *       500:
- *         description: Server error
- */
-router.get('/energy-diagram/sample-data', energyDiagramController.getSampleData);
+
 
 
 
