@@ -164,58 +164,7 @@ class EnergyDiagramController {
         }
     }
 
-    /**
-     * Generate diagram with sample data for testing
-     * POST /api/energy-diagram/generate-sample
-     */
-    async generateSample(req, res) {
-        try {
-            const { saveToFile = false } = req.body;
-            const sampleData = this.diagramGenerator.generateSampleData();
 
-            // Generate diagram commands
-            const result = await this.diagramGenerator.generateDiagramCommands(
-                sampleData,
-                {
-                    projectId: 'sample',
-                    projectName: 'Sample Energy Monitoring Project'
-                }
-            );
-
-            // Save to file if requested
-            let fileInfo = null;
-            if (saveToFile) {
-                fileInfo = await this.diagramGenerator.saveCommandsToFile(
-                    result.commands,
-                    result.metadata,
-                    'sample'
-                );
-            }
-
-            res.json({
-                success: true,
-                commands: result.commands,
-                metadata: result.metadata,
-                nodePositions: result.nodePositions,
-                nodeIds: result.nodeIds,
-                sampleData,
-                fileInfo,
-                executionInstructions: {
-                    description: 'Execute these commands in sequence on the frontend diagram engine',
-                    commandFormat: 'Each command follows the diagram programming language specification',
-                    totalCommands: result.commands.length
-                }
-            });
-
-        } catch (error) {
-            console.error('Error generating sample diagram:', error);
-            res.status(500).json({
-                success: false,
-                error: 'Failed to generate sample diagram',
-                details: error.message
-            });
-        }
-    }
 
     /**
      * Validate energy monitoring data structure
@@ -299,6 +248,5 @@ module.exports = {
     generateFromProject: energyDiagramController.generateFromProject.bind(energyDiagramController),
     generateFromData: energyDiagramController.generateFromData.bind(energyDiagramController),
     getSampleData: energyDiagramController.getSampleData.bind(energyDiagramController),
-    generateSample: energyDiagramController.generateSample.bind(energyDiagramController),
     validateData: energyDiagramController.validateData.bind(energyDiagramController)
 }; 

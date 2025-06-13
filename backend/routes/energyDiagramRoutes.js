@@ -357,55 +357,7 @@ router.post('/energy-diagram/generate', energyDiagramController.generateFromData
  */
 router.get('/energy-diagram/sample-data', energyDiagramController.getSampleData);
 
-/**
- * @swagger
- * /api/energy-diagram/generate-sample:
- *   post:
- *     summary: Generate diagram with sample data for testing
- *     description: |
- *       Generates a complete diagram using built-in sample data. Perfect for testing and demonstration purposes.
- *       Creates a diagram with smart meter, general meter, and memory meter examples.
- *     tags: [Energy Diagram Generator]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: false
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               saveToFile:
- *                 type: boolean
- *                 default: false
- *                 description: Whether to save commands to file
- *     responses:
- *       200:
- *         description: Sample diagram generated successfully
- *         content:
- *           application/json:
- *             schema:
- *               allOf:
- *                 - type: object
- *                   properties:
- *                     success:
- *                       type: boolean
- *                       example: true
- *                     sampleData:
- *                       type: array
- *                       items:
- *                         $ref: '#/components/schemas/EnergyMonitoringDevice'
- *                       description: The sample data used for generation
- *                     fileInfo:
- *                       type: object
- *                       nullable: true
- *                 - $ref: '#/components/schemas/DiagramCommand'
- *       401:
- *         description: Not authorized
- *       500:
- *         description: Server error
- */
-router.post('/energy-diagram/generate-sample', energyDiagramController.generateSample);
+
 
 /**
  * @swagger
