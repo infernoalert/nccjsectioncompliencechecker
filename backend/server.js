@@ -64,6 +64,7 @@ const J6hvacReportRoutes = require('./routes/j6hvac_reportRoutes');
 const stepRoutes = require('./routes/stepRoutes');
 const diagramChatRoutes = require('./routes/diagramChatRoutes');
 const projectValueRoutes = require('./routes/projectValueRoutes');
+const energyDiagramRoutes = require('./routes/energyDiagramRoutes');
 
 const app = express();
 
@@ -118,6 +119,7 @@ app.use('/health', healthRoutes);
 // Mount routes
 app.use('/api/users', userRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api', energyDiagramRoutes);
 app.use('/api/climate-zones', climateZoneRoutes);
 app.use('/api/compliance-pathways', compliancePathwayRoutes);
 app.use('/api/projects', projectRoutes);

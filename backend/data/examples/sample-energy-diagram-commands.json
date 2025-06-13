@@ -1,0 +1,85 @@
+{
+  "commands": [
+    "add,cloud,4,0",
+    "add,onpremise,4,8",
+    "add,smart-meter,0,16",
+    "set-property,smart-meter-1,label,Main Smart Meter",
+    "set-property,smart-meter-1,panel,Panel A",
+    "set-property,smart-meter-1,description,Primary energy monitoring device",
+    "add,general-meter,6,16",
+    "set-property,general-meter-2,label,Secondary General Meter",
+    "set-property,general-meter-2,panel,Panel B",
+    "set-property,general-meter-2,description,Secondary monitoring point",
+    "add,memory-meter,12,16",
+    "set-property,memory-meter-3,label,Memory Meter Unit",
+    "set-property,memory-meter-3,panel,Panel C",
+    "set-property,memory-meter-3,description,Data logging meter",
+    "connect,smart-meter-1,cloud-1,wireless",
+    "connect,smart-meter-1,onpremise-1,ethernet",
+    "connect,general-meter-2,onpremise-1,rs485",
+    "connect,memory-meter-3,onpremise-1,rs485",
+    "connect,cloud-1,onpremise-1,ethernet",
+    "style,cloud-1,color,#607D8B",
+    "style,cloud-1,shape,cloud",
+    "style,onpremise-1,color,#795548",
+    "style,onpremise-1,shape,server",
+    "style,smart-meter-1,color,#4CAF50",
+    "style,smart-meter-1,shape,rectangle",
+    "style,general-meter-2,color,#2196F3",
+    "style,general-meter-2,shape,rectangle",
+    "style,memory-meter-3,color,#FF9800",
+    "style,memory-meter-3,shape,rectangle",
+    "layout,hierarchical",
+    "group,infrastructure,cloud-1,onpremise-1",
+    "style-group,infrastructure,border-color,#333333",
+    "fit"
+  ],
+  "metadata": {
+    "generatedAt": "2024-03-21T10:30:00.000Z",
+    "version": "1.0",
+    "diagramType": "energy-monitoring",
+    "nodeCount": 5,
+    "meterTypes": [
+      "smart-meter",
+      "general-meter",
+      "memory-meter"
+    ],
+    "projectId": "sample-project",
+    "projectName": "Sample Energy Monitoring Project",
+    "generator": "EnergyDiagramGenerator"
+  },
+  "executionInstructions": {
+    "description": "Execute commands in sequence on the frontend diagram engine",
+    "commandFormat": "Each command follows the diagram programming language specification",
+    "executionOrder": "Commands must be executed in the order provided"
+  },
+  "nodePositions": {
+    "cloud-1": {
+      "x": 4,
+      "y": 0
+    },
+    "onpremise-1": {
+      "x": 4,
+      "y": 8
+    },
+    "smart-meter-1": {
+      "x": 0,
+      "y": 16
+    },
+    "general-meter-2": {
+      "x": 6,
+      "y": 16
+    },
+    "memory-meter-3": {
+      "x": 12,
+      "y": 16
+    }
+  },
+  "nodeIds": {
+    "cloud": "cloud-1",
+    "onpremise": "onpremise-1",
+    "meter-1": "smart-meter-1",
+    "meter-2": "general-meter-2",
+    "meter-3": "memory-meter-3"
+  }
+} 

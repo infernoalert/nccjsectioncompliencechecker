@@ -1,0 +1,50 @@
+{
+  "commands": [
+    "add,cloud,4,0",
+    "add,onpremise,4,8",
+    "add,smart-meter,0,16",
+    "set-property,smart-meter-1,label,Main Smart Meter",
+    "set-property,smart-meter-1,panel,Panel A",
+    "set-property,smart-meter-1,description,Primary energy monitoring device",
+    "add,general-meter,6,16",
+    "set-property,general-meter-2,label,Secondary General Meter",
+    "set-property,general-meter-2,panel,Panel B",
+    "set-property,general-meter-2,description,Secondary monitoring point",
+    "add,memory-meter,12,16",
+    "set-property,memory-meter-3,label,Memory Meter Unit",
+    "set-property,memory-meter-3,panel,Panel C",
+    "set-property,memory-meter-3,description,Data logging meter",
+    "connect,smart-meter-1,cloud-1,wireless",
+    "connect,smart-meter-1,onpremise-1,ethernet",
+    "connect,general-meter-2,onpremise-1,rs485",
+    "connect,memory-meter-3,onpremise-1,rs485",
+    "connect,cloud-1,onpremise-1,ethernet",
+    "style,cloud-1,color,#607D8B",
+    "style,cloud-1,shape,cloud",
+    "style,onpremise-1,color,#795548",
+    "style,onpremise-1,shape,server",
+    "layout,hierarchical",
+    "group,infrastructure,cloud-1,onpremise-1",
+    "style-group,infrastructure,border-color,#333333",
+    "fit"
+  ],
+  "metadata": {
+    "generatedAt": "2025-06-13T01:54:47.460Z",
+    "version": "1.0",
+    "diagramType": "energy-monitoring",
+    "nodeCount": 5,
+    "meterTypes": [
+      "smart-meter",
+      "general-meter",
+      "memory-meter"
+    ],
+    "projectId": "demo-project-123",
+    "projectName": "Demo Energy Monitoring Project",
+    "generator": "EnergyDiagramGenerator"
+  },
+  "executionInstructions": {
+    "description": "Execute commands in sequence on the frontend diagram engine",
+    "commandFormat": "Each command follows the diagram programming language specification",
+    "executionOrder": "Commands must be executed in the order provided"
+  }
+}
