@@ -1,0 +1,236 @@
+@startuml Energy Diagram Generation - Class Diagram
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+' Frontend Components
+package "Frontend Components" <<Cloud>> {
+    class SingleLineDiagram {
+        -isAutoGenerating: boolean
+        -autoGenMessage: string
+        -isSaving: boolean
+        +handleAIDraw(): void
+        +loadEnergyDiagram(projectId: string): void
+        +executeEnergyDiagramCommands(commands: string[]): void
+        +setAutoGenMessage(message: string): void
+        +processEnergyDiagramResponse(response: object): void
+    }
+
+    class EnergyDiagramTest {
+        -projectId: string
+        -isLoading: boolean
+        -response: object
+        +testEnergyDiagramAPI(projectId: string): Promise<object>
+        +handleTest(): void
+    }
+
+    class AIDiagramGenerator {
+        -message: string
+        -isLoading: boolean
+        -error: string
+        -chatHistory: array
+        +getCurrentDiagram(): Promise<array>
+        +getCurrentEdges(): Promise<array>
+        +onDiagramGenerated(diagram: object): void
+    }
+
+    class ChatDiagramGenerator {
+        +commandsToDiagram(commands: string[]): object
+        +calculatePosition(x: number, y: number): object
+        +executeCommand(command: string): void
+    }
+}
+
+' Backend Controllers
+package "Backend Controllers" {
+    class EnergyDiagramController {
+        -diagramGenerator: EnergyDiagramGenerator
+        +constructor()
+        +generateFromProject(req: Request, res: Response): Promise<void>
+    }
+}
+
+' Backend Services
+package "Backend Services" {
+    class EnergyDiagramGenerator {
+        -nodeTypes: Map<string, object>
+        -supportedDeviceTypes: string[]
+        -connectionTypes: Map<string, object>
+        -gridConfig: object
+        +constructor()
+        +generateDiagramCommands(energyMonitoringData: array, projectData: object): Promise<object>
+        +addInfrastructureNodes(commands: array, nodePositions: Map, nodeIds: Map): array
+        +addEnergyMonitoringDevices(commands: array, energyData: array, nodePositions: Map, nodeIds: Map, nodeCounter: number): array
+        +addConnections(commands: array, energyData: array, nodeIds: Map): void
+        +addStyling(commands: array, nodeIds: Map): void
+        +applyLayoutAndGrouping(commands: array, nodeIds: Map, meterNodes: array): void
+        +generateMetadata(energyData: array, projectData: object): object
+        +saveCommandsToFile(commands: array, metadata: object, projectId: string): Promise<object>
+        +generateSampleData(): array
+    }
+
+    class DiagramService {
+        -diagramsDir: string
+        +constructor()
+        +ensureDiagramsDirectory(): Promise<void>
+        +generateFileName(projectId: string): string
+        +saveDiagram(projectId: string, diagramData: object): Promise<object>
+        +getDiagram(projectId: string): Promise<object>
+        +deleteDiagram(projectId: string): Promise<object>
+    }
+}
+
+' Backend Models
+package "Backend Models" {
+    class Project {
+        +_id: ObjectId
+        +name: string
+        +description: string
+        +owner: ObjectId
+        +buildingType: string
+        +location: Mixed
+        +climateZone: Mixed
+        +floorArea: number
+        +electrical: Electrical
+        +diagram: DiagramInfo
+        +createdAt: Date
+        +updatedAt: Date
+        +findById(id: string): Promise<Project>
+        +populate(field: string): Project
+        +save(): Promise<Project>
+    }
+
+    class EnergyMonitoring {
+        +_id: ObjectId
+        +label: string
+        +panel: string
+        +monitoringDeviceType: string
+        +description: string
+        +connection: string
+        +status: string
+        +lastUpdated: Date
+        +createdAt: Date
+        +updatedAt: Date
+        +find(query: object): Promise<EnergyMonitoring[]>
+    }
+
+    class Electrical {
+        +loads: Load[]
+        +energyMonitoring: EnergyMonitoring[]
+        +complianceStatus: string
+        +lastAssessmentDate: Date
+    }
+
+    class DiagramInfo {
+        +fileName: string
+        +lastModified: Date
+        +version: number
+    }
+}
+
+' Backend Routes
+package "Backend Routes" {
+    class EnergyDiagramRoutes {
+        +router: Router
+        +setupRoutes(): void
+        +setupSwaggerDocs(): void
+    }
+}
+
+' Data Transfer Objects
+package "Data Transfer Objects" {
+    class DiagramCommand {
+        +commands: string[]
+        +metadata: DiagramMetadata
+        +nodePositions: object
+        +nodeIds: object
+        +executionInstructions: object
+    }
+
+    class DiagramMetadata {
+        +generatedAt: string
+        +version: string
+        +diagramType: string
+        +nodeCount: number
+        +meterTypes: string[]
+        +deviceCount: number
+        +projectId: string
+        +projectName: string
+        +generator: string
+        +devices: DeviceInfo[]
+    }
+
+    class DeviceInfo {
+        +id: string
+        +label: string
+        +type: string
+        +panel: string
+        +status: string
+    }
+
+    class NodeType {
+        +type: string
+        +requiredConnections: string[]
+        +level: number
+        +color: string
+    }
+
+    class GridConfig {
+        +cellWidth: number
+        +cellHeight: number
+        +startX: number
+        +startY: number
+        +levelSpacing: number
+    }
+}
+
+' API Endpoints
+package "API Endpoints" <<Node>> {
+    class EnergyDiagramAPI {
+        +POST /api/projects/:projectId/energy-diagram/generate
+        +POST /api/energy-diagram/generate
+        +GET /api/energy-diagram/sample-data
+        +POST /api/energy-diagram/generate-sample
+        +POST /api/energy-diagram/validate
+    }
+}
+
+' Relationships - Frontend
+SingleLineDiagram --> EnergyDiagramAPI : "calls API"
+EnergyDiagramTest --> EnergyDiagramAPI : "tests API"
+AIDiagramGenerator --> EnergyDiagramAPI : "calls API"
+ChatDiagramGenerator --> SingleLineDiagram : "processes commands"
+
+' Relationships - Backend Controller to Service
+EnergyDiagramController --> EnergyDiagramGenerator : "uses"
+EnergyDiagramController --> Project : "queries"
+EnergyDiagramController --> EnergyMonitoring : "queries"
+
+' Relationships - Service to Models
+EnergyDiagramGenerator --> Project : "reads"
+EnergyDiagramGenerator --> EnergyMonitoring : "reads"
+EnergyDiagramGenerator --> DiagramService : "saves to file"
+
+' Relationships - Models
+Project "1" --> "1" Electrical : "contains"
+Project "1" --> "1" DiagramInfo : "has"
+Electrical "1" --> "*" EnergyMonitoring : "contains"
+
+' Relationships - Routes
+EnergyDiagramRoutes --> EnergyDiagramController : "routes to"
+EnergyDiagramAPI --> EnergyDiagramRoutes : "implements"
+
+' Relationships - DTOs
+EnergyDiagramGenerator --> DiagramCommand : "creates"
+EnergyDiagramGenerator --> DiagramMetadata : "creates"
+EnergyDiagramGenerator --> NodeType : "uses"
+EnergyDiagramGenerator --> GridConfig : "uses"
+DiagramCommand --> DiagramMetadata : "contains"
+DiagramMetadata --> DeviceInfo : "contains"
+
+' Flow annotations
+note right of SingleLineDiagram : "Auto-generates energy\ndiagram when page loads"
+note right of EnergyDiagramGenerator : "Core service that generates\ndiagram commands from\nenergy monitoring data"
+note right of Project : "Contains electrical data\nwith energy monitoring\ndevices"
+note bottom of EnergyDiagramAPI : "RESTful API endpoints\nfor diagram generation"
+
+@enduml 

@@ -2,6 +2,7 @@ const MCPContext = require('./MCPContext');
 const FileProcessor = require('./processors/FileProcessor');
 const LLMAnalyzer = require('./processors/LLMAnalyzer');
 const ProjectUpdater = require('./processors/ProjectUpdater');
+const updateDeviceTypesByProjectSize = require('../utils/deviceTypeUpdater');
 const path = require('path');
 const fs = require('fs').promises;
 
@@ -74,6 +75,9 @@ class MCPHandler {
             
             // Process completed - project data has been updated
             console.log('MCP Process completed successfully - project data updated');
+            
+            // Step 6: Post-MCP Device Type Update (runs separately after MCP completion)
+            await this._handlePostMCPDeviceTypeUpdate();
             
             this.context.updateProcessingStatus('COMPLETED');
             return this.context.getCurrentState();
@@ -199,6 +203,64 @@ class MCPHandler {
             step: 'NEXT_ANALYSIS',
             status: 'COMPLETED'
         });
+    }
+
+    async _handlePostMCPDeviceTypeUpdate() {
+        try {
+            console.log('\n' + '='.repeat(60));
+            console.log('🔧 STARTING POST-MCP DEVICE TYPE UPDATE');
+            console.log('📋 Project ID:', this.context.projectId);
+            console.log('⏰ Timestamp:', new Date().toISOString());
+            console.log('='.repeat(60));
+            
+            // Verify the function is available
+            if (typeof updateDeviceTypesByProjectSize !== 'function') {
+                throw new Error('updateDeviceTypesByProjectSize function not available');
+            }
+            
+            // Run device type updater (completely separate from MCP)
+            console.log('🚀 Calling updateDeviceTypesByProjectSize...');
+            const result = await updateDeviceTypesByProjectSize(this.context.projectId);
+            
+            console.log('='.repeat(60));
+            console.log('✅ POST-MCP DEVICE TYPE UPDATE COMPLETED SUCCESSFULLY');
+            console.log(`📊 Updated ${result.count} devices to type: ${result.updatedType}`);
+            console.log('='.repeat(60));
+            
+            // Add to MCP history for tracking (but not as part of MCP process)
+            this.context.addHistoryEntry({
+                step: 'POST_MCP_DEVICE_TYPE_UPDATE',
+                status: 'COMPLETED',
+                metadata: {
+                    updatedDeviceCount: result.count,
+                    newDeviceType: result.updatedType,
+                    note: 'Ran separately after MCP completion',
+                    timestamp: new Date().toISOString()
+                }
+            });
+            
+        } catch (error) {
+            console.log('='.repeat(60));
+            console.error('❌ POST-MCP DEVICE TYPE UPDATE FAILED');
+            console.error('Error message:', error.message);
+            console.error('Stack trace:', error.stack);
+            console.log('='.repeat(60));
+            
+            // Log the error but don't fail the entire MCP process
+            this.context.addHistoryEntry({
+                step: 'POST_MCP_DEVICE_TYPE_UPDATE',
+                status: 'FAILED',
+                error: error.message,
+                metadata: {
+                    note: 'Device type update failed but MCP process completed successfully',
+                    timestamp: new Date().toISOString(),
+                    stackTrace: error.stack
+                }
+            });
+            
+            // Don't throw error - MCP process should still be considered successful
+            console.log('⚠️  Note: MCP process completed successfully despite device type update failure');
+        }
     }
 
     async handleError(error) {

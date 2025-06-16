@@ -136,6 +136,28 @@ app.get('/', (req, res) => {
     res.json({ message: 'Welcome to the API' });
 });
 
+// Test route for device type updater
+const updateDeviceTypesByProjectSize = require('./utils/deviceTypeUpdater');
+app.get('/test-device-updater/:projectId', async (req, res) => {
+    try {
+        console.log('🧪 TEST ROUTE: Device Type Updater called via API');
+        const projectId = req.params.projectId;
+        const result = await updateDeviceTypesByProjectSize(projectId);
+        res.json({ 
+            success: true, 
+            result,
+            message: 'Device type updater completed successfully'
+        });
+    } catch (error) {
+        console.error('❌ TEST ROUTE ERROR:', error);
+        res.json({ 
+            success: false, 
+            error: error.message,
+            stack: error.stack
+        });
+    }
+});
+
 // Error handling middleware
 app.use(errorHandler);
 
