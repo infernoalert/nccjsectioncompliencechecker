@@ -51,7 +51,6 @@ class AssistantManager {
       // Update user with thread ID
       user.assistantThread = {
         threadId: thread.id,
-        currentStep: 'initial',
         lastUpdated: new Date()
       };
       await user.save();
@@ -63,29 +62,7 @@ class AssistantManager {
     }
   }
 
-  async updateUserStep(userId, step) {
-    try {
-      const user = await User.findById(userId);
-      if (!user) {
-        throw new Error('User not found');
-      }
 
-      // Validate step
-      const validSteps = ['initial', 'bom', 'design', 'review', 'final'];
-      if (!validSteps.includes(step)) {
-        throw new Error(`Invalid step: ${step}`);
-      }
-
-      user.assistantThread.currentStep = step;
-      user.assistantThread.lastUpdated = new Date();
-      await user.save();
-
-      return user.assistantThread;
-    } catch (error) {
-      console.error('Error in updateUserStep:', error);
-      throw error;
-    }
-  }
 
   async waitForRunCompletion(threadId, runId, maxAttempts = 30) {
     let attempts = 0;
@@ -111,7 +88,7 @@ class AssistantManager {
     throw new Error('Run timed out');
   }
 
-  async sendMessage(userId, message, step, projectId) {
+  async sendMessage(userId, message) {
     try {
       const user = await User.findById(userId);
       if (!user) {
@@ -119,50 +96,12 @@ class AssistantManager {
       }
 
       const threadId = await this.getOrCreateThread(userId);
-      const assistantId = await this.getAssistantId(step);
-
-      // If this is the BOM step, include initial requirements
-      let finalMessage = message;
-      if (step === 'bom') {
-        console.log('\n=== Preparing Data for BOM Agent ===');
-        // Get the project data using the provided projectId
-        const project = await Project.findById(projectId);
-        if (!project) {
-          throw new Error('Project not found');
-        }
-        console.log('Project:', project.name);
-        console.log('Project ID:', project._id);
-        
-        // Get initial requirements directly from project
-        const initialRequirements = project.stepRequirements?.initial || project.stepRequirements;
-        if (!initialRequirements) {
-          console.log('No initial requirements found in project');
-          throw new Error('Initial requirements not found');
-        }
-        
-        console.log('Initial Requirements:');
-        console.log('- Building Classification:', initialRequirements.buildingClassification);
-        console.log('- Building Services:', JSON.stringify(initialRequirements.buildingServices, null, 2));
-        console.log('- Ancillary Plants:', JSON.stringify(initialRequirements.ancillaryPlants, null, 2));
-        console.log('- Shared Areas Count:', initialRequirements.sharedAreasCount);
-        
-        // Format initial requirements for the BOM assistant
-        const formattedRequirements = {
-          buildingClassification: initialRequirements.buildingClassification,
-          floorArea: initialRequirements.floorArea,
-          buildingServices: initialRequirements.buildingServices,
-          ancillaryPlants: initialRequirements.ancillaryPlants,
-          sharedAreasCount: initialRequirements.sharedAreasCount
-        };
-
-        // Add initial requirements to the message
-        finalMessage = `Initial Requirements:\n${JSON.stringify(formattedRequirements, null, 2)}\n\nUser Message:\n${message}`;
-      }
+      const assistantId = await this.getAssistantId('design'); // Default to design assistant
 
       // Add message to thread
       await this.openai.beta.threads.messages.create(threadId, {
         role: 'user',
-        content: finalMessage
+        content: message
       });
 
       // Run the assistant
@@ -194,8 +133,7 @@ class AssistantManager {
 
       return {
         message: assistantMessages[0].content[0].text.value,
-        threadId,
-        currentStep: step
+        threadId
       };
     } catch (error) {
       console.error('Error in sendMessage:', error);

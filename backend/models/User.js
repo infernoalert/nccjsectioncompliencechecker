@@ -37,11 +37,6 @@ const UserSchema = new mongoose.Schema({
             type: String,
             default: null
         },
-        currentStep: {
-            type: String,
-            enum: ['initial', 'bom', 'design', 'review', 'final'],
-            default: 'initial'
-        },
         lastUpdated: {
             type: Date,
             default: Date.now

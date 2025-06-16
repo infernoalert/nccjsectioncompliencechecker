@@ -61,8 +61,6 @@ const healthRoutes = require('./routes/healthRoutes');
 const EnergyMonitorReportRoutes = require('./routes/energy_monitor_reportRoutes');
 const J7LightingReportRoutes = require('./routes/j7lighting_reportRoutes');
 const J6hvacReportRoutes = require('./routes/j6hvac_reportRoutes');
-const stepRoutes = require('./routes/stepRoutes');
-const diagramChatRoutes = require('./routes/diagramChatRoutes');
 const projectValueRoutes = require('./routes/projectValueRoutes');
 const energyDiagramRoutes = require('./routes/energyDiagramRoutes');
 
@@ -131,8 +129,6 @@ app.use('/api/test', testRoutes);
 app.use('/api/health', healthRoutes);
 app.use('/api/j7lighting', J7LightingReportRoutes);
 app.use('/api/j6hvac', J6hvacReportRoutes);
-app.use('/api', stepRoutes);
-app.use('/api', diagramChatRoutes);
 app.use('/api/projects', projectValueRoutes);
 
 // Basic route

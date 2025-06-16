@@ -614,28 +614,13 @@ const ChatDiagramGenerator = ({ onDiagramGenerated, isAdmin = false }) => {
     initializeDiagram();
   }, []);
 
-  // Handler for AI prompt
+  // Handler for AI prompt - DISABLED: Step-based chat system removed
   const handleAiPrompt = async () => {
     if (!aiInput.trim()) return;
     setAiLoading(true);
     try {
-      const response = await axios.post(`/api/projects/${projectId}/chat/${currentStep}`, {
-        message: chatInput,
-        isGenericRequest: false
-      });
-      const aiText = response.data.response;
-      // Extract and execute all { ... } commands
-      const commands = [];
-      const regex = /\{([^}]+)\}/g;
-      let match;
-      while ((match = regex.exec(aiText)) !== null) {
-        commands.push(match[1]);
-      }
-      if (commands.length > 0) {
-        const newDiagram = commandsToDiagram(commands, localDiagram);
-        setLocalDiagram(newDiagram);
-        onDiagramGenerated(newDiagram);
-      }
+      // TODO: Implement new chat API when available
+      console.log('AI prompt feature disabled - step-based chat system removed');
     } catch (err) {
       // Optionally handle error (e.g., show a snackbar)
     } finally {

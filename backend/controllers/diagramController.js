@@ -2,7 +2,6 @@ const OpenAI = require('openai');
 const Project = require('../models/Project');
 const DiagramService = require('../services/diagramService');
 const assistantManager = require('../services/assistantManager');
-const { getStepConfig } = require('../utils/diagramchatapihelper');
 const fs = require('fs').promises;
 const path = require('path');
 
@@ -87,9 +86,7 @@ exports.interpretChat = async (req, res) => {
     const existingDiagram = await DiagramService.getDiagram(projectId);
     console.log('Existing diagram:', existingDiagram ? 'Found' : 'Not found');
 
-    // Get current step configuration
-    const currentStep = project.currentStep || 'initial';
-    const stepConfig = await getStepConfiguration(currentStep, project, existingDiagram);
+    // Skip step configuration since steps are removed
 
     if (isGenericRequest || emsRequired) {
       console.log('Using EMS template for generic/required request');

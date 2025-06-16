@@ -1,0 +1,848 @@
+{
+  "nodes": [
+    {
+      "id": "cloud-1",
+      "type": "cloud",
+      "position": {
+        "x": 130,
+        "y": 50
+      },
+      "data": {
+        "label": "Cloud",
+        "showHandles": false,
+        "nodeType": "cloud",
+        "shape": "cloud"
+      },
+      "width": 120,
+      "height": 90,
+      "style": {
+        "backgroundColor": "#607D8B",
+        "border": "2px solid #607D8B"
+      }
+    },
+    {
+      "id": "onpremise-2",
+      "type": "onPremise",
+      "position": {
+        "x": 130,
+        "y": 210
+      },
+      "data": {
+        "label": "Onpremise",
+        "showHandles": false,
+        "nodeType": "onpremise"
+      },
+      "width": 120,
+      "height": 90
+    },
+    {
+      "id": "smart-meter-3",
+      "type": "smartMeter",
+      "position": {
+        "x": 50,
+        "y": 370
+      },
+      "data": {
+        "label": "HDB-1",
+        "showHandles": false,
+        "nodeType": "smart-meter",
+        "panel": "Refer Sheet-X for Meter Panel Schematic",
+        "description": "Connected via 475A MCCB",
+        "status": "active",
+        "connection": "MCCB 475A"
+      },
+      "width": 120,
+      "height": 90
+    },
+    {
+      "id": "smart-meter-4",
+      "type": "smartMeter",
+      "position": {
+        "x": 170,
+        "y": 370
+      },
+      "data": {
+        "label": "HDB-2",
+        "showHandles": false,
+        "nodeType": "smart-meter",
+        "panel": "Refer Sheet-X for Meter Panel Schematic",
+        "description": "Connected via 630A MCCB",
+        "status": "active",
+        "connection": "MCCB 630A"
+      },
+      "width": 120,
+      "height": 90
+    },
+    {
+      "id": "smart-meter-5",
+      "type": "smartMeter",
+      "position": {
+        "x": 290,
+        "y": 370
+      },
+      "data": {
+        "label": "HDB-3",
+        "showHandles": false,
+        "nodeType": "smart-meter",
+        "panel": "Refer Sheet-X for Meter Panel Schematic",
+        "description": "Connected via 900A MCCB",
+        "status": "active",
+        "connection": "MCCB 900A"
+      },
+      "width": 120,
+      "height": 90
+    },
+    {
+      "id": "smart-meter-6",
+      "type": "smartMeter",
+      "position": {
+        "x": 410,
+        "y": 370
+      },
+      "data": {
+        "label": "HDB-6",
+        "showHandles": false,
+        "nodeType": "smart-meter",
+        "panel": "Refer Sheet-X for Meter Panel Schematic",
+        "description": "Connected via 1250A MCCB",
+        "status": "active",
+        "connection": "MCCB 1250A"
+      },
+      "width": 120,
+      "height": 90
+    },
+    {
+      "id": "smart-meter-7",
+      "type": "smartMeter",
+      "position": {
+        "x": 530,
+        "y": 370
+      },
+      "data": {
+        "label": "HDB-4",
+        "showHandles": false,
+        "nodeType": "smart-meter",
+        "panel": "Refer Sheet-X for Meter Panel Schematic",
+        "description": "Connected via MCCB",
+        "status": "active",
+        "connection": "MCCB"
+      },
+      "width": 120,
+      "height": 90
+    },
+    {
+      "id": "smart-meter-8",
+      "type": "smartMeter",
+      "position": {
+        "x": 650,
+        "y": 370
+      },
+      "data": {
+        "label": "M1",
+        "showHandles": false,
+        "nodeType": "smart-meter",
+        "panel": "MSSB-B-01N",
+        "description": "Connected via 100A MCCB",
+        "status": "active",
+        "connection": "MCCB 100A"
+      },
+      "width": 120,
+      "height": 90
+    },
+    {
+      "id": "smart-meter-9",
+      "type": "smartMeter",
+      "position": {
+        "x": 770,
+        "y": 370
+      },
+      "data": {
+        "label": "M2",
+        "showHandles": false,
+        "nodeType": "smart-meter",
+        "panel": "MSSB-G-01N",
+        "description": "Connected via MCCB",
+        "status": "active",
+        "connection": "MCCB"
+      },
+      "width": 120,
+      "height": 90
+    },
+    {
+      "id": "smart-meter-10",
+      "type": "smartMeter",
+      "position": {
+        "x": 890,
+        "y": 370
+      },
+      "data": {
+        "label": "M3",
+        "showHandles": false,
+        "nodeType": "smart-meter",
+        "panel": "MSSB-R-01N",
+        "description": "Connected via MCCB",
+        "status": "active",
+        "connection": "MCCB"
+      },
+      "width": 120,
+      "height": 90
+    },
+    {
+      "id": "smart-meter-11",
+      "type": "smartMeter",
+      "position": {
+        "x": 1010,
+        "y": 370
+      },
+      "data": {
+        "label": "M4",
+        "showHandles": false,
+        "nodeType": "smart-meter",
+        "panel": "MSSB-R-02N",
+        "description": "Connected via MCCB",
+        "status": "active",
+        "connection": "MCCB"
+      },
+      "width": 120,
+      "height": 90
+    },
+    {
+      "id": "smart-meter-12",
+      "type": "smartMeter",
+      "position": {
+        "x": 1130,
+        "y": 370
+      },
+      "data": {
+        "label": "M5",
+        "showHandles": false,
+        "nodeType": "smart-meter",
+        "panel": "MSSB-R-03N",
+        "description": "Connected via MCCB",
+        "status": "active",
+        "connection": "MCCB"
+      },
+      "width": 120,
+      "height": 90
+    },
+    {
+      "id": "smart-meter-13",
+      "type": "smartMeter",
+      "position": {
+        "x": 1250,
+        "y": 370
+      },
+      "data": {
+        "label": "Smart Meter",
+        "showHandles": false,
+        "nodeType": "smart-meter"
+      },
+      "width": 120,
+      "height": 90
+    },
+    {
+      "id": "smart-meter-14",
+      "type": "smartMeter",
+      "position": {
+        "x": 1370,
+        "y": 370
+      },
+      "data": {
+        "label": "Smart Meter",
+        "showHandles": false,
+        "nodeType": "smart-meter"
+      },
+      "width": 120,
+      "height": 90
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge-1",
+      "source": "smart-meter-1",
+      "target": "cloud-1",
+      "type": "step",
+      "style": {
+        "stroke": "#2196F3",
+        "strokeWidth": 2,
+        "strokeDasharray": "5,5"
+      },
+      "animated": true,
+      "label": "wireless",
+      "labelStyle": {
+        "fontSize": "10px",
+        "fontWeight": "bold",
+        "fill": "#2196F3"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "width": 20,
+        "height": 20,
+        "color": "#2196F3"
+      }
+    },
+    {
+      "id": "edge-2",
+      "source": "smart-meter-1",
+      "target": "onpremise-1",
+      "type": "step",
+      "style": {
+        "stroke": "#4CAF50",
+        "strokeWidth": 2
+      },
+      "animated": false,
+      "label": "ethernet",
+      "labelStyle": {
+        "fontSize": "10px",
+        "fontWeight": "bold",
+        "fill": "#4CAF50"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "width": 20,
+        "height": 20,
+        "color": "#4CAF50"
+      }
+    },
+    {
+      "id": "edge-3",
+      "source": "smart-meter-2",
+      "target": "cloud-1",
+      "type": "step",
+      "style": {
+        "stroke": "#2196F3",
+        "strokeWidth": 2,
+        "strokeDasharray": "5,5"
+      },
+      "animated": true,
+      "label": "wireless",
+      "labelStyle": {
+        "fontSize": "10px",
+        "fontWeight": "bold",
+        "fill": "#2196F3"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "width": 20,
+        "height": 20,
+        "color": "#2196F3"
+      }
+    },
+    {
+      "id": "edge-4",
+      "source": "smart-meter-2",
+      "target": "onpremise-1",
+      "type": "step",
+      "style": {
+        "stroke": "#4CAF50",
+        "strokeWidth": 2
+      },
+      "animated": false,
+      "label": "ethernet",
+      "labelStyle": {
+        "fontSize": "10px",
+        "fontWeight": "bold",
+        "fill": "#4CAF50"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "width": 20,
+        "height": 20,
+        "color": "#4CAF50"
+      }
+    },
+    {
+      "id": "edge-5",
+      "source": "smart-meter-3",
+      "target": "cloud-1",
+      "type": "step",
+      "style": {
+        "stroke": "#2196F3",
+        "strokeWidth": 2,
+        "strokeDasharray": "5,5"
+      },
+      "animated": true,
+      "label": "wireless",
+      "labelStyle": {
+        "fontSize": "10px",
+        "fontWeight": "bold",
+        "fill": "#2196F3"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "width": 20,
+        "height": 20,
+        "color": "#2196F3"
+      }
+    },
+    {
+      "id": "edge-6",
+      "source": "smart-meter-3",
+      "target": "onpremise-1",
+      "type": "step",
+      "style": {
+        "stroke": "#4CAF50",
+        "strokeWidth": 2
+      },
+      "animated": false,
+      "label": "ethernet",
+      "labelStyle": {
+        "fontSize": "10px",
+        "fontWeight": "bold",
+        "fill": "#4CAF50"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "width": 20,
+        "height": 20,
+        "color": "#4CAF50"
+      }
+    },
+    {
+      "id": "edge-7",
+      "source": "smart-meter-4",
+      "target": "cloud-1",
+      "type": "step",
+      "style": {
+        "stroke": "#2196F3",
+        "strokeWidth": 2,
+        "strokeDasharray": "5,5"
+      },
+      "animated": true,
+      "label": "wireless",
+      "labelStyle": {
+        "fontSize": "10px",
+        "fontWeight": "bold",
+        "fill": "#2196F3"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "width": 20,
+        "height": 20,
+        "color": "#2196F3"
+      }
+    },
+    {
+      "id": "edge-8",
+      "source": "smart-meter-4",
+      "target": "onpremise-1",
+      "type": "step",
+      "style": {
+        "stroke": "#4CAF50",
+        "strokeWidth": 2
+      },
+      "animated": false,
+      "label": "ethernet",
+      "labelStyle": {
+        "fontSize": "10px",
+        "fontWeight": "bold",
+        "fill": "#4CAF50"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "width": 20,
+        "height": 20,
+        "color": "#4CAF50"
+      }
+    },
+    {
+      "id": "edge-9",
+      "source": "smart-meter-5",
+      "target": "cloud-1",
+      "type": "step",
+      "style": {
+        "stroke": "#2196F3",
+        "strokeWidth": 2,
+        "strokeDasharray": "5,5"
+      },
+      "animated": true,
+      "label": "wireless",
+      "labelStyle": {
+        "fontSize": "10px",
+        "fontWeight": "bold",
+        "fill": "#2196F3"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "width": 20,
+        "height": 20,
+        "color": "#2196F3"
+      }
+    },
+    {
+      "id": "edge-10",
+      "source": "smart-meter-5",
+      "target": "onpremise-1",
+      "type": "step",
+      "style": {
+        "stroke": "#4CAF50",
+        "strokeWidth": 2
+      },
+      "animated": false,
+      "label": "ethernet",
+      "labelStyle": {
+        "fontSize": "10px",
+        "fontWeight": "bold",
+        "fill": "#4CAF50"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "width": 20,
+        "height": 20,
+        "color": "#4CAF50"
+      }
+    },
+    {
+      "id": "edge-11",
+      "source": "smart-meter-6",
+      "target": "cloud-1",
+      "type": "step",
+      "style": {
+        "stroke": "#2196F3",
+        "strokeWidth": 2,
+        "strokeDasharray": "5,5"
+      },
+      "animated": true,
+      "label": "wireless",
+      "labelStyle": {
+        "fontSize": "10px",
+        "fontWeight": "bold",
+        "fill": "#2196F3"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "width": 20,
+        "height": 20,
+        "color": "#2196F3"
+      }
+    },
+    {
+      "id": "edge-12",
+      "source": "smart-meter-6",
+      "target": "onpremise-1",
+      "type": "step",
+      "style": {
+        "stroke": "#4CAF50",
+        "strokeWidth": 2
+      },
+      "animated": false,
+      "label": "ethernet",
+      "labelStyle": {
+        "fontSize": "10px",
+        "fontWeight": "bold",
+        "fill": "#4CAF50"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "width": 20,
+        "height": 20,
+        "color": "#4CAF50"
+      }
+    },
+    {
+      "id": "edge-13",
+      "source": "smart-meter-7",
+      "target": "cloud-1",
+      "type": "step",
+      "style": {
+        "stroke": "#2196F3",
+        "strokeWidth": 2,
+        "strokeDasharray": "5,5"
+      },
+      "animated": true,
+      "label": "wireless",
+      "labelStyle": {
+        "fontSize": "10px",
+        "fontWeight": "bold",
+        "fill": "#2196F3"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "width": 20,
+        "height": 20,
+        "color": "#2196F3"
+      }
+    },
+    {
+      "id": "edge-14",
+      "source": "smart-meter-7",
+      "target": "onpremise-1",
+      "type": "step",
+      "style": {
+        "stroke": "#4CAF50",
+        "strokeWidth": 2
+      },
+      "animated": false,
+      "label": "ethernet",
+      "labelStyle": {
+        "fontSize": "10px",
+        "fontWeight": "bold",
+        "fill": "#4CAF50"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "width": 20,
+        "height": 20,
+        "color": "#4CAF50"
+      }
+    },
+    {
+      "id": "edge-15",
+      "source": "smart-meter-8",
+      "target": "cloud-1",
+      "type": "step",
+      "style": {
+        "stroke": "#2196F3",
+        "strokeWidth": 2,
+        "strokeDasharray": "5,5"
+      },
+      "animated": true,
+      "label": "wireless",
+      "labelStyle": {
+        "fontSize": "10px",
+        "fontWeight": "bold",
+        "fill": "#2196F3"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "width": 20,
+        "height": 20,
+        "color": "#2196F3"
+      }
+    },
+    {
+      "id": "edge-16",
+      "source": "smart-meter-8",
+      "target": "onpremise-1",
+      "type": "step",
+      "style": {
+        "stroke": "#4CAF50",
+        "strokeWidth": 2
+      },
+      "animated": false,
+      "label": "ethernet",
+      "labelStyle": {
+        "fontSize": "10px",
+        "fontWeight": "bold",
+        "fill": "#4CAF50"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "width": 20,
+        "height": 20,
+        "color": "#4CAF50"
+      }
+    },
+    {
+      "id": "edge-17",
+      "source": "smart-meter-9",
+      "target": "cloud-1",
+      "type": "step",
+      "style": {
+        "stroke": "#2196F3",
+        "strokeWidth": 2,
+        "strokeDasharray": "5,5"
+      },
+      "animated": true,
+      "label": "wireless",
+      "labelStyle": {
+        "fontSize": "10px",
+        "fontWeight": "bold",
+        "fill": "#2196F3"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "width": 20,
+        "height": 20,
+        "color": "#2196F3"
+      }
+    },
+    {
+      "id": "edge-18",
+      "source": "smart-meter-9",
+      "target": "onpremise-1",
+      "type": "step",
+      "style": {
+        "stroke": "#4CAF50",
+        "strokeWidth": 2
+      },
+      "animated": false,
+      "label": "ethernet",
+      "labelStyle": {
+        "fontSize": "10px",
+        "fontWeight": "bold",
+        "fill": "#4CAF50"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "width": 20,
+        "height": 20,
+        "color": "#4CAF50"
+      }
+    },
+    {
+      "id": "edge-19",
+      "source": "smart-meter-10",
+      "target": "cloud-1",
+      "type": "step",
+      "style": {
+        "stroke": "#2196F3",
+        "strokeWidth": 2,
+        "strokeDasharray": "5,5"
+      },
+      "animated": true,
+      "label": "wireless",
+      "labelStyle": {
+        "fontSize": "10px",
+        "fontWeight": "bold",
+        "fill": "#2196F3"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "width": 20,
+        "height": 20,
+        "color": "#2196F3"
+      }
+    },
+    {
+      "id": "edge-20",
+      "source": "smart-meter-10",
+      "target": "onpremise-1",
+      "type": "step",
+      "style": {
+        "stroke": "#4CAF50",
+        "strokeWidth": 2
+      },
+      "animated": false,
+      "label": "ethernet",
+      "labelStyle": {
+        "fontSize": "10px",
+        "fontWeight": "bold",
+        "fill": "#4CAF50"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "width": 20,
+        "height": 20,
+        "color": "#4CAF50"
+      }
+    },
+    {
+      "id": "edge-21",
+      "source": "smart-meter-11",
+      "target": "cloud-1",
+      "type": "step",
+      "style": {
+        "stroke": "#2196F3",
+        "strokeWidth": 2,
+        "strokeDasharray": "5,5"
+      },
+      "animated": true,
+      "label": "wireless",
+      "labelStyle": {
+        "fontSize": "10px",
+        "fontWeight": "bold",
+        "fill": "#2196F3"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "width": 20,
+        "height": 20,
+        "color": "#2196F3"
+      }
+    },
+    {
+      "id": "edge-22",
+      "source": "smart-meter-11",
+      "target": "onpremise-1",
+      "type": "step",
+      "style": {
+        "stroke": "#4CAF50",
+        "strokeWidth": 2
+      },
+      "animated": false,
+      "label": "ethernet",
+      "labelStyle": {
+        "fontSize": "10px",
+        "fontWeight": "bold",
+        "fill": "#4CAF50"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "width": 20,
+        "height": 20,
+        "color": "#4CAF50"
+      }
+    },
+    {
+      "id": "edge-23",
+      "source": "smart-meter-12",
+      "target": "cloud-1",
+      "type": "step",
+      "style": {
+        "stroke": "#2196F3",
+        "strokeWidth": 2,
+        "strokeDasharray": "5,5"
+      },
+      "animated": true,
+      "label": "wireless",
+      "labelStyle": {
+        "fontSize": "10px",
+        "fontWeight": "bold",
+        "fill": "#2196F3"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "width": 20,
+        "height": 20,
+        "color": "#2196F3"
+      }
+    },
+    {
+      "id": "edge-24",
+      "source": "smart-meter-12",
+      "target": "onpremise-1",
+      "type": "step",
+      "style": {
+        "stroke": "#4CAF50",
+        "strokeWidth": 2
+      },
+      "animated": false,
+      "label": "ethernet",
+      "labelStyle": {
+        "fontSize": "10px",
+        "fontWeight": "bold",
+        "fill": "#4CAF50"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "width": 20,
+        "height": 20,
+        "color": "#4CAF50"
+      }
+    },
+    {
+      "id": "edge-25",
+      "source": "cloud-1",
+      "target": "onpremise-1",
+      "type": "step",
+      "style": {
+        "stroke": "#4CAF50",
+        "strokeWidth": 2
+      },
+      "animated": false,
+      "label": "ethernet",
+      "labelStyle": {
+        "fontSize": "10px",
+        "fontWeight": "bold",
+        "fill": "#4CAF50"
+      },
+      "markerEnd": {
+        "type": "arrowclosed",
+        "width": 20,
+        "height": 20,
+        "color": "#4CAF50"
+      }
+    }
+  ]
+}

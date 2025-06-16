@@ -48,9 +48,9 @@ import {
   TextNodeComponent,
   LabelNode
 } from './CustomNodes';
-import DiagramChatInterface from '../DiagramChatInterface';
+
 import CircularProgress from '@mui/material/CircularProgress';
-import { Alert, Backdrop, Typography } from '@mui/material';
+import { Backdrop, Typography } from '@mui/material';
 
 const API_URL = process.env.NODE_ENV === 'production' 
   ? 'https://api.payamamerian.com' 
@@ -101,7 +101,7 @@ const SingleLineDiagramInner = () => {
   const [showHandles, setShowHandles] = useState(false);
   const { getNodes, setNodes: setFlowNodes, getEdges, setEdges: setFlowEdges } = useReactFlow();
   const [showAssistantPanel, setShowAssistantPanel] = useState(true);
-  const [currentStep, setCurrentStep] = useState('initial'); // Default to initial step
+
   const [isAutoGenerating, setIsAutoGenerating] = useState(false);
   const [autoGenMessage, setAutoGenMessage] = useState('');
 
@@ -115,15 +115,15 @@ const SingleLineDiagramInner = () => {
   // Memoize the nodeTypes to prevent recreation
   const memoizedNodeTypes = useMemo(() => nodeTypes, []);
 
-  // Load diagram when component mounts or projectId/currentStep changes
+  // Load diagram when component mounts or projectId changes
   useEffect(() => {
     const loadDiagram = async () => {
-      if (!id || !currentStep) return;
+      if (!id) return;
       
-      console.log('📊 [LOAD-DIAGRAM] Attempting to load existing diagram...', { id, currentStep });
+      console.log('📊 [LOAD-DIAGRAM] Attempting to load existing diagram...', { id });
       
       try {
-        const response = await axios.get(`${API_URL}/api/projects/${id}/steps/${currentStep}/diagram`, {
+        const response = await axios.get(`${API_URL}/api/projects/${id}/diagram`, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`,
             'Content-Type': 'application/json',
@@ -161,7 +161,7 @@ const SingleLineDiagramInner = () => {
       }
     };
     loadDiagram();
-  }, [id, currentStep, reactFlowInstance, setNodes, setEdges]);
+  }, [id, reactFlowInstance, setNodes, setEdges]);
 
   // Auto-generation effect - runs once after component mount
   useEffect(() => {
@@ -393,10 +393,10 @@ const SingleLineDiagramInner = () => {
   }, [showHandles, setNodes]);
 
   const onSave = async () => {
-    if (!id || !currentStep) {
+    if (!id) {
       // setSnackbar({
       //   open: true,
-      //   message: 'No project ID or current step found. Please save from within a project.',
+      //   message: 'No project ID found. Please save from within a project.',
       //   severity: 'error'
       // });
       return;
@@ -404,7 +404,7 @@ const SingleLineDiagramInner = () => {
 
     setIsSaving(true);
     try {
-      await axios.post(`${API_URL}/api/projects/${id}/steps/${currentStep}/diagram`, {
+      await axios.post(`${API_URL}/api/projects/${id}/diagram`, {
         nodes,
         edges
       }, {

@@ -3,10 +3,6 @@ const { embeddedSchema: historySchema } = require('../History');
 const { embeddedSchema: analysisResultsSchema } = require('../AnalysisResults');
 
 const mcpSchema = new mongoose.Schema({
-  currentStep: {
-    type: String,
-    required: true
-  },
   lastUpdated: {
     type: Date,
     default: Date.now

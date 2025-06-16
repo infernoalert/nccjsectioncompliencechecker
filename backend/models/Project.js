@@ -163,7 +163,6 @@ const projectSchema = new mongoose.Schema({
   mcp: {
     type: mcpSchema,
     default: () => ({
-      currentStep: 'initial',
       lastUpdated: new Date(),
       history: [],
       analysisResults: {

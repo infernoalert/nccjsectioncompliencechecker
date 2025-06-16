@@ -1,6 +1,6 @@
 import React, { memo, useState, useEffect } from 'react';
 import { Handle, Position } from 'reactflow';
-import { Box, Typography, TextField } from '@mui/material';
+import { TextField } from '@mui/material';
 
 const CustomNode = ({ data, type }) => {
   const [isEditing, setIsEditing] = useState(false);

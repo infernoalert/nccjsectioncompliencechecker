@@ -1,4 +1,5 @@
 const swaggerJsdoc = require('swagger-jsdoc');
+const path = require('path');
 
 // Log the environment for debugging
 console.log('Swagger NODE_ENV:', process.env.NODE_ENV);
@@ -7,6 +8,10 @@ console.log('Swagger Environment Variables:', {
   PORT: process.env.PORT,
   MONGO_PATH: process.env.MONGO_PATH
 });
+
+// Log the current working directory and file paths
+console.log('Current working directory:', process.cwd());
+console.log('Swagger config file location:', __dirname);
 
 // Define server URLs for different environments
 // Use relative URLs instead of absolute URLs
@@ -26,6 +31,15 @@ const servers = process.env.NODE_ENV === 'production'
   : [developmentServer];
 
 console.log('Selected Swagger Servers:', servers);
+
+// Define API file paths
+const apiPaths = [
+  path.join(__dirname, '../routes/*.js'),
+  path.join(__dirname, '../models/*.js'),
+  path.join(__dirname, '../controllers/*.js')
+];
+
+console.log('Swagger API paths to scan:', apiPaths);
 
 const options = {
   definition: {
@@ -57,13 +71,10 @@ const options = {
       bearerAuth: []
     }]
   },
-  apis: [
-    './routes/*.js',
-    './models/*.js',
-    './controllers/*.js'
-  ]
+  apis: apiPaths
 };
 
 const swaggerSpec = swaggerJsdoc(options);
+console.log('Swagger spec generated with', Object.keys(swaggerSpec.paths || {}).length, 'paths');
 
 module.exports = swaggerSpec; 

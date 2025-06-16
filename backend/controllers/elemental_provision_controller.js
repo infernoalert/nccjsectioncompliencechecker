@@ -13,7 +13,6 @@ const ReportService = require('../services/elemental_provision_reportService');
 const { getAllLocations } = require('../utils/locationUtils');
 const { getSection } = require('../utils/decisionTreeFactory');
 const buildingTypeMapping = require('../data/mappings/buildingTypeToClassification.json');
-const { seedStepDataForProject } = require('../utils/seedStepData');
 
 // @desc    Get all projects for a user
 // @route   GET /api/projects
@@ -161,9 +160,6 @@ exports.createProject = asyncHandler(async (req, res) => {
     });
 
     await project.save();
-
-    // Seed initial step data for the project
-    await seedStepDataForProject(project);
 
     res.status(201).json({
       success: true,
