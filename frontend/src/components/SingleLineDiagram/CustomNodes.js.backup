@@ -1,15 +1,10 @@
-import React, { memo, useState, useEffect } from 'react';
+import React, { memo, useState } from 'react';
 import { Handle, Position } from 'reactflow';
 import { Box, Typography, TextField } from '@mui/material';
 
 const CustomNode = ({ data, type }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [label, setLabel] = useState(data.label);
-
-  // Update local state when data.label changes
-  useEffect(() => {
-    setLabel(data.label);
-  }, [data.label]);
 
   const getSvgPath = () => {
     switch (type) {      
@@ -170,11 +165,6 @@ const CustomNode = ({ data, type }) => {
 const TextNode = ({ data }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [text, setText] = useState(data.text || '');
-
-  // Update local state when data.text changes
-  useEffect(() => {
-    setText(data.text || '');
-  }, [data.text]);
 
   const handleDoubleClick = () => {
     setIsEditing(true);

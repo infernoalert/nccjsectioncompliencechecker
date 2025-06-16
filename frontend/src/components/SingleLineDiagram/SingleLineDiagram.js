@@ -31,7 +31,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import MenuOpenIcon from '@mui/icons-material/MenuOpen';
 import MenuIcon from '@mui/icons-material/Menu';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { 
   TransformerNode, 
@@ -92,6 +92,7 @@ const componentTypes = [
 
 const SingleLineDiagramInner = () => {
   const { id } = useParams();
+  const location = useLocation();
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [selectedElements, setSelectedElements] = useState([]);
@@ -106,6 +107,10 @@ const SingleLineDiagramInner = () => {
 
   // Ref to track if auto-generation has already started (prevents duplicate execution)
   const hasAutoGenStarted = useRef(false);
+
+  // Check if auto-generation should be disabled
+  const searchParams = new URLSearchParams(location.search);
+  const noAutoGen = searchParams.get('noAutoGen') === 'true';
 
   // Memoize the nodeTypes to prevent recreation
   const memoizedNodeTypes = useMemo(() => nodeTypes, []);
@@ -160,6 +165,12 @@ const SingleLineDiagramInner = () => {
 
   // Auto-generation effect - runs once after component mount
   useEffect(() => {
+    // Skip auto-generation if disabled by query parameter
+    if (noAutoGen) {
+      console.log('⚠️ [AUTO-GEN] Auto-generation disabled by noAutoGen parameter');
+      return;
+    }
+
     // Only run auto-generation if we haven't already started
     if (hasAutoGenStarted.current) {
       console.log('⚠️ [AUTO-GEN] Auto-generation already started, skipping duplicate execution');
@@ -172,6 +183,7 @@ const SingleLineDiagramInner = () => {
         nodesLength: nodes.length,
         isAutoGenerating,
         hasAutoGenStarted: hasAutoGenStarted.current,
+        noAutoGen,
         timestamp: new Date().toISOString()
       });
       

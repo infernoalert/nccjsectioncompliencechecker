@@ -309,7 +309,7 @@ const ElectricalValues = () => {
               variant="contained"
               color="secondary"
               startIcon={<DrawIcon />}
-              onClick={() => navigate(`/projects/${id}/diagram`)}
+              onClick={() => navigate(`/projects/${id}/diagram?noAutoGen=true`)}
             >
               Draw Diagram
             </Button>
