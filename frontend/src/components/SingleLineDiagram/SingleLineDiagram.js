@@ -135,14 +135,18 @@ const SingleLineDiagramInner = () => {
         console.log('📊 [LOAD-DIAGRAM] Response received:', { 
           status: response.status,
           hasData: !!response.data,
-          nodeCount: response.data?.nodes?.length || 0,
-          edgeCount: response.data?.edges?.length || 0
+          success: response.data?.success,
+          nodeCount: response.data?.data?.nodes?.length || 0,
+          edgeCount: response.data?.data?.edges?.length || 0
         });
         
-        if (response.data && (response.data.nodes?.length > 0 || response.data.edges?.length > 0)) {
-          console.log('✅ [LOAD-DIAGRAM] Found existing diagram, loading it...');
-          setNodes(response.data.nodes || []);
-          setEdges(response.data.edges || []);
+        if (response.data?.success && response.data?.data && (response.data.data.nodes?.length > 0 || response.data.data.edges?.length > 0)) {
+          console.log('✅ [LOAD-DIAGRAM] Found existing diagram, loading it...', {
+            nodes: response.data.data.nodes?.length || 0,
+            edges: response.data.data.edges?.length || 0
+          });
+          setNodes(response.data.data.nodes || []);
+          setEdges(response.data.data.edges || []);
           if (reactFlowInstance) {
             reactFlowInstance.fitView();
           }
@@ -394,11 +398,8 @@ const SingleLineDiagramInner = () => {
 
   const onSave = async () => {
     if (!id) {
-      // setSnackbar({
-      //   open: true,
-      //   message: 'No project ID found. Please save from within a project.',
-      //   severity: 'error'
-      // });
+      console.error('No project ID found. Please save from within a project.');
+      alert('No project ID found. Please save from within a project.');
       return;
     }
 
@@ -413,18 +414,11 @@ const SingleLineDiagramInner = () => {
           'Content-Type': 'application/json'
         }
       });
-      // setSnackbar({
-      //   open: true,
-      //   message: 'Diagram saved successfully!',
-      //   severity: 'success'
-      // });
+      console.log('Diagram saved successfully!');
+      alert('Diagram saved successfully!');
     } catch (error) {
       console.error('Error saving diagram:', error);
-      // setSnackbar({
-      //   open: true,
-      //   message: error.response?.data?.error || error.message || 'Error saving diagram',
-      //   severity: 'error'
-      // });
+      alert(`Error saving diagram: ${error.response?.data?.error || error.message || 'Unknown error'}`);
     } finally {
       setIsSaving(false);
     }
