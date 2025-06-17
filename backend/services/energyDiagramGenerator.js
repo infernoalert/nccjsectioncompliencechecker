@@ -582,7 +582,9 @@ class EnergyDiagramGenerator {
                     commands.push(`connect,${nodeId},${targetNodeId},${connectionType},${anchors.sourceAnchor},${anchors.targetAnchor}`);
                     
                     if (this.debug) {
-                        console.log(`✅ Connected ${data.label} to ${targetType} via ${connectionType}`);
+                        console.log(`✅ Connected ${data.label} (${meterType}) to ${targetType} via ${connectionType}`);
+                        console.log(`   🔗 Anchors: ${meterType}[${anchors.sourceAnchor}] -> ${targetType}[${anchors.targetAnchor}] (${anchors.reason})`);
+                        console.log(`   📍 Positions: ${meterType}(${data.position.x},${data.position.y}) -> ${targetType}(${targetNodeData.position.x},${targetNodeData.position.y})`);
                     }
                     
                     // Add backup connection if required by rules
@@ -602,7 +604,7 @@ class EnergyDiagramGenerator {
                     const targetNodeData = { position: this.getNodePosition(nodeIds, data.preferredConnection), type: data.preferredConnection };
                     const anchors = this.ruleEngine.applyAnchorRules(sourceNodeData, targetNodeData, context);
                     
-                    commands.push(`connect,${nodeId},${preferredTargetId},${connectionType},preferred,${anchors.sourceAnchor},${anchors.targetAnchor}`);
+                    commands.push(`connect,${nodeId},${preferredTargetId},${connectionType},${anchors.sourceAnchor},${anchors.targetAnchor}`);
                 }
             }
         });

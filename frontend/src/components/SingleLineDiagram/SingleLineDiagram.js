@@ -656,9 +656,11 @@ const SingleLineDiagramInner = () => {
               console.log(`🔗 [HANDLE-AI-DRAW] Creating connection ${connectCommandCount}:`, cmd);
               updateProgress(`Creating connection ${connectCommandCount}...`);
               
-              const [, sourceId, targetId, connectionType] = parts; // Skip first element since we already have it
+              const [, sourceId, targetId, connectionType, sourceAnchor, targetAnchor] = parts;
               const sourceNodeId = nodeIdMapping[sourceId] || sourceId;
               const targetNodeId = nodeIdMapping[targetId] || targetId;
+              
+              console.log(`🔗 [ANCHOR DEBUG] Connection anchors: ${sourceAnchor} -> ${targetAnchor}`);
               
               if (sourceNodeId && targetNodeId) {
                 const edgeStyle = {
@@ -673,6 +675,8 @@ const SingleLineDiagramInner = () => {
                   id: `edge-${edgeCounter++}`,
                   source: sourceNodeId,
                   target: targetNodeId,
+                  sourceHandle: sourceAnchor || 'center',
+                  targetHandle: targetAnchor || 'center',
                   type: 'step',
                   style: edgeStyle,
                   animated: connectionType === 'wireless',
@@ -689,6 +693,8 @@ const SingleLineDiagramInner = () => {
                     color: edgeStyle.stroke
                   }
                 };
+                
+                console.log(`🔗 [EDGE DEBUG] Created edge with anchors: ${sourceAnchor} -> ${targetAnchor}`, newEdge);
 
                 currentEdges.push(newEdge);
                 setEdges([...currentEdges]);

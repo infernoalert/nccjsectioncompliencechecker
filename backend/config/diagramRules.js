@@ -50,23 +50,7 @@ const customDiagramRules = {
             },
             priority: 95
         },
-        {
-            name: 'critical-devices-center',
-            description: 'Place critical devices in the center for visibility',
-            condition: (node, context) => node.critical === true,
-            action: (node, context) => {
-                const centerX = context.gridConfig.startX + (context.totalDevices * context.gridConfig.cellWidth / 2);
-                return {
-                    position: { 
-                        x: centerX, 
-                        y: node.position.y 
-                    },
-                    placement: 'center',
-                    visibility: 'high'
-                };
-            },
-            priority: 90
-        },
+        
         {
             name: 'panel-based-grouping',
             description: 'Group devices by electrical panel with spacing',
@@ -137,18 +121,7 @@ const customDiagramRules = {
             }),
             priority: 90
         },
-        {
-            name: 'smart-meter-priority-routing',
-            description: 'Smart meters get priority routing through cloud',
-            condition: (node, context) => node.type === 'smart-meter',
-            action: (node, context) => ({
-                requiredConnections: ['cloud', 'onpremise'],
-                primaryConnection: 'cloud',
-                connectionPriority: 'high',
-                dataPath: 'priority'
-            }),
-            priority: 85
-        },
+
         {
             name: 'location-based-routing',
             description: 'Route devices based on physical location proximity',
@@ -185,8 +158,45 @@ const customDiagramRules = {
     // Anchor Rules - Control connection anchor points
     anchorRules: [
         {
-            name: 'top-to-bottom-anchoring',
-            description: 'Higher Y position (top layer like cloud) uses bottom anchor, lower layer uses top anchor',
+            name: 'smart-meter-to-onpremise-anchoring',
+            description: 'Smart meter (bottom) uses top anchor, onpremise (middle) uses bottom anchor',
+            condition: (sourceNode, targetNode, context) => {
+                // Check if this is a smart-meter to onpremise connection (in either direction)
+                const isSmartMeterConnection = 
+                    (sourceNode.type === 'smart-meter' && targetNode.type === 'onpremise') ||
+                    (sourceNode.type === 'onpremise' && targetNode.type === 'smart-meter');
+                
+                return isSmartMeterConnection && sourceNode.position && targetNode.position;
+            },
+            action: (sourceNode, targetNode, context) => {
+                if (sourceNode.type === 'smart-meter' && targetNode.type === 'onpremise') {
+                    // Smart meter to onpremise: smart meter uses top, onpremise uses bottom
+                    return {
+                        sourceAnchor: 'top',
+                        targetAnchor: 'bottom',
+                        reason: 'smart-meter-to-onpremise'
+                    };
+                } else if (sourceNode.type === 'onpremise' && targetNode.type === 'smart-meter') {
+                    // Onpremise to smart meter: onpremise uses bottom, smart meter uses top
+                    return {
+                        sourceAnchor: 'bottom',
+                        targetAnchor: 'top',
+                        reason: 'onpremise-to-smart-meter'
+                    };
+                }
+                
+                // Fallback (shouldn't reach here due to condition)
+                return {
+                    sourceAnchor: 'center',
+                    targetAnchor: 'center',
+                    reason: 'fallback'
+                };
+            },
+            priority: 95  // Higher priority than general anchoring
+        },
+        {
+            name: 'hierarchical-anchoring',
+            description: 'General hierarchical anchoring: higher level uses bottom anchor, lower level uses top anchor',
             condition: (sourceNode, targetNode, context) => {
                 return sourceNode && targetNode && sourceNode.position && targetNode.position;
             },
@@ -200,25 +210,25 @@ const customDiagramRules = {
                     return {
                         sourceAnchor: 'bottom',
                         targetAnchor: 'top',
-                        reason: 'top-to-bottom-flow'
+                        reason: 'hierarchical-top-to-bottom'
                     };
                 } else if (sourceY > targetY) {
                     // Target is higher, use top anchor for source, bottom anchor for target
                     return {
                         sourceAnchor: 'top',
                         targetAnchor: 'bottom',
-                        reason: 'bottom-to-top-flow'
+                        reason: 'hierarchical-bottom-to-top'
                     };
                 } else {
                     // Same level, use side anchors
                     return {
                         sourceAnchor: 'right',
                         targetAnchor: 'left',
-                        reason: 'same-level-flow'
+                        reason: 'same-level-horizontal'
                     };
                 }
             },
-            priority: 90
+            priority: 85  // Lower priority than specific smart-meter rule
         }
     ],
 

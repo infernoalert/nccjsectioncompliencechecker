@@ -298,13 +298,24 @@ class DiagramRuleEngine {
         let result = { sourceAnchor: 'center', targetAnchor: 'center' };
         
         try {
+            console.log(`🔍 [ANCHOR DEBUG] Evaluating anchors for ${sourceNode.type} -> ${targetNode.type}`);
+            console.log(`   Source position: (${sourceNode.position?.x}, ${sourceNode.position?.y})`);
+            console.log(`   Target position: (${targetNode.position?.x}, ${targetNode.position?.y})`);
+            console.log(`   Available anchor rules: ${allRules.length}`);
+            
             for (const rule of allRules) {
+                console.log(`   Testing rule: ${rule.name} (priority: ${rule.priority})`);
                 if (rule.condition(sourceNode, targetNode, context)) {
                     const ruleResult = rule.action(sourceNode, targetNode, context);
                     result = { ...result, ...ruleResult };
+                    console.log(`   ✅ APPLIED rule: ${rule.name} -> ${JSON.stringify(result)}`);
                     break; // Use first matching rule
+                } else {
+                    console.log(`   ❌ Rule ${rule.name} condition not met`);
                 }
             }
+            
+            console.log(`   Final anchors: ${JSON.stringify(result)}`);
         } catch (error) {
             console.error('Error applying anchor rules:', error);
         }
