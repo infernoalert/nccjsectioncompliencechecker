@@ -536,11 +536,27 @@ class EnergyDiagramGenerator {
                 }
             }
 
+            // Check if rules explicitly block cloud connections
+            if (data.blockDirectCloudConnection && this.debug) {
+                console.log(`🚫 Rule blocking direct cloud connection for ${data.label} (${data.reason})`);
+            }
+
             // Use rule-applied connection requirements or defaults
             const requiredConnections = data.requiredConnections || 
                                       this.nodeTypes[meterType].requiredConnections || [];
             
-            requiredConnections.forEach(targetType => {
+            // Filter out blocked connections based on rules
+            const allowedConnections = requiredConnections.filter(targetType => {
+                if (data.blockDirectCloudConnection && targetType === 'cloud') {
+                    if (this.debug) {
+                        console.log(`🚫 Skipping cloud connection for ${data.label} - blocked by rule`);
+                    }
+                    return false;
+                }
+                return true;
+            });
+            
+            allowedConnections.forEach(targetType => {
                 const targetNodeId = nodeIds.get(targetType);
                 if (targetNodeId) {
                     // Skip if already handled by specific rules above
@@ -564,6 +580,10 @@ class EnergyDiagramGenerator {
                     const anchors = this.ruleEngine.applyAnchorRules(sourceNodeData, targetNodeData, context);
                     
                     commands.push(`connect,${nodeId},${targetNodeId},${connectionType},${anchors.sourceAnchor},${anchors.targetAnchor}`);
+                    
+                    if (this.debug) {
+                        console.log(`✅ Connected ${data.label} to ${targetType} via ${connectionType}`);
+                    }
                     
                     // Add backup connection if required by rules
                     if (data.requiresBackup && data.backupConnection) {

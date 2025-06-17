@@ -165,6 +165,20 @@ const customDiagramRules = {
                 };
             },
             priority: 65
+        },
+        {
+            name: 'no-smart-meter-cloud-direct',
+            description: 'Prevent smart meters from connecting directly to cloud - force through onpremise',
+            condition: (node, context) => node.type === 'smart-meter',
+            action: (node, context) => ({
+                connectionType: 'ethernet',
+                preferredConnection: 'onpremise',
+                requiredConnections: ['onpremise'], // Only connect to onpremise, not cloud
+                blockDirectCloudConnection: true,
+                forceWiredToOnpremise: true,
+                reason: 'security-policy-no-direct-cloud'
+            }),
+            priority: 98  // High priority to override other smart meter rules
         }
     ],
 
@@ -462,4 +476,76 @@ module.exports = {
     customDiagramRules,
     ruleTemplates,
     quickConfigurations
-}; 
+};
+
+/* 
+===========================================
+🎯 ADD YOUR CUSTOM RULES HERE
+===========================================
+
+To add your own custom rules, uncomment and modify the examples below:
+
+// Example 1: Add a custom position rule
+customDiagramRules.positionRules.push({
+    name: 'my-custom-position-rule',
+    description: 'My custom positioning logic',
+    condition: (node, context) => {
+        // Add your condition here
+        return node.someProperty === 'someValue';
+    },
+    action: (node, context) => {
+        // Add your positioning logic here
+        return {
+            position: { 
+                x: node.position.x + 50, 
+                y: node.position.y 
+            }
+        };
+    },
+    priority: 85  // Adjust priority as needed
+});
+
+// Example 2: Add a custom styling rule
+customDiagramRules.stylingRules.push({
+    name: 'my-custom-styling-rule',
+    description: 'My custom styling logic',
+    condition: (node, context) => {
+        // Add your condition here
+        return node.myCustomProperty === true;
+    },
+    action: (node, context) => {
+        // Add your styling logic here
+        return {
+            color: '#FF5722',
+            borderWidth: 3,
+            size: 'large'
+        };
+    },
+    priority: 80
+});
+
+// Example 3: Add a custom connection rule
+customDiagramRules.connectionRules.push({
+    name: 'my-custom-connection-rule',
+    description: 'My custom connection logic',
+    condition: (node, context) => {
+        // Add your condition here
+        return node.deviceType === 'special-device';
+    },
+    action: (node, context) => {
+        // Add your connection logic here
+        return {
+            connectionType: 'ethernet',
+            preferredConnection: 'cloud'
+        };
+    },
+    priority: 90
+});
+
+Remember to:
+1. Give each rule a unique name
+2. Set appropriate priority (higher numbers execute first)
+3. Test your rules using the test script
+4. Enable debug mode to see rule execution
+
+*/ 
