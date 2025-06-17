@@ -475,7 +475,7 @@ const SingleLineDiagramInner = () => {
         // Sequential processing with delays - Process node by node
         const processCommandsSequentially = async () => {
           const nodeIdMapping = {}; // Track node IDs for connections
-          let nodeCounter = 1;
+          const nodeCounters = {}; // Track counters per node type
           let edgeCounter = 1;
           let currentNodes = [];
           let currentEdges = [];
@@ -545,8 +545,16 @@ const SingleLineDiagramInner = () => {
               };
 
               const frontendNodeType = nodeTypeMapping[nodeType] || nodeType;
-              const nodeId = `${nodeType}-${nodeCounter}`;
-              const displayLabel = nodeType.split('-').map(word => 
+              
+              // Each node type has its own counter starting from 1
+              if (!nodeCounters[nodeType]) {
+                nodeCounters[nodeType] = 1;
+              }
+              const nodeId = `${nodeType}-${nodeCounters[nodeType]}`;
+              nodeCounters[nodeType]++;
+              
+              // Use a temporary label that will be overridden by set-property commands
+              const temporaryLabel = nodeType.split('-').map(word => 
                 word.charAt(0).toUpperCase() + word.slice(1)
               ).join(' ');
               
@@ -555,7 +563,7 @@ const SingleLineDiagramInner = () => {
                 type: frontendNodeType,
                 position,
                 data: { 
-                  label: displayLabel,
+                  label: temporaryLabel, // This will be replaced by set-property commands
                   showHandles: showHandles,
                   nodeType: nodeType
                 },
@@ -564,8 +572,7 @@ const SingleLineDiagramInner = () => {
               };
 
               currentNodes.push(newNode);
-              nodeIdMapping[`${nodeType}-${nodeCounter}`] = nodeId;
-              nodeCounter++;
+              nodeIdMapping[nodeId] = nodeId;
 
               // Update React state with new node
               setNodes([...currentNodes]);
@@ -591,9 +598,13 @@ const SingleLineDiagramInner = () => {
               console.log(`🏷️ [HANDLE-AI-DRAW] Setting property ${propertyCommandCount}:`, cmd);
               
               const [, nodeId, property, value] = parts; // Skip first element since we already have it
+              console.log(`🔍 [HANDLE-AI-DRAW] Looking for nodeId "${nodeId}" to set ${property}="${value}"`);
+              console.log(`🔍 [HANDLE-AI-DRAW] Available nodes:`, currentNodes.map(n => ({ id: n.id, label: n.data?.label })));
+              
               const nodeIndex = currentNodes.findIndex(n => n.id === nodeId || nodeIdMapping[nodeId] === n.id);
               
               if (nodeIndex !== -1) {
+                console.log(`✅ [HANDLE-AI-DRAW] Found node at index ${nodeIndex}:`, { id: currentNodes[nodeIndex].id, currentLabel: currentNodes[nodeIndex].data?.label });
                 const updatedNodes = [...currentNodes];
                 if (property === 'label') {
                   updatedNodes[nodeIndex] = {
@@ -622,6 +633,9 @@ const SingleLineDiagramInner = () => {
                 
                 // Small delay
                 await new Promise(resolve => setTimeout(resolve, 100));
+              } else {
+                console.log(`❌ [HANDLE-AI-DRAW] Node not found for nodeId "${nodeId}"`);
+                console.log(`❌ [HANDLE-AI-DRAW] NodeId mapping available:`, Object.keys(nodeIdMapping));
               }
             }
           }

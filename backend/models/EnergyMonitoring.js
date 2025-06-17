@@ -27,8 +27,39 @@ const energyMonitoringFields = {
     },
     status: {
         type: String,
-        enum: ['active', 'inactive', 'maintenance'],
+        enum: ['active', 'inactive', 'maintenance', 'warning', 'error'],
         default: 'active'
+    },
+    // Additional fields for rule-based diagram generation
+    capacity: {
+        type: Number,
+        default: 1000,  // Default capacity in watts
+        min: 0
+    },
+    priority: {
+        type: String,
+        enum: ['low', 'normal', 'high'],
+        default: 'normal'
+    },
+    critical: {
+        type: Boolean,
+        default: false
+    },
+    location: {
+        type: String,
+        default: ''
+    },
+    connectionType: {
+        type: String,
+        enum: ['wireless', 'ethernet', 'rs485'],
+        default: function() {
+            // Default connection type based on device type
+            switch(this.monitoringDeviceType) {
+                case 'smart-meter': return 'wireless';
+                case 'auth-meter': return 'ethernet';
+                default: return 'rs485';
+            }
+        }
     },
     lastUpdated: {
         type: Date,

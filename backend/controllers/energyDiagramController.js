@@ -1,10 +1,13 @@
 const EnergyDiagramGenerator = require('../services/energyDiagramGenerator');
 const { model: EnergyMonitoring } = require('../models/EnergyMonitoring');
 const Project = require('../models/Project');
+const { customDiagramRules } = require('../config/diagramRules');
 
 class EnergyDiagramController {
     constructor() {
-        this.diagramGenerator = new EnergyDiagramGenerator();
+        // Initialize with custom rules to enable the new rule-based system
+        this.diagramGenerator = new EnergyDiagramGenerator(customDiagramRules);
+        this.diagramGenerator.debug = true; // Enable debug mode for logging
     }
 
     /**
@@ -32,8 +35,19 @@ class EnergyDiagramController {
             if (project.electrical && project.electrical.energyMonitoring && project.electrical.energyMonitoring.length > 0) {
                 energyMonitoringData = project.electrical.energyMonitoring;
             } else {
-                // Fallback to separate collection (if exists)
+                // Fallback to separate collection - try multiple query strategies
+                console.log('No energy monitoring in project.electrical, trying fallback queries...');
+                
+                // Try by projectId field
                 energyMonitoringData = await EnergyMonitoring.find({ projectId });
+                console.log(`Found ${energyMonitoringData.length} devices by projectId`);
+                
+                // If no results, try all devices (for debugging)
+                if (energyMonitoringData.length === 0) {
+                    console.log('No devices found by projectId, getting all devices for debugging...');
+                    energyMonitoringData = await EnergyMonitoring.find({});
+                    console.log(`Found ${energyMonitoringData.length} total devices in collection`);
+                }
             }
 
             if (energyMonitoringData.length === 0) {
@@ -43,6 +57,23 @@ class EnergyDiagramController {
                     message: 'Please add energy monitoring devices to the project before generating a diagram'
                 });
             }
+
+            // Debug: Log the energy monitoring data to check labels and structure
+            console.log('🔍 [CONTROLLER DEBUG] Energy monitoring data for diagram generation:');
+            energyMonitoringData.forEach((device, index) => {
+                console.log(`🔍 [CONTROLLER DEBUG] Device ${index + 1}:`, {
+                    id: device._id,
+                    label: device.label,
+                    panel: device.panel,
+                    type: device.monitoringDeviceType,
+                    status: device.status,
+                    capacity: device.capacity,
+                    critical: device.critical,
+                    hasLabel: !!device.label,
+                    labelType: typeof device.label,
+                    rawDevice: device.toObject ? device.toObject() : device
+                });
+            });
 
             // Generate diagram commands
             const result = await this.diagramGenerator.generateDiagramCommands(

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
-const updateDeviceTypesByProjectSize = require('./utils/deviceTypeUpdater');
-const connectDB = require('./config/db');
+const updateDeviceTypesByProjectSize = require('../utils/deviceTypeUpdater');
+const connectDB = require('../config/db');
 const path = require('path');
 
 // Load env vars the same way as server.js
