@@ -11,6 +11,8 @@ class FileProcessor {
         this.filePath = filePath;
         this.isExistingFile = isExistingFile;
         this.fileContent = null;
+        this.pageCount = 0;
+        this.documentType = null; // 'electrical_spec' or 'regular'
         this.tempDir = path.join(process.cwd(), 'temp', 'pdf-processing');
         this.worker = null;
     }
@@ -45,6 +47,30 @@ class FileProcessor {
             return {
                 success: false,
                 error: `File validation failed: ${error.message}`
+            };
+        }
+    }
+
+    async detectPageCount() {
+        try {
+            const dataBuffer = await fs.readFile(this.filePath);
+            const pdfData = await pdf(dataBuffer);
+            this.pageCount = pdfData.numpages;
+            
+            // Determine document type based on page count
+            this.documentType = this.pageCount > 3 ? 'electrical_spec' : 'regular';
+            
+            console.log(`📊 PDF Analysis - Pages: ${this.pageCount}, Document Type: ${this.documentType}`);
+            
+            return {
+                success: true,
+                pageCount: this.pageCount,
+                documentType: this.documentType
+            };
+        } catch (error) {
+            return {
+                success: false,
+                error: `Failed to detect page count: ${error.message}`
             };
         }
     }
@@ -154,41 +180,61 @@ class FileProcessor {
             const pdfData = await pdf(dataBuffer);
             const pdfText = pdfData.text;
             
-            // 2. Convert PDF to images and perform OCR
-            imageFiles = await this.convertPdfToImages();
-            let ocrText = '';
-            
-            for (const imageFile of imageFiles) {
-                try {
-                    // Preprocess image
-                    processedImagePath = await this.preprocessImage(imageFile);
-                    
-                    // Perform OCR
-                    const pageText = await this.performOCR(processedImagePath);
-                    ocrText += `Page ${path.basename(imageFile).match(/page-(\d+)/)[1]}:\n${pageText}\n\n`;
-                    
-                    // Cleanup processed image
-                    if (processedImagePath) {
-                        await fs.unlink(processedImagePath).catch(() => {});
-                        processedImagePath = null;
-                    }
-                    await fs.unlink(imageFile).catch(() => {});
-                } catch (pageError) {
-                    console.error(`Error processing page ${imageFile}:`, pageError);
-                    // Continue with next page instead of failing completely
-                    continue;
-                }
+            // Set page count if not already set
+            if (this.pageCount === 0) {
+                this.pageCount = pdfData.numpages;
+                this.documentType = this.pageCount > 3 ? 'electrical_spec' : 'regular';
             }
             
-            // Combine both results
-            combinedText = `PDF Parsed Text:\n${pdfText}\n\nOCR Text:\n${ocrText}`;
+            console.log(`Processing ${this.documentType} document with ${this.pageCount} pages`);
+            
+            // 2. Conditional OCR processing based on page count
+            if (this.documentType === 'regular' && this.pageCount <= 3) {
+                // Use both text parsing and OCR for documents with 3 pages or less
+                console.log('Using both text parsing and OCR (≤3 pages)');
+                
+                imageFiles = await this.convertPdfToImages();
+                let ocrText = '';
+                
+                for (const imageFile of imageFiles) {
+                    try {
+                        // Preprocess image
+                        processedImagePath = await this.preprocessImage(imageFile);
+                        
+                        // Perform OCR
+                        const pageText = await this.performOCR(processedImagePath);
+                        ocrText += `Page ${path.basename(imageFile).match(/page-(\d+)/)[1]}:\n${pageText}\n\n`;
+                        
+                        // Cleanup processed image
+                        if (processedImagePath) {
+                            await fs.unlink(processedImagePath).catch(() => {});
+                            processedImagePath = null;
+                        }
+                        await fs.unlink(imageFile).catch(() => {});
+                    } catch (pageError) {
+                        console.error(`Error processing page ${imageFile}:`, pageError);
+                        // Continue with next page instead of failing completely
+                        continue;
+                    }
+                }
+                
+                // Combine both results
+                combinedText = `PDF Parsed Text:\n${pdfText}\n\nOCR Text:\n${ocrText}`;
+            } else {
+                // Use only text parsing for electrical specs (>3 pages)
+                console.log('Using text parsing only (>3 pages - electrical spec)');
+                combinedText = `PDF Parsed Text (Electrical Specification):\n${pdfText}`;
+            }
             
             // Store combined content
             this.fileContent = combinedText;
             
             return {
                 success: true,
-                text: this.fileContent
+                text: this.fileContent,
+                documentType: this.documentType,
+                pageCount: this.pageCount,
+                processingMethod: this.documentType === 'regular' ? 'text_parsing_and_ocr' : 'text_parsing_only'
             };
         } catch (error) {
             return {
@@ -239,6 +285,22 @@ class FileProcessor {
 
     getFileContent() {
         return this.fileContent;
+    }
+
+    getDocumentType() {
+        return this.documentType;
+    }
+
+    getPageCount() {
+        return this.pageCount;
+    }
+
+    getProcessingInfo() {
+        return {
+            documentType: this.documentType,
+            pageCount: this.pageCount,
+            processingMethod: this.documentType === 'regular' ? 'text_parsing_and_ocr' : 'text_parsing_only'
+        };
     }
 }
 

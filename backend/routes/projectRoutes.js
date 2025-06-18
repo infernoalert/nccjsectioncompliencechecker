@@ -480,15 +480,55 @@ router.post('/:projectId/analyze/:filename', protect, async (req, res) => {
     // Process the file - MCP handles all project updates internally
     const result = await mcpHandler.processExistingFile(filePath);
 
+    // Get device count from the MCP history for user feedback
+    let deviceCount = 0;
+    let documentType = 'document';
+    let processingMethod = 'standard';
+
+    // Extract device count and processing info from MCP history
+    if (result && result.history) {
+      const projectUpdateEntry = result.history.find(entry => entry.step === 'PROJECT_UPDATE');
+      if (projectUpdateEntry && projectUpdateEntry.metadata) {
+        deviceCount = projectUpdateEntry.metadata.deviceCount || 0;
+      }
+      
+      const textExtractionEntry = result.history.find(entry => entry.step === 'TEXT_EXTRACTION');
+      if (textExtractionEntry && textExtractionEntry.metadata) {
+        documentType = textExtractionEntry.metadata.documentType || 'document';
+        processingMethod = textExtractionEntry.metadata.processingMethod || 'standard';
+      }
+    }
+
+    // Create user-friendly message
+    const processingInfo = documentType === 'electrical_spec' 
+      ? 'electrical specification (text parsing only)'
+      : 'document (text parsing + OCR)';
+
+    let userMessage;
+    if (deviceCount === 0) {
+      userMessage = `✅ Analysis completed! No energy monitoring devices were found in this ${processingInfo}. Please refresh the page to see any updated project data.`;
+    } else if (deviceCount === 1) {
+      userMessage = `✅ Analysis completed! Found 1 energy monitoring device in this ${processingInfo}. Please refresh the page to see the new device.`;
+    } else {
+      userMessage = `✅ Analysis completed! Found ${deviceCount} energy monitoring devices in this ${processingInfo}. Please refresh the page to see the new devices.`;
+    }
+
     res.json({ 
-      message: 'Analysis completed successfully',
+      success: true,
+      message: userMessage,
+      deviceCount: deviceCount,
+      documentType: documentType,
+      processingMethod: processingMethod,
+      refreshRequired: true,
       results: result
     });
   } catch (error) {
     console.error('Error in AI analysis:', error);
     res.status(500).json({ 
-      error: 'Error processing file',
-      details: error.message 
+      success: false,
+      error: '❌ Analysis failed. Please try again or contact support if the issue persists.',
+      details: error.message,
+      refreshRequired: false
     });
   }
 });

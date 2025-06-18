@@ -242,10 +242,35 @@ const ElectricalValues = () => {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       
+      // Show success message to user
+      if (response.data && response.data.message) {
+        // Create a success alert/snackbar (you can customize this based on your UI library)
+        alert(response.data.message);
+        
+        // Log additional info for debugging
+        console.log('Analysis completed:', {
+          deviceCount: response.data.deviceCount,
+          documentType: response.data.documentType,
+          processingMethod: response.data.processingMethod
+        });
+      }
+      
       // Refresh project data to show updated analysis
       dispatch(fetchProject(id));
+      
+      // Auto-refresh the page if requested by the backend
+      if (response.data && response.data.refreshRequired) {
+        setTimeout(() => {
+          window.location.reload();
+        }, 2000); // Give user time to read the message
+      }
+      
     } catch (error) {
-      setAnalysisError(error.response?.data?.error || 'Error analyzing file');
+      const errorMessage = error.response?.data?.error || 'Error analyzing file';
+      setAnalysisError(errorMessage);
+      
+      // Also show error in alert for better visibility
+      alert(errorMessage);
     } finally {
       setAnalyzing(false);
       setProcessingFiles(prev => {

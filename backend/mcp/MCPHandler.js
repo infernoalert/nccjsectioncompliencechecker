@@ -9,10 +9,12 @@ const fs = require('fs').promises;
 /**
  * MCP (Model Context Protocol) Handler
  * 
- * Updated process flow (simplified):
- * 1. FILE_INITIALIZATION - Initialize and validate file processor
- * 2. TEXT_EXTRACTION - Extract text content from the uploaded file
- * 3. INITIAL_ANALYSIS - Analyze text using LLM to identify energy monitoring devices
+ * Updated process flow with conditional processing:
+ * 1. FILE_INITIALIZATION - Initialize and validate file processor, determine document type
+ * 2. TEXT_EXTRACTION - Extract text content using conditional OCR:
+ *    - ≤3 pages: Use both text parsing and OCR (regular document)
+ *    - >3 pages: Use text parsing only (electrical specification)
+ * 3. INITIAL_ANALYSIS - Analyze text using specialized LLM prompts based on document type
  * 4. PROJECT_UPDATE - Update project data with analyzed devices
  * 5. NEXT_ANALYSIS - Perform additional analysis if needed
  * 
@@ -62,10 +64,10 @@ class MCPHandler {
             await this._initializeFileProcessor(filePath);
             
             // Step 2: Text Extraction
-            const text = await this._handleTextExtraction();
+            const extractionResult = await this._handleTextExtraction();
             
             // Step 3: Initial Analysis
-            const analysis = await this._handleInitialAnalysis(text);
+            const analysis = await this._handleInitialAnalysis(extractionResult);
             
             // Step 4: Project Update
             await this._handleProjectUpdate(analysis);
@@ -111,10 +113,22 @@ class MCPHandler {
         if (!result.success) {
             throw new Error(result.error);
         }
+
+        // Get page count and determine document type
+        const pageCountResult = await this.fileProcessor.detectPageCount();
+        if (!pageCountResult.success) {
+            throw new Error(pageCountResult.error);
+        }
+
+        console.log(`Document initialized: ${pageCountResult.pageCount} pages, type: ${pageCountResult.documentType}`);
         
         this.context.addHistoryEntry({
             step: 'FILE_INITIALIZATION',
-            status: 'COMPLETED'
+            status: 'COMPLETED',
+            metadata: {
+                pageCount: pageCountResult.pageCount,
+                documentType: pageCountResult.documentType
+            }
         });
     }
 
@@ -125,18 +139,35 @@ class MCPHandler {
         if (!result.success) {
             throw new Error(result.error);
         }
+
+        console.log(`Text extraction completed using: ${result.processingMethod}`);
         
         this.context.addHistoryEntry({
             step: 'TEXT_EXTRACTION',
-            status: 'COMPLETED'
+            status: 'COMPLETED',
+            metadata: {
+                documentType: result.documentType,
+                pageCount: result.pageCount,
+                processingMethod: result.processingMethod
+            }
         });
         
-        return result.text;
+        return result;
     }
 
-    async _handleInitialAnalysis(text) {
+    async _handleInitialAnalysis(extractionResult) {
         this.context.updateStep('INITIAL_ANALYSIS');
-        const analysis = await this.llmAnalyzer.analyzeText(text);
+        
+        // Get processing information from the file processor
+        const processingInfo = this.fileProcessor.getProcessingInfo();
+        
+        console.log(`Starting analysis of ${processingInfo.documentType} document with ${processingInfo.processingMethod}`);
+        
+        const analysis = await this.llmAnalyzer.analyzeText(
+            extractionResult.text, 
+            processingInfo.documentType, 
+            processingInfo
+        );
         
         if (!analysis.success) {
             throw new Error(analysis.error);
@@ -144,7 +175,13 @@ class MCPHandler {
         
         this.context.addHistoryEntry({
             step: 'INITIAL_ANALYSIS',
-            status: 'COMPLETED'
+            status: 'COMPLETED',
+            metadata: {
+                documentType: analysis.documentType,
+                analysisType: analysis.results.analysisType,
+                deviceCount: analysis.results.energyMonitoringDevices.length,
+                processingInfo: analysis.processingInfo
+            }
         });
         
         return analysis.results;

@@ -6,41 +6,65 @@ class LLMAnalyzer {
         this.model = 'gpt-4-turbo-preview';
     }
 
-    async analyzeText(text) {
+    async analyzeText(text, documentType = 'regular', processingInfo = {}) {
         try {
-            const prompt = this._createAnalysisPrompt(text);
+            const prompt = this._createAnalysisPrompt(text, documentType, processingInfo);
             
             const response = await this.openai.chat.completions.create({
                 model: this.model,
                 messages: [
                     {
                         role: 'system',
-                        content: 'You are an expert compliance analyst specializing in building services. Your task is to review building documents and identify specific building services with high accuracy.'
+                        content: this._getSystemPrompt(documentType)
                     },
                     {
                         role: 'user',
                         content: prompt
                     }
                 ],
-                temperature: 0.3,
-                max_tokens: 1000
+                temperature: documentType === 'electrical_spec' ? 0.1 : 0.3, // Lower temperature for electrical specs
+                max_tokens: documentType === 'electrical_spec' ? 1500 : 1000 // More tokens for electrical specs
             });
 
             console.log('Raw LLM Response:', JSON.stringify(response.choices[0].message.content, null, 2));
             
-            const analysis = this._parseAnalysisResponse(response.choices[0].message.content);
+            const analysis = this._parseAnalysisResponse(response.choices[0].message.content, documentType);
             
             console.log('Parsed Analysis:', JSON.stringify(analysis, null, 2));
             
             return {
                 success: true,
-                results: analysis
+                results: analysis,
+                documentType: documentType,
+                processingInfo: processingInfo
             };
         } catch (error) {
             return {
                 success: false,
-                error: `Analysis failed: ${error.message}`
+                error: `Analysis failed: ${error.message}`,
+                documentType: documentType
             };
+        }
+    }
+
+    _getSystemPrompt(documentType) {
+        if (documentType === 'electrical_spec') {
+            return `You are an expert electrical engineer and compliance analyst specializing in electrical specifications and building services. Your task is to analyze electrical specification documents and identify energy monitoring systems, smart meters, electrical panels, and monitoring devices with high precision and technical accuracy.
+
+Focus on:
+- Energy monitoring panels and devices
+- Smart meters and sub-meters
+- Distribution boards with monitoring capabilities
+- Load monitoring systems
+- Energy management system components
+- Current transformers and measurement equipment
+- Communications protocols for monitoring (Modbus, BACnet, etc.)
+
+Provide detailed technical specifications when available.`;
+        } else {
+            return `You are an expert compliance analyst specializing in building services. Your task is to review building documents and identify specific building services with high accuracy.
+
+Focus on identifying energy monitoring systems or electrical devices from both text and visual elements in the document.`;
         }
     }
 
@@ -91,9 +115,74 @@ class LLMAnalyzer {
         }
     }
 
-    _createAnalysisPrompt(text) {
+    _createAnalysisPrompt(text, documentType, processingInfo) {
+        if (documentType === 'electrical_spec') {
+            return this._createElectricalSpecPrompt(text, processingInfo);
+        } else {
+            return this._createRegularDocumentPrompt(text, processingInfo);
+        }
+    }
+
+    _createElectricalSpecPrompt(text, processingInfo) {
         return `
-You are an expert compliance analyst in building services and electrical infrastructure.
+You are analyzing an electrical specification document (${processingInfo.pageCount} pages) processed using text parsing only.
+
+Your task is to identify **energy monitoring systems**, **electrical meters**, and **monitoring equipment** from this technical specification.
+
+Focus on identifying:
+- Energy monitoring panels and devices (EM panels, smart meters, sub-meters)
+- Distribution boards with monitoring capabilities (MSSB, MSB, DB with monitoring)
+- Load monitoring systems and current transformers
+- Energy management system components
+- Communication modules (Modbus, BACnet, Ethernet, RS485)
+- Meter specifications and technical details
+
+Look for these patterns in electrical specifications:
+- Device labels: "M", "M1", "EM", "HDB-CP", "TMP", "SM" (Smart Meter)
+- Panel references: "MSSB", "MSB", "DB", "MCC", "PCC"
+- Monitoring equipment: "Current Transformer", "CT", "Energy Meter", "Power Meter"
+- Communication protocols: "Modbus RTU", "BACnet", "Ethernet", "RS485"
+
+For **each** identified energy monitoring device, provide:
+- **label** (exact device reference from specification)
+- **panel** (associated electrical panel or board)
+- **type** (smart meter, energy monitoring panel, CT, power meter, etc.)
+- **description** (technical specifications, ratings, communication protocol)
+- **connection** (circuit breaker, feeder, communication connection)
+- **specifications** (voltage, current, accuracy class, protocol if available)
+
+Return the result as a JSON array under the key \`"energyMonitoringDevices"\`. Follow this structure exactly:
+
+{
+  "energyMonitoringDevices": [
+    {
+      "label": "M1",
+      "panel": "MSSB-B-01N",
+      "type": "smart meter",
+      "description": "3-phase smart meter with Modbus RTU communication, Class 1 accuracy",
+      "connection": "Connected via 100A MCCB to MSSB-B-01N",
+      "specifications": "415V, 100A, Modbus RTU, Class 1 accuracy"
+    },
+    ...
+  ]
+}
+
+Only include devices with clear evidence in the specification. If no monitoring devices are found, return:
+{
+  "energyMonitoringDevices": []
+}
+
+Electrical Specification Text:
+---
+${text}
+---
+JSON Output:
+`;
+    }
+
+    _createRegularDocumentPrompt(text, processingInfo) {
+        return `
+You are analyzing a regular building document (${processingInfo.pageCount} pages) processed using both text parsing and OCR.
 
 Your task is to analyze the following document text and identify **energy monitoring systems** or **electrical meters**, including smart meters or load monitoring panels.
 
@@ -152,7 +241,7 @@ JSON Output:
         `;
     }
 
-    _parseAnalysisResponse(response) {
+    _parseAnalysisResponse(response, documentType) {
         try {
             // Clean the response by removing markdown code blocks if present
             let cleanedResponse = response;
@@ -172,22 +261,34 @@ JSON Output:
                 return {
                     energyMonitoringDevices: [],
                     rawAnalysis: response,
+                    documentType: documentType,
                     error: 'Invalid response format: missing energyMonitoringDevices array'
                 };
             }
 
-            // Validate each device in the array
-            const validatedDevices = analysis.energyMonitoringDevices.map(device => ({
-                label: device.label || '',
-                panel: device.panel || '',
-                type: device.type || '',
-                description: device.description || '',
-                connection: device.connection || ''
-            }));
+            // Validate each device in the array based on document type
+            const validatedDevices = analysis.energyMonitoringDevices.map(device => {
+                const baseDevice = {
+                    label: device.label || '',
+                    panel: device.panel || '',
+                    type: device.type || '',
+                    description: device.description || '',
+                    connection: device.connection || ''
+                };
+
+                // Add specifications field for electrical specs
+                if (documentType === 'electrical_spec' && device.specifications) {
+                    baseDevice.specifications = device.specifications;
+                }
+
+                return baseDevice;
+            });
 
             return {
                 energyMonitoringDevices: validatedDevices,
-                rawAnalysis: response
+                rawAnalysis: response,
+                documentType: documentType,
+                analysisType: documentType === 'electrical_spec' ? 'detailed_electrical_spec' : 'general_document'
             };
         } catch (error) {
             // If parsing fails, return empty array
@@ -196,6 +297,7 @@ JSON Output:
             return {
                 energyMonitoringDevices: [],
                 rawAnalysis: response,
+                documentType: documentType,
                 error: 'Failed to parse analysis response'
             };
         }
