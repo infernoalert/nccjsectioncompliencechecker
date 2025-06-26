@@ -24,7 +24,8 @@ const { interpretChat } = require('../controllers/diagramController');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-const { MCPHandler } = require('../mcp');
+// Temporarily disabled to fix Linux compatibility issue
+// const { MCPHandler } = require('../mcp');
 
 /**
  * @swagger
@@ -474,12 +475,27 @@ router.post('/:projectId/analyze/:filename', protect, async (req, res) => {
     // Get the full file path using the file's path property
     const filePath = path.join(process.cwd(), file.path);
 
+    // Temporarily disabled MCP functionality for Linux compatibility
+    /*
     // Initialize MCP handler with OpenAI API key
     const mcpHandler = new MCPHandler(projectId, process.env.OPENAI_API_KEY);
 
     // Process the file - MCP handles all project updates internally
     const result = await mcpHandler.processExistingFile(filePath);
+    */
 
+    // Temporary response while MCP is disabled
+    res.json({ 
+      success: true,
+      message: '✅ Analysis feature is temporarily disabled for maintenance. Please try again later.',
+      deviceCount: 0,
+      documentType: 'document',
+      processingMethod: 'disabled',
+      refreshRequired: false,
+      results: { message: 'MCP analysis temporarily disabled' }
+    });
+
+    /*
     // Get device count from the MCP history for user feedback
     let deviceCount = 0;
     let documentType = 'document';
@@ -522,6 +538,7 @@ router.post('/:projectId/analyze/:filename', protect, async (req, res) => {
       refreshRequired: true,
       results: result
     });
+    */
   } catch (error) {
     console.error('Error in AI analysis:', error);
     res.status(500).json({ 
