@@ -10,6 +10,7 @@
     "start:dev": "cross-env NODE_ENV=development nodemon --config nodemon.json server.js",
     "test": "jest",
     "pm2:start": "chmod +x start-production.sh && ./start-production.sh",
+    "pm2:start:simple": "chmod +x start-production-simple.sh && ./start-production-simple.sh",
     "pm2:stop": "pm2 stop all",
     "pm2:restart": "pm2 restart all",
     "pm2:logs": "pm2 logs",
