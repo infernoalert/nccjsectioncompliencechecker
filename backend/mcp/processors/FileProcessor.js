@@ -5,13 +5,13 @@ const sharp = require('sharp');
 const { createWorker } = require('tesseract.js');
 const os = require('os');
 
-// Optional import for pdf-poppler (has Linux compatibility issues)
-let pdfPoppler = null;
+// Use pdf2pic instead of pdf-poppler (Linux-compatible)
+let pdf2pic = null;
 try {
-    pdfPoppler = require('pdf-poppler');
-    console.log('✅ pdf-poppler loaded successfully');
+    pdf2pic = require('pdf2pic');
+    console.log('✅ pdf2pic loaded successfully');
 } catch (error) {
-    console.warn('⚠️ pdf-poppler not available on this system:', error.message);
+    console.warn('⚠️ pdf2pic not available on this system:', error.message);
 }
 
 class FileProcessor {
@@ -85,33 +85,33 @@ class FileProcessor {
 
     async convertPdfToImages() {
         try {
-            if (!pdfPoppler) {
-                throw new Error('pdf-poppler is not available on this system');
+            if (!pdf2pic) {
+                throw new Error('pdf2pic is not available on this system');
             }
 
             // Create temp directory if it doesn't exist
             await fs.mkdir(this.tempDir, { recursive: true });
 
-            const opts = {
-                format: 'png',
-                out_dir: this.tempDir,
-                out_prefix: 'page',
-                page: null, // Convert all pages
-                scale: 2.0  // Increase resolution for better OCR
-            };
+            // Configure pdf2pic
+            const convert = pdf2pic.fromPath(this.filePath, {
+                density: 200,           // Increase resolution for better OCR
+                saveFilename: "page",
+                savePath: this.tempDir,
+                format: "png",
+                width: 2000,
+                height: 2000
+            });
 
-            await pdfPoppler.convert(this.filePath, opts);
+            // Convert all pages
+            const results = await convert.bulk(-1, { responseType: "image" });
             
             // Get list of generated image files
-            const files = await fs.readdir(this.tempDir);
-            return files.filter(file => file.startsWith('page') && file.endsWith('.png'))
-                       .map(file => path.join(this.tempDir, file))
-                       .sort((a, b) => {
-                           // Sort files by page number
-                           const numA = parseInt(a.match(/page-(\d+)/)[1]);
-                           const numB = parseInt(b.match(/page-(\d+)/)[1]);
-                           return numA - numB;
-                       });
+            return results.map(result => result.path).sort((a, b) => {
+                // Sort files by page number
+                const numA = parseInt(path.basename(a).match(/page\.(\d+)/)[1]);
+                const numB = parseInt(path.basename(b).match(/page\.(\d+)/)[1]);
+                return numA - numB;
+            });
         } catch (error) {
             throw new Error(`PDF to image conversion failed: ${error.message}`);
         }
@@ -200,8 +200,8 @@ class FileProcessor {
             
             console.log(`Processing ${this.documentType} document with ${this.pageCount} pages`);
             
-            // 2. Conditional OCR processing based on page count and pdf-poppler availability
-            if (this.documentType === 'regular' && this.pageCount <= 3 && pdfPoppler) {
+            // 2. Conditional OCR processing based on page count and pdf2pic availability
+            if (this.documentType === 'regular' && this.pageCount <= 3 && pdf2pic) {
                 // Use both text parsing and OCR for documents with 3 pages or less
                 console.log('Using both text parsing and OCR (≤3 pages)');
                 
@@ -216,7 +216,7 @@ class FileProcessor {
                             
                             // Perform OCR
                             const pageText = await this.performOCR(processedImagePath);
-                            ocrText += `Page ${path.basename(imageFile).match(/page-(\d+)/)[1]}:\n${pageText}\n\n`;
+                            ocrText += `Page ${path.basename(imageFile).match(/page\.(\d+)/)[1]}:\n${pageText}\n\n`;
                             
                             // Cleanup processed image
                             if (processedImagePath) {
@@ -240,7 +240,7 @@ class FileProcessor {
             } else {
                 // Use only text parsing
                 const reason = this.pageCount > 3 ? '(>3 pages - electrical spec)' : 
-                              !pdfPoppler ? '(pdf-poppler unavailable)' : '';
+                              !pdf2pic ? '(pdf2pic unavailable)' : '';
                 console.log(`Using text parsing only ${reason}`);
                 combinedText = `PDF Parsed Text:\n${pdfText}`;
             }
@@ -253,7 +253,7 @@ class FileProcessor {
                 text: this.fileContent,
                 documentType: this.documentType,
                 pageCount: this.pageCount,
-                processingMethod: (this.documentType === 'regular' && pdfPoppler) ? 'text_parsing_and_ocr' : 'text_parsing_only'
+                processingMethod: (this.documentType === 'regular' && pdf2pic) ? 'text_parsing_and_ocr' : 'text_parsing_only'
             };
         } catch (error) {
             return {
@@ -318,7 +318,7 @@ class FileProcessor {
         return {
             documentType: this.documentType,
             pageCount: this.pageCount,
-            processingMethod: (this.documentType === 'regular' && pdfPoppler) ? 'text_parsing_and_ocr' : 'text_parsing_only'
+            processingMethod: (this.documentType === 'regular' && pdf2pic) ? 'text_parsing_and_ocr' : 'text_parsing_only'
         };
     }
 }

@@ -16,7 +16,7 @@
     "pm2:logs": "pm2 logs",
     "pm2:status": "pm2 status",
     "pm2:delete": "pm2 delete all",
-    "pm2:rebuild": "npm rebuild sharp pdf-poppler --platform=linux --arch=x64"
+    "pm2:rebuild": "npm rebuild sharp --platform=linux --arch=x64"
   },
   "keywords": [],
   "author": "",
@@ -38,7 +38,6 @@
     "ncc-compliance-backend": "file:",
     "openai": "^4.100.0",
     "pdf-parse": "^1.1.1",
-    "pdf-poppler": "^0.2.1",
     "sharp": "^0.33.5",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^4.6.2",

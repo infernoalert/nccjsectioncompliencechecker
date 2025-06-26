@@ -34,6 +34,19 @@ A full-stack application for checking NCC Section J compliance, built with Expre
 - MongoDB (v4.4 or higher)
 - PM2 (for production deployment)
 
+## Windows Development Notes
+
+**Note for Windows Users:** Some native dependencies may require additional setup on Windows:
+
+- **PDF Processing**: The application uses native modules for PDF processing. On Windows, you may need to install additional tools:
+  - Install [Visual Studio Build Tools](https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2022) or Visual Studio with C++ workload
+  - Install [Python 3.x](https://www.python.org/downloads/windows/) (required for node-gyp)
+  - For PDF conversion: Install [Poppler for Windows](https://github.com/oschwartz10612/poppler-windows/releases) or use Chocolatey: `choco install poppler`
+
+- **Alternative Setup**: Consider using Windows Subsystem for Linux (WSL) for a more Linux-like development environment.
+
+- **MongoDB on Windows**: Ensure MongoDB is installed as a Windows service or run manually with the appropriate data directory path.
+
 ## Getting Started
 
 Follow these steps in order to start the application:
