@@ -19,7 +19,8 @@ module.exports = {
         API_URL: process.env.BASE_URL,
         OPENAI_API_KEY: process.env.OPENAI_API_KEY,
         JWT_SECRET: process.env.JWT_SECRET,
-        CORS_ORIGIN: process.env.CORS_ORIGIN
+        CORS_ORIGIN: process.env.CORS_ORIGIN,
+        ALLOW_ADMIN_REGISTRATION: process.env.ALLOW_ADMIN_REGISTRATION
       },
       env_development: {
         NODE_ENV: 'development',
