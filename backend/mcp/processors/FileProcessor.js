@@ -1,10 +1,18 @@
 const fs = require('fs').promises;
 const path = require('path');
 const pdf = require('pdf-parse');
-const pdfPoppler = require('pdf-poppler');
 const sharp = require('sharp');
 const { createWorker } = require('tesseract.js');
 const os = require('os');
+
+// Optional import for pdf-poppler (has Linux compatibility issues)
+let pdfPoppler = null;
+try {
+    pdfPoppler = require('pdf-poppler');
+    console.log('✅ pdf-poppler loaded successfully');
+} catch (error) {
+    console.warn('⚠️ pdf-poppler not available on this system:', error.message);
+}
 
 class FileProcessor {
     constructor(filePath, isExistingFile = false) {
@@ -77,6 +85,10 @@ class FileProcessor {
 
     async convertPdfToImages() {
         try {
+            if (!pdfPoppler) {
+                throw new Error('pdf-poppler is not available on this system');
+            }
+
             // Create temp directory if it doesn't exist
             await fs.mkdir(this.tempDir, { recursive: true });
 
@@ -188,42 +200,49 @@ class FileProcessor {
             
             console.log(`Processing ${this.documentType} document with ${this.pageCount} pages`);
             
-            // 2. Conditional OCR processing based on page count
-            if (this.documentType === 'regular' && this.pageCount <= 3) {
+            // 2. Conditional OCR processing based on page count and pdf-poppler availability
+            if (this.documentType === 'regular' && this.pageCount <= 3 && pdfPoppler) {
                 // Use both text parsing and OCR for documents with 3 pages or less
                 console.log('Using both text parsing and OCR (≤3 pages)');
                 
-                imageFiles = await this.convertPdfToImages();
-                let ocrText = '';
-                
-                for (const imageFile of imageFiles) {
-                    try {
-                        // Preprocess image
-                        processedImagePath = await this.preprocessImage(imageFile);
-                        
-                        // Perform OCR
-                        const pageText = await this.performOCR(processedImagePath);
-                        ocrText += `Page ${path.basename(imageFile).match(/page-(\d+)/)[1]}:\n${pageText}\n\n`;
-                        
-                        // Cleanup processed image
-                        if (processedImagePath) {
-                            await fs.unlink(processedImagePath).catch(() => {});
-                            processedImagePath = null;
+                try {
+                    imageFiles = await this.convertPdfToImages();
+                    let ocrText = '';
+                    
+                    for (const imageFile of imageFiles) {
+                        try {
+                            // Preprocess image
+                            processedImagePath = await this.preprocessImage(imageFile);
+                            
+                            // Perform OCR
+                            const pageText = await this.performOCR(processedImagePath);
+                            ocrText += `Page ${path.basename(imageFile).match(/page-(\d+)/)[1]}:\n${pageText}\n\n`;
+                            
+                            // Cleanup processed image
+                            if (processedImagePath) {
+                                await fs.unlink(processedImagePath).catch(() => {});
+                                processedImagePath = null;
+                            }
+                            await fs.unlink(imageFile).catch(() => {});
+                        } catch (pageError) {
+                            console.error(`Error processing page ${imageFile}:`, pageError);
+                            // Continue with next page instead of failing completely
+                            continue;
                         }
-                        await fs.unlink(imageFile).catch(() => {});
-                    } catch (pageError) {
-                        console.error(`Error processing page ${imageFile}:`, pageError);
-                        // Continue with next page instead of failing completely
-                        continue;
                     }
+                    
+                    // Combine both results
+                    combinedText = `PDF Parsed Text:\n${pdfText}\n\nOCR Text:\n${ocrText}`;
+                } catch (ocrError) {
+                    console.warn('OCR processing failed, falling back to text parsing only:', ocrError.message);
+                    combinedText = `PDF Parsed Text (OCR unavailable):\n${pdfText}`;
                 }
-                
-                // Combine both results
-                combinedText = `PDF Parsed Text:\n${pdfText}\n\nOCR Text:\n${ocrText}`;
             } else {
-                // Use only text parsing for electrical specs (>3 pages)
-                console.log('Using text parsing only (>3 pages - electrical spec)');
-                combinedText = `PDF Parsed Text (Electrical Specification):\n${pdfText}`;
+                // Use only text parsing
+                const reason = this.pageCount > 3 ? '(>3 pages - electrical spec)' : 
+                              !pdfPoppler ? '(pdf-poppler unavailable)' : '';
+                console.log(`Using text parsing only ${reason}`);
+                combinedText = `PDF Parsed Text:\n${pdfText}`;
             }
             
             // Store combined content
@@ -234,7 +253,7 @@ class FileProcessor {
                 text: this.fileContent,
                 documentType: this.documentType,
                 pageCount: this.pageCount,
-                processingMethod: this.documentType === 'regular' ? 'text_parsing_and_ocr' : 'text_parsing_only'
+                processingMethod: (this.documentType === 'regular' && pdfPoppler) ? 'text_parsing_and_ocr' : 'text_parsing_only'
             };
         } catch (error) {
             return {
@@ -299,9 +318,9 @@ class FileProcessor {
         return {
             documentType: this.documentType,
             pageCount: this.pageCount,
-            processingMethod: this.documentType === 'regular' ? 'text_parsing_and_ocr' : 'text_parsing_only'
+            processingMethod: (this.documentType === 'regular' && pdfPoppler) ? 'text_parsing_and_ocr' : 'text_parsing_only'
         };
     }
 }
 
-module.exports = FileProcessor; 
+module.exports = FileProcessor;
