@@ -9,14 +9,17 @@ module.exports = {
       max_memory_restart: '1G',
       env_production: {
         NODE_ENV: 'production',
-        PORT: 9951,
+        PORT: process.env.HTTP_PORT || 9951,
         DEBUG: 'app:*',
-        MONGO_PATH: '136.243.36.77',
-        MONGO_PORT: '27017',
+        MONGO_PATH: process.env.MONGO_PATH,
+        MONGO_PORT: process.env.MONGO_PORT,
         MONGO_DATABASE: process.env.MONGO_DATABASE,
         MONGO_USER: process.env.MONGO_USER,
         MONGO_PASSWORD: process.env.MONGO_PASSWORD,
-        API_URL: 'http://136.243.36.77:9951'
+        API_URL: process.env.BASE_URL,
+        OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+        JWT_SECRET: process.env.JWT_SECRET,
+        CORS_ORIGIN: process.env.CORS_ORIGIN
       },
       env_development: {
         NODE_ENV: 'development',

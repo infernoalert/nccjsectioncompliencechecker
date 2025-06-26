@@ -36,11 +36,11 @@ let dbConnection = null;
 (async () => {
   try {
     dbConnection = await connectDB();
-    if (!dbConnection) {
-      console.error('Failed to connect to database. Application will continue but database operations will fail.');
-    }
+    console.log('✅ Database connected successfully');
   } catch (error) {
-    console.error('Error during database connection:', error);
+    console.error('❌ Database connection failed:', error.message);
+    console.error('Server will continue but database operations will fail.');
+    // Don't exit - let the application continue running
   }
 })();
 
@@ -159,7 +159,7 @@ app.get('/test-device-updater/:projectId', async (req, res) => {
 app.use(errorHandler);
 
 // Start server
-const PORT = process.env.PORT || (isProduction ? 9951 : 5000);
+const PORT = process.env.PORT || process.env.HTTP_PORT || (isProduction ? 9951 : 5000);
 const server = app.listen(PORT, () => {
     console.log(`Server running in ${isProduction ? 'production' : 'development'} mode on port ${PORT}`);
 });

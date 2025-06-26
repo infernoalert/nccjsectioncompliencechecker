@@ -9,12 +9,13 @@
     "dev": "cross-env NODE_ENV=development nodemon --config nodemon.json server.js",
     "start:dev": "cross-env NODE_ENV=development nodemon --config nodemon.json server.js",
     "test": "jest",
-    "pm2:start": "cross-env NODE_ENV=production pm2 start ecosystem.config.js --env production",
+    "pm2:start": "chmod +x start-production.sh && ./start-production.sh",
     "pm2:stop": "pm2 stop all",
     "pm2:restart": "pm2 restart all",
     "pm2:logs": "pm2 logs",
     "pm2:status": "pm2 status",
-    "pm2:delete": "pm2 delete all"
+    "pm2:delete": "pm2 delete all",
+    "pm2:rebuild": "npm rebuild sharp pdf-poppler --platform=linux --arch=x64"
   },
   "keywords": [],
   "author": "",
