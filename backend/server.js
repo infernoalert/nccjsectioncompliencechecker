@@ -89,7 +89,7 @@ const app = express();
 console.log('⚙️ Setting up middleware...');
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? ['https://nccjsectioncompliencechecker.vercel.app', 'https://api.payamamerian.com', 'https://ncc.payamamerian.com'] 
+    ? ['https://nccjsectioncompliencechecker.vercel.app', 'https://api.payamamerian.com', 'https://ncc.payamamerian.com', 'https://ncc.ecoinsight.com.au', 'https://www.ecoinsight.com.au'] 
     : 'http://localhost:3000',
   credentials: true
 }));
