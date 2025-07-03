@@ -37,6 +37,7 @@ import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import DrawIcon from '@mui/icons-material/Draw';
 import DownloadIcon from '@mui/icons-material/Download';
 import SmartToyIcon from '@mui/icons-material/SmartToy';
+import AssessmentIcon from '@mui/icons-material/Assessment';
 import AddElectricalDetails from './AddElectricalDetails';
 import {
   getProjectValues,
@@ -64,6 +65,7 @@ const ElectricalValues = () => {
   const [analyzing, setAnalyzing] = useState(false);
   const [analysisError, setAnalysisError] = useState(null);
   const [processingFiles, setProcessingFiles] = useState(new Set());
+
 
   useEffect(() => {
     dispatch(getProjectValues(id));
@@ -279,6 +281,16 @@ const ElectricalValues = () => {
         return newSet;
       });
     }
+  };
+
+
+
+  const handleJ9EnergyMonitoring = () => {
+    navigate(`/j9monitor/${id}/report`);
+  };
+
+  const handleElementalProvisions = () => {
+    navigate(`/projects/${id}/report`);
   };
 
   if (isLoading) {
@@ -558,7 +570,7 @@ const ElectricalValues = () => {
         )}
       </Box>
 
-      {/* Delete Confirmation Dialog */}
+      {/* Delete File Confirmation Dialog */}
       <Dialog
         open={deleteDialogOpen}
         onClose={handleDeleteFileCancel}
@@ -577,6 +589,31 @@ const ElectricalValues = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+
+
+
+      {/* Action Buttons */}
+      <Box sx={{ mt: 4, display: 'flex', justifyContent: 'flex-end', gap: 2, pb: 2, flexWrap: 'wrap' }}>
+        <Button
+          variant="contained"
+          color="secondary"
+          startIcon={<AssessmentIcon />}
+          onClick={handleElementalProvisions}
+          sx={{ minWidth: 150 }}
+        >
+          Elemental Provisions
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<AssessmentIcon />}
+          onClick={handleJ9EnergyMonitoring}
+          sx={{ minWidth: 150 }}
+        >
+          J9 Energy Monitoring
+        </Button>
+      </Box>
     </Container>
   );
 };
