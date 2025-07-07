@@ -134,9 +134,9 @@ class EnergyMonitorReportService {
             );
 
             return {
-                zone: this.climateZone,
-                name: `Climate Zone ${this.climateZone}`,
-                description: `The building is located in Climate Zone ${this.climateZone}.`,
+                zone: this.climateZone.id,
+                name: `Climate Zone ${this.climateZone.id}`,
+                description: `The building is located in Climate Zone ${this.climateZone.id}.`,
                 annualHeatingDegreeHours: locationData?.['Annual heating degree hours'],
                 annualCoolingDegreeHours: locationData?.['Annual cooling degree hours'],
                 annualDehumidificationGramHours: locationData?.['Annual dehumidification gram hours']

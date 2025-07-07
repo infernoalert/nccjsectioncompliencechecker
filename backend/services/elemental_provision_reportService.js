@@ -171,11 +171,11 @@ class ReportService {
                                       this.buildingClassification.classType === 'Class_4');
 
             const climateInfo = {
-                 // Assuming climateZone variable holds the numeric zone (e.g., 5)
-                zone: this.climateZone,
-                // Construct name/description or retrieve from a zones definition file if needed
-                name: `Climate Zone ${this.climateZone}`,
-                description: `The building is located in Climate Zone ${this.climateZone}.`
+                 // Use the id property from the climate zone object
+                zone: this.climateZone.id,
+                // Construct name/description using the climate zone id
+                name: `Climate Zone ${this.climateZone.id}`,
+                description: `The building is located in Climate Zone ${this.climateZone.id}.`
             };
 
             // Add heating/cooling data specific to Class 2/4 if available

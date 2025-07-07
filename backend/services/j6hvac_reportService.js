@@ -116,9 +116,9 @@ class J6HVACReportService {
             }
 
             return {
-                zone: this.climateZone,
-                name: `Climate Zone ${this.climateZone}`,
-                description: `The building is located in Climate Zone ${this.climateZone}.`
+                zone: this.climateZone.id,
+                name: `Climate Zone ${this.climateZone.id}`,
+                description: `The building is located in Climate Zone ${this.climateZone.id}.`
             };
         } catch (error) {
             console.error('Error generating climate zone info:', error);
