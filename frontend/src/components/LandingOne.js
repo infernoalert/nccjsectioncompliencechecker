@@ -4,13 +4,13 @@ import './LandingOne.css';
 const features = [
   {
     icon: '/resources/search.svg',
-    title: 'Precision NCC Filtering (J1, J2, J3, J7, J9)',
+    title: 'Precision NCC Filtering (J1, J2, J3, J9)',
     desc: 'Quickly filter and identify relevant sections of the National Electrical Code (NCC) based on your project (J1, J2, J3, J7, J9), allowing you to focus on project-specific information.'
   },
   {
     icon: '/resources/file.svg',
-    title: 'Project-Specific J9D3 Metering Samples',
-    desc: 'Access a library of actual J9D3 samples tailored to your project specifications, offering tailored examples for metering and saving you time and effort.'
+    title: 'Project-Specific Metering Samples',
+    desc: 'Access a library of actual samples tailored to your project specifications, offering tailored examples for metering and saving you time and effort.'
   },
   {
     icon: '/resources/ailanding.svg',
@@ -22,36 +22,36 @@ const features = [
 const howItWorks = [
   {
     icon: '/resources/pen.svg',
-    title: 'Input Project Details',
-    desc: 'Provide project specifications, including system type, capacity, and location.'
+    title: 'Become a member',
+    desc: 'Sign up for free and start a project .'
   },
   {
     icon: '/resources/tick.svg',
-    title: 'Automated Compliance Check',
-    desc: 'ecoInsight automatically checks your design against the NCC and identifies any compliance issues.'
+    title: 'AI Analysis',
+    desc: 'An analysis of the project SLD - Single Line Diagram - and electrical specification will be performed by ecoInsight AI.'
   },
   {
     icon: '/resources/file.svg',
-    title: 'Generate J9D3 Report',
-    desc: 'Generate a comprehensive J9D3 report with all necessary documentation for submission.'
+    title: 'Tailored Design',
+    desc: 'An immediate engineering plan for comprehensive energy monitoring has been developed..'
   }
 ];
 
 const currentCoverage = [
   {
     module: 'NCC Core Filtering',
-    description: 'Filters NCC sections J1, J2, J3, J7, and J9 to show only project-relevant clauses.',
+    description: 'Filters NCC sections J1, J2, J3, and J9 to show only project-relevant clauses.',
     status: 'Complete',
     statusType: 'complete'
   },
   {
-    module: 'Section J9D3 Samples',
+    module: 'Project Samples',
     description: 'Provides project-specific sample designs and diagrams for energy monitoring (solar, EV, battery).',
     status: 'Complete',
     statusType: 'complete'
   },
   {
-    module: 'AI Solution Design (J9D3)',
+    module: 'AI Solution Design',
     description: 'Generates a complete, custom metering solution, including Bill of Materials (BOM) and system architecture.',
     status: 'MVP / Beta',
     statusType: 'mvp'
@@ -83,17 +83,21 @@ export default function Landing() {
         width: '928px',
         minHeight: '480px',
         margin: '0 auto',
-        position: 'relative'
+        position: 'relative',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
       }}>
         <div style={{
-          position: 'absolute',
-          left: '216px',
-          top: '285px',
-          width: '712px',
-          height: '209px',
           display: 'flex',
           flexDirection: 'column',
-          gap: '8px'
+          gap: '8px',
+          maxWidth: '712px',
+          padding: '24px',
+          textAlign: 'center',
+          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          borderRadius: '12px',
+          backdropFilter: 'blur(10px)'
         }}>
           <h1 style={{
             fontFamily: 'Inter',
@@ -101,22 +105,20 @@ export default function Landing() {
             fontSize: '48px',
             lineHeight: '1.25em',
             letterSpacing: '-4.17%',
-            color: '#FFFFFF',
-            textAlign: 'left',
+            color: '#000000',
+            textAlign: 'center',
             margin: 0,
-            width: '100%',
-            textShadow: '1px 1px 2px rgba(0,0,0,0.8)'
-          }}>Master NCC J9D3. From Code to Complete Design.</h1>
+            width: '100%'
+          }}>From Code to Complete Design.</h1>
           <p style={{
             fontFamily: 'Inter',
             fontWeight: 400,
             fontSize: '16px',
             lineHeight: '1.5em',
-            color: '#FFFFFF',
-            textAlign: 'left',
+            color: '#000000',
+            textAlign: 'center',
             margin: 0,
-            width: '100%',
-            textShadow: '1px 1px 2px rgba(0,0,0,0.8)'
+            width: '100%'
           }}>
             Our mission is to improve energy-related workflows in construction environments, reduce errors, and ensure that all standards are met.
           </p>
