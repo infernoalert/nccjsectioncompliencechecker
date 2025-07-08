@@ -68,7 +68,7 @@ export default function Landing() {
         </div>
         <nav className="landing-nav">
           <a href="https://ecoinsight.com.au" target="_blank" rel="noopener noreferrer">Our Research</a>
-          <a href="/presentation">The Prototype</a>
+          <a href="/presentation">Building Sustainability</a>
         </nav>
         <div className="landing-auth">
           <a href="/login" className="landing-signin">Sign In</a>
@@ -182,8 +182,7 @@ export default function Landing() {
       </section>
       <footer className="landing-footer">
         <div className="landing-footer-links">
-          <a href="https://ecoinsight.com.au" target="_blank" rel="noopener noreferrer">Our Research</a>
-          <a href="/presentation">The Prototype</a>
+          <a href="https://ecoinsight.com.au" target="_blank" rel="noopener noreferrer">Our Research</a>          
         </div>
         <div className="landing-footer-copyright">
           <span>© 2023 ecoInsight. All rights reserved.</span>
