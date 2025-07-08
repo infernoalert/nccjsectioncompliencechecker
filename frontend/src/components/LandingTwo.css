@@ -1,0 +1,347 @@
+/* LandingTwo.css */
+.landing-two-root {
+  min-height: 100vh;
+  background-color: white;
+  font-family: 'Inter', 'Noto Sans', sans-serif;
+  overflow-x: hidden;
+}
+
+/* Header styles (reused from LandingOne) */
+.landing-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  white-space: nowrap;
+  border-bottom: 1px solid #f0f2f4;
+  padding: 12px 40px;
+}
+
+.landing-logo-title {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: #111418;
+}
+
+.landing-logo {
+  width: 32px;
+  height: 32px;
+}
+
+.landing-title {
+  color: #111418;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+}
+
+.landing-nav {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+}
+
+.landing-nav a {
+  color: #111418;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+  text-decoration: none;
+}
+
+.landing-nav a:hover {
+  color: #2789ec;
+}
+
+.landing-auth {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.landing-signin {
+  color: #111418;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.landing-signup {
+  display: flex;
+  min-width: 84px;
+  max-width: 480px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 9999px;
+  height: 40px;
+  padding: 0 16px;
+  background-color: #2789ec;
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.5;
+  letter-spacing: 0.015em;
+  text-decoration: none;
+}
+
+.landing-signup:hover {
+  background-color: #1e6bb8;
+}
+
+/* Main container */
+.landing-two-container {
+  padding: 0 160px;
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  padding-top: 20px;
+}
+
+.landing-two-content {
+  display: flex;
+  flex-direction: column;
+  max-width: 960px;
+  flex: 1;
+}
+
+/* Hero Section */
+.landing-two-hero {
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.landing-two-hero-content {
+  display: flex;
+  min-height: 480px;
+  flex-direction: column;
+  gap: 24px;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.4) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuAPgFQVuv5nITwt2Hg0AQFjFQoOnP3g-WO5RKBkgsPAFaogQFww29oxWq-x36xL2rhfttWN-IfoHQ8duh4X4UkrKXhgysL7Loun7HaQsPilxX-WoRHOeRmJd08wr9_MSH6DFtygo0TjSAQNm1bKnuztAS6ypXGHlkNMSwo3y9Bp8wnJOBi-Bpgh6bck_N7aDXddxHRIpHMOeockjrrm5fQEeQBBcj-b2DFloo1vX9c4UOHM3suiF1aJZw2Rp22ZYm3x2L12f24LTUI");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 12px;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 40px;
+}
+
+.landing-two-hero-title {
+  color: white;
+  font-size: 48px;
+  font-weight: 900;
+  line-height: 1.2;
+  letter-spacing: -0.033em;
+  margin: 0;
+}
+
+.landing-two-hero-subtitle {
+  color: white;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Section styles */
+.landing-two-section-title {
+  color: #111418;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  padding: 16px;
+  padding-bottom: 12px;
+  padding-top: 20px;
+  margin: 0;
+}
+
+.landing-two-section-text {
+  color: #111418;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+  padding: 4px 16px;
+  padding-bottom: 12px;
+  margin: 0;
+}
+
+/* Toolkit items */
+.landing-two-toolkit-item {
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.landing-two-toolkit-content {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 16px;
+  border-radius: 12px;
+}
+
+.landing-two-toolkit-text {
+  display: flex;
+  flex: 2;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.landing-two-toolkit-title {
+  color: #111418;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0;
+}
+
+.landing-two-toolkit-description {
+  color: #617589;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.landing-two-toolkit-button {
+  display: flex;
+  min-width: 84px;
+  max-width: 480px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 9999px;
+  height: 32px;
+  padding: 0 16px;
+  background-color: #f0f2f4;
+  color: #111418;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+  border: none;
+  width: fit-content;
+  text-decoration: none;
+}
+
+.landing-two-toolkit-button:hover {
+  background-color: #e1e5e9;
+}
+
+.landing-two-toolkit-image {
+  flex: 1;
+  width: 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  border-radius: 12px;
+  min-height: 200px;
+}
+
+.landing-two-toolkit-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+/* Footer */
+.landing-two-footer {
+  display: flex;
+  justify-content: center;
+  background-color: #f8f9fa;
+  padding: 40px 20px;
+  margin-top: 40px;
+}
+
+.landing-two-footer-content {
+  display: flex;
+  max-width: 960px;
+  flex: 1;
+  flex-direction: column;
+  gap: 24px;
+  text-align: center;
+}
+
+.landing-two-footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+}
+
+.landing-two-footer-link {
+  color: #617589;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+  text-decoration: none;
+  min-width: 160px;
+}
+
+.landing-two-footer-link:hover {
+  color: #2789ec;
+}
+
+.landing-two-footer-copyright {
+  color: #617589;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .landing-two-container {
+    padding: 0 20px;
+  }
+  
+  .landing-header {
+    padding: 12px 20px;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .landing-nav {
+    gap: 20px;
+  }
+  
+  .landing-two-hero-title {
+    font-size: 36px;
+  }
+  
+  .landing-two-toolkit-content {
+    flex-direction: column;
+  }
+  
+  .landing-two-toolkit-image {
+    min-height: 150px;
+  }
+}
+
+@media (max-width: 480px) {
+  .landing-two-container {
+    padding: 0 10px;
+  }
+  
+  .landing-header {
+    padding: 12px 10px;
+  }
+  
+  .landing-two-hero-content {
+    padding: 20px;
+    min-height: 320px;
+  }
+  
+  .landing-two-hero-title {
+    font-size: 28px;
+  }
+  
+  .landing-two-hero-subtitle {
+    font-size: 14px;
+  }
+} 

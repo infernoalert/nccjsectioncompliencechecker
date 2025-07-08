@@ -23,6 +23,7 @@ import './styles/print.css';
 import J7LightingReport from './components/reports/J7LightingReport';
 import J6hvacReport from './components/reports/J6hvacReport';
 import LandingOne from './components/LandingOne';
+import LandingTwo from './components/LandingTwo';
 
 // Create a theme instance
 const theme = createTheme({
@@ -64,6 +65,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/presentation" element={<Presentation />} />
+          <Route path="/prototype" element={<LandingTwo />} />
           <Route path="/" element={isAuthenticated ? <Navigate to="/projects" /> : <LandingOne />} />
 
           {/* Protected routes */}

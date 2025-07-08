@@ -69,6 +69,7 @@ export default function Landing() {
         <nav className="landing-nav">
           <a href="https://ecoinsight.com.au" target="_blank" rel="noopener noreferrer">Our Research</a>
           <a href="/presentation">Building Sustainability</a>
+          <a href="/prototype">Prototype</a>
         </nav>
         <div className="landing-auth">
           <a href="/login" className="landing-signin">Sign In</a>
