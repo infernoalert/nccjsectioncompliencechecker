@@ -121,7 +121,7 @@ const NewProject = () => {
             <Box display="flex" flexDirection="column" gap={3}>
               <TextField
                 fullWidth
-                label="Project Name"
+                label="Site Name"
                 name="name"
                 value={formData.name}
                 onChange={handleChange}

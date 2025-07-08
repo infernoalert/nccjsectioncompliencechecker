@@ -419,7 +419,7 @@ const ElectricalValues = () => {
             <TableHead>
               <TableRow>
                 <TableCell>Label</TableCell>
-                <TableCell>Panel</TableCell>
+                <TableCell>Space Name</TableCell>
                 <TableCell>Device Type</TableCell>
                 <TableCell>Description</TableCell>
                 <TableCell>Connection</TableCell>
