@@ -14,16 +14,16 @@ const features = [
   },
   {
     icon: '/resources/ailanding.svg',
-    title: 'AI-Powered Complete Metering Solutions (MVP)',
-    desc: 'Leverage our AI-powered solution to generate complete metering solutions for your projects, including Bill of Materials (BOM) and required designs. This feature is currently in MVP stage for testing. Our final goal is to provide a comprehensive solution including smart device programming.'
+    title: 'AI-powered prototype for schematic generation',
+    desc: "Our AI-powered module translates your project's core requirements into a foundational energy metering schematic and the relevant filtered NCC Section J clauses."
   }
 ];
 
 const howItWorks = [
   {
     icon: '/resources/pen.svg',
-    title: 'Become a member',
-    desc: 'Sign up for free and start a project .'
+    title: 'Project Basics',
+    desc: 'Building type and size'
   },
   {
     icon: '/resources/tick.svg',
@@ -51,8 +51,8 @@ const currentCoverage = [
     statusType: 'complete'
   },
   {
-    module: 'AI Solution Design',
-    description: 'Generates a complete, custom metering solution, including Bill of Materials (BOM) and system architecture.',
+    module: 'AI Schematic Generation',
+    description: 'A foundational metering schematic and NCC clauses are generated as a starting point for a construction set.',
     status: 'MVP / Beta',
     statusType: 'mvp'
   }
@@ -127,9 +127,9 @@ export default function Landing() {
       </section>
       <section className="landing-features">
         <div className="landing-features-header">
-          <h2>Key Features</h2>
+          <h2>Prototype Capabilities</h2>
           <p className="landing-features-description">
-            EcoInsight aims to simplify and automate the Energy Efficiency compliance process with a comprehensive suite of tools.
+            We prepare technical drawings and Section J9 requirements for construction sets as part of our MVP process to ensure NCC compliance. We are now gathering industry feedback to enhance its features, including detailed BOMs, precise drawings, and CAD export functionality.
           </p>
         </div>
         <div className="landing-features-list">
@@ -142,20 +142,22 @@ export default function Landing() {
           ))}
         </div>
       </section>
-      <section className="landing-how">
-        <h2>How It Works</h2>
-        <div className="landing-how-container">
-          {howItWorks.map((h, i) => (
-            <div className="landing-how-step" key={i}>
-              <div className="landing-how-step-icon-container">
-                <img src={h.icon} alt="" className="landing-how-icon" />
-              </div>
-              <div className="landing-how-step-content">
-                <h3>{h.title}</h3>
-                <p>{h.desc}</p>
-              </div>
+      <section className="landing-feedback">
+        <div className="landing-feedback-flex">
+          <div className="landing-feedback-content">
+            <div className="landing-feedback-row">
+              <img src="/resources/light-bulb-idea-svgrepo-com.svg" alt="Idea" className="landing-feedback-icon" />
+              <p>
+                We believe building a product based on assumptions is a sure path to failure. As a lean, focused project with limited resources, we can't afford to waste time on features that don't address real-world challenges.
+              </p>
             </div>
-          ))}
+            <div className="landing-feedback-row">
+              <img src="/resources/data-details-guidance-svgrepo-com.svg" alt="Guidance" className="landing-feedback-icon" />
+              <p>
+                That's why collaborating directly with industry experts is so important to us. A quick 30-minute feedback session with you gives us invaluable insights that shape our roadmap, helping us create a tool that truly serves the professionals it's designed for.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
       <section className="landing-coverage">
@@ -186,7 +188,7 @@ export default function Landing() {
           <a href="https://ecoinsight.com.au" target="_blank" rel="noopener noreferrer">Our Research</a>          
         </div>
         <div className="landing-footer-copyright">
-          <span>© 2023 ecoInsight. All rights reserved.</span>
+          <span>© 2025 ecoInsight. All rights reserved.</span>
         </div>
       </footer>
     </div>
