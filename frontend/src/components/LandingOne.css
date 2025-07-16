@@ -442,6 +442,42 @@
   flex-shrink: 0;
 }
 
+.landing-feedback-divider {
+  border: none;
+  border-top: 1px solid #E5E8EB;
+  margin: 24px 0 16px 0;
+}
+
+.landing-feedback-actions {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+.landing-feedback-btn {
+  background: #0A80ED;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 10px 28px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s;
+  display: inline-block;
+}
+.landing-feedback-btn:hover {
+  background: #005bb5;
+}
+.landing-feedback-btn-secondary {
+  background: #F0F2F5;
+  color: #121417;
+}
+.landing-feedback-btn-secondary:hover {
+  background: #e5e8eb;
+}
+
 .landing-footer {
   background: #fff;
   border-top: 1px solid #E5E8EB;

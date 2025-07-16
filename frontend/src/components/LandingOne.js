@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import './LandingOne.css';
 
 const features = [
@@ -59,6 +59,15 @@ const currentCoverage = [
 ];
 
 export default function Landing() {
+  const featuresRef = useRef(null);
+
+  const handlePrototypeClick = (e) => {
+    e.preventDefault();
+    if (featuresRef.current) {
+      featuresRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <div className="landing-root">
       <header className="landing-header">
@@ -68,8 +77,9 @@ export default function Landing() {
         </div>
         <nav className="landing-nav">
           <a href="https://ecoinsight.com.au" target="_blank" rel="noopener noreferrer">Our Research</a>
-          <a href="/presentation">Building Sustainability</a>
-          <a href="/prototype">Prototype</a>
+          <a href="/presentation">Section-J</a>
+          <a href="https://ecoinsight.com.au/ems" target="_blank" rel="noopener noreferrer">EMS</a>
+          <a href="#prototype" onClick={handlePrototypeClick}>Prototype</a>
         </nav>
         <div className="landing-auth">
           <a href="/login" className="landing-signin">Sign In</a>
@@ -125,7 +135,7 @@ export default function Landing() {
           </p>
         </div>
       </section>
-      <section className="landing-features">
+      <section className="landing-features" ref={featuresRef}>
         <div className="landing-features-header">
           <h2>Prototype Capabilities</h2>
           <p className="landing-features-description">
@@ -156,6 +166,10 @@ export default function Landing() {
               <p>
                 That's why collaborating directly with industry experts is so important to us. A quick 30-minute feedback session with you gives us invaluable insights that shape our roadmap, helping us create a tool that truly serves the professionals it's designed for.
               </p>
+            </div>
+            <div className="landing-feedback-actions">
+              <a href="https://calendly.com/payamamerian" target="_blank" rel="noopener noreferrer" className="landing-feedback-btn">Book a Session</a>
+              <a href="mailto:payamamerian@ecoinsight.com.au" className="landing-feedback-btn landing-feedback-btn-secondary">Email</a>
             </div>
           </div>
         </div>
