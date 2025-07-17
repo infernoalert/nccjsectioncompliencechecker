@@ -141,6 +141,20 @@
       "notes": "Farm buildings vary by use (e.g., Class 10a for small sheds, Class 7/8 for large-scale operations)."
     },
     {
+      "id": "industrial_class8",
+      "name": "Class 8 - Industrial (Process-Focused)",
+      "description": "Buildings where a process (including production, repair, or finishing of goods) is carried out for trade, sale, or gain.",
+      "nccClassification": "Class_8",
+      "typicalUse": "Factories, workshops, food processing plants, laboratories (non-healthcare), mechanic shops, abattoirs",
+      "commonFeatures": [
+        "Industrial equipment and machinery",
+        "Loading bays or freight access",
+        "Ventilation and extraction systems",
+        "Process-specific utility connections (e.g., gas, water, high-power electricity)"
+      ],
+      "notes": "Laboratories that are part of healthcare buildings are classified as Class 9a. Ancillary storage or office spaces within a Class 8 building may be classified separately if they serve a different purpose."
+    },
+    {
       "id": "mixed_use",
       "name": "Mixed Use Building",
       "description": "Buildings with multiple classifications (e.g., retail + residential).",
