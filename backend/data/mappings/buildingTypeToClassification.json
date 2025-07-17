@@ -142,7 +142,7 @@
     },
     {
       "id": "industrial_class8",
-      "name": "Class 8 - Industrial (Process-Focused)",
+      "name": "Industrial (Process-Focused)",
       "description": "Buildings where a process (including production, repair, or finishing of goods) is carried out for trade, sale, or gain.",
       "nccClassification": "Class_8",
       "typicalUse": "Factories, workshops, food processing plants, laboratories (non-healthcare), mechanic shops, abattoirs",
